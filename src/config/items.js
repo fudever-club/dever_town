@@ -1,14 +1,14 @@
 /**
- * Danh mục 7 Vật phẩm chuẩn nhận diện FPT University Đà Nẵng & Lập trình viên FU-DEVER
+ * Danh mục 7 Vật phẩm chuẩn nhận diện FUDA & Lập trình viên FU-DEVER
  */
 export const ITEMS_DATABASE = {
   macbook_dev: {
     id: 'macbook_dev',
-    name: 'MacBook Pro Dev FPTU',
+    name: 'MacBook Pro Dev FUDA',
     icon: '💻',
     rarity: 'legendary',
     tag: 'Thiết Bị Coder',
-    desc: 'Laptop chuyên dụng của Coder FPTU Đà Nẵng, cài sẵn Linux, Docker, Node.js và VS Code.',
+    desc: 'Laptop chuyên dụng của Coder FUDA, cài sẵn Linux, Docker, Node.js và VS Code.',
     accentColor: '#38bdf8'
   },
   keychron_kb: {
@@ -31,20 +31,20 @@ export const ITEMS_DATABASE = {
   },
   golden_frog_plush: {
     id: 'golden_frog_plush',
-    name: 'Gấu bông Cóc Vàng FPTU May Mắn',
+    name: 'Gấu bông Cóc Vàng FUDA May Mắn',
     icon: '🐸',
     rarity: 'mythic',
-    tag: 'Linh Vật FPTU',
-    desc: 'Gấu bông Linh vật Cóc Vàng Thiềm Thừ FPTU, mang lại may mắn 100% qua mọi kỳ thi Pass PE.',
+    tag: 'Linh Vật FUDA',
+    desc: 'Gấu bông Linh vật Cóc Vàng Thiềm Thừ FUDA, mang lại may mắn 100% qua mọi kỳ thi Pass PE.',
     accentColor: '#fbbf24'
   },
   fptu_keychain: {
     id: 'fptu_keychain',
-    name: 'Móc khóa Thẻ Sinh Viên FPTU',
+    name: 'Móc khóa Thẻ Sinh Viên FUDA',
     icon: '🔑',
     rarity: 'common',
     tag: 'Phụ Kiện Sinh Viên',
-    desc: 'Dây đeo thẻ sinh viên FPT University Da Nang màu cam FPT nổi bật.',
+    desc: 'Dây đeo thẻ sinh viên FUDA màu cam FPT nổi bật.',
     accentColor: '#f26f21'
   },
   thermos_coffee: {
@@ -60,33 +60,22 @@ export const ITEMS_DATABASE = {
     id: 'hackathon_trophy',
     name: 'Cúp Vô Địch Hackathon Mini',
     icon: '🏆',
-    rarity: 'legendary',
-    tag: 'Cúp Vinh Danh',
-    desc: 'Cúp vàng vinh danh các chiến thần lập trình DEVER xuất sắc đoạt ngôi vô địch.',
+    rarity: 'mythic',
+    tag: 'Vinh Danh Coder',
+    desc: 'Biểu tượng chiến thắng danh giá tại cuộc thi Hackathon FU-DEVER & FUDA.',
     accentColor: '#eab308'
   }
 };
 
 /**
- * Danh sách vị trí xuất hiện vật phẩm (Pickup Spots) trên 7 bản đồ
+ * Danh sách các điểm nhặt vật phẩm phân bố trên 7 bản đồ
  */
 export const PICKUP_SPOTS = [
-  // Sảnh chính
-  { roomId: 'main_hall', tileX: 2, tileY: 13, itemId: 'fptu_keychain', respawnTime: 60 },
-  { roomId: 'main_hall', tileX: 22, tileY: 13, itemId: 'golden_frog_plush', respawnTime: 120 },
-
-  // Tech Lab
-  { roomId: 'dever_lab', tileX: 6, tileY: 4, itemId: 'macbook_dev', respawnTime: 180 },
-  { roomId: 'dever_lab', tileX: 18, tileY: 4, itemId: 'keychron_kb', respawnTime: 180 },
-
-  // Thư viện
-  { roomId: 'library_lounge', tileX: 16, tileY: 1, itemId: 'thermos_coffee', respawnTime: 60 },
-  { roomId: 'library_lounge', tileX: 6, tileY: 11, itemId: 'gaming_mouse', respawnTime: 120 },
-
-  // Phòng Kỷ niệm
-  { roomId: 'memory_room', tileX: 10, tileY: 5, itemId: 'hackathon_trophy', respawnTime: 300 },
-
-  // Khu Thể thao
-  { roomId: 'sports_complex', tileX: 4, tileY: 10, itemId: 'thermos_coffee', respawnTime: 60 },
-  { roomId: 'sports_complex', tileX: 21, tileY: 15, itemId: 'fptu_keychain', respawnTime: 60 }
+  { id: 'spot_macbook', itemId: 'macbook_dev', roomId: 'dever_lab', tileX: 4, tileY: 4 },
+  { id: 'spot_keychron', itemId: 'keychron_kb', roomId: 'dever_lab', tileX: 20, tileY: 4 },
+  { id: 'spot_mouse', itemId: 'gaming_mouse', roomId: 'web_room', tileX: 4, tileY: 4 },
+  { id: 'spot_frog', itemId: 'golden_frog_plush', roomId: 'main_hall', tileX: 11, tileY: 5 },
+  { id: 'spot_keychain', itemId: 'fptu_keychain', roomId: 'library_lounge', tileX: 2, tileY: 4 },
+  { id: 'spot_coffee', itemId: 'thermos_coffee', roomId: 'library_lounge', tileX: 16, tileY: 3 },
+  { id: 'spot_trophy', itemId: 'hackathon_trophy', roomId: 'memory_room', tileX: 10, tileY: 2 }
 ];

@@ -119,14 +119,28 @@ body {
 }
 
 /* Room Selector */
+.room-nav-container,
 .room-selector-group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: rgba(2, 6, 23, 0.7);
   padding: 5px 12px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  stroke: #38bdf8;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .room-select {
@@ -1494,6 +1508,126 @@ body {
   font-size: 11px;
   font-weight: 600;
   color: #ffffff;
+}
+
+/* Gender Selector */
+.wardrobe-gender-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.wardrobe-gender-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.wardrobe-gender-btn:hover {
+  background: rgba(242, 111, 33, 0.15);
+  border-color: #f26f21;
+  color: #ffffff;
+}
+
+.wardrobe-gender-btn.selected {
+  background: rgba(242, 111, 33, 0.25);
+  border-color: #f26f21;
+  color: #f26f21;
+  box-shadow: 0 0 10px rgba(242, 111, 33, 0.4);
+}
+
+/* Outfits Grid */
+.wardrobe-outfit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.wardrobe-outfit-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wardrobe-outfit-card:hover {
+  background: rgba(242, 111, 33, 0.15);
+  border-color: #f26f21;
+}
+
+.wardrobe-outfit-card.selected {
+  background: rgba(242, 111, 33, 0.25);
+  border-color: #f26f21;
+  box-shadow: 0 0 8px rgba(242, 111, 33, 0.4);
+}
+
+.outfit-color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+.outfit-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.outfit-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.outfit-desc {
+  font-size: 9px;
+  color: #94a3b8;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Chip Buttons */
+.wardrobe-chip-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wardrobe-chip-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.wardrobe-chip-btn.selected {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
 /* ==========================================================================

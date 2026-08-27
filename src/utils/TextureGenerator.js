@@ -414,7 +414,7 @@ export class TextureGenerator {
     ctx.fill();
   }
 
-  // 20: Biển hiệu FPTU DA NANG
+  // 20: Biển hiệu FUDA
   static drawFptUniBanner(ctx, x, y, size) {
     ctx.fillStyle = '#002147';
     ctx.fillRect(x, y, size, size);
@@ -423,20 +423,20 @@ export class TextureGenerator {
     ctx.strokeRect(x + 1, y + 1, size - 2, size - 2);
 
     ctx.fillStyle = '#f26f21';
-    ctx.fillRect(x + 4, y + 5, 6, 4);
+    ctx.fillRect(x + 4, y + 4, 6, 4);
     ctx.fillStyle = '#22c55e';
-    ctx.fillRect(x + 13, y + 5, 6, 4);
+    ctx.fillRect(x + 13, y + 4, 6, 4);
     ctx.fillStyle = '#2563eb';
-    ctx.fillRect(x + 22, y + 5, 6, 4);
+    ctx.fillRect(x + 22, y + 4, 6, 4);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 8px "JetBrains Mono", monospace';
+    ctx.font = 'bold 9px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('FPTU', x + 16, y + 19);
+    ctx.fillText('FUDA', x + 16, y + 18);
 
     ctx.fillStyle = '#f26f21';
     ctx.font = 'bold 6px "Outfit", sans-serif';
-    ctx.fillText('DA NANG', x + 16, y + 27);
+    ctx.fillText('DEVER', x + 16, y + 26);
   }
 
   // 21: Neon DEVER Club
@@ -670,10 +670,14 @@ export class TextureGenerator {
     const ctx = canvas.getContext('2d');
 
     const config = {
+      gender: wardrobeConfig.gender || 'male',
+      hairstyle: wardrobeConfig.hairstyle || (wardrobeConfig.gender === 'female' ? 'long' : 'short'),
       hair: wardrobeConfig.hairColor || '#0f172a',
       skin: '#fcd34d',
-      shirt: wardrobeConfig.hoodieColor || '#f26f21',
-      pants: wardrobeConfig.pantsColor || '#1e293b',
+      outfitType: wardrobeConfig.outfitType || 'hoodie',
+      shirt: wardrobeConfig.hoodieColor || wardrobeConfig.outfitColor || '#f26f21',
+      collarColor: wardrobeConfig.collarColor || '#002147',
+      pants: wardrobeConfig.pantsColor || (wardrobeConfig.outfitType === 'dress' ? '#38bdf8' : '#1e293b'),
       accessory: wardrobeConfig.accessory || 'none'
     };
 
@@ -702,7 +706,18 @@ export class TextureGenerator {
   }
 
   static drawCharacterFrame(ctx, x, y, direction, frameIndex, config) {
-    const { hair, skin, shirt, pants, accessory } = config;
+    const {
+      gender = 'male',
+      hairstyle = (gender === 'female' ? 'long' : 'short'),
+      hair = '#0f172a',
+      skin = '#fcd34d',
+      outfitType = 'hoodie',
+      shirt = '#f26f21',
+      collarColor = '#002147',
+      pants = '#1e293b',
+      accessory = 'none'
+    } = config;
+
     ctx.clearRect(x, y, 32, 32);
 
     // Bóng dưới chân
@@ -713,28 +728,59 @@ export class TextureGenerator {
 
     const legOffset = frameIndex === 0 ? -2 : (frameIndex === 2 ? 2 : 0);
 
-    // Chân & Quần
-    ctx.fillStyle = pants;
-    if (direction === 'left' || direction === 'right') {
-      ctx.fillRect(x + 13 + legOffset, y + 22, 6, 8);
+    // 1. Chân & Quần / Váy
+    if (outfitType === 'dress') {
+      // Váy nữ sinh
+      ctx.fillStyle = shirt;
+      ctx.fillRect(x + 9, y + 20, 14, 4);
+      // Chân
+      ctx.fillStyle = skin;
+      ctx.fillRect(x + 11, y + 24, 3, 4);
+      ctx.fillRect(x + 18, y + 24, 3, 4);
+      // Giày
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x + 13 + legOffset, y + 28, 7, 3);
+      ctx.fillRect(x + 10, y + 28, 4, 3);
+      ctx.fillRect(x + 18, y + 28, 4, 3);
     } else {
-      ctx.fillRect(x + 11, y + 22 + (legOffset > 0 ? 1 : 0), 4, 7);
-      ctx.fillRect(x + 17, y + 22 + (legOffset < 0 ? 1 : 0), 4, 7);
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x + 10, y + 28, 5, 3);
-      ctx.fillRect(x + 17, y + 28, 5, 3);
+      ctx.fillStyle = pants;
+      if (direction === 'left' || direction === 'right') {
+        ctx.fillRect(x + 13 + legOffset, y + 22, 6, 8);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x + 13 + legOffset, y + 28, 7, 3);
+      } else {
+        ctx.fillRect(x + 11, y + 22 + (legOffset > 0 ? 1 : 0), 4, 7);
+        ctx.fillRect(x + 17, y + 22 + (legOffset < 0 ? 1 : 0), 4, 7);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x + 10, y + 28, 5, 3);
+        ctx.fillRect(x + 17, y + 28, 5, 3);
+      }
     }
 
-    // Áo Hoodie FPTU
+    // 2. Thân Áo (Áo Hoodie / Polo / Tee / Bomber / Jersey)
     ctx.fillStyle = shirt;
-    ctx.fillRect(x + 10, y + 14, 12, 9);
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.fillRect(x + 10, y + 21, 12, 2);
+    ctx.fillRect(x + 10, y + 14, 12, 8);
 
-    // Tay
-    ctx.fillStyle = skin;
+    if (outfitType === 'polo') {
+      // Cổ áo Polo khác màu
+      ctx.fillStyle = collarColor;
+      ctx.fillRect(x + 13, y + 14, 6, 2);
+      ctx.fillRect(x + 15, y + 16, 2, 3);
+    } else if (outfitType === 'jersey') {
+      // Số 10 thể thao
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 14, y + 16, 4, 4);
+    } else if (outfitType === 'bomber') {
+      // Đường khóa kéo Cyber
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(x + 15, y + 14, 2, 8);
+    } else {
+      // Viền áo
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(x + 10, y + 21, 12, 1);
+    }
+
+    // 3. Tay
+    ctx.fillStyle = (outfitType === 'tee' || outfitType === 'dress') ? skin : shirt;
     if (direction === 'down') {
       ctx.fillRect(x + 8, y + 15 - legOffset, 2, 6);
       ctx.fillRect(x + 22, y + 15 + legOffset, 2, 6);
@@ -747,11 +793,11 @@ export class TextureGenerator {
       ctx.fillRect(x + 14 + legOffset, y + 16, 4, 5);
     }
 
-    // Đầu & Mặt
+    // 4. Đầu & Mặt
     ctx.fillStyle = skin;
-    ctx.fillRect(x + 11, y + 6, 10, 9);
+    ctx.fillRect(x + 11, y + 6, 10, 8);
 
-    // Mắt
+    // 5. Mắt
     ctx.fillStyle = '#0f172a';
     if (direction === 'down') {
       ctx.fillRect(x + 13, y + 10, 2, 2);
@@ -759,6 +805,12 @@ export class TextureGenerator {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(x + 13, y + 10, 1, 1);
       ctx.fillRect(x + 17, y + 10, 1, 1);
+      if (gender === 'female') {
+        // Mi mắt nữ xinh xắn
+        ctx.fillStyle = '#f472b6';
+        ctx.fillRect(x + 12, y + 12, 2, 1);
+        ctx.fillRect(x + 18, y + 12, 2, 1);
+      }
     } else if (direction === 'left') {
       ctx.fillRect(x + 11, y + 10, 2, 2);
       ctx.fillStyle = '#ffffff';
@@ -769,23 +821,88 @@ export class TextureGenerator {
       ctx.fillRect(x + 20, y + 10, 1, 1);
     }
 
-    // Tóc
+    // 6. Kiểu Tóc & Màu Tóc (Hairstyle & Hair Color)
     ctx.fillStyle = hair;
-    if (direction === 'down') {
-      ctx.fillRect(x + 10, y + 4, 12, 4);
-      ctx.fillRect(x + 10, y + 6, 2, 4);
-      ctx.fillRect(x + 20, y + 6, 2, 4);
-    } else if (direction === 'up') {
-      ctx.fillRect(x + 10, y + 4, 12, 9);
-    } else if (direction === 'left') {
-      ctx.fillRect(x + 10, y + 4, 12, 4);
-      ctx.fillRect(x + 18, y + 6, 4, 6);
-    } else if (direction === 'right') {
-      ctx.fillRect(x + 10, y + 4, 12, 4);
-      ctx.fillRect(x + 10, y + 6, 4, 6);
+    if (hairstyle === 'long' || (gender === 'female' && hairstyle !== 'short' && hairstyle !== 'bob')) {
+      // Tóc dài xõa bồng bềnh
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 9, y + 6, 3, 11);
+        ctx.fillRect(x + 20, y + 6, 3, 11);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 9, y + 3, 14, 14);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 17, y + 5, 5, 12);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 10, y + 5, 5, 12);
+      }
+    } else if (hairstyle === 'ponytail') {
+      // Tóc đuôi ngựa
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 10, y + 6, 2, 4);
+        ctx.fillRect(x + 20, y + 6, 2, 4);
+        ctx.fillRect(x + 22, y + 3, 3, 6);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 10, y + 3, 12, 9);
+        ctx.fillRect(x + 15, y + 1, 3, 6);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 21, y + 5, 4, 5);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 7, y + 5, 4, 5);
+      }
+    } else if (hairstyle === 'bob') {
+      // Tóc Bob ngang vai
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 9, y + 6, 3, 7);
+        ctx.fillRect(x + 20, y + 6, 3, 7);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 9, y + 4, 14, 9);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 16, y + 6, 5, 7);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 11, y + 6, 5, 7);
+      }
+    } else if (hairstyle === 'parted') {
+      // Tóc mái rẽ ngôi nam lãng tử
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 10, y + 5, 3, 4);
+        ctx.fillRect(x + 19, y + 5, 3, 3);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 10, y + 3, 12, 9);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 18, y + 5, 3, 5);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 11, y + 5, 3, 5);
+      }
+    } else {
+      // Tóc ngắn nam thể thao mặc định
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 10, y + 6, 2, 3);
+        ctx.fillRect(x + 20, y + 6, 2, 3);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 10, y + 4, 12, 9);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 18, y + 6, 4, 6);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 10, y + 6, 4, 6);
+      }
     }
 
-    // Phụ kiện trang phục (Accessories Layer)
+    // 7. Phụ kiện (Accessories Layer)
     if (accessory === 'glasses_smart' && direction !== 'up') {
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 1;
@@ -804,6 +921,11 @@ export class TextureGenerator {
       ctx.fillRect(x + 9, y + 8, 2, 5);
       ctx.fillRect(x + 21, y + 8, 2, 5);
       ctx.fillRect(x + 10, y + 3, 12, 2);
+    } else if (accessory === 'ribbon_cute') {
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(x + 19, y + 2, 4, 3);
+      ctx.fillRect(x + 18, y + 3, 2, 2);
+      ctx.fillRect(x + 22, y + 3, 2, 2);
     } else if (accessory === 'frog_crown') {
       ctx.fillStyle = '#fbbf24';
       ctx.fillRect(x + 12, y + 1, 8, 3);
@@ -812,6 +934,11 @@ export class TextureGenerator {
       ctx.fillRect(x + 15, y + 0, 2, 2);
       ctx.fillStyle = '#dc2626';
       ctx.fillRect(x + 15, y + 2, 2, 1);
+    } else if (accessory === 'mask_cyber' && direction !== 'up') {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + 12, y + 12, 8, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 15, y + 13, 2, 1);
     }
   }
 

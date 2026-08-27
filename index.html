@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DEVER TOWN - FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</title>
+  <title>DEVER TOWN - FU-DEVER • FUDA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,13 +20,13 @@
         <div class="gate-brand-row">
           <img src="/assets/logos/dever_logo_nontext.png" class="gate-dever-logo" alt="DEVER Logo" width="32" height="32" />
           <span class="gate-brand-name">FU-DEVER</span>
-          <span class="gate-brand-tag">FPT UNIVERSITY ĐÀ NẴNG</span>
+          <span class="gate-brand-tag">FUDA</span>
         </div>
 
         <h1 class="gate-main-title">DEVER TOWN</h1>
         <p class="gate-slogan">WORK HARD - PLAY HARD</p>
         <p class="gate-desc">
-          Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên Đại học FPT Đà Nẵng.
+          Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên FUDA.
           Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 7 phân khu chức năng sống động!
         </p>
 
@@ -49,14 +49,14 @@
             <span class="feat-icon">🎒</span>
             <div class="feat-text">
               <strong>Túi Đồ & Trang Bị</strong>
-              <span>7 Vật phẩm FPTU/Dev, nhặt đồ và cầm trực tiếp trên tay</span>
+              <span>7 Vật phẩm FUDA/Dev, nhặt đồ và cầm trực tiếp trên tay</span>
             </div>
           </div>
           <div class="gate-feature-item">
             <span class="feat-icon">👔</span>
             <div class="feat-text">
               <strong>Tủ Đồ Custom</strong>
-              <span>Tùy biến Hoodie FPTU, màu tóc, tai nghe, kính râm, vương miện Cóc</span>
+              <span>Tùy biến Áo FUDA, kiểu tóc Nam/Nữ, tai nghe, kính râm, vương miện Cóc</span>
             </div>
           </div>
         </div>
@@ -77,9 +77,9 @@
         </div>
 
         <div class="gate-tabs">
-          <button type="button" class="gate-tab-btn active" data-tab="guest">⚡ Chơi Nhanh</button>
-          <button type="button" class="gate-tab-btn" data-tab="login">🔑 Đăng Nhập</button>
-          <button type="button" class="gate-tab-btn" data-tab="register">📝 Đăng Ký</button>
+          <button type="button" class="gate-tab-btn active" data-tab="guest">Chơi Nhanh</button>
+          <button type="button" class="gate-tab-btn" data-tab="login">Đăng Nhập</button>
+          <button type="button" class="gate-tab-btn" data-tab="register">Đăng Ký</button>
         </div>
 
         <div id="gate-error-msg" class="auth-error-box hidden"></div>
@@ -88,7 +88,7 @@
         <form id="gate-form-guest" class="gate-form-pane">
           <div class="form-group">
             <label>Nhập Biệt danh (Hỗ trợ tiếng Việt & dấu cách):</label>
-            <input type="text" id="gate-guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
+            <input type="text" id="gate-guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FUDA" maxlength="24" required />
           </div>
           <button type="submit" class="gate-submit-btn btn-fpt-gradient">
             <span>Bắt Đầu Khám Phá DEVER TOWN</span>
@@ -120,7 +120,7 @@
             <input type="text" id="gate-reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
           </div>
           <div class="form-group">
-            <label>Email FPT / Cá nhân:</label>
+            <label>Email FUDA / Cá nhân:</label>
             <input type="email" id="gate-reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
           </div>
           <div class="form-group">
@@ -187,23 +187,23 @@
       <div class="brand-container">
         <img src="/assets/logos/dever_logo_nontext.png" class="header-dever-logo" alt="DEVER Logo" width="24" height="24" />
         <span class="brand-title">DEVER TOWN</span>
-        <span class="brand-badge">FPTU ĐÀ NẴNG</span>
+        <span class="brand-badge">FUDA</span>
       </div>
 
       <!-- Quick Room Selector (7 Rooms) -->
       <div class="room-nav-container">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
           <circle cx="12" cy="10" r="3"></circle>
         </svg>
         <select id="room-selector" class="room-select">
-          <option id="opt-main_hall" value="main_hall">🏛️ Sảnh Alpha (1)</option>
-          <option id="opt-dever_lab" value="dever_lab">💻 Tech Lab (0)</option>
-          <option id="opt-library_lounge" value="library_lounge">📚 Thư Viện FPTU (0)</option>
-          <option id="opt-memory_room" value="memory_room">🖼️ Phòng Kỷ Niệm (0)</option>
-          <option id="opt-web_room" value="web_room">🌐 Không Gian Web (0)</option>
-          <option id="opt-media_hub" value="media_hub">📱 Media & MXH (0)</option>
-          <option id="opt-sports_complex" value="sports_complex">⚽ Sân Thể Thao (0)</option>
+          <option id="opt-main_hall" value="main_hall">Sảnh Alpha (1)</option>
+          <option id="opt-dever_lab" value="dever_lab">Tech Lab (0)</option>
+          <option id="opt-library_lounge" value="library_lounge">Thư Viện FUDA (0)</option>
+          <option id="opt-memory_room" value="memory_room">Phòng Kỷ Niệm (0)</option>
+          <option id="opt-web_room" value="web_room">Không Gian Web (0)</option>
+          <option id="opt-media_hub" value="media_hub">Media & MXH (0)</option>
+          <option id="opt-sports_complex" value="sports_complex">Khu Thể Thao (0)</option>
         </select>
       </div>
 
@@ -217,13 +217,19 @@
       <div class="header-actions">
         <!-- Nút Túi Đồ [I] -->
         <button id="header-inventory-btn" class="btn-primary-sm btn-inventory" title="Mở Túi Đồ [Phím I]">
-          <span class="btn-emoji">🎒</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10z"></path>
+            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
           <span>Túi Đồ [I]</span>
         </button>
 
         <!-- Nút Tủ Đồ Tùy Chỉnh -->
         <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
-          <span class="btn-emoji">👔</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+          </svg>
           <span>Tủ Đồ</span>
         </button>
 
@@ -232,7 +238,7 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          <span id="auth-btn-text">Đăng Nhập</span>
+          <span id="auth-btn-text">Hồ Sơ</span>
         </button>
 
         <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản">Đăng xuất</button>
@@ -272,7 +278,7 @@
             <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
-            <span class="chat-title">Kênh Chat FPTU & DEVER</span>
+            <span class="chat-title">Kênh Chat FUDA & DEVER</span>
           </div>
           <span class="chat-sub">Realtime Room Channel</span>
         </div>
@@ -306,16 +312,16 @@
     <!-- Footer Status -->
     <footer id="main-footer">
       <div class="footer-left">
-        <span class="brand-tag">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</span>
+        <span class="brand-tag">FU-DEVER • FUDA</span>
         <span class="divider">|</span>
-        <span class="version-tag">DEVER TOWN v0.7.0 • WORK HARD PLAY HARD</span>
+        <span class="version-tag">DEVER TOWN v0.7.5 • WORK HARD PLAY HARD</span>
       </div>
       <div class="footer-right">
-        <span>🎮 WASD/Mũi tên: Di chuyển</span>
+        <span>WASD/Mũi tên: Di chuyển</span>
         <span class="divider">•</span>
-        <span>⚡ [E]: Tương tác</span>
+        <span>[E]: Tương tác</span>
         <span class="divider">•</span>
-        <span>🎒 [I]: Túi đồ</span>
+        <span>[I]: Túi đồ</span>
       </div>
     </footer>
   </div>
@@ -344,7 +350,7 @@
       <form id="pane-guest" class="auth-pane">
         <div class="form-group">
           <label>Nhập Biệt danh (Hỗ trợ khoảng trắng & tiếng Việt):</label>
-          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
+          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FUDA" maxlength="24" required />
         </div>
         <button type="submit" class="modal-btn">Vào Khám Phá Ngay</button>
       </form>
@@ -369,7 +375,7 @@
           <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
         </div>
         <div class="form-group">
-          <label>Email FPT / Cá nhân:</label>
+          <label>Email FUDA / Cá nhân:</label>
           <input type="email" id="reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
         </div>
         <div class="form-group">
@@ -390,14 +396,18 @@
     </div>
   </div>
 
-  <!-- 2. INVENTORY MODAL (TÚI ĐỒ FPTU & DEV) -->
+  <!-- 2. INVENTORY MODAL (TÚI ĐỒ FUDA & DEV) -->
   <div id="inventory-modal" class="modal-backdrop hidden">
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
         <div class="modal-title-row">
-          <span class="modal-emoji">🎒</span>
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10z"></path>
+            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
           <div>
-            <h2 class="modal-title">Túi Đồ Cá Nhân & Vật Phẩm FPTU</h2>
+            <h2 class="modal-title">Túi Đồ Cá Nhân & Vật Phẩm FUDA</h2>
             <p class="modal-sub">Thu thập các vật phẩm công nghệ & linh vật trên bản đồ để cầm trên tay.</p>
           </div>
         </div>
@@ -423,7 +433,7 @@
               <h3 id="inv-detail-name" class="item-detail-title">Tên Vật Phẩm</h3>
               <p id="inv-detail-desc" class="item-detail-desc">Mô tả câu chuyện và công dụng của vật phẩm.</p>
               <div id="inv-detail-count" class="item-detail-count">Số lượng sở hữu: 1</div>
-              <button type="button" id="inventory-equip-btn" class="btn-equip equip">Trang Bị Cầm Tay ✨</button>
+              <button type="button" id="inventory-equip-btn" class="btn-equip equip">Trang Bị Cầm Tay</button>
             </div>
           </div>
         </div>
@@ -436,10 +446,12 @@
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
         <div class="modal-title-row">
-          <span class="modal-emoji">👔</span>
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+          </svg>
           <div>
-            <h2 class="modal-title">Tủ Đồ & Tùy Chỉnh Nhân Vật FPTU</h2>
-            <p class="modal-sub">Tùy biến màu áo Hoodie FPTU, màu tóc và các phụ kiện công nghệ độc đáo.</p>
+            <h2 class="modal-title">Tủ Đồ & Tùy Chỉnh Nhân Vật FUDA</h2>
+            <p class="modal-sub">Chọn giới tính Nam/Nữ, đa dạng loại trang phục, kiểu tóc và phụ kiện công nghệ.</p>
           </div>
         </div>
         <button type="button" id="wardrobe-modal-close" class="modal-close-btn">&times;</button>
@@ -451,22 +463,37 @@
             <canvas id="wardrobe-preview-canvas" width="160" height="160"></canvas>
             <span class="preview-tag">Live Avatar Preview</span>
           </div>
-          <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới ✨</button>
+          <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới</button>
         </div>
 
         <div class="wardrobe-options-panel">
+          <!-- 1. Chọn Giới Tính -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Màu Áo Hoodie FPTU & DEVER:</label>
-            <div id="wardrobe-hoodie-list" class="wardrobe-chip-list"></div>
+            <label class="wardrobe-label">Giới Tính Nhân Vật:</label>
+            <div id="wardrobe-gender-list" class="wardrobe-gender-grid"></div>
           </div>
 
+          <!-- 2. Chọn Trang Phục -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Bộ Trang Phục & Đồng Phục FUDA:</label>
+            <div id="wardrobe-outfit-list" class="wardrobe-outfit-grid"></div>
+          </div>
+
+          <!-- 3. Chọn Kiểu Tóc -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Kiểu Tóc:</label>
+            <div id="wardrobe-hairstyle-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 4. Chọn Màu Tóc -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Màu Tóc Cá Tính:</label>
             <div id="wardrobe-hair-list" class="wardrobe-chip-list"></div>
           </div>
 
+          <!-- 5. Phụ Kiện -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Phụ Kiện Công Nghệ & Linh Vật:</label>
+            <label class="wardrobe-label">Phụ Kiện & Linh Vật:</label>
             <div id="wardrobe-acc-list" class="wardrobe-acc-grid"></div>
           </div>
         </div>
@@ -479,10 +506,12 @@
     <div class="modal-card modal-card-xl">
       <div class="modal-header">
         <div class="modal-title-row">
-          <span class="modal-emoji">⚡</span>
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
           <div>
             <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác</h2>
-            <p id="interactive-modal-desc" class="modal-sub">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</p>
+            <p id="interactive-modal-desc" class="modal-sub">FU-DEVER • FUDA</p>
           </div>
         </div>
         <button type="button" id="interactive-modal-close" class="modal-close-btn">&times;</button>
@@ -509,7 +538,7 @@
       <!-- View 2: Video Call Meeting View -->
       <div id="pane-meeting" class="interactive-pane hidden">
         <div class="meeting-topbar">
-          <span class="meeting-status">🟢 Phòng họp trực tuyến đang mở</span>
+          <span class="meeting-status">Phòng họp trực tuyến đang mở</span>
           <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
             Mở Google Meet Tab Mới
           </a>
@@ -638,12 +667,12 @@
       <div id="pane-sports" class="interactive-pane hidden">
         <div class="sports-mini-workspace">
           <div class="sports-header-box">
-            <h3 id="sports-game-title" class="sports-title">SÚT PHẠT ĐỀN MINI FPTU</h3>
-            <p id="sports-game-desc" class="sports-desc">Thử thách sút bóng ghi bàn hoặc ném bóng 3 điểm!</p>
+            <h3 id="sports-game-title" class="sports-title">SÚT PHẠT ĐỀN MINI FUDA</h3>
+            <p id="sports-game-desc" class="sports-desc">Thử thách sút bóng ghi bàn hoặc ném bóng 3 điểm tại Sân Thể Thao FUDA!</p>
           </div>
           <div class="sports-arena">
             <div id="sports-score-display" class="sports-score-text">Sẵn sàng thi đấu!</div>
-            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG VÀO LƯỚI ⚽</button>
+            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG VÀO LƯỚI</button>
           </div>
         </div>
       </div>

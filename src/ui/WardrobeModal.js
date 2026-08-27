@@ -13,7 +13,12 @@ export class WardrobeModal {
     this.modalEl = document.getElementById('wardrobe-modal');
 
     this.currentConfig = {
+      gender: 'male',
+      outfitId: 'hoodie_fuda',
+      outfitType: 'hoodie',
       hoodieColor: '#f26f21',
+      collarColor: '#002147',
+      hairstyle: 'short',
       hairColor: '#0f172a',
       accessory: 'none'
     };
@@ -84,29 +89,90 @@ export class WardrobeModal {
   hide() {
     if (!this.modalEl) return;
     this.modalEl.classList.add('hidden');
+    if (this.scene?.inputController) {
+      this.scene.inputController.enableInput();
+    }
   }
 
   render() {
-    this.renderHoodieOptions();
+    this.renderGenderOptions();
+    this.renderOutfitOptions();
+    this.renderHairstyleOptions();
     this.renderHairColorOptions();
     this.renderAccessoryOptions();
     this.updatePreviewCanvas();
   }
 
-  renderHoodieOptions() {
-    const container = document.getElementById('wardrobe-hoodie-list');
+  renderGenderOptions() {
+    const container = document.getElementById('wardrobe-gender-list');
     if (!container) return;
 
     container.innerHTML = '';
-    WARDROBE_CONFIG.hoodies.forEach(h => {
-      const btn = document.createElement('div');
-      const isSelected = this.currentConfig.hoodieColor === h.color;
-      btn.className = `wardrobe-color-chip ${isSelected ? 'selected' : ''}`;
-      btn.style.backgroundColor = h.color;
-      btn.title = `${h.name} - ${h.desc}`;
+    WARDROBE_CONFIG.genders.forEach(g => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = this.currentConfig.gender === g.id;
+      btn.className = `wardrobe-gender-btn ${isSelected ? 'selected' : ''}`;
+      btn.textContent = g.name;
 
       btn.addEventListener('click', () => {
-        this.currentConfig.hoodieColor = h.color;
+        this.currentConfig.gender = g.id;
+        if (g.id === 'female' && this.currentConfig.hairstyle === 'short') {
+          this.currentConfig.hairstyle = 'long';
+        } else if (g.id === 'male' && this.currentConfig.hairstyle === 'long') {
+          this.currentConfig.hairstyle = 'short';
+        }
+        this.render();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  renderOutfitOptions() {
+    const container = document.getElementById('wardrobe-outfit-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.outfits.forEach(outfit => {
+      const card = document.createElement('div');
+      const isSelected = this.currentConfig.outfitId === outfit.id;
+      card.className = `wardrobe-outfit-card ${isSelected ? 'selected' : ''}`;
+
+      card.innerHTML = `
+        <div class="outfit-color-dot" style="background-color: ${outfit.color};"></div>
+        <div class="outfit-info">
+          <div class="outfit-name">${outfit.name}</div>
+          <div class="outfit-desc">${outfit.desc}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        this.currentConfig.outfitId = outfit.id;
+        this.currentConfig.outfitType = outfit.type;
+        this.currentConfig.hoodieColor = outfit.color;
+        this.currentConfig.collarColor = outfit.collarColor || '#002147';
+        this.render();
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  renderHairstyleOptions() {
+    const container = document.getElementById('wardrobe-hairstyle-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.hairstyles.forEach(style => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = this.currentConfig.hairstyle === style.id;
+      btn.className = `wardrobe-chip-btn ${isSelected ? 'selected' : ''}`;
+      btn.textContent = style.name;
+
+      btn.addEventListener('click', () => {
+        this.currentConfig.hairstyle = style.id;
         this.render();
       });
 
@@ -178,16 +244,20 @@ export class WardrobeModal {
     const tempCtx = tempCanvas.getContext('2d');
 
     const config = {
-      hair: this.currentConfig.hairColor,
+      gender: this.currentConfig.gender || 'male',
+      hairstyle: this.currentConfig.hairstyle || 'short',
+      hair: this.currentConfig.hairColor || '#0f172a',
       skin: '#fcd34d',
-      shirt: this.currentConfig.hoodieColor,
-      pants: '#1e293b',
-      accessory: this.currentConfig.accessory
+      outfitType: this.currentConfig.outfitType || 'hoodie',
+      shirt: this.currentConfig.hoodieColor || '#f26f21',
+      collarColor: this.currentConfig.collarColor || '#002147',
+      pants: this.currentConfig.outfitType === 'dress' ? '#38bdf8' : '#1e293b',
+      accessory: this.currentConfig.accessory || 'none'
     };
 
     TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, 'down', 1, config);
 
-    // Scale lên canvas preview to rõ (4x = 128x128)
+    // Scale lên canvas preview (4x = 128x128)
     ctx.drawImage(tempCanvas, 0, 0, 32, 32, (canvas.width - 128) / 2, (canvas.height - 128) / 2 + 10, 128, 128);
   }
 

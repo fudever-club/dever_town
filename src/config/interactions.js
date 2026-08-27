@@ -1,6 +1,6 @@
 /**
  * Cấu hình toàn bộ Interactive Presets cho DEVER TOWN
- * Tích hợp dữ liệu chính thức từ FU-DEVER (Đại học FPT Đà Nẵng)
+ * Tích hợp dữ liệu chính thức từ FU-DEVER (FUDA)
  */
 export const INTERACTION_PRESETS = {
   // 1. Màn chiếu Slide / Bảng vẽ Excalidraw
@@ -20,10 +20,10 @@ export const INTERACTION_PRESETS = {
 
   // 3. Bàn Lập Trình & Sổ tay Markdown
   code_editor: {
-    title: 'Bàn Lập Trình Live Code & Sổ Tay Sinh Viên FPTU',
+    title: 'Bàn Lập Trình Live Code & Sổ Tay Sinh Viên FUDA',
     description: 'Thực thi mã nguồn JavaScript trực tiếp và lưu trữ ghi chú cá nhân.',
-    defaultCode: `// 🚀 Chào mừng bạn đến với FU-DEVER Code Sandbox!\n// Slogan: WORK HARD - PLAY HARD\n\nconst club = {\n  name: 'FU-DEVER',\n  campus: 'FPT University Da Nang',\n  pillars: ['2D Game', 'Web App', 'Mobile App', 'Model AI'],\n  members: '50+ Members',\n  years: '9+ Years of Passion'\n};\n\nconsole.log("=== THÔNG TIN CLB FU-DEVER ===");\nconsole.log("Tên CLB:", club.name);\nconsole.log("Cơ sở:", club.campus);\nconsole.log("Các mảng chuyên môn:", club.pillars.join(", "));\nconsole.log("Đam mê kiến tạo tương lai!");`,
-    defaultNotes: `# 📝 SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FPT University Đà Nẵng\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
+    defaultCode: `// 🚀 Chào mừng bạn đến với FU-DEVER Code Sandbox!\n// Slogan: WORK HARD - PLAY HARD\n\nconst club = {\n  name: 'FU-DEVER',\n  campus: 'FUDA',\n  pillars: ['2D Game', 'Web App', 'Mobile App', 'Model AI'],\n  members: '50+ Members',\n  years: '9+ Years of Passion'\n};\n\nconsole.log("=== THÔNG TIN CLB FU-DEVER ===");\nconsole.log("Tên CLB:", club.name);\nconsole.log("Cơ sở:", club.campus);\nconsole.log("Các mảng chuyên môn:", club.pillars.join(", "));\nconsole.log("Đam mê kiến tạo tương lai!");`,
+    defaultNotes: `# 📝 SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FUDA\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
   },
 
   // 4. Quầy Cà phê Lofi & Pomodoro Timer
@@ -44,7 +44,7 @@ export const INTERACTION_PRESETS = {
         date: 'Từ Năm 2017 - Nay',
         tag: 'Cột mốc lịch sử',
         accentColor: '#0066CC',
-        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FPTU Đà Nẵng, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với hơn 50+ thành viên năng động, 15+ dự án thực chiến và 20+ giải thưởng danh giá.'
+        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FUDA, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với hơn 50+ thành viên năng động, 15+ dự án thực chiến và 20+ giải thưởng danh giá.'
       },
       {
         id: 'hackathon',

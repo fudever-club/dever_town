@@ -1,19 +1,19 @@
 /**
- * Cấu hình 7 bản đồ mở rộng (25x19 tiles = 800x608 px) chuẩn nhận diện Đại học FPT Đà Nẵng & CLB FU-DEVER.
+ * Cấu hình 7 bản đồ mở rộng (25x19 tiles = 800x608 px) chuẩn nhận diện FUDA & CLB FU-DEVER.
  *
  * Danh mục Tile Indices:
  * 0: Cỏ, 1: Sàn gỗ, 2: Tường gạch, 3: Kệ sách, 4: Bàn làm việc, 5: Đá cuội, 6: Thảm xanh, 7: Hoa
  * 8: Server Rack, 9: Sàn Cyan Cyber, 10: Cổng Portal, 11: Thảm đỏ, 12: Bảng trắng, 13: Cây cảnh, 14: Quầy cà phê, 15: Vách kính
- * 16: Khung tranh kỷ niệm, 17: Bục cúp vàng, 18: Sàn lưới Cyber Web, 19: Cóc Vàng FPTU, 20: Biển hiệu FPTU ĐN,
- * 21: Neon DEVER Club, 22: Cột cờ FPT, 23: Sàn gạch Alpha FPTU, 24: Cỏ sân bóng, 25: Khung thành, 26: Rổ bóng rổ,
- * 27: Lưới bóng chuyền, 28: Hồ bơi FPTU, 29: Màn hình LED Media Hub
+ * 16: Khung tranh kỷ niệm, 17: Bục cúp vàng, 18: Sàn lưới Cyber Web, 19: Cóc Vàng FUDA, 20: Biển hiệu FUDA,
+ * 21: Neon DEVER Club, 22: Cột cờ FPT, 23: Sàn gạch Alpha FUDA, 24: Cỏ sân bóng, 25: Khung thành, 26: Rổ bóng rổ,
+ * 27: Lưới bóng chuyền, 28: Hồ bơi FUDA, 29: Màn hình LED Media Hub
  */
 
 export const MAPS_CONFIG = {
   main_hall: {
     id: 'main_hall',
-    name: 'Sảnh Chính Giảng Đường Alpha - FPTU Đà Nẵng',
-    description: 'Hội trường trung tâm FPT University Đà Nẵng, tượng Cóc Vàng và kết nối 6 phân khu.',
+    name: 'Sảnh Chính Giảng Đường Alpha - FUDA',
+    description: 'Hội trường trung tâm FUDA, tượng Cóc Vàng và kết nối 6 phân khu chức năng.',
     spawnPoint: { x: 400, y: 350 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
@@ -38,18 +38,18 @@ export const MAPS_CONFIG = {
       [  0,  7,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 500 }, label: 'Sang Tech Lab' },
-      { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 500 }, label: 'Sang Thư Viện' },
-      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 720, y: 300 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 80, y: 300 }, label: 'Không Gian Web' },
-      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 720, y: 300 }, label: 'Media Hub' },
-      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 80, y: 300 }, label: 'Khu Thể Thao' }
+      { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Sang Tech Lab' },
+      { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 420 }, label: 'Sang Thư Viện' },
+      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 680, y: 220 }, label: 'Phòng Kỷ Niệm' },
+      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 100, y: 220 }, label: 'Không Gian Web' },
+      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 680, y: 220 }, label: 'Media Hub' },
+      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 100, y: 304 }, label: 'Khu Thể Thao' }
     ],
     zones: [
-      { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FPTU', label: 'Tôn Chỉ FPTU' },
+      { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Tôn Chỉ FUDA' },
       { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
       { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
-      { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FPTU & Thư Giãn', label: 'Lofi & Pomodoro' }
+      { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' }
     ]
   },
 
@@ -57,7 +57,7 @@ export const MAPS_CONFIG = {
     id: 'dever_lab',
     name: 'Phòng Nghiên Cứu & Sáng Tạo Dever Lab',
     description: 'Không gian Hackathon, trạm máy chủ và góc lập trình chuyên sâu của thành viên CLB DEVER.',
-    spawnPoint: { x: 400, y: 500 },
+    spawnPoint: { x: 400, y: 450 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9,  8,  8, 13, 15 ],
@@ -93,9 +93,9 @@ export const MAPS_CONFIG = {
 
   library_lounge: {
     id: 'library_lounge',
-    name: 'Thư Viện Tri Thức FPTU & Chill Lounge',
+    name: 'Thư Viện Tri Thức FUDA & Chill Lounge',
     description: 'Không gian tự học yên tĩnh, giá sách công nghệ và quầy cà phê giao lưu.',
-    spawnPoint: { x: 400, y: 500 },
+    spawnPoint: { x: 400, y: 420 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14, 13,  1,  3,  3,  3,  3, 13,  2 ],
@@ -132,7 +132,7 @@ export const MAPS_CONFIG = {
     id: 'memory_room',
     name: 'Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER',
     description: 'Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử 9+ năm.',
-    spawnPoint: { x: 720, y: 300 },
+    spawnPoint: { x: 680, y: 220 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2, 16,  1, 16,  1, 16,  1, 17, 17,  1, 17, 17,  1, 16,  1, 16,  1, 16,  1, 17, 17,  1, 16, 13,  2 ],
@@ -168,7 +168,7 @@ export const MAPS_CONFIG = {
         metadata: {
           title: 'Hành Trình 9+ Năm Phát Triển FU-DEVER',
           date: '2017 - Nay',
-          story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FPTU Đà Nẵng, FU-DEVER đã vươn mình thành cộng đồng công nghệ uy tín.',
+          story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FUDA, FU-DEVER đã vươn mình thành cộng đồng công nghệ uy tín.',
           imgId: 'founding'
         }
       },
@@ -205,7 +205,7 @@ export const MAPS_CONFIG = {
         type: 'gallery_memory',
         tileX: 1,
         tileY: 7,
-        name: 'Chuỗi Workshop Tech Talk FPTU',
+        name: 'Chuỗi Workshop Tech Talk FUDA',
         label: 'Xem Workshop Chuyên Đề',
         metadata: {
           title: 'Chuỗi Workshop Tech Talk Chuyên Sâu',
@@ -219,9 +219,9 @@ export const MAPS_CONFIG = {
 
   web_room: {
     id: 'web_room',
-    name: 'Showroom Không Gian Web CLB FU-DEVER & FPTU',
+    name: 'Showroom Không Gian Web CLB FU-DEVER & FUDA',
     description: 'Không gian số Cyberpunk nhúng Cổng thông tin & Landing Page chính thức FU-DEVER.',
-    spawnPoint: { x: 80, y: 300 },
+    spawnPoint: { x: 100, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 18, 18, 18, 18,  8,  8,  8,  8, 18, 18, 18, 18,  8,  8, 18, 18, 18, 18,  8,  8, 13, 15 ],
@@ -302,7 +302,7 @@ export const MAPS_CONFIG = {
     id: 'media_hub',
     name: 'Trung Tâm Thông Tin & Truyền Thông FU-DEVER',
     description: 'Không gian tích hợp toàn bộ các kênh mạng xã hội, fanpage, tiktok, github và cổng liên hệ.',
-    spawnPoint: { x: 720, y: 300 },
+    spawnPoint: { x: 680, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
       [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
@@ -345,11 +345,11 @@ export const MAPS_CONFIG = {
         type: 'club_website',
         tileX: 7,
         tileY: 2,
-        name: 'Trạm TikTok & Media FPTU Đà Nẵng',
+        name: 'Trạm TikTok & Media FUDA',
         label: 'Kênh TikTok',
         metadata: {
           url: 'https://www.tiktok.com/@daihocfptdanang',
-          title: 'KÊNH TIKTOK FPTU ĐÀ NẴNG'
+          title: 'KÊNH TIKTOK FUDA'
         }
       },
       {
@@ -381,60 +381,70 @@ export const MAPS_CONFIG = {
 
   sports_complex: {
     id: 'sports_complex',
-    name: 'Khu Phức Hợp Thể Thao FPT University Đà Nẵng',
-    description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông và hồ bơi sinh viên FPTU.',
-    spawnPoint: { x: 80, y: 300 },
+    name: 'Khu Phức Hợp Thể Thao FUDA',
+    description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông và hồ bơi sinh viên FUDA với lối đi thông thoáng kết nối 4 phân khu.',
+    spawnPoint: { x: 100, y: 304 },
     layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
-      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 25,  2,  5,  5,  5,  2, 26, 23, 23, 23, 23, 23, 23, 23, 26,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
+      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 25,  2,  5,  5,  5,  2, 26, 23, 23, 23, 23, 23, 23, 23, 26,  2 ],
+      [  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2,  5,  5,  5,  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2 ],
       [  2, 10,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
       [  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
-      [  2, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
-      [  2, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
-      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
+      [  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2,  5,  5,  5,  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
+      [  2,  1,  1, 27, 27, 27, 27, 27,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 720, y: 420 }, label: 'Về Sảnh Chính' }
+      { tileX: 1, tileY: 9, targetRoomId: 'main_hall', targetSpawn: { x: 720, y: 420 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
         id: 'zone_sports_football',
         type: 'sports_activity',
-        tileX: 6,
-        tileY: 3,
-        name: 'Sân Bóng Đá Mini Cỏ Nhân Tạo FPTU',
+        tileX: 5,
+        tileY: 4,
+        name: 'Sân Bóng Đá Mini Cỏ Nhân Tạo FUDA',
         label: 'Sút Phạt Đền Mini',
-        metadata: { sport: 'football', title: 'SÚT BÓNG VÀO LƯỚI FPTU' }
+        metadata: { sport: 'football', title: 'SÚT BÓNG VÀO LƯỚI FUDA' }
       },
       {
         id: 'zone_sports_basketball',
         type: 'sports_activity',
-        tileX: 18,
-        tileY: 3,
-        name: 'Sân Bóng Rổ FPTU Đà Nẵng',
+        tileX: 19,
+        tileY: 4,
+        name: 'Sân Bóng Rổ FUDA',
         label: 'Ném Bóng 3 Điểm',
-        metadata: { sport: 'basketball', title: 'THỬ THÁCH NÉM BÓNG RỔ' }
+        metadata: { sport: 'basketball', title: 'THỬ THÁCH NÉM BÓNG RỔ FUDA' }
+      },
+      {
+        id: 'zone_sports_volleyball',
+        type: 'sports_activity',
+        tileX: 5,
+        tileY: 13,
+        name: 'Sân Bóng Chuyền & Cầu Lông FUDA',
+        label: 'Đập Bóng Chuyền',
+        metadata: { sport: 'volleyball', title: 'SÂN BÓNG CHUYỀN & CẦU LÔNG' }
       },
       {
         id: 'zone_sports_pool',
         type: 'coffee_lofi',
-        tileX: 18,
-        tileY: 10,
-        name: 'Hồ Bơi Sinh Viên FPTU & Ghế Thư Giãn',
+        tileX: 19,
+        tileY: 12,
+        name: 'Hồ Bơi Sinh Viên FUDA & Ghế Thư Giãn',
         label: 'Lofi Thư Giãn Bờ Hồ',
-        metadata: { sport: 'pool', title: 'HỒ BƠI SINH VIÊN FPTU' }
+        metadata: { sport: 'pool', title: 'HỒ BƠI SINH VIÊN FUDA' }
       }
     ]
   }

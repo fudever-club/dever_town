@@ -5,7 +5,7 @@ export class InputController {
     this.scene = scene;
     this.isDisabled = false;
 
-    // 1. Tắt toàn bộ Key Captures mặc định của Phaser để không chặn phím Space, E, W, A, S, D trên trình duyệt
+    // 1. Tắt Key Captures mặc định của Phaser để không chặn phím trên input
     if (scene.input && scene.input.keyboard) {
       scene.input.keyboard.clearCaptures();
       scene.input.keyboard.preventDefault = false;
@@ -22,54 +22,100 @@ export class InputController {
 
     this.keyE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-    // Đảm bảo sau khi addKey thì Phaser vẫn không gọi preventDefault()
     if (scene.input && scene.input.keyboard) {
       scene.input.keyboard.clearCaptures();
       scene.input.keyboard.preventDefault = false;
     }
 
-    // 3. Trình quản lý Focus / Blur toàn cục (Global Focus Manager)
+    // 3. Trình quản lý Focus / Blur toàn cục chống kẹt phím khi dùng chuột
     this.setupGlobalFocusManager();
   }
 
   setupGlobalFocusManager() {
     if (typeof document === 'undefined') return;
 
-    // Khi người dùng click vào bất kỳ ô nhập liệu (Chat, Nickname, Email, Notes...)
+    // Khi người dùng focus vào ô nhập liệu
     document.addEventListener('focusin', (e) => {
       const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
-        if (this.scene && this.scene.input && this.scene.input.keyboard) {
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+        if (this.scene?.input?.keyboard) {
           this.scene.input.keyboard.enabled = false;
         }
-        if (this.scene.player) {
+        if (this.scene?.player) {
           this.scene.player.stopMovement();
         }
       }
     });
 
-    // Khi người dùng click ra ngoài hoặc đóng modal
+    // Khi người dùng click ra ngoài ô nhập liệu
     document.addEventListener('focusout', (e) => {
       const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
-        if (this.scene && this.scene.input && this.scene.input.keyboard) {
-          this.scene.input.keyboard.enabled = true;
-          this.scene.input.keyboard.resetKeys();
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+        setTimeout(() => {
+          if (!this.isTypingActive() && !this.isModalOpen()) {
+            this.enableInput();
+          }
+        }, 50);
+      }
+    });
+
+    // Khi click chuột ở bất kỳ đâu ngoài ô gõ văn bản -> Tự động khôi phục điều khiển game
+    window.addEventListener('pointerdown', (e) => {
+      const isTypingField = e.target.closest('input, textarea, [contenteditable="true"]');
+      if (!isTypingField && !this.isModalOpen()) {
+        this.enableInput();
+        const canvas = document.querySelector('#game-container canvas');
+        if (canvas) {
+          canvas.focus();
         }
+      }
+    });
+
+    // Khi quay lại tab trình duyệt
+    window.addEventListener('focus', () => {
+      if (!this.isTypingActive() && !this.isModalOpen()) {
+        this.enableInput();
       }
     });
   }
 
+  isTypingActive() {
+    if (typeof document === 'undefined') return false;
+    const activeEl = document.activeElement;
+    return activeEl && (
+      activeEl.tagName === 'INPUT' ||
+      activeEl.tagName === 'TEXTAREA' ||
+      activeEl.isContentEditable
+    );
+  }
+
+  isModalOpen() {
+    if (typeof document === 'undefined') return false;
+    const welcomeGate = document.getElementById('welcome-gate');
+    const authModal = document.getElementById('auth-modal');
+    const interactiveModal = document.getElementById('interactive-modal');
+    const inventoryModal = document.getElementById('inventory-modal');
+    const wardrobeModal = document.getElementById('wardrobe-modal');
+
+    if (welcomeGate && !welcomeGate.classList.contains('hidden')) return true;
+    if (authModal && !authModal.classList.contains('hidden')) return true;
+    if (interactiveModal && !interactiveModal.classList.contains('hidden')) return true;
+    if (inventoryModal && !inventoryModal.classList.contains('hidden')) return true;
+    if (wardrobeModal && !wardrobeModal.classList.contains('hidden')) return true;
+
+    return false;
+  }
+
   disableInput() {
     this.isDisabled = true;
-    if (this.scene && this.scene.input && this.scene.input.keyboard) {
+    if (this.scene?.input?.keyboard) {
       this.scene.input.keyboard.enabled = false;
     }
   }
 
   enableInput() {
     this.isDisabled = false;
-    if (this.scene && this.scene.input && this.scene.input.keyboard) {
+    if (this.scene?.input?.keyboard) {
       this.scene.input.keyboard.enabled = true;
       this.scene.input.keyboard.resetKeys();
     }
@@ -77,18 +123,8 @@ export class InputController {
 
   isInputBlocked() {
     if (this.isDisabled) return true;
-
-    if (typeof document !== 'undefined') {
-      const activeEl = document.activeElement;
-      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable)) {
-        return true;
-      }
-      const authModal = document.getElementById('auth-modal');
-      const interactiveModal = document.getElementById('interactive-modal');
-
-      if (authModal && !authModal.classList.contains('hidden')) return true;
-      if (interactiveModal && !interactiveModal.classList.contains('hidden')) return true;
-    }
+    if (this.isTypingActive()) return true;
+    if (this.isModalOpen()) return true;
     return false;
   }
 
@@ -107,6 +143,11 @@ export class InputController {
         down: false,
         isMoving: false
       };
+    }
+
+    // Tự động đảm bảo keyboard luôn enabled nếu không bị chặn
+    if (this.scene?.input?.keyboard && !this.scene.input.keyboard.enabled) {
+      this.scene.input.keyboard.enabled = true;
     }
 
     let vx = 0;
