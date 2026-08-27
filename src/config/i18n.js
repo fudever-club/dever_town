@@ -340,8 +340,8 @@ class I18nManager {
     }
 
     // Update Chat Welcome Box
-    const chatWelcomeTitle = document.querySelector('.chat-welcome-box strong');
-    const chatWelcomeDesc = document.querySelector('.chat-welcome-box p');
+    const chatWelcomeTitle = document.querySelector('.chat-welcome .welcome-title') || document.querySelector('.chat-welcome-box strong');
+    const chatWelcomeDesc = document.querySelector('.chat-welcome .welcome-desc') || document.querySelector('.chat-welcome-box p');
     if (chatWelcomeTitle) chatWelcomeTitle.textContent = this.get('chatWelcomeTitle');
     if (chatWelcomeDesc) chatWelcomeDesc.textContent = this.get('chatWelcomeDesc');
   }

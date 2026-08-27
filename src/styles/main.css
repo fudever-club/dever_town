@@ -439,8 +439,9 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
-.chat-messages-box {
+.chat-messages-box, .chat-messages-container, #chat-messages {
   flex: 1;
+  min-height: 0;
   padding: 12px;
   overflow-y: auto;
   display: flex;
@@ -448,7 +449,7 @@ body {
   gap: 10px;
 }
 
-.chat-welcome {
+.chat-welcome, .chat-welcome-box {
   background: rgba(242, 111, 33, 0.1);
   border: 1px dashed rgba(242, 111, 33, 0.35);
   color: #fed7aa;
@@ -563,7 +564,7 @@ body {
   box-shadow: 0 0 12px rgba(242, 111, 33, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.chat-send-btn, .chat-input-area button {
+.chat-send-btn, .btn-chat-send, .chat-input-area button {
   background: linear-gradient(135deg, #f26f21, #ea580c);
   color: white;
   border: none;
@@ -576,9 +577,11 @@ body {
   box-shadow: 0 2px 8px rgba(242, 111, 33, 0.4);
   transition: all 0.2s ease;
   flex-shrink: 0;
+  width: 42px;
+  height: 40px;
 }
 
-.chat-send-btn .send-icon {
+.chat-send-btn .send-icon, .btn-chat-send .send-icon, .chat-send-btn svg, .btn-chat-send svg {
   width: 16px;
   height: 16px;
   stroke: #ffffff;

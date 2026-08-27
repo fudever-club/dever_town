@@ -398,14 +398,14 @@
           <span class="chat-sub" data-i18n="chatSub">Kênh phòng Realtime</span>
         </div>
 
-        <div id="chat-messages" class="chat-messages-container">
-          <div class="chat-welcome-box">
-            <strong>Chào mừng đến với DEVER TOWN!</strong>
-            <p>Di chuyển nhân vật bằng Arrow keys / WASD, nhấn [E] để tương tác, nhấn [I] mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
+        <div id="chat-messages" class="chat-messages-box">
+          <div class="chat-welcome">
+            <p class="welcome-title">Chào mừng đến với DEVER TOWN!</p>
+            <p class="welcome-desc">Di chuyển nhân vật bằng <strong>Arrow keys / WASD</strong>, nhấn <strong>[E]</strong> để tương tác, nhấn <strong>[I]</strong> mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
           </div>
         </div>
 
-        <form id="chat-form" class="chat-input-bar">
+        <form id="chat-form" class="chat-input-row">
           <input
             type="text"
             id="chat-input"
@@ -415,7 +415,7 @@
             maxlength="200"
             autocomplete="off"
           />
-          <button type="submit" id="chat-send-btn" class="btn-chat-send" title="Gửi tin nhắn">
+          <button type="submit" id="chat-send-btn" class="chat-send-btn" title="Gửi tin nhắn">
             <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
