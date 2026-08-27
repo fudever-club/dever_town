@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { i18n } from '../config/i18n.js';
 
 export class InteractionManager {
   /**
@@ -159,7 +160,8 @@ export class InteractionManager {
       badgeBg.lineStyle(1.5, color, 0.9);
       badgeBg.strokeRoundedRect(-36, -10, 72, 20, 6);
 
-      const badgeText = this.scene.add.text(0, 0, `${icon} ${zone.label || 'Tương tác'}`, {
+      const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
+      const badgeText = this.scene.add.text(0, 0, `${icon} ${zoneName}`, {
         fontFamily: "'Outfit', sans-serif",
         fontSize: '9px',
         fontWeight: '700',
@@ -221,7 +223,8 @@ export class InteractionManager {
   }
 
   showHUD(zone) {
-    const label = `[E] ${zone.label || zone.name || 'Tương tác'}`;
+    const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || zone.name || 'Tương tác';
+    const label = `[E] ${zoneName}`;
     this.tooltipText.setText(label);
 
     const paddingX = 14;

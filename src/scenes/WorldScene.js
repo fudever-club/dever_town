@@ -104,6 +104,35 @@ export class WorldScene extends Phaser.Scene {
 
     // 7. Connect Realtime Socket
     this.socketManager.connect();
+
+    // 8. Subscribe Language Changes
+    if (this.i18n) {
+      this.i18n.subscribe(() => this.refreshSceneLanguage());
+    }
+  }
+
+  refreshSceneLanguage() {
+    const mapData = MAPS_CONFIG[this.currentRoomId];
+    if (!mapData) return;
+
+    if (this.hudText) {
+      const roomName = this.i18n ? (this.i18n.get(`rooms.${this.currentRoomId}`) || mapData.name) : mapData.name;
+      this.hudText.setText(`DEVER TOWN | ${roomName}`);
+    }
+
+    if (this.portalLabels && this.portalLabels.length > 0 && mapData.portals) {
+      this.portalLabels.forEach((lbl, idx) => {
+        const p = mapData.portals[idx];
+        if (p && lbl) {
+          const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
+          lbl.setText(portalText);
+        }
+      });
+    }
+
+    if (this.interactionManager) {
+      this.interactionManager.setZones(mapData.zones || []);
+    }
   }
 
   loadRoom(roomId, spawnX, spawnY, notifySocket = true) {
@@ -177,7 +206,8 @@ export class WorldScene extends Phaser.Scene {
         portalObj.setVisible(false);
         portalObj.portalData = p;
 
-        const label = this.add.text(posX, posY - 18, p.label, {
+        const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
+        const label = this.add.text(posX, posY - 18, portalText, {
           fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '10px',
           fontWeight: '700',

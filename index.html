@@ -216,8 +216,8 @@
 
       <!-- User Profile Badge -->
       <div class="user-profile-badge">
-        <span id="header-user-role" class="role-tag guest">Khách</span>
-        <span id="header-user-name" class="user-name">Khách vãng lai</span>
+        <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
+        <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
       </div>
 
       <!-- Header Actions -->
@@ -229,7 +229,7 @@
             <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
             <line x1="8" y1="12" x2="16" y2="12"></line>
           </svg>
-          <span>Túi Đồ [I]</span>
+          <span data-i18n="inventoryBtn">Túi Đồ [I]</span>
         </button>
 
         <!-- Nút Tủ Đồ Tùy Chỉnh -->
@@ -237,7 +237,7 @@
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
-          <span>Tủ Đồ</span>
+          <span data-i18n="wardrobeBtn">Tủ Đồ</span>
         </button>
 
         <!-- Nút Nhiệm Vụ Hằng Ngày & Tích Điểm -->
@@ -289,7 +289,7 @@
         <span id="online-count-badge" class="badge-online">1 Online</span>
         <div class="status-indicator">
           <span class="dot online"></span>
-          <span class="status-text">Online</span>
+          <span class="status-text" data-i18n="onlineText">Online</span>
         </div>
       </div>
     </header>
@@ -301,40 +301,40 @@
         <div id="onboarding-guide-overlay" class="onboarding-guide-overlay hidden">
           <div class="onboarding-card">
             <div class="onboarding-header">
-              <span class="onboarding-badge">HƯỚNG DẪN TÂN THỦ</span>
-              <h3 class="onboarding-title">Chào mừng bạn đến với DEVER TOWN! 🎮</h3>
+              <span class="onboarding-badge" data-i18n="onboardingBadge">HƯỚNG DẪN TÂN THỦ</span>
+              <h3 class="onboarding-title" data-i18n="onboardingTitle">Chào mừng bạn đến với DEVER TOWN! 🎮</h3>
             </div>
             <div class="onboarding-grid">
               <div class="onboarding-item">
                 <span class="onboarding-icon">🕹️</span>
                 <div>
-                  <h4>Di Chuyển</h4>
-                  <p>Dùng phím <strong>W, A, S, D</strong> hoặc <strong>Phím Mũi Tên</strong> để điều khiển nhân vật.</p>
+                  <h4 data-i18n="onboardingStep1Title">Di Chuyển</h4>
+                  <p data-i18n="onboardingStep1Desc">Dùng phím <strong>W, A, S, D</strong> hoặc <strong>Phím Mũi Tên</strong> để điều khiển nhân vật.</p>
                 </div>
               </div>
               <div class="onboarding-item">
                 <span class="onboarding-icon">⚡</span>
                 <div>
-                  <h4>Tương Tác Sự Kiện</h4>
-                  <p>Bước vào vòng sáng quanh đồ vật và nhấn phím <strong>[E]</strong> để mở Slide, Code, Lofi, Web, Thể thao.</p>
+                  <h4 data-i18n="onboardingStep2Title">Tương Tác Sự Kiện</h4>
+                  <p data-i18n="onboardingStep2Desc">Bước vào vòng sáng quanh đồ vật và nhấn phím <strong>[E]</strong> để mở Slide, Code, Lofi, Web, Thể thao.</p>
                 </div>
               </div>
               <div class="onboarding-item">
                 <span class="onboarding-icon">🎒</span>
                 <div>
-                  <h4>Túi Đồ FPTU</h4>
-                  <p>Nhấn phím <strong>[I]</strong> để mở Túi đồ, nhặt đồ rơi và cầm MacBook, Cóc Vàng, Bàn phím trên tay.</p>
+                  <h4 data-i18n="onboardingStep3Title">Túi Đồ FPTU</h4>
+                  <p data-i18n="onboardingStep3Desc">Nhấn phím <strong>[I]</strong> để mở Túi đồ, nhặt đồ rơi và cầm MacBook, Cóc Vàng, Bàn phím trên tay.</p>
                 </div>
               </div>
               <div class="onboarding-item">
                 <span class="onboarding-icon">🚪</span>
                 <div>
-                  <h4>7 Phòng Chức Năng</h4>
-                  <p>Bước qua cổng <strong>Portal màu tím</strong> hoặc dùng Menu đổi phòng trên thanh điều hướng.</p>
+                  <h4 data-i18n="onboardingStep4Title">8 Phòng Chức Năng</h4>
+                  <p data-i18n="onboardingStep4Desc">Bước qua cổng <strong>Portal màu tím</strong> hoặc dùng Menu đổi phòng trên thanh điều hướng.</p>
                 </div>
               </div>
             </div>
-            <button type="button" id="onboarding-close-btn" class="onboarding-btn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
+            <button type="button" id="onboarding-close-btn" class="onboarding-btn" data-i18n="onboardingDismissBtn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
           </div>
         </div>
 
@@ -393,28 +393,29 @@
             <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
-            <span class="chat-title">Kênh Chat FUDA & DEVER</span>
+            <span class="chat-title" data-i18n="chatTitle">Kênh Chat FUDA & DEVER</span>
           </div>
-          <span class="chat-sub">Realtime Room Channel</span>
+          <span class="chat-sub" data-i18n="chatSub">Kênh phòng Realtime</span>
         </div>
 
-        <div id="chat-messages" class="chat-messages-box">
-          <div class="chat-welcome">
-            <p class="welcome-title">Chào mừng đến với DEVER TOWN!</p>
-            <p class="welcome-desc">Di chuyển nhân vật bằng <strong>Arrow keys / WASD</strong>, nhấn <strong>[E]</strong> để tương tác, nhấn <strong>[I]</strong> mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
+        <div id="chat-messages" class="chat-messages-container">
+          <div class="chat-welcome-box">
+            <strong>Chào mừng đến với DEVER TOWN!</strong>
+            <p>Di chuyển nhân vật bằng Arrow keys / WASD, nhấn [E] để tương tác, nhấn [I] mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
           </div>
         </div>
 
-        <form id="chat-form" class="chat-input-row">
+        <form id="chat-form" class="chat-input-bar">
           <input
             type="text"
             id="chat-input"
             class="chat-input"
+            data-i18n="chatPlaceholder"
             placeholder="Nhập tin nhắn..."
-            maxlength="150"
+            maxlength="200"
             autocomplete="off"
           />
-          <button type="submit" class="chat-send-btn" title="Gửi tin nhắn">
+          <button type="submit" id="chat-send-btn" class="btn-chat-send" title="Gửi tin nhắn">
             <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -427,9 +428,9 @@
     <!-- Footer Status -->
     <footer id="main-footer">
       <div class="footer-left">
-        <span class="brand-tag">FU-DEVER • FUDA</span>
+        <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • FUDA</span>
         <span class="divider">|</span>
-        <span class="version-tag">DEVER TOWN v0.7.5 • WORK HARD PLAY HARD</span>
+        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.8.5 • WORK HARD PLAY HARD</span>
       </div>
       <div class="footer-right">
         <span>WASD/Mũi tên: Di chuyển</span>
@@ -639,6 +640,7 @@
             <input type="text" id="slide-url-input" class="modal-input-sm" placeholder="Dán link Google Slides hoặc PDF..." />
             <button type="button" id="slide-load-btn" class="btn-sm-action">Nạp Slide</button>
           </div>
+          <div id="slide-presets-pills" class="slide-presets-pills"></div>
         </div>
         <div class="iframe-container">
           <iframe

@@ -1,4 +1,4 @@
-import { INTERACTION_PRESETS } from '../config/interactions.js';
+import { INTERACTION_PRESETS, ROOM_SLIDE_PRESETS } from '../config/interactions.js';
 import { LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
 import { PomodoroTimer } from './PomodoroTimer.js';
 import { questManager } from '../managers/QuestManager.js';
@@ -217,8 +217,41 @@ export class InteractiveModal {
     if (!pane) return;
     pane.classList.remove('hidden');
 
-    const preset = INTERACTION_PRESETS.whiteboard_slides;
-    this.loadSlideIframe(preset.defaultUrl);
+    this.renderSlidePresets(zoneData);
+
+    // Tự động chọn slide đầu tiên phù hợp với phòng hoặc mặc định
+    const roomSlide = ROOM_SLIDE_PRESETS.find(s => s.room === this.currentRoomId) || ROOM_SLIDE_PRESETS[0];
+    const initialUrl = roomSlide ? roomSlide.url : INTERACTION_PRESETS.whiteboard_slides.defaultUrl;
+    const input = document.getElementById('slide-url-input');
+    if (input) input.value = initialUrl;
+    this.loadSlideIframe(initialUrl);
+  }
+
+  renderSlidePresets(zoneData) {
+    const pillsContainer = document.getElementById('slide-presets-pills');
+    if (!pillsContainer) return;
+
+    pillsContainer.innerHTML = '';
+    ROOM_SLIDE_PRESETS.forEach((item, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `slide-pill-btn ${idx === 0 ? 'active' : ''}`;
+      btn.innerHTML = `<span class="pill-room">[${item.roomName}]</span> ${item.title}`;
+      btn.title = item.desc;
+
+      btn.addEventListener('click', () => {
+        pillsContainer.querySelectorAll('.slide-pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const input = document.getElementById('slide-url-input');
+        if (input) input.value = item.url;
+
+        this.loadSlideIframe(item.url);
+        audioManager.playClick();
+      });
+
+      pillsContainer.appendChild(btn);
+    });
   }
 
   loadSlideIframe(rawUrl) {

@@ -15,8 +15,11 @@ export const TRANSLATIONS = {
     guestTag: 'Khách',
     guestName: 'Khách vãng lai',
     fullscreenTitle: 'Bật / Tắt Toàn màn hình',
+    onlineText: 'Online',
+    offlineText: 'Mất kết nối',
+    goodPing: 'Tốt',
 
-    // Rooms
+    // 8 Rooms (Tên phòng chuẩn đồng bộ)
     rooms: {
       main_hall: 'Sảnh Alpha',
       dever_lab: 'Tech Lab',
@@ -28,16 +31,46 @@ export const TRANSLATIONS = {
       canteen_cafe: 'Căn Tin & Cafe'
     },
 
+    // Portals (Cổng dịch chuyển trên mặt sàn)
+    portals: {
+      main_hall: 'Về Sảnh Chính',
+      dever_lab: 'Sang Tech Lab',
+      library_lounge: 'Sang Thư Viện',
+      memory_room: 'Sang Phòng Kỷ Niệm',
+      web_room: 'Sang Không Gian Web',
+      media_hub: 'Sang Media Hub',
+      sports_complex: 'Sang Khu Thể Thao',
+      canteen_cafe: 'Sang Căn Tin & Cafe'
+    },
+
+    // Interactive Zones Tooltips
+    zones: {
+      zone_whiteboard: 'Màn Chiếu Slide',
+      zone_meeting: 'Phòng Họp Nhóm',
+      zone_code: 'Bàn Live Code',
+      zone_coffee: 'Quầy Cà Phê Lofi',
+      zone_memory: 'Khung Ảnh Kỷ Niệm',
+      zone_website: 'Showroom Web CLB',
+      zone_media_portal: 'Trạm Truyền Thông',
+      zone_soccer: 'Sút Phạt Đền 11m',
+      zone_basketball: 'Ném Bóng Rổ 3 Điểm',
+      zone_swimming: 'Hồ Bơi Sinh Viên',
+      zone_canteen_food: 'Thực Đơn Canteen',
+      zone_cafe_barista: 'Pha Chế Cà Phê',
+      zone_cafe_acoustic: 'Acoustic Chill',
+      zone_cafe_meeting: 'Bàn Họp Nhóm'
+    },
+
     // Welcome Gate
     gateTitle: 'DEVER TOWN',
     gateSlogan: 'WORK HARD - PLAY HARD',
-    gateDesc: 'Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên FUDA. Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 7 phân khu chức năng sống động!',
-    gateFeat1Title: '7 Phân Khu 2D',
-    gateFeat1Desc: 'Sảnh Alpha, Tech Lab, Thư viện, Kỷ niệm, Web, Media, Thể thao',
+    gateDesc: 'Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên FUDA. Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 8 phân khu chức năng sống động!',
+    gateFeat1Title: '8 Phân Khu 2D',
+    gateFeat1Desc: 'Sảnh Alpha, Tech Lab, Thư viện, Kỷ niệm, Web, Media, Thể thao, Căn tin & Cafe',
     gateFeat2Title: 'Multiplayer Realtime',
     gateFeat2Desc: 'Gặp gỡ bạn bè, trò chuyện bong bóng thoại & chat tiếng Việt',
     gateFeat3Title: 'Túi Đồ & Trang Bị',
-    gateFeat3Desc: '7 Vật phẩm FUDA/Dev, nhặt đồ và cầm trực tiếp trên tay',
+    gateFeat3Desc: 'Vật phẩm FUDA/Dev đặc sản, nhặt đồ và cầm trực tiếp trên tay',
     gateFeat4Title: 'Tủ Đồ Custom',
     gateFeat4Desc: 'Tùy biến Áo FUDA, kiểu tóc Nam/Nữ, tai nghe, kính râm, vương miện Cóc',
     gateTabGuest: 'Chơi Nhanh',
@@ -55,17 +88,30 @@ export const TRANSLATIONS = {
     gateRegPassLabel: 'Mật khẩu (Tối thiểu 6 ký tự):',
     gateRegBtn: 'Tạo Tài Khoản Thành Viên',
 
+    // Onboarding Guide
+    onboardingBadge: 'HƯỚNG DẪN TÂN THỦ',
+    onboardingTitle: 'Chào mừng bạn đến với DEVER TOWN! 🎮',
+    onboardingStep1Title: 'Di chuyển 4 hướng',
+    onboardingStep1Desc: 'Dùng phím Mũi tên hoặc W A S D (Điện thoại có D-Pad ảo).',
+    onboardingStep2Title: 'Tương tác phím [E]',
+    onboardingStep2Desc: 'Tiến gần Màn chiếu, Bàn code, Minigame và bấm [E].',
+    onboardingStep3Title: 'Túi đồ phím [I]',
+    onboardingStep3Desc: 'Nhặt vật phẩm rơi trên sàn, trang bị và cầm trên tay.',
+    onboardingStep4Title: 'Khám phá 8 Phòng',
+    onboardingStep4Desc: 'Bước qua các cổng dịch chuyển màu tím để sang phòng khác.',
+    onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay 🚀',
+
     // Chat Box
     chatTitle: 'Kênh Chat FUDA & DEVER',
     chatSub: 'Kênh phòng Realtime',
     chatWelcomeTitle: 'Chào mừng đến với DEVER TOWN!',
     chatWelcomeDesc: 'Di chuyển nhân vật bằng Arrow keys / WASD, nhấn [E] để tương tác, nhấn [I] mở Túi đồ. Chat tự do tiếng Việt có dấu!',
     chatPlaceholder: 'Nhập tin nhắn...',
-    chatSendBtn: 'Gửi tin nhắn',
+    chatSendBtn: 'Gửi',
 
     // Footer
     footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.8.0 • WORK HARD PLAY HARD',
+    footerSlogan: 'DEVER TOWN v0.8.5 • WORK HARD PLAY HARD',
     footerMove: 'WASD/Mũi tên: Di chuyển',
     footerInteract: '[E]: Tương tác',
     footerInv: '[I]: Túi đồ',
@@ -96,8 +142,11 @@ export const TRANSLATIONS = {
     guestTag: 'Guest',
     guestName: 'Guest Visitor',
     fullscreenTitle: 'Toggle Fullscreen',
+    onlineText: 'Online',
+    offlineText: 'Offline',
+    goodPing: 'Good',
 
-    // Rooms
+    // 8 Rooms (Standardized English Names)
     rooms: {
       main_hall: 'Alpha Main Hall',
       dever_lab: 'Tech Lab',
@@ -109,18 +158,48 @@ export const TRANSLATIONS = {
       canteen_cafe: 'Canteen & Cafe'
     },
 
+    // Portals (Ground portals)
+    portals: {
+      main_hall: 'To Alpha Hall',
+      dever_lab: 'To Tech Lab',
+      library_lounge: 'To Library',
+      memory_room: 'To Memory Gallery',
+      web_room: 'To Web Showroom',
+      media_hub: 'To Media Hub',
+      sports_complex: 'To Sports Complex',
+      canteen_cafe: 'To Canteen & Cafe'
+    },
+
+    // Interactive Zones Tooltips
+    zones: {
+      zone_whiteboard: 'Slide Presentation',
+      zone_meeting: 'Meeting Stage',
+      zone_code: 'Live Code Sandbox',
+      zone_coffee: 'Lofi Chill Station',
+      zone_memory: 'Memory Frames',
+      zone_website: 'Club Website Showroom',
+      zone_media_portal: 'Media & Social Station',
+      zone_soccer: '11m Penalty Shootout',
+      zone_basketball: '3-Point Shootout',
+      zone_swimming: 'Student Pool Lounge',
+      zone_canteen_food: 'Canteen Food Menu',
+      zone_cafe_barista: 'Barista Coffee Brew',
+      zone_cafe_acoustic: 'Acoustic Chill',
+      zone_cafe_meeting: 'Meeting & Boardgames'
+    },
+
     // Welcome Gate
     gateTitle: 'DEVER TOWN',
     gateSlogan: 'WORK HARD - PLAY HARD',
-    gateDesc: '2D Pixel Gather.town metaverse connecting the FUDA developer community. Study, network, host tech workshops, play soccer, and explore 7 interactive districts!',
-    gateFeat1Title: '7 2D Districts',
-    gateFeat1Desc: 'Alpha Hall, Tech Lab, Library, Memorial, Web, Media, Sports',
+    gateDesc: '2D Pixel Gather.town metaverse connecting the FUDA developer community. Study, network, host tech workshops, play soccer, and explore 8 interactive districts!',
+    gateFeat1Title: '8 2D Districts',
+    gateFeat1Desc: 'Alpha Hall, Tech Lab, Library, Memorial, Web, Media, Sports, Canteen & Cafe',
     gateFeat2Title: 'Realtime Multiplayer',
-    gateFeat2Desc: 'Meet club members, live speech bubbles & instant chat',
+    gateFeat2Desc: 'Meet club members, live speech bubbles & instant room chat',
     gateFeat3Title: 'Inventory & Items',
-    gateFeat3Desc: '7 FUDA/Dev items, pick up and hold directly in hand',
+    gateFeat3Desc: 'Collect iconic FUDA/Dev items and hold them directly in hand',
     gateFeat4Title: 'Custom Wardrobe',
-    gateFeat4Desc: 'Customize FUDA outfits, Male/Female styles, RGB headphones, sunglasses, Golden Frog crown',
+    gateFeat4Desc: 'Customize FUDA hoodies, Male/Female hairs, headphones, sunglasses, Golden Frog crown',
     gateTabGuest: 'Quick Play',
     gateTabLogin: 'Login',
     gateTabRegister: 'Register',
@@ -136,17 +215,30 @@ export const TRANSLATIONS = {
     gateRegPassLabel: 'Password (At least 6 chars):',
     gateRegBtn: 'Create Member Account',
 
+    // Onboarding Guide
+    onboardingBadge: 'BEGINNER GUIDE',
+    onboardingTitle: 'Welcome to DEVER TOWN! 🎮',
+    onboardingStep1Title: '4-Direction Movement',
+    onboardingStep1Desc: 'Use Arrow keys or W A S D (Virtual D-Pad on mobile).',
+    onboardingStep2Title: 'Interact with [E]',
+    onboardingStep2Desc: 'Approach Slides, Code Desk, Minigames and press [E].',
+    onboardingStep3Title: 'Inventory with [I]',
+    onboardingStep3Desc: 'Pick up items on the floor, equip and hold in hand.',
+    onboardingStep4Title: 'Explore 8 Rooms',
+    onboardingStep4Desc: 'Walk through purple portals to teleport to other rooms.',
+    onboardingDismissBtn: 'Got it, Let\'s Play Now 🚀',
+
     // Chat Box
     chatTitle: 'FUDA & DEVER Live Chat',
     chatSub: 'Realtime Room Channel',
     chatWelcomeTitle: 'Welcome to DEVER TOWN!',
     chatWelcomeDesc: 'Move character with Arrow keys / WASD, press [E] to interact, press [I] for Inventory. Enjoy chatting!',
     chatPlaceholder: 'Type a message...',
-    chatSendBtn: 'Send message',
+    chatSendBtn: 'Send',
 
     // Footer
     footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.8.0 • WORK HARD PLAY HARD',
+    footerSlogan: 'DEVER TOWN v0.8.5 • WORK HARD PLAY HARD',
     footerMove: 'WASD/Arrows: Move',
     footerInteract: '[E]: Interact',
     footerInv: '[I]: Inventory',
@@ -231,12 +323,12 @@ class I18nManager {
       }
     });
 
-    // Update Room Selector options
+    // Update Room Selector options for all 8 rooms
     const roomSelect = document.getElementById('room-selector');
     if (roomSelect) {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
-        'web_room', 'media_hub', 'sports_complex'
+        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe'
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);
@@ -246,6 +338,12 @@ class I18nManager {
         }
       });
     }
+
+    // Update Chat Welcome Box
+    const chatWelcomeTitle = document.querySelector('.chat-welcome-box strong');
+    const chatWelcomeDesc = document.querySelector('.chat-welcome-box p');
+    if (chatWelcomeTitle) chatWelcomeTitle.textContent = this.get('chatWelcomeTitle');
+    if (chatWelcomeDesc) chatWelcomeDesc.textContent = this.get('chatWelcomeDesc');
   }
 }
 

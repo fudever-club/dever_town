@@ -90,3 +90,89 @@ export const INTERACTION_PRESETS = {
     ]
   }
 };
+
+/**
+ * Danh sách Slide & Tài liệu Đề xuất Chuyên Biệt cho Từng Phòng & Căn Tin
+ */
+export const ROOM_SLIDE_PRESETS = [
+  {
+    id: 'main_intro',
+    room: 'main_hall',
+    roomName: 'Sảnh Alpha',
+    title: '🌟 Giới Thiệu Tổng Quan FU-DEVER & FUDA',
+    desc: 'Lịch sử 2017, Sứ mệnh "Code your dream", 4 Trụ cột chuyên môn & Cơ cấu 4 ban',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'main_handbook',
+    room: 'main_hall',
+    roomName: 'Sảnh Alpha',
+    title: '📖 Sổ Tay Sinh Viên & Cẩm Nang Tân Binh FUDA',
+    desc: 'Bí kíp sinh tồn đồ án OJT, bản đồ Campus Alpha và các câu lạc bộ học thuật',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'lab_roadmap',
+    room: 'dever_lab',
+    roomName: 'Tech Lab',
+    title: '💻 Tech Roadmap 2026: Game 2D, Web App & AI Models',
+    desc: 'Lộ trình đào tạo lập trình viên: Frontend, Backend, Phaser 3, Next.js và Machine Learning',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'lab_git_hackathon',
+    room: 'dever_lab',
+    roomName: 'Tech Lab',
+    title: '🚀 Cẩm Nang Thi Đấu Hackathon & Chuẩn Git Flow',
+    desc: 'Quy trình chạy deadline 24h, phân chia vai trò nhóm, Pitching và bảo mật mã nguồn',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'lib_pe_fe',
+    room: 'library_lounge',
+    roomName: 'Thư Viện FUDA',
+    title: '📚 Tài Liệu Ôn Thi PE & FE: PRF192, PRO192, CSD201',
+    desc: 'Bộ đề thi thực hành mẫu môn C/Java/Cấu trúc dữ liệu & giải thuật có đáp án chi tiết',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'lib_icpc',
+    room: 'library_lounge',
+    roomName: 'Thư Viện FUDA',
+    title: '🧠 100 Thuật Toán Tuyển Chọn Luyện Thi ICPC Quốc Tế',
+    desc: 'Dynamic Programming, Graph Theory, Segment Tree và giải thuật tối ưu hóa',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'canteen_menu',
+    room: 'canteen_cafe',
+    roomName: 'Căn Tin & Cafe',
+    title: '🍱 Thực Đơn Căn Tin Sinh Viên & Công Thức Cà Phê Muối',
+    desc: 'Menu cơm gà 25k, mì tôm đêm Hackathon và bí kíp pha chế Cà phê muối Đà Nẵng béo ngậy',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'canteen_nutrition',
+    room: 'canteen_cafe',
+    roomName: 'Căn Tin & Cafe',
+    title: '☕ Dinh Dưỡng Giữ Tỉnh Táo & Healthy Coding Life',
+    desc: 'Chế độ ăn uống khoa học cho Lập trình viên tránh kiệt sức khi chạy deadline dự án',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'memory_awards',
+    room: 'memory_room',
+    roomName: 'Phòng Kỷ Niệm',
+    title: '🏆 Bảng Vàng Vinh Danh 20+ Giải Thưởng ICPC & Hackathon',
+    desc: 'Các thế hệ thành viên xuất sắc ghi danh tại ResFes, ICPC Vietnam và FPT Edu Hackathon',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  },
+  {
+    id: 'sports_ergonomics',
+    room: 'sports_complex',
+    roomName: 'Khu Thể Thao',
+    title: '⚽ Điều Lệ DEVER Cup & Bài Tập Chống Đau Cổ Vai Gáy',
+    desc: 'Hướng dẫn giãn cơ 5 phút mỗi 2 tiếng ngồi code và giải bóng đá giao hữu sinh viên',
+    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+  }
+];
