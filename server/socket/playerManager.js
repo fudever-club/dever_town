@@ -21,8 +21,10 @@ class PlayerManager {
       name: (authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`)).normalize('NFC'),
       avatarId: authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie'),
       role: authUser ? authUser.role : (data.role || 'guest'),
-      x: data.x || 320,
-      y: data.y || 280,
+      equippedItemId: data.equippedItemId || null,
+      wardrobeConfig: data.wardrobeConfig || null,
+      x: data.x || 400,
+      y: data.y || 350,
       direction: data.direction || 'down',
       isMoving: false,
       roomId: data.roomId || 'main_hall',
@@ -48,17 +50,35 @@ class PlayerManager {
     return player;
   }
 
-  updateProfile(socketId, { name, avatarId }) {
+  updateProfile(socketId, { name, avatarId, equippedItemId }) {
     const player = this.players.get(socketId);
     if (!player) return null;
 
-    if (name) player.name = Array.from(name.normalize('NFC').trim()).slice(0, 20).join('');
+    if (name) player.name = Array.from(name.normalize('NFC').trim()).slice(0, 24).join('');
     if (avatarId) player.avatarId = avatarId;
+    if (equippedItemId !== undefined) player.equippedItemId = equippedItemId;
 
     return player;
   }
 
-  switchRoom(socketId, newRoomId, x = 320, y = 280) {
+  equipItem(socketId, itemId) {
+    const player = this.players.get(socketId);
+    if (!player) return null;
+
+    player.equippedItemId = itemId || null;
+    return player;
+  }
+
+  updateWardrobe(socketId, wardrobeConfig) {
+    const player = this.players.get(socketId);
+    if (!player) return null;
+
+    player.wardrobeConfig = wardrobeConfig;
+    player.avatarId = 'custom_wardrobe';
+    return player;
+  }
+
+  switchRoom(socketId, newRoomId, x = 400, y = 350) {
     const player = this.players.get(socketId);
     if (!player) return null;
 
@@ -93,7 +113,6 @@ class PlayerManager {
   getRoomCounts() {
     const counts = { total: this.players.size };
 
-    // Tự động khởi tạo các phòng từ data-driven schema
     try {
       if (fs.existsSync(roomsFilePath)) {
         const raw = fs.readFileSync(roomsFilePath, 'utf-8');
@@ -103,12 +122,13 @@ class PlayerManager {
         }
       }
     } catch (e) {
-      // Fallback
       counts.main_hall = 0;
       counts.dever_lab = 0;
       counts.library_lounge = 0;
       counts.memory_room = 0;
       counts.web_room = 0;
+      counts.media_hub = 0;
+      counts.sports_complex = 0;
     }
 
     for (const p of this.players.values()) {

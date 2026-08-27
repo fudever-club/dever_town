@@ -32,18 +32,12 @@ export function setupSocketHandler(io) {
       const player = playerManager.addPlayer(socket.id, clientData, socket.authUser);
       const roomId = player.roomId || 'main_hall';
 
-      // Tham gia Socket.io room channel
       socket.join(roomId);
       console.log(`👤 [Join Room: ${roomId}] ${player.name} [${player.role}] (${player.avatarId})`);
 
-      // Gửi danh sách người chơi trong cùng phòng này cho người mới vào
       const roomPlayers = playerManager.getAllPlayers(roomId);
       socket.emit('currentPlayers', roomPlayers);
-
-      // Thông báo cho các người chơi khác trong cùng phòng
       socket.to(roomId).emit('newPlayer', player);
-
-      // Phát thống kê số lượng từng phòng cho toàn bộ server
       io.emit('roomCounts', playerManager.getRoomCounts());
     });
 
@@ -64,14 +58,12 @@ export function setupSocketHandler(io) {
 
       const newRoomPlayers = playerManager.getAllPlayers(newRoomId);
       socket.emit('currentPlayers', newRoomPlayers);
-
       socket.to(newRoomId).emit('newPlayer', player);
-
       io.emit('roomCounts', playerManager.getRoomCounts());
     });
 
     /**
-     * 3. Đồng bộ di chuyển Realtime (Phân lập theo Room)
+     * 3. Đồng bộ di chuyển Realtime
      */
     socket.on('playerMovement', (movementData) => {
       const updated = playerManager.updateMovement(socket.id, movementData);
@@ -87,14 +79,13 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 4. Xử lý Chat Realtime (Unicode Safe & Phân lập theo Room)
+     * 4. Xử lý Chat Realtime
      */
     socket.on('sendChatMessage', (data) => {
       const player = playerManager.getPlayer(socket.id);
       if (!player) return;
 
       const rawMsg = data?.message || '';
-      // Chuẩn hóa Unicode NFC và cắt chuỗi an toàn theo ký tự (Grapheme safe)
       const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
       if (!cleanMsg) return;
 
@@ -113,7 +104,34 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 5. Cập nhật Profile
+     * 5. Trang bị / Cầm tay vật phẩm
+     */
+    socket.on('equipItem', ({ itemId }) => {
+      const updated = playerManager.equipItem(socket.id, itemId);
+      if (updated) {
+        io.to(updated.roomId).emit('playerUpdated', {
+          id: socket.id,
+          equippedItemId: updated.equippedItemId
+        });
+      }
+    });
+
+    /**
+     * 6. Cập nhật Tủ đồ / Wardrobe
+     */
+    socket.on('updateWardrobe', ({ wardrobeConfig }) => {
+      const updated = playerManager.updateWardrobe(socket.id, wardrobeConfig);
+      if (updated) {
+        io.to(updated.roomId).emit('playerUpdated', {
+          id: socket.id,
+          avatarId: updated.avatarId,
+          wardrobeConfig: updated.wardrobeConfig
+        });
+      }
+    });
+
+    /**
+     * 7. Cập nhật Profile
      */
     socket.on('updateProfile', (data) => {
       const updated = playerManager.updateProfile(socket.id, data);
@@ -122,13 +140,14 @@ export function setupSocketHandler(io) {
           id: socket.id,
           name: updated.name,
           avatarId: updated.avatarId,
-          role: updated.role
+          role: updated.role,
+          equippedItemId: updated.equippedItemId
         });
       }
     });
 
     /**
-     * 6. Ngắt kết nối
+     * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {
       const removed = playerManager.removePlayer(socket.id);

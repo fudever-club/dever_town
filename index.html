@@ -2,39 +2,38 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DEVER TOWN - FPT UNIVERSITY DA NANG 2D PIXEL WORLD</title>
-  <link rel="stylesheet" href="/src/styles/main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEVER TOWN - FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/main.css" />
 </head>
 <body>
-  <div id="app-layout">
-    <!-- Header Navigation, Room Switcher, Profile & Fullscreen -->
-    <header id="ui-header">
-      <div class="logo-group">
-        <svg class="header-icon brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="4 17 10 11 4 5"></polyline>
-          <line x1="12" y1="19" x2="20" y2="19"></line>
-        </svg>
-        <span class="badge-logo">DEVER</span>
-        <span class="brand-text">TOWN</span>
-        <span class="fptu-tag">FPTU ĐÀ NẴNG</span>
+  <div id="app">
+    <!-- Header Navigation Bar -->
+    <header id="main-header">
+      <!-- Brand Logo -->
+      <div class="brand-container">
+        <span class="brand-code-bracket">&lt;/&gt;</span>
+        <span class="brand-title">DEVER TOWN</span>
+        <span class="brand-badge">FPTU ĐÀ NẴNG</span>
       </div>
 
-      <!-- Quick Room Switcher (Data-Driven 5 Rooms) -->
-      <div class="room-selector-group">
-        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- Quick Room Selector (7 Rooms) -->
+      <div class="room-nav-container">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
           <circle cx="12" cy="10" r="3"></circle>
         </svg>
         <select id="room-selector" class="room-select">
-          <option id="opt-main_hall" value="main_hall">Sảnh Alpha (1)</option>
-          <option id="opt-dever_lab" value="dever_lab">Tech Lab (0)</option>
-          <option id="opt-library_lounge" value="library_lounge">Thư Viện FPTU (0)</option>
-          <option id="opt-memory_room" value="memory_room">Phòng Kỷ Niệm (0)</option>
-          <option id="opt-web_room" value="web_room">Không Gian Web (0)</option>
+          <option id="opt-main_hall" value="main_hall">🏛️ Sảnh Alpha (1)</option>
+          <option id="opt-dever_lab" value="dever_lab">💻 Tech Lab (0)</option>
+          <option id="opt-library_lounge" value="library_lounge">📚 Thư Viện FPTU (0)</option>
+          <option id="opt-memory_room" value="memory_room">🖼️ Phòng Kỷ Niệm (0)</option>
+          <option id="opt-web_room" value="web_room">🌐 Không Gian Web (0)</option>
+          <option id="opt-media_hub" value="media_hub">📱 Media & MXH (0)</option>
+          <option id="opt-sports_complex" value="sports_complex">⚽ Sân Thể Thao (0)</option>
         </select>
       </div>
 
@@ -46,6 +45,18 @@
 
       <!-- Header Actions -->
       <div class="header-actions">
+        <!-- Nút Túi Đồ [I] -->
+        <button id="header-inventory-btn" class="btn-primary-sm btn-inventory" title="Mở Túi Đồ [Phím I]">
+          <span class="btn-emoji">🎒</span>
+          <span>Túi Đồ [I]</span>
+        </button>
+
+        <!-- Nút Tủ Đồ Tùy Chỉnh -->
+        <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
+          <span class="btn-emoji">👔</span>
+          <span>Tủ Đồ</span>
+        </button>
+
         <button id="header-auth-btn" class="btn-primary-sm" title="Tài khoản & Đổi Avatar">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -56,7 +67,7 @@
 
         <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản">Đăng xuất</button>
 
-        <!-- Fullscreen API Toggle Button -->
+        <!-- Fullscreen Toggle -->
         <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
           <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -98,240 +109,288 @@
 
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
-            Chào mừng đến với <b>DEVER TOWN - Đại học FPT Đà Nẵng</b>! Sử dụng phím <b>WASD</b> để di chuyển, bước lại gần bục tượng Cóc Vàng hoặc khung tranh và nhấn <b>[E]</b> để tương tác.
+            <p class="welcome-title">Chào mừng đến với DEVER TOWN!</p>
+            <p class="welcome-desc">Di chuyển nhân vật bằng <strong>Arrow keys / WASD</strong>, nhấn <strong>[E]</strong> để tương tác, nhấn <strong>[I]</strong> mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
           </div>
         </div>
 
-        <form id="chat-form" class="chat-input-area">
+        <form id="chat-form" class="chat-input-row">
           <input
             type="text"
             id="chat-input"
-            placeholder="Nhập tin nhắn tiếng Việt (Enter để gửi)..."
-            maxlength="140"
+            class="chat-input"
+            placeholder="Nhập tin nhắn..."
+            maxlength="150"
             autocomplete="off"
           />
-          <button type="submit" id="chat-send-btn">Gửi</button>
+          <button type="submit" class="chat-send-btn" title="Gửi tin nhắn">
+            <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
         </form>
       </section>
     </main>
 
-    <!-- Footer Note -->
-    <footer id="ui-footer">
-      <span>Đại học FPT Đà Nẵng • <b>CLB DEVER</b> • Điều khiển: <b>WASD</b> di chuyển • <b>[E]</b> Tương tác đồ vật • <b>Enter</b> Chat • <b>Esc</b> Đóng cửa sổ</span>
+    <!-- Footer Status -->
+    <footer id="main-footer">
+      <div class="footer-left">
+        <span class="brand-tag">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</span>
+        <span class="divider">|</span>
+        <span class="version-tag">DEVER TOWN v0.6.0 • WORK HARD PLAY HARD</span>
+      </div>
+      <div class="footer-right">
+        <span>🎮 WASD/Mũi tên: Di chuyển</span>
+        <span class="divider">•</span>
+        <span>⚡ [E]: Tương tác</span>
+        <span class="divider">•</span>
+        <span>🎒 [I]: Túi đồ</span>
+      </div>
     </footer>
   </div>
 
-  <!-- 1. AUTH & AVATAR MODAL DIALOG -->
+  <!-- 1. AUTH MODAL (LOGIN / REGISTER / GUEST / PROFILE) -->
   <div id="auth-modal" class="modal-backdrop hidden">
-    <div class="modal-card auth-modal-card">
-      <button id="auth-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
-      <div class="modal-icon-svg">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#f26f21" stroke-width="2">
-          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-          <line x1="7" y1="2" x2="7" y2="22"></line>
-          <line x1="17" y1="2" x2="17" y2="22"></line>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <line x1="2" y1="7" x2="7" y2="7"></line>
-          <line x1="2" y1="17" x2="7" y2="17"></line>
-          <line x1="17" y1="17" x2="22" y2="17"></line>
-          <line x1="17" y1="7" x2="22" y2="7"></line>
-        </svg>
-      </div>
-      <h2 class="modal-title">DEVER TOWN IDENTITY • FPTU</h2>
-      <p class="modal-desc">Đăng nhập tài khoản CLB hoặc tham gia nhanh với vai trò Khách:</p>
-
-      <div class="auth-tabs">
-        <button type="button" class="auth-tab-btn active" data-tab="login">Đăng Nhập</button>
-        <button type="button" class="auth-tab-btn" data-tab="register">Đăng Ký</button>
-        <button type="button" class="auth-tab-btn" data-tab="guest">Chơi Nhanh</button>
-        <button type="button" class="auth-tab-btn" data-tab="profile">Hồ Sơ & Avatar</button>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="auth-modal-title" class="modal-title">Tham Gia DEVER TOWN</h2>
+        <button type="button" id="auth-modal-close" class="modal-close-btn">&times;</button>
       </div>
 
-      <div class="auth-error-msg hidden"></div>
+      <div class="modal-tabs">
+        <button type="button" class="tab-btn active" data-tab="guest">Chơi Nhanh (Khách)</button>
+        <button type="button" class="tab-btn" data-tab="login">Đăng Nhập</button>
+        <button type="button" class="tab-btn" data-tab="register">Đăng Ký Thành Viên</button>
+      </div>
 
-      <!-- Tab 1: Đăng Nhập -->
-      <form id="login-form" class="auth-pane">
+      <div id="auth-error-msg" class="auth-error-box hidden"></div>
+
+      <!-- Tab 1: Guest Login -->
+      <form id="pane-guest" class="auth-pane">
         <div class="form-group">
-          <label>Email thành viên:</label>
-          <input type="email" id="login-email" class="modal-input" placeholder="member@fpt.edu.vn" required />
+          <label>Nhập Biệt danh (Hỗ trợ khoảng trắng & tiếng Việt):</label>
+          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
+        </div>
+        <button type="submit" class="modal-btn">Vào Khám Phá Ngay</button>
+      </form>
+
+      <!-- Tab 2: Member Login -->
+      <form id="pane-login" class="auth-pane hidden">
+        <div class="form-group">
+          <label>Email Sinh viên / CLB:</label>
+          <input type="email" id="login-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
         </div>
         <div class="form-group">
           <label>Mật khẩu:</label>
           <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
         </div>
-        <button type="submit" class="modal-btn">Đăng Nhập Vào Thị Trấn</button>
+        <button type="submit" class="modal-btn">Đăng Nhập Thành Viên</button>
       </form>
 
-      <!-- Tab 2: Đăng Ký -->
-      <form id="register-form" class="auth-pane hidden">
+      <!-- Tab 3: Member Register -->
+      <form id="pane-register" class="auth-pane hidden">
         <div class="form-group">
-          <label>Email của bạn:</label>
-          <input type="email" id="reg-email" class="modal-input" placeholder="ten@fpt.edu.vn" required />
+          <label>Tên hiển thị:</label>
+          <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
         </div>
         <div class="form-group">
-          <label>Mật khẩu (tối thiểu 6 ký tự):</label>
+          <label>Email FPT / Cá nhân:</label>
+          <input type="email" id="reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
           <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
         </div>
-        <div class="form-group">
-          <label>Tên hiển thị trong game (chấp nhận dấu cách):</label>
-          <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
-        </div>
-        <div class="form-group">
-          <label>Chọn phong cách Avatar Pixel:</label>
-          <div class="avatar-grid">
-            <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
-              <span class="avatar-name">Developer</span>
-            </div>
-            <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
-              <span class="avatar-name">Cyberpunk</span>
-            </div>
-            <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
-              <span class="avatar-name">Gamer Pro</span>
-            </div>
-            <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">HEX</div>
-              <span class="avatar-name">Coder</span>
-            </div>
-          </div>
-        </div>
-        <button type="submit" class="modal-btn">Tạo Tài Khoản & Vào Game</button>
+        <button type="submit" class="modal-btn">Tạo Tài Khoản Thành Viên</button>
       </form>
 
-      <!-- Tab 3: Chơi Nhanh (Khách) -->
-      <form id="guest-form" class="auth-pane hidden">
-        <div class="form-group">
-          <label>Biệt danh của bạn (chấp nhận dấu cách):</label>
-          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Coder FPTU Đà Nẵng" maxlength="24" required />
-        </div>
-        <div class="form-group">
-          <label>Chọn phong cách Avatar Pixel:</label>
-          <div class="avatar-grid">
-            <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
-              <span class="avatar-name">Developer</span>
-            </div>
-            <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
-              <span class="avatar-name">Cyberpunk</span>
-            </div>
-            <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
-              <span class="avatar-name">Gamer Pro</span>
-            </div>
-            <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">HEX</div>
-              <span class="avatar-name">Coder</span>
-            </div>
-          </div>
-        </div>
-        <button type="submit" class="modal-btn">Vào Chơi Nhanh</button>
-      </form>
-
-      <!-- Tab 4: Hồ sơ & Avatar Customization -->
-      <form id="profile-form" class="auth-pane hidden">
+      <!-- Tab 4: Profile & Wardrobe -->
+      <form id="pane-profile" class="auth-pane hidden">
         <div class="form-group">
           <label>Tên hiển thị:</label>
           <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="24" required />
-        </div>
-        <div class="form-group">
-          <label>Đổi phong cách Avatar Pixel:</label>
-          <div class="avatar-grid">
-            <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
-              <span class="avatar-name">Developer</span>
-            </div>
-            <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
-              <span class="avatar-name">Cyberpunk</span>
-            </div>
-            <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
-              <span class="avatar-name">Gamer Pro</span>
-            </div>
-            <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">HEX</div>
-              <span class="avatar-name">Coder</span>
-            </div>
-          </div>
         </div>
         <button type="submit" class="modal-btn">Lưu Thay Đổi</button>
       </form>
     </div>
   </div>
 
-  <!-- 2. INTERACTIVE ZONE MODAL DIALOG (6 VIEWS) -->
-  <div id="interactive-modal" class="modal-backdrop hidden">
-    <div class="modal-card interactive-modal-card">
-      <button id="interactive-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
-      <div class="modal-header-section">
-        <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác FPTU & DEVER</h2>
-        <p id="interactive-modal-desc" class="modal-desc">Không gian hoạt động chuyên biệt của DEVER TOWN</p>
+  <!-- 2. INVENTORY MODAL (TÚI ĐỒ FPTU & DEV) -->
+  <div id="inventory-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-emoji">🎒</span>
+          <div>
+            <h2 class="modal-title">Túi Đồ Cá Nhân & Vật Phẩm FPTU</h2>
+            <p class="modal-sub">Thu thập các vật phẩm công nghệ & linh vật trên bản đồ để cầm trên tay.</p>
+          </div>
+        </div>
+        <button type="button" id="inventory-modal-close" class="modal-close-btn">&times;</button>
       </div>
 
-      <!-- View 1: Slides & Whiteboard View -->
+      <div class="inventory-workspace">
+        <div class="inventory-left-panel">
+          <div class="panel-section-title">Kho Vật Phẩm (7 Items)</div>
+          <div id="inventory-grid" class="inventory-grid"></div>
+        </div>
+
+        <div class="inventory-right-panel">
+          <div class="item-detail-card">
+            <div class="item-detail-icon-box">
+              <span id="inv-detail-icon-big" class="item-icon-huge">🎒</span>
+            </div>
+            <div class="item-detail-body">
+              <div class="item-meta-tags">
+                <span id="inv-detail-rarity" class="rarity-badge">COMMON</span>
+                <span id="inv-detail-tag" class="category-badge">Vật phẩm</span>
+              </div>
+              <h3 id="inv-detail-name" class="item-detail-title">Tên Vật Phẩm</h3>
+              <p id="inv-detail-desc" class="item-detail-desc">Mô tả câu chuyện và công dụng của vật phẩm.</p>
+              <div id="inv-detail-count" class="item-detail-count">Số lượng sở hữu: 1</div>
+              <button type="button" id="inventory-equip-btn" class="btn-equip equip">Trang Bị Cầm Tay ✨</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. WARDROBE CUSTOMIZER MODAL (TỦ ĐỒ & TRANG PHỤC) -->
+  <div id="wardrobe-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-emoji">👔</span>
+          <div>
+            <h2 class="modal-title">Tủ Đồ & Tùy Chỉnh Nhân Vật FPTU</h2>
+            <p class="modal-sub">Tùy biến màu áo Hoodie FPTU, màu tóc và các phụ kiện công nghệ độc đáo.</p>
+          </div>
+        </div>
+        <button type="button" id="wardrobe-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="wardrobe-workspace">
+        <!-- Live Preview Canvas -->
+        <div class="wardrobe-preview-panel">
+          <div class="preview-box">
+            <canvas id="wardrobe-preview-canvas" width="160" height="160"></canvas>
+            <span class="preview-tag">Live Avatar Preview</span>
+          </div>
+          <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới ✨</button>
+        </div>
+
+        <!-- Options Panel -->
+        <div class="wardrobe-options-panel">
+          <!-- 1. Hoodie Color -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Màu Áo Hoodie FPTU & DEVER:</label>
+            <div id="wardrobe-hoodie-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 2. Hair Color -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Màu Tóc Cá Tính:</label>
+            <div id="wardrobe-hair-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 3. Accessories -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Phụ Kiện Công Nghệ & Linh Vật:</label>
+            <div id="wardrobe-acc-list" class="wardrobe-acc-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. INTERACTIVE ZONE MODAL DIALOG (7 VIEWS) -->
+  <div id="interactive-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-xl">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-emoji">⚡</span>
+          <div>
+            <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác</h2>
+            <p id="interactive-modal-desc" class="modal-sub">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</p>
+          </div>
+        </div>
+        <button type="button" id="interactive-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <!-- View 1: Whiteboard / Slides View -->
       <div id="pane-slides" class="interactive-pane hidden">
-        <div class="iframe-controls">
-          <input type="text" id="slide-url-input" class="modal-input-sm" placeholder="Dán link Google Slides / Excalidraw..." />
-          <button type="button" id="slide-load-btn" class="btn-sm-action">Tải Link</button>
+        <div class="slide-topbar">
+          <div class="slide-address-bar">
+            <input type="text" id="slide-url-input" class="modal-input-sm" placeholder="Dán link Google Slides hoặc PDF..." />
+            <button type="button" id="slide-load-btn" class="btn-sm-action">Nạp Slide</button>
+          </div>
         </div>
         <div class="iframe-container">
           <iframe
             id="slide-iframe"
             src="about:blank"
-            frameborder="0"
-            allowfullscreen="true"
-            mozallowfullscreen="true"
-            webkitallowfullscreen="true"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            allow="fullscreen"
           ></iframe>
         </div>
       </div>
 
-      <!-- View 2: Video Meeting Stage View -->
+      <!-- View 2: Video Call Meeting View -->
       <div id="pane-meeting" class="interactive-pane hidden">
         <div class="meeting-topbar">
-          <span class="meeting-status">Phòng họp trực tuyến sẵn sàng</span>
-          <a id="gmeet-open-btn" href="https://meet.google.com" target="_blank" class="btn-sm-action" rel="noopener">Mở Google Meet</a>
+          <span class="meeting-status">🟢 Phòng họp trực tuyến đang mở</span>
+          <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
+            Mở Google Meet Tab Mới
+          </a>
         </div>
         <div class="iframe-container">
           <iframe
             id="meeting-iframe"
             src="about:blank"
-            allow="camera; microphone; display-capture; autoplay; clipboard-run; clipboard-write; fullscreen"
+            allow="camera; microphone; fullscreen; display-capture"
           ></iframe>
         </div>
       </div>
 
-      <!-- View 3: Code Sandbox & Notes View -->
+      <!-- View 3: Live Code Sandbox & Notes View -->
       <div id="pane-code" class="interactive-pane hidden">
         <div class="code-workspace-grid">
-          <div class="code-editor-box">
-            <div class="code-box-header">
-              <span>Trình Soạn Thảo JavaScript</span>
-              <button type="button" id="code-run-btn" class="btn-run-code">Chạy Code</button>
+          <div class="code-editor-panel">
+            <div class="panel-header">
+              <span>JavaScript Live Runner</span>
+              <button type="button" id="code-run-btn" class="btn-sm-action run">Chạy Code &rtrif;</button>
             </div>
-            <textarea id="code-textarea" class="code-font" spellcheck="false" placeholder="// Viết code JavaScript tại đây..."></textarea>
-            <div class="code-output-title">Kết quả Console:</div>
-            <pre id="code-output" class="code-console">Nhấn "Chạy Code" để xem kết quả...</pre>
+            <textarea id="code-textarea" class="code-box" spellcheck="false"></textarea>
+            <div class="panel-header sub">Console Output:</div>
+            <pre id="code-output" class="output-box">// Output sẽ xuất hiện tại đây...</pre>
           </div>
 
-          <div class="notes-box">
-            <div class="code-box-header">
-              <span>Sổ Tay Markdown CLB DEVER</span>
-              <span class="auto-save-hint">Tự lưu</span>
+          <div class="notes-panel">
+            <div class="panel-header">
+              <span>Sổ Tay Markdown Cá Nhân (Tự Động Lưu)</span>
             </div>
-            <textarea id="notes-textarea" spellcheck="false" placeholder="# Ghi chú nội dung buổi học FPTU..."></textarea>
+            <textarea id="notes-textarea" class="notes-box" placeholder="Ghi chú bài học, kiến thức lập trình..."></textarea>
           </div>
         </div>
       </div>
 
-      <!-- View 4: Coffee & Pomodoro View -->
+      <!-- View 4: Coffee & Pomodoro View with Smart Lofi URL Loader & Presets -->
       <div id="pane-coffee" class="interactive-pane hidden">
+        <div class="coffee-topbar">
+          <div class="lofi-input-row">
+            <input type="text" id="lofi-url-input" class="modal-input-sm" placeholder="Dán link YouTube (thường, rút gọn youtu.be, Shorts)..." />
+            <button type="button" id="lofi-load-btn" class="btn-sm-action">Phát Nhạc</button>
+          </div>
+          <div class="lofi-presets-bar">
+            <span class="lofi-preset-label">Preset có sẵn:</span>
+            <div id="lofi-presets-list" class="lofi-presets-list"></div>
+          </div>
+        </div>
+
         <div class="coffee-workspace-grid">
           <div class="lofi-player-box">
-            <div class="lofi-title">Lofi Chill Radio - Dever Lounge FPTU</div>
             <div class="lofi-iframe-wrapper">
               <iframe
                 id="lofi-iframe"
@@ -404,6 +463,20 @@
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             allow="fullscreen"
           ></iframe>
+        </div>
+      </div>
+
+      <!-- View 7: Sports Mini-Game View -->
+      <div id="pane-sports" class="interactive-pane hidden">
+        <div class="sports-mini-workspace">
+          <div class="sports-header-box">
+            <h3 id="sports-game-title" class="sports-title">SÚT PHẠT ĐỀN MINI FPTU</h3>
+            <p id="sports-game-desc" class="sports-desc">Thử thách sút bóng ghi bàn hoặc ném bóng 3 điểm!</p>
+          </div>
+          <div class="sports-arena">
+            <div id="sports-score-display" class="sports-score-text">Sẵn sàng thi đấu!</div>
+            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG VÀO LƯỚI ⚽</button>
+          </div>
         </div>
       </div>
     </div>

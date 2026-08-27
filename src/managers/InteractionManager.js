@@ -10,55 +10,180 @@ export class InteractionManager {
     this.scene = scene;
     this.onInteract = onInteract;
     this.zones = [];
-    this.activeZone = null;
-    this.promptContainer = null;
-    this.promptText = null;
+    this.currentActiveZone = null;
+    this.beacons = [];
+    this.badges = [];
 
-    // Hysteresis Radius Thresholds
-    this.R_IN = 52;   // Bán kính kích hoạt vào vùng
-    this.R_OUT = 70;  // Bán kính rời khỏi vùng
+    // Bán kính Hysteresis
+    this.RADIUS_IN = 52;
+    this.RADIUS_OUT = 70;
 
-    this.createPromptBadge();
+    this.createHUD();
+    this.bindEvents();
   }
 
-  createPromptBadge() {
-    this.promptContainer = this.scene.add.container(0, 0);
-    this.promptContainer.setDepth(1000002);
-    this.promptContainer.setVisible(false);
+  createHUD() {
+    this.hudContainer = this.scene.add.container(0, 0);
+    this.hudContainer.setDepth(999999);
+    this.hudContainer.setVisible(false);
 
-    this.promptBg = this.scene.add.graphics();
-    this.promptText = this.scene.add.text(0, 0, '[E] Tương tác', {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '11px',
+    // Nền Tooltip Glassmorphism
+    this.bgGraphics = this.scene.add.graphics();
+    this.hudContainer.add(this.bgGraphics);
+
+    // Text Tooltip
+    this.tooltipText = this.scene.add.text(0, 0, '[E] Tương tác', {
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontSize: '12px',
       fontWeight: '700',
-      color: '#ffffff'
+      color: '#ffffff',
+      padding: { left: 8, right: 8, top: 4, bottom: 4 }
     }).setOrigin(0.5, 0.5);
 
-    this.promptContainer.add([this.promptBg, this.promptText]);
+    this.hudContainer.add(this.tooltipText);
+  }
 
-    // Hiệu ứng nhấp nhô nhẹ (Bobbing tween)
-    this.scene.tweens.add({
-      targets: this.promptContainer,
-      y: '-=4',
-      duration: 800,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
+  bindEvents() {
+    // Lắng nghe phím E
+    this.scene.input.keyboard.on('keydown-E', () => {
+      if (this.currentActiveZone && this.canInteract()) {
+        this.triggerInteraction(this.currentActiveZone);
+      }
     });
   }
 
-  setZones(zoneList) {
-    this.zones = zoneList || [];
-    this.activeZone = null;
-    if (this.promptContainer) {
-      this.promptContainer.setVisible(false);
+  canInteract() {
+    if (this.scene.inputController && this.scene.inputController.isInputBlocked()) {
+      return false;
     }
+    return true;
+  }
+
+  setZones(zoneConfigs) {
+    this.clearVisualMarkers();
+    this.zones = zoneConfigs || [];
+    this.currentActiveZone = null;
+    this.hideHUD();
+
+    // Tạo visual markers & beacons cho từng zone
+    this.createVisualMarkers();
+  }
+
+  clearVisualMarkers() {
+    this.beacons.forEach(b => {
+      if (b.tween) b.tween.stop();
+      b.graphics.destroy();
+    });
+    this.beacons = [];
+
+    this.badges.forEach(b => {
+      if (b.tween) b.tween.stop();
+      b.container.destroy();
+    });
+    this.badges = [];
+  }
+
+  createVisualMarkers() {
+    const tileSize = 32;
+
+    this.zones.forEach(zone => {
+      const posX = zone.tileX * tileSize + tileSize / 2;
+      const posY = zone.tileY * tileSize + tileSize / 2;
+
+      // 1. Màu nhận diện theo loại zone
+      let color = 0x38bdf8; // Default Cyan
+      let icon = '⚡';
+
+      switch (zone.type) {
+        case 'whiteboard_slides':
+          color = 0x3b82f6; // Blue
+          icon = '📊';
+          break;
+        case 'meeting_stage':
+          color = 0x10b981; // Emerald
+          icon = '🎤';
+          break;
+        case 'code_editor':
+          color = 0x8b5cf6; // Purple
+          icon = '💻';
+          break;
+        case 'coffee_lofi':
+          color = 0xf26f21; // FPT Orange
+          icon = '☕';
+          break;
+        case 'gallery_memory':
+          color = 0xfbbf24; // Gold
+          icon = '🖼️';
+          break;
+        case 'club_website':
+          color = 0x06b6d4; // Cyan Neon
+          icon = '🌐';
+          break;
+        case 'sports_activity':
+          color = 0x22c55e; // Green
+          icon = '⚽';
+          break;
+        default:
+          break;
+      }
+
+      // 2. Pulsing Floor Beacon (Vòng tròn phát sáng nhấp nháy dưới sàn)
+      const beaconGfx = this.scene.add.graphics();
+      beaconGfx.fillStyle(color, 0.3);
+      beaconGfx.fillCircle(0, 0, 16);
+      beaconGfx.lineStyle(2, color, 0.8);
+      beaconGfx.strokeCircle(0, 0, 16);
+      beaconGfx.setPosition(posX, posY + 4);
+      beaconGfx.setDepth(1);
+
+      const beaconTween = this.scene.tweens.add({
+        targets: beaconGfx,
+        scaleX: 1.35,
+        scaleY: 1.35,
+        alpha: 0.4,
+        duration: 1100,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut'
+      });
+
+      this.beacons.push({ graphics: beaconGfx, tween: beaconTween });
+
+      // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể)
+      const badgeContainer = this.scene.add.container(posX, posY - 24);
+      badgeContainer.setDepth(9999);
+
+      const badgeBg = this.scene.add.graphics();
+      badgeBg.fillStyle(0x0f172a, 0.88);
+      badgeBg.fillRoundedRect(-36, -10, 72, 20, 6);
+      badgeBg.lineStyle(1.5, color, 0.9);
+      badgeBg.strokeRoundedRect(-36, -10, 72, 20, 6);
+
+      const badgeText = this.scene.add.text(0, 0, `${icon} ${zone.label || 'Tương tác'}`, {
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: '9px',
+        fontWeight: '700',
+        color: '#ffffff'
+      }).setOrigin(0.5, 0.5);
+
+      badgeContainer.add([badgeBg, badgeText]);
+
+      const badgeTween = this.scene.tweens.add({
+        targets: badgeContainer,
+        y: posY - 29,
+        duration: 1400,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut'
+      });
+
+      this.badges.push({ container: badgeContainer, tween: badgeTween, zoneId: zone.id });
+    });
   }
 
   update(player) {
-    if (!player || !this.zones || this.zones.length === 0) {
-      if (this.promptContainer) this.promptContainer.setVisible(false);
-      this.activeZone = null;
+    if (!player || !this.zones.length) {
+      this.hideHUD();
       return;
     }
 
@@ -66,71 +191,72 @@ export class InteractionManager {
     let closestZone = null;
     let minDistance = Infinity;
 
-    for (const z of this.zones) {
-      const zX = z.tileX * tileSize + tileSize / 2;
-      const zY = z.tileY * tileSize + tileSize / 2;
-      const dist = Phaser.Math.Distance.Between(player.x, player.y, zX, zY);
+    // Tìm zone gần nhất
+    for (const zone of this.zones) {
+      const zoneWorldX = zone.tileX * tileSize + tileSize / 2;
+      const zoneWorldY = zone.tileY * tileSize + tileSize / 2;
+
+      const dist = Phaser.Math.Distance.Between(player.x, player.y, zoneWorldX, zoneWorldY);
 
       if (dist < minDistance) {
         minDistance = dist;
-        closestZone = { ...z, dist };
+        closestZone = { ...zone, worldX: zoneWorldX, worldY: zoneWorldY, distance: dist };
       }
     }
 
-    // Thuật toán Hysteresis Dual-Threshold
-    if (this.activeZone) {
-      // Đang ở trong zone -> Chỉ thoát khi khoảng cách > R_OUT
-      const zX = this.activeZone.tileX * tileSize + tileSize / 2;
-      const zY = this.activeZone.tileY * tileSize + tileSize / 2;
-      const currentDist = Phaser.Math.Distance.Between(player.x, player.y, zX, zY);
-
-      if (currentDist > this.R_OUT) {
-        this.activeZone = null;
-        this.promptContainer.setVisible(false);
+    // Áp dụng thuật toán Proximity Hysteresis
+    if (this.currentActiveZone) {
+      if (minDistance > this.RADIUS_OUT) {
+        this.currentActiveZone = null;
+        this.hideHUD();
+      } else {
+        this.updateHUDPosition(this.currentActiveZone);
       }
     } else {
-      // Chưa ở trong zone -> Chỉ kích hoạt khi khoảng cách <= R_IN
-      if (closestZone && closestZone.dist <= this.R_IN) {
-        this.activeZone = closestZone;
-      }
-    }
-
-    // Cập nhật vị trí và nội dung Prompt Badge
-    if (this.activeZone) {
-      const label = this.activeZone.label || `[E] ${this.activeZone.name}`;
-      this.promptText.setText(label);
-
-      // Vẽ lại nền phát sáng neon
-      const padX = 14;
-      const padY = 6;
-      const w = this.promptText.width + padX;
-      const h = this.promptText.height + padY;
-
-      this.promptBg.clear();
-      this.promptBg.fillStyle(0x0f172a, 0.9);
-      this.promptBg.fillRoundedRect(-w / 2, -h / 2, w, h, 6);
-      this.promptBg.lineStyle(1.5, 0x38bdf8, 0.85);
-      this.promptBg.strokeRoundedRect(-w / 2, -h / 2, w, h, 6);
-
-      this.promptContainer.setPosition(Math.round(player.x), Math.round(player.y - 48));
-      this.promptContainer.setVisible(true);
-
-      // Kiểm tra phím E
-      if (this.scene.inputController && this.scene.inputController.isActionJustDown()) {
-        if (this.onInteract) {
-          this.onInteract(this.activeZone);
-        }
-      }
-    } else {
-      if (this.promptContainer) {
-        this.promptContainer.setVisible(false);
+      if (closestZone && closestZone.distance <= this.RADIUS_IN) {
+        this.currentActiveZone = closestZone;
+        this.showHUD(closestZone);
       }
     }
   }
 
+  showHUD(zone) {
+    const label = `[E] ${zone.label || zone.name || 'Tương tác'}`;
+    this.tooltipText.setText(label);
+
+    const paddingX = 14;
+    const paddingY = 6;
+    const w = this.tooltipText.width + paddingX * 2;
+    const h = this.tooltipText.height + paddingY * 2;
+
+    this.bgGraphics.clear();
+    this.bgGraphics.fillStyle(0x0f172a, 0.95);
+    this.bgGraphics.fillRoundedRect(-w / 2, -h / 2, w, h, 8);
+    this.bgGraphics.lineStyle(2, 0xf26f21, 1); // FPT Orange Glow
+    this.bgGraphics.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
+
+    this.updateHUDPosition(zone);
+    this.hudContainer.setVisible(true);
+  }
+
+  updateHUDPosition(zone) {
+    this.hudContainer.setPosition(zone.worldX, zone.worldY - 38);
+  }
+
+  hideHUD() {
+    this.hudContainer.setVisible(false);
+  }
+
+  triggerInteraction(zone) {
+    if (this.onInteract) {
+      this.onInteract(zone);
+    }
+  }
+
   destroy() {
-    if (this.promptContainer) {
-      this.promptContainer.destroy();
+    this.clearVisualMarkers();
+    if (this.hudContainer) {
+      this.hudContainer.destroy();
     }
   }
 }

@@ -1,90 +1,54 @@
 /**
- * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (24 ô) và 4 Spritesheets Nhân vật trên HTML Canvas.
- * Tích hợp nhận diện thương hiệu Đại học FPT Đà Nẵng & CLB DEVER.
+ * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (30 ô) và Spritesheets Nhân vật trên HTML Canvas.
+ * Tích hợp nhận diện thương hiệu FPT University Đà Nẵng, CLB FU-DEVER, Khu Thể Thao & Tùy chỉnh Tủ Đồ.
  */
 export class TextureGenerator {
   /**
-   * Tạo Tileset hoàn chỉnh (24 ô 32x32)
+   * Tạo Tileset hoàn chỉnh (30 ô 32x32)
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 24;
+    const numTiles = 30;
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
     const ctx = canvas.getContext('2d');
 
-    // 0: Cỏ xanh (Grass)
+    // 0-18: Các tile hiện hữu
     this.drawGrass(ctx, 0 * tileSize, 0, tileSize);
-
-    // 1: Sàn gỗ (Wood Floor)
     this.drawWoodFloor(ctx, 1 * tileSize, 0, tileSize);
-
-    // 2: Tường gạch hiện đại (Brick Wall - Obstacle)
     this.drawWall(ctx, 2 * tileSize, 0, tileSize);
-
-    // 3: Kệ sách công nghệ (Bookshelf - Obstacle)
     this.drawBookshelf(ctx, 3 * tileSize, 0, tileSize);
-
-    // 4: Bàn làm việc & Laptop (Desk with Laptop - Obstacle)
     this.drawDeskWithLaptop(ctx, 4 * tileSize, 0, tileSize);
-
-    // 5: Đá cuội sân vườn (Cobblestone)
     this.drawCobblestone(ctx, 5 * tileSize, 0, tileSize);
-
-    // 6: Thảm xanh công nghệ (Tech Carpet)
     this.drawTechCarpet(ctx, 6 * tileSize, 0, tileSize);
-
-    // 7: Bụi hoa trang trí (Flower Bush)
     this.drawFlowerBush(ctx, 7 * tileSize, 0, tileSize);
-
-    // 8: Server Rack máy chủ CLB (Obstacle)
     this.drawServerRack(ctx, 8 * tileSize, 0, tileSize);
-
-    // 9: Sàn gạch Cyan Cyberpunk
     this.drawCyberFloor(ctx, 9 * tileSize, 0, tileSize);
-
-    // 10: Cổng ma thuật dịch chuyển Portal
     this.drawPortalTile(ctx, 10 * tileSize, 0, tileSize);
-
-    // 11: Thảm đỏ Lounge VIP
     this.drawRedCarpet(ctx, 11 * tileSize, 0, tileSize);
-
-    // 12: Bảng trắng thuyết trình Whiteboard (Obstacle)
     this.drawWhiteboard(ctx, 12 * tileSize, 0, tileSize);
-
-    // 13: Cây cảnh trong chậu
     this.drawPottedPlant(ctx, 13 * tileSize, 0, tileSize);
-
-    // 14: Quầy Cà phê Dever Coffee Bar (Obstacle)
     this.drawCoffeeBar(ctx, 14 * tileSize, 0, tileSize);
-
-    // 15: Vách kính công nghệ cao Glass Wall (Obstacle)
     this.drawGlassWall(ctx, 15 * tileSize, 0, tileSize);
-
-    // 16: Khung tranh mạ vàng kỷ niệm Art Frame Gold (Obstacle)
     this.drawArtFrameGold(ctx, 16 * tileSize, 0, tileSize);
-
-    // 17: Bục trưng bày cúp vàng kỷ niệm Trophy Pedestal (Obstacle)
     this.drawTrophyPedestal(ctx, 17 * tileSize, 0, tileSize);
-
-    // 18: Sàn lưới Cyber Web Grid
     this.drawCyberWebGrid(ctx, 18 * tileSize, 0, tileSize);
 
-    // 19: Linh vật Cóc Vàng FPT University Đà Nẵng (Golden Frog - Obstacle)
+    // 19-23: Nhận diện FPTU Đà Nẵng & DEVER
     this.drawFptGoldenFrog(ctx, 19 * tileSize, 0, tileSize);
-
-    // 20: Biển hiệu "FPT UNIVERSITY DA NANG" (Obstacle)
     this.drawFptUniBanner(ctx, 20 * tileSize, 0, tileSize);
-
-    // 21: Bảng hiệu Neon DEVER Club "Code Your Dream" (Obstacle)
     this.drawDeverNeonSign(ctx, 21 * tileSize, 0, tileSize);
-
-    // 22: Cột cờ FPT University (Flagpole - Obstacle)
     this.drawFptFlagpole(ctx, 22 * tileSize, 0, tileSize);
-
-    // 23: Sàn gạch hoa cương Giảng đường Alpha FPTU
     this.drawFptAlphaFloor(ctx, 23 * tileSize, 0, tileSize);
+
+    // 24-29: Phân khu Thể thao & Media Hub
+    this.drawFootballTurf(ctx, 24 * tileSize, 0, tileSize); // 24: Cỏ sân bóng & Vạch vôi
+    this.drawFootballGoal(ctx, 25 * tileSize, 0, tileSize); // 25: Khung thành bóng đá (Obstacle)
+    this.drawBasketballHoop(ctx, 26 * tileSize, 0, tileSize); // 26: Cột rổ bóng rổ (Obstacle)
+    this.drawVolleyballNet(ctx, 27 * tileSize, 0, tileSize); // 27: Lưới bóng chuyền / cầu lông (Obstacle)
+    this.drawSwimmingPool(ctx, 28 * tileSize, 0, tileSize); // 28: Mặt nước hồ bơi FPTU
+    this.drawMediaLedScreen(ctx, 29 * tileSize, 0, tileSize); // 29: Màn hình LED Media Hub (Obstacle)
 
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
@@ -96,6 +60,7 @@ export class TextureGenerator {
     });
   }
 
+  // --- 0-18: TILE CŨ ---
   static drawGrass(ctx, x, y, size) {
     ctx.fillStyle = '#4ade80';
     ctx.fillRect(x, y, size, size);
@@ -417,11 +382,10 @@ export class TextureGenerator {
     ctx.fillRect(x + 15, y + 15, 2, 2);
   }
 
-  // 19: Linh vật Cóc Vàng FPT University Đà Nẵng
+  // 19: Linh vật Cóc Vàng FPTU
   static drawFptGoldenFrog(ctx, x, y, size) {
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(x, y, size, size);
-    // Bệ đá ngọc bích
     ctx.fillStyle = '#042f2e';
     ctx.fillRect(x + 4, y + 20, 24, 10);
     ctx.fillStyle = '#0f766e';
@@ -429,44 +393,35 @@ export class TextureGenerator {
     ctx.fillStyle = '#14b8a6';
     ctx.fillRect(x + 6, y + 20, 20, 2);
 
-    // Thân Cóc Vàng
     ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
     ctx.ellipse(x + 16, y + 14, 10, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Đầu & Mắt Cóc
     ctx.fillStyle = '#fbbf24';
     ctx.beginPath();
     ctx.arc(x + 11, y + 8, 4, 0, Math.PI * 2);
     ctx.arc(x + 21, y + 8, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // Con ngươi ngọc đỏ
     ctx.fillStyle = '#dc2626';
     ctx.fillRect(x + 11, y + 7, 2, 2);
     ctx.fillRect(x + 21, y + 7, 2, 2);
 
-    // Đồng tiền vàng ngậm trong miệng
     ctx.fillStyle = '#fef08a';
     ctx.beginPath();
     ctx.arc(x + 16, y + 12, 3.5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#ca8a04';
-    ctx.strokeRect(x + 14.5, y + 10.5, 3, 3);
   }
 
-  // 20: Biển hiệu "FPT UNIVERSITY DA NANG"
+  // 20: Biển hiệu FPTU DA NANG
   static drawFptUniBanner(ctx, x, y, size) {
-    ctx.fillStyle = '#002147'; // FPT Navy
+    ctx.fillStyle = '#002147';
     ctx.fillRect(x, y, size, size);
-
-    // Viền Cam FPT
     ctx.strokeStyle = '#f26f21';
     ctx.lineWidth = 2;
     ctx.strokeRect(x + 1, y + 1, size - 2, size - 2);
 
-    // 3 dải màu FPT (Cam, Xanh lá, Xanh dương)
     ctx.fillStyle = '#f26f21';
     ctx.fillRect(x + 4, y + 5, 6, 4);
     ctx.fillStyle = '#22c55e';
@@ -474,7 +429,6 @@ export class TextureGenerator {
     ctx.fillStyle = '#2563eb';
     ctx.fillRect(x + 22, y + 5, 6, 4);
 
-    // Chữ FPTU Pixel Art
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 8px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
@@ -485,48 +439,30 @@ export class TextureGenerator {
     ctx.fillText('DA NANG', x + 16, y + 27);
   }
 
-  // 21: Bảng hiệu Neon DEVER Club "Code Your Dream"
+  // 21: Neon DEVER Club
   static drawDeverNeonSign(ctx, x, y, size) {
     ctx.fillStyle = '#020617';
     ctx.fillRect(x, y, size, size);
-
-    // Viền Neon Cyan phát sáng
     ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 1.5;
     ctx.strokeRect(x + 2, y + 2, size - 4, size - 4);
 
-    // Cặp ngoặc code </>
     ctx.fillStyle = '#38bdf8';
     ctx.fillRect(x + 5, y + 8, 2, 8);
-    ctx.fillRect(x + 7, y + 6, 2, 3);
-    ctx.fillRect(x + 7, y + 15, 2, 3);
-
-    ctx.fillStyle = '#f26f21'; // Cam FPT
+    ctx.fillStyle = '#f26f21';
     ctx.fillRect(x + 25, y + 8, 2, 8);
-    ctx.fillRect(x + 23, y + 6, 2, 3);
-    ctx.fillRect(x + 23, y + 15, 2, 3);
 
-    // Chữ DEVER
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 7px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     ctx.fillText('DEVER', x + 16, y + 18);
-
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(x + 6, y + 24, 20, 2);
   }
 
-  // 22: Cột cờ FPT University tung bay
+  // 22: Cột cờ FPTU
   static drawFptFlagpole(ctx, x, y, size) {
     this.drawCobblestone(ctx, x, y, size);
-
-    // Cột cờ Inox
     ctx.fillStyle = '#cbd5e1';
     ctx.fillRect(x + 8, y + 2, 2, size - 4);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + 7, y + 1, 4, 2);
-
-    // Lá cờ FPT 3 dải màu
     ctx.fillStyle = '#f26f21';
     ctx.fillRect(x + 10, y + 3, 18, 4);
     ctx.fillStyle = '#22c55e';
@@ -535,24 +471,137 @@ export class TextureGenerator {
     ctx.fillRect(x + 10, y + 11, 18, 4);
   }
 
-  // 23: Sàn gạch hoa cương Giảng đường Alpha FPTU
+  // 23: Sàn gạch Alpha FPTU
   static drawFptAlphaFloor(ctx, x, y, size) {
-    ctx.fillStyle = '#002147'; // FPT Navy
+    ctx.fillStyle = '#002147';
     ctx.fillRect(x, y, size, size);
-
-    ctx.strokeStyle = 'rgba(242, 111, 33, 0.4)'; // FPT Orange border
+    ctx.strokeStyle = 'rgba(242, 111, 33, 0.4)';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
-
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(x + 3, y + 3, size - 6, size - 6);
-
     ctx.fillStyle = '#f26f21';
     ctx.fillRect(x + 14, y + 14, 4, 4);
   }
 
+  // 24: Sân bóng cỏ nhân tạo FPTU (Football Turf & Line)
+  static drawFootballTurf(ctx, x, y, size) {
+    ctx.fillStyle = '#15803d'; // Cỏ xanh thể thao đậm
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#16a34a'; // Kẻ sọc cỏ
+    ctx.fillRect(x, y, size, 16);
+    // Vạch vôi trắng
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.fillRect(x, y + 14, size, 2);
+  }
+
+  // 25: Khung thành bóng đá FPTU (Football Goal - Obstacle)
+  static drawFootballGoal(ctx, x, y, size) {
+    this.drawFootballTurf(ctx, x, y, size);
+    // Lưới trắng
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.lineWidth = 1;
+    for (let lx = x + 4; lx <= x + size - 4; lx += 4) {
+      ctx.beginPath();
+      ctx.moveTo(lx, y + 4);
+      ctx.lineTo(lx, y + 24);
+      ctx.stroke();
+    }
+    // Cọc xà ngang khung thành
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 3, y + 4, size - 6, 3);
+    ctx.fillRect(x + 3, y + 4, 3, 20);
+    ctx.fillRect(x + size - 6, y + 4, 3, 20);
+  }
+
+  // 26: Cột rổ bóng rổ FPTU (Basketball Hoop - Obstacle)
+  static drawBasketballHoop(ctx, x, y, size) {
+    // Sân bóng rổ cam FPT
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#002147';
+    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
+
+    // Cột rổ & Bảng rổ
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x + 14, y + 14, 4, 16);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 6, y + 4, 20, 10);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(x + 10, y + 6, 12, 6);
+
+    // Vành rổ cam & lưới
+    ctx.fillStyle = '#f97316';
+    ctx.fillRect(x + 12, y + 12, 8, 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.fillRect(x + 13, y + 14, 6, 4);
+  }
+
+  // 27: Lưới bóng chuyền / cầu lông FPTU (Volleyball Net - Obstacle)
+  static drawVolleyballNet(ctx, x, y, size) {
+    // Sân sàn gỗ thể thao
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 15, y, 2, size);
+
+    // Lưới trắng giăng ngang
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 2, y + 10, size - 4, 12);
+    for (let i = x + 4; i < x + size - 4; i += 4) {
+      ctx.beginPath();
+      ctx.moveTo(i, y + 10);
+      ctx.lineTo(i, y + 22);
+      ctx.stroke();
+    }
+  }
+
+  // 28: Mặt nước hồ bơi FPTU (Swimming Pool)
+  static drawSwimmingPool(ctx, x, y, size) {
+    // Nước xanh ngọc
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#0891b2';
+    ctx.fillRect(x, y + 8, size, 8);
+    ctx.fillRect(x, y + 24, size, 8);
+
+    // Gợn sóng bọt nước
+    ctx.fillStyle = '#a5f3fc';
+    ctx.fillRect(x + 4, y + 4, 8, 2);
+    ctx.fillRect(x + 20, y + 12, 6, 2);
+    ctx.fillRect(x + 8, y + 20, 10, 2);
+
+    // Phao phân làn bơi
+    ctx.fillStyle = '#f26f21'; // Phao cam FPT
+    ctx.fillRect(x, y + 1, 4, 3);
+    ctx.fillRect(x + 14, y + 1, 4, 3);
+    ctx.fillRect(x + 28, y + 1, 4, 3);
+  }
+
+  // 29: Màn hình LED Media Hub (Obstacle)
+  static drawMediaLedScreen(ctx, x, y, size) {
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(x, y, size, size);
+    ctx.strokeStyle = '#f26f21';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(x + 1, y + 1, size - 2, size - 2);
+
+    // Logo FPTU & FU-DEVER
+    ctx.fillStyle = '#0066CC';
+    ctx.fillRect(x + 4, y + 4, size - 8, size - 8);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('MEDIA', x + 16, y + 15);
+    ctx.fillStyle = '#f26f21';
+    ctx.fillText('FPTU', x + 16, y + 23);
+  }
+
   /**
-   * Tạo 4 bộ Spritesheets cho 4 phong cách Avatar
+   * Tạo 4 bộ Spritesheets mặc định
    */
   static generateAllAvatars(scene) {
     return this.generateAllCharacterSpritesheets(scene);
@@ -560,10 +609,10 @@ export class TextureGenerator {
 
   static generateAllCharacterSpritesheets(scene) {
     const avatarConfigs = [
-      { id: 'dev_hoodie', hair: '#1e293b', skin: '#fcd34d', shirt: '#2563eb', pants: '#1e293b', name: 'Dev Alpha' },
-      { id: 'cyberpunk_pink', hair: '#ec4899', skin: '#fde047', shirt: '#9333ea', pants: '#06b6d4', name: 'Cyber Neon' },
-      { id: 'red_gamer', hair: '#7f1d1d', skin: '#fbcfe8', shirt: '#ef4444', pants: '#18181b', name: 'Gamer Pro' },
-      { id: 'green_coder', hair: '#064e3b', skin: '#fed7aa', shirt: '#10b981', pants: '#334155', name: 'Code Master' }
+      { id: 'dev_hoodie', hair: '#1e293b', skin: '#fcd34d', shirt: '#2563eb', pants: '#1e293b', accessory: 'glasses_smart', name: 'Dev Alpha' },
+      { id: 'cyberpunk_pink', hair: '#ec4899', skin: '#fde047', shirt: '#9333ea', pants: '#06b6d4', accessory: 'sunglasses_cool', name: 'Cyber Neon' },
+      { id: 'red_gamer', hair: '#7f1d1d', skin: '#fbcfe8', shirt: '#ef4444', pants: '#18181b', accessory: 'headphones_rgb', name: 'Gamer Pro' },
+      { id: 'green_coder', hair: '#064e3b', skin: '#fed7aa', shirt: '#10b981', pants: '#334155', accessory: 'frog_crown', name: 'Code Master' }
     ];
 
     avatarConfigs.forEach(cfg => {
@@ -606,10 +655,57 @@ export class TextureGenerator {
     this.createCharacterAnimations(scene, config.id);
   }
 
+  /**
+   * Sinh Spritesheet tùy chỉnh động cho Wardrobe Customizer
+   */
+  static generateCustomAvatar(scene, wardrobeConfig, textureKey) {
+    const frameW = 32;
+    const frameH = 32;
+    const cols = 3;
+    const rows = 4;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = frameW * cols;
+    canvas.height = frameH * rows;
+    const ctx = canvas.getContext('2d');
+
+    const config = {
+      hair: wardrobeConfig.hairColor || '#0f172a',
+      skin: '#fcd34d',
+      shirt: wardrobeConfig.hoodieColor || '#f26f21',
+      pants: wardrobeConfig.pantsColor || '#1e293b',
+      accessory: wardrobeConfig.accessory || 'none'
+    };
+
+    const directions = ['down', 'left', 'right', 'up'];
+
+    for (let r = 0; r < rows; r++) {
+      const dir = directions[r];
+      for (let c = 0; c < cols; c++) {
+        const frameX = c * frameW;
+        const frameY = r * frameH;
+        this.drawCharacterFrame(ctx, frameX, frameY, dir, c, config);
+      }
+    }
+
+    if (scene.textures.exists(textureKey)) {
+      scene.textures.remove(textureKey);
+    }
+
+    scene.textures.addSpriteSheet(textureKey, canvas, {
+      frameWidth: frameW,
+      frameHeight: frameH
+    });
+
+    this.createCharacterAnimations(scene, textureKey.replace('char_', ''));
+    return canvas;
+  }
+
   static drawCharacterFrame(ctx, x, y, direction, frameIndex, config) {
-    const { hair, skin, shirt, pants } = config;
+    const { hair, skin, shirt, pants, accessory } = config;
     ctx.clearRect(x, y, 32, 32);
 
+    // Bóng dưới chân
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.beginPath();
     ctx.ellipse(x + 16, y + 29, 8, 3, 0, 0, Math.PI * 2);
@@ -617,6 +713,7 @@ export class TextureGenerator {
 
     const legOffset = frameIndex === 0 ? -2 : (frameIndex === 2 ? 2 : 0);
 
+    // Chân & Quần
     ctx.fillStyle = pants;
     if (direction === 'left' || direction === 'right') {
       ctx.fillRect(x + 13 + legOffset, y + 22, 6, 8);
@@ -630,11 +727,13 @@ export class TextureGenerator {
       ctx.fillRect(x + 17, y + 28, 5, 3);
     }
 
+    // Áo Hoodie FPTU
     ctx.fillStyle = shirt;
     ctx.fillRect(x + 10, y + 14, 12, 9);
     ctx.fillStyle = 'rgba(0,0,0,0.15)';
     ctx.fillRect(x + 10, y + 21, 12, 2);
 
+    // Tay
     ctx.fillStyle = skin;
     if (direction === 'down') {
       ctx.fillRect(x + 8, y + 15 - legOffset, 2, 6);
@@ -648,9 +747,11 @@ export class TextureGenerator {
       ctx.fillRect(x + 14 + legOffset, y + 16, 4, 5);
     }
 
+    // Đầu & Mặt
     ctx.fillStyle = skin;
     ctx.fillRect(x + 11, y + 6, 10, 9);
 
+    // Mắt
     ctx.fillStyle = '#0f172a';
     if (direction === 'down') {
       ctx.fillRect(x + 13, y + 10, 2, 2);
@@ -668,6 +769,7 @@ export class TextureGenerator {
       ctx.fillRect(x + 20, y + 10, 1, 1);
     }
 
+    // Tóc
     ctx.fillStyle = hair;
     if (direction === 'down') {
       ctx.fillRect(x + 10, y + 4, 12, 4);
@@ -681,6 +783,35 @@ export class TextureGenerator {
     } else if (direction === 'right') {
       ctx.fillRect(x + 10, y + 4, 12, 4);
       ctx.fillRect(x + 10, y + 6, 4, 6);
+    }
+
+    // Phụ kiện trang phục (Accessories Layer)
+    if (accessory === 'glasses_smart' && direction !== 'up') {
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 12, y + 9, 3, 3);
+      ctx.strokeRect(x + 17, y + 9, 3, 3);
+      ctx.fillRect(x + 15, y + 10, 2, 1);
+    } else if (accessory === 'sunglasses_cool' && direction !== 'up') {
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(x + 12, y + 9, 4, 3);
+      ctx.fillRect(x + 16, y + 9, 4, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 13, y + 9, 1, 1);
+      ctx.fillRect(x + 17, y + 9, 1, 1);
+    } else if (accessory === 'headphones_rgb') {
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(x + 9, y + 8, 2, 5);
+      ctx.fillRect(x + 21, y + 8, 2, 5);
+      ctx.fillRect(x + 10, y + 3, 12, 2);
+    } else if (accessory === 'frog_crown') {
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(x + 12, y + 1, 8, 3);
+      ctx.fillRect(x + 11, y + 1, 2, 2);
+      ctx.fillRect(x + 19, y + 1, 2, 2);
+      ctx.fillRect(x + 15, y + 0, 2, 2);
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(x + 15, y + 2, 2, 1);
     }
   }
 

@@ -2,7 +2,7 @@
   "main_hall": {
     "id": "main_hall",
     "name": "Sảnh Chính Giảng Đường Alpha - FPTU Đà Nẵng",
-    "description": "Hội trường trung tâm FPT University Đà Nẵng, tượng Cóc Vàng và kết nối 4 phân khu.",
+    "description": "Hội trường trung tâm FPT University Đà Nẵng, tượng Cóc Vàng và kết nối 6 phân khu.",
     "spawnPoint": { "x": 400, "y": 350 },
     "layout": [
       [  2,  2,  2, 10,  2,  2,  2,  2,  2, 20, 20,  2, 21, 21,  2, 20, 20,  2,  2,  2, 10,  2,  2,  0,  0 ],
@@ -18,7 +18,7 @@
       [  2, 23,  4, 23, 23,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6, 23, 23,  4, 23, 23,  0,  0 ],
       [  2, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5,  5 ],
       [  2, 23,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23,  5,  7 ],
-      [  2,  3,  3, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  3,  3,  5,  0 ],
+      [ 10,  3,  3, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  3,  3,  5, 10 ],
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  5,  0 ],
       [  0,  0,  7,  0, 22, 22,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0, 22, 22,  0,  7,  5,  0 ],
       [  0,  7,  0,  0,  0,  0,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
@@ -29,13 +29,15 @@
       { "tileX": 3, "tileY": 0, "targetRoomId": "dever_lab", "targetSpawn": { "x": 400, "y": 500 }, "label": "Sang Tech Lab" },
       { "tileX": 20, "tileY": 0, "targetRoomId": "library_lounge", "targetSpawn": { "x": 400, "y": 500 }, "label": "Sang Thư Viện" },
       { "tileX": 0, "tileY": 7, "targetRoomId": "memory_room", "targetSpawn": { "x": 720, "y": 300 }, "label": "Phòng Kỷ Niệm" },
-      { "tileX": 22, "tileY": 7, "targetRoomId": "web_room", "targetSpawn": { "x": 80, "y": 300 }, "label": "Không Gian Web" }
+      { "tileX": 22, "tileY": 7, "targetRoomId": "web_room", "targetSpawn": { "x": 80, "y": 300 }, "label": "Không Gian Web" },
+      { "tileX": 0, "tileY": 13, "targetRoomId": "media_hub", "targetSpawn": { "x": 720, "y": 300 }, "label": "Media Hub" },
+      { "tileX": 24, "tileY": 13, "targetRoomId": "sports_complex", "targetSpawn": { "x": 80, "y": 300 }, "label": "Khu Thể Thao" }
     ],
     "zones": [
-      { "id": "zone_main_frog", "type": "whiteboard_slides", "tileX": 11, "tileY": 6, "name": "Linh Vật Cóc Vàng FPTU", "label": "Xem Tôn Chỉ FPT" },
-      { "id": "zone_main_slides", "type": "whiteboard_slides", "tileX": 5, "tileY": 2, "name": "Màn Chiếu Sảnh Đón Tiếp", "label": "Xem Slide CLB" },
-      { "id": "zone_main_meeting", "type": "meeting_stage", "tileX": 11, "tileY": 9, "name": "Sân Khấu Họp Toàn Thể", "label": "Họp Nhóm Video" },
-      { "id": "zone_main_coffee", "type": "coffee_lofi", "tileX": 23, "tileY": 4, "name": "Vườn Trà FPTU & Thư Giãn", "label": "Nhạc Lofi & Pomodoro" }
+      { "id": "zone_main_frog", "type": "whiteboard_slides", "tileX": 11, "tileY": 6, "name": "Linh Vật Cóc Vàng FPTU", "label": "Tôn Chỉ FPTU" },
+      { "id": "zone_main_slides", "type": "whiteboard_slides", "tileX": 5, "tileY": 2, "name": "Màn Chiếu Sảnh Đón Tiếp", "label": "Slide CLB" },
+      { "id": "zone_main_meeting", "type": "meeting_stage", "tileX": 11, "tileY": 9, "name": "Sân Khấu Họp Toàn Thể", "label": "Họp Video" },
+      { "id": "zone_main_coffee", "type": "coffee_lofi", "tileX": 23, "tileY": 4, "name": "Vườn Trà FPTU & Thư Giãn", "label": "Lofi & Pomodoro" }
     ]
   },
 
@@ -70,9 +72,9 @@
       { "tileX": 13, "tileY": 14, "targetRoomId": "main_hall", "targetSpawn": { "x": 100, "y": 100 }, "label": "Về Sảnh Chính" }
     ],
     "zones": [
-      { "id": "zone_lab_whiteboard", "type": "whiteboard_slides", "tileX": 10, "tileY": 1, "name": "Bảng Sơ Đồ Kiến Trúc Hệ Thống", "label": "Bảng Kiến Trúc" },
+      { "id": "zone_lab_whiteboard", "type": "whiteboard_slides", "tileX": 10, "tileY": 1, "name": "Bảng Sơ Đồ Kiến Trúc", "label": "Bảng Kiến Trúc" },
       { "id": "zone_lab_code_a", "type": "code_editor", "tileX": 5, "tileY": 3, "name": "Bàn Hackathon Đội Alpha", "label": "Mở Code Sandbox" },
-      { "id": "zone_lab_meeting", "type": "meeting_stage", "tileX": 12, "tileY": 8, "name": "Bàn Thảo Luận Kỹ Thuật Lab", "label": "Họp Kỹ Thuật" },
+      { "id": "zone_lab_meeting", "type": "meeting_stage", "tileX": 12, "tileY": 8, "name": "Bàn Thảo Luận Lab", "label": "Họp Kỹ Thuật" },
       { "id": "zone_lab_code_b", "type": "code_editor", "tileX": 19, "tileY": 3, "name": "Bàn Hackathon Đội Beta", "label": "Mở Code Sandbox" }
     ]
   },
@@ -108,16 +110,16 @@
       { "tileX": 12, "tileY": 13, "targetRoomId": "main_hall", "targetSpawn": { "x": 650, "y": 100 }, "label": "Về Sảnh Chính" }
     ],
     "zones": [
-      { "id": "zone_lib_coffee", "type": "coffee_lofi", "tileX": 15, "tileY": 2, "name": "Quầy Cà Phê Sách & Pomodoro", "label": "Cà Phê & Lofi" },
-      { "id": "zone_lib_slides", "type": "whiteboard_slides", "tileX": 11, "tileY": 6, "name": "Khu Đọc Tài Liệu Chuyên Ngành", "label": "Tài Liệu Sách" },
-      { "id": "zone_lib_code", "type": "code_editor", "tileX": 5, "tileY": 11, "name": "Bàn Tự Học & Ghi Chú Bài Tập", "label": "Sổ Tay & Code" }
+      { "id": "zone_lib_coffee", "type": "coffee_lofi", "tileX": 15, "tileY": 2, "name": "Quầy Cà Phê & Pomodoro", "label": "Cà Phê & Lofi" },
+      { "id": "zone_lib_slides", "type": "whiteboard_slides", "tileX": 11, "tileY": 6, "name": "Khu Đọc Tài Liệu", "label": "Tài Liệu Sách" },
+      { "id": "zone_lib_code", "type": "code_editor", "tileX": 5, "tileY": 11, "name": "Bàn Tự Học & Sổ Tay", "label": "Sổ Tay & Code" }
     ]
   },
 
   "memory_room": {
     "id": "memory_room",
-    "name": "Phòng Triển Lãm Kỷ Niệm & Cúp Vinh Danh FPTU",
-    "description": "Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử CLB.",
+    "name": "Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER",
+    "description": "Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử 9+ năm.",
     "spawnPoint": { "x": 720, "y": 300 },
     "layout": [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
@@ -149,12 +151,12 @@
         "type": "gallery_memory",
         "tileX": 3,
         "tileY": 1,
-        "name": "Lễ Thành Lập CLB DEVER FPTU",
-        "label": "Xem Kỷ Niệm Thành Lập",
+        "name": "Hành Trình 9+ Năm FU-DEVER",
+        "label": "Xem Lịch Sử CLB",
         "metadata": {
-          "title": "Lễ Ra Mắt CLB Lập Trình DEVER - FPTU Đà Nẵng",
-          "date": "Tháng 09/2023",
-          "story": "Ngày hội tụ đầu tiên của các coder FPTU Đà Nẵng, chính thức đặt nền móng phát triển cộng đồng công nghệ sinh viên.",
+          "title": "Hành Trình 9+ Năm Phát Triển FU-DEVER",
+          "date": "2017 - Nay",
+          "story": "Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FPTU Đà Nẵng, FU-DEVER đã vươn mình thành cộng đồng công nghệ uy tín.",
           "imgId": "founding"
         }
       },
@@ -163,12 +165,12 @@
         "type": "gallery_memory",
         "tileX": 10,
         "tileY": 1,
-        "name": "Chiến Tích Vô Địch Hackathon FPT Edu",
-        "label": "Xem Cúp Vô Địch Hackathon",
+        "name": "20+ Giải Thưởng ICPC & Hackathon",
+        "label": "Xem Cúp Vinh Danh",
         "metadata": {
-          "title": "Vô Địch Cuộc Thi Lập Trình Hackathon Toàn Quốc",
-          "date": "Tháng 12/2024",
-          "story": "Đội ngũ DEVER Club xuất sắc vượt qua hơn 50 đội thi với giải pháp ứng dụng AI & Realtime Collaboration.",
+          "title": "Bảng Vàng 20+ Giải Thưởng ICPC & Hackathon",
+          "date": "2020 - 2026",
+          "story": "Thế hệ thành viên FU-DEVER liên tục ghi danh tại các kỳ thi Lập trình sinh viên Quốc tế ICPC và Hackathon toàn quốc.",
           "imgId": "hackathon"
         }
       },
@@ -177,12 +179,12 @@
         "type": "gallery_memory",
         "tileX": 17,
         "tileY": 1,
-        "name": "Teambuilding Biển Đà Nẵng",
-        "label": "Xem Album Teambuilding",
+        "name": "Work Hard - Play Hard Teambuilding",
+        "label": "Xem Album Gắn Kết",
         "metadata": {
-          "title": "Chuyến Dã Ngoại Bán Đảo Sơn Trà & Gắn Kết Mùa Hè",
-          "date": "Mùa Hè 2025",
-          "story": "Những khoảnh khắc bùng nổ năng lượng, gắn kết tình đồng đội giữa các thế hệ thành viên DEVER FPTU.",
+          "title": "Teambuilding Biển Đà Nẵng & Sơn Trà",
+          "date": "Hàng Năm",
+          "story": "Những khoảnh khắc bùng nổ năng lượng, gắn kết tình đồng đội giữa các thế hệ thành viên FU-DEVER.",
           "imgId": "teambuilding"
         }
       },
@@ -194,9 +196,9 @@
         "name": "Chuỗi Workshop Tech Talk FPTU",
         "label": "Xem Workshop Chuyên Đề",
         "metadata": {
-          "title": "Workshop 'Làm Chủ Fullstack & Game 2D'",
+          "title": "Chuỗi Workshop Tech Talk Chuyên Sâu",
           "date": "Hàng Tháng",
-          "story": "Các buổi chia sẻ chuyên sâu về Node.js, WebSockets, Phaser 3 và Kiến trúc hệ thống phân tán tại Giảng đường Alpha.",
+          "story": "Các buổi chia sẻ chuyên sâu về 2D Game, Web/Mobile App và Mô hình AI cho sinh viên toàn trường.",
           "imgId": "workshop"
         }
       }
@@ -205,8 +207,8 @@
 
   "web_room": {
     "id": "web_room",
-    "name": "Showroom Không Gian Web CLB DEVER & FPTU",
-    "description": "Không gian công nghệ số Cyberpunk nhúng Cổng thông tin & Website CLB DEVER.",
+    "name": "Showroom Không Gian Web CLB FU-DEVER & FPTU",
+    "description": "Không gian số Cyberpunk nhúng Cổng thông tin & Landing Page chính thức FU-DEVER.",
     "spawnPoint": { "x": 80, "y": 300 },
     "layout": [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
@@ -242,7 +244,6 @@
         "label": "Mở Landing Page",
         "metadata": {
           "url": "https://fu-dever-landingpage-v2.vercel.app/",
-          "fallbackUrl": "https://github.com/fudever-club",
           "title": "FU-DEVER LANDING PAGE - WORK HARD PLAY HARD"
         }
       },
@@ -251,7 +252,7 @@
         "type": "club_website",
         "tileX": 3,
         "tileY": 3,
-        "name": "Member Portal - Hệ Thống Thành Viên FU-DEVER",
+        "name": "Member Portal - Hệ Thống Thành Viên",
         "label": "Mở Member Portal",
         "metadata": {
           "url": "https://dever-client-sigma.vercel.app",
@@ -263,7 +264,7 @@
         "type": "club_website",
         "tileX": 19,
         "tileY": 3,
-        "name": "Kho Dự Án & Sản Phẩm Công Nghệ (2D Game, AI, Web, Mobile)",
+        "name": "Kho Dự Án (2D Game, AI, Web, Mobile)",
         "label": "Showcase Sản Phẩm",
         "metadata": {
           "url": "https://github.com/fudever-club",
@@ -275,12 +276,153 @@
         "type": "club_website",
         "tileX": 11,
         "tileY": 11,
-        "name": "Cổng Đăng Ký Thành Viên Mới FU-DEVER",
+        "name": "Cổng Đăng Ký Thành Viên FU-DEVER",
         "label": "Đăng Ký Thành Viên",
         "metadata": {
           "url": "https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill",
           "title": "ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER"
         }
+      }
+    ]
+  },
+
+  "media_hub": {
+    "id": "media_hub",
+    "name": "Trung Tâm Thông Tin & Truyền Thông FU-DEVER",
+    "description": "Không gian tích hợp toàn bộ các kênh mạng xã hội, fanpage, tiktok, github và cổng liên hệ.",
+    "spawnPoint": { "x": 720, "y": 300 },
+    "layout": [
+      [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
+      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
+      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
+      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
+      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
+      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 19, 19, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 23, 15 ],
+      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
+      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
+      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
+      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
+      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
+      [ 15, 13, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 23, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
+    ],
+    "portals": [
+      { "tileX": 22, "tileY": 6, "targetRoomId": "main_hall", "targetSpawn": { "x": 80, "y": 420 }, "label": "Về Sảnh Chính" }
+    ],
+    "zones": [
+      {
+        "id": "zone_media_facebook",
+        "type": "club_website",
+        "tileX": 3,
+        "tileY": 2,
+        "name": "Trạm Fanpage Facebook FU-DEVER",
+        "label": "Xem Fanpage",
+        "metadata": {
+          "url": "https://www.facebook.com/FPTUDever",
+          "title": "FANPAGE CHÍNH THỨC FU-DEVER"
+        }
+      },
+      {
+        "id": "zone_media_tiktok",
+        "type": "club_website",
+        "tileX": 7,
+        "tileY": 2,
+        "name": "Trạm TikTok & Media FPTU Đà Nẵng",
+        "label": "Kênh TikTok",
+        "metadata": {
+          "url": "https://www.tiktok.com/@daihocfptdanang",
+          "title": "KÊNH TIKTOK FPTU ĐÀ NẴNG"
+        }
+      },
+      {
+        "id": "zone_media_github",
+        "type": "club_website",
+        "tileX": 15,
+        "tileY": 2,
+        "name": "Trạm GitHub Organization FU-DEVER",
+        "label": "Kho GitHub",
+        "metadata": {
+          "url": "https://github.com/fudever-club",
+          "title": "GITHUB ORGANIZATION FU-DEVER"
+        }
+      },
+      {
+        "id": "zone_media_recruitment",
+        "type": "club_website",
+        "tileX": 19,
+        "tileY": 2,
+        "name": "Trạm Tuyển Quân Thành Viên FU-DEVER",
+        "label": "Đăng Ký Gia Nhập",
+        "metadata": {
+          "url": "https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill",
+          "title": "ĐƠN TUYỂN QUÂN FU-DEVER"
+        }
+      }
+    ]
+  },
+
+  "sports_complex": {
+    "id": "sports_complex",
+    "name": "Khu Phức Hợp Thể Thao FPT University Đà Nẵng",
+    "description": "Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông và hồ bơi sinh viên FPTU.",
+    "spawnPoint": { "x": 80, "y": 300 },
+    "layout": [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25,  2, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26,  2 ],
+      [  2, 10,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
+      [  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
+      [  2, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
+      [  2, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,  2, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
+    ],
+    "portals": [
+      { "tileX": 1, "tileY": 6, "targetRoomId": "main_hall", "targetSpawn": { "x": 720, "y": 420 }, "label": "Về Sảnh Chính" }
+    ],
+    "zones": [
+      {
+        "id": "zone_sports_football",
+        "type": "sports_activity",
+        "tileX": 6,
+        "tileY": 3,
+        "name": "Sân Bóng Đá Mini Cỏ Nhân Tạo FPTU",
+        "label": "Sút Phạt Đền Mini",
+        "metadata": { "sport": "football", "title": "SÚT BÓNG VÀO LƯỚI FPTU" }
+      },
+      {
+        "id": "zone_sports_basketball",
+        "type": "sports_activity",
+        "tileX": 18,
+        "tileY": 3,
+        "name": "Sân Bóng Rổ FPTU Đà Nẵng",
+        "label": "Ném Bóng 3 Điểm",
+        "metadata": { "sport": "basketball", "title": "THỬ THÁCH NÉM BÓNG RỔ" }
+      },
+      {
+        "id": "zone_sports_pool",
+        "type": "coffee_lofi",
+        "tileX": 18,
+        "tileY": 10,
+        "name": "Hồ Bơi Sinh Viên FPTU & Ghế Thư Giãn",
+        "label": "Lofi Thư Giãn Bờ Hồ",
+        "metadata": { "sport": "pool", "title": "HỒ BƠI SINH VIÊN FPTU" }
       }
     ]
   }

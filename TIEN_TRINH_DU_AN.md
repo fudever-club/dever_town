@@ -8,7 +8,7 @@
 ## 🎯 TỔNG QUAN TIẾN ĐỘ
 
 ```
-[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Nâng Cấp: Bộ Gõ Space/E + Viewport 800x600 + Brand FPTU Đà Nẵng & DEVER]
+[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Viewport 800x600 & FPTU Brand] ➔ [✅ EXPANSION v3: 7 Rooms, Inventory, Wardrobe, Animated Beacons, Sports Complex & Smart Lofi]
 ```
 
 ---
@@ -61,45 +61,49 @@
 
 ---
 
-### 🔥 BƯỚC MỚI: Khắc Phục Triệt Để Bộ Gõ (Space/E) + Mở Rộng Viewport 800x600 + Nhận Diện FPTU Đà Nẵng & DEVER Club (Hoàn thành)
-
-#### 1. Sửa Lỗi Gõ Phím Space (Dấu Cách), Chữ 'E' & Tiếng Việt Đa Tầng:
-- **Xóa bỏ Captures của Phaser:** Gọi `clearCaptures()` và `preventDefault = false` trên `scene.input.keyboard` để Phaser không bao giờ chặn hành vi mặc định của trình duyệt đối với phím Space (`keyCode 32`) hoặc chữ cái `E/W/A/S/D`.
-- **Global Focus Manager:** Lắng nghe sự kiện `focusin`/`focusout` toàn cục:
-  - Khi người chơi click vào ô Chat, ô Nickname, Form Đăng nhập hay Sổ tay: Phaser tạm tắt nhận phím (`keyboard.enabled = false`) và nhân vật dừng di chuyển tức thì.
-  - Khi người chơi click ra ngoài canvas hoặc đóng modal: Phaser tự động bật lại phím và xóa cờ phím cũ (`resetKeys()`), không bị hiện tượng trôi nhân vật.
-  - Cho phép đặt Nickname có khoảng trắng (ví dụ: `Dev Alpha FPT`, `Coder Đà Nẵng`).
-  - Gõ phím chữ `e`/`E` trong ô chat/nickname thoải mái mà không bị kích hoạt mở modal tương tác.
-- **Cô lập sự kiện `stopPropagation`:** Chặn toàn bộ sự kiện phím nổi bọt từ các input DOM ra ngoài canvas game.
-
-#### 2. Mở Rộng Màn Hình Game Lên 800x600 px (Bố Cục 1160px Cao Cấp):
-- Nâng cấp độ phân giải Game Canvas từ 640x480 lên **800x600 px** (kết hợp `pixelArt: true`, `roundPixels: true` và `image-rendering: pixelated;` không mờ vỡ hình).
-- Mở rộng toàn bộ 5 bản đồ từ 20x15 lên **25 cột x 19 dòng (800x608 px)**.
-- Bố cục tổng thể `#main-content`: **800px Game Canvas + 344px Live Chat = 1160px** rộng rãi, thoáng đãng, vừa khít trên màn hình Desktop và Laptop hiện đại.
-
-#### 3. Tích Hợp Nhận Diện Thương Hiệu Đại Học FPT Đà Nẵng & CLB DEVER:
-- Mở rộng bộ tileset từ 19 lên **24 tiles** tại `TextureGenerator.js`:
-  - 🐸 **Tile 19 - Linh vật Cóc Vàng FPT University Đà Nẵng (Obstacle):** Cóc Thiềm Thừ ngậm đồng tiền vàng, ngự trên bệ đá ngọc bích đặt trang trọng tại trung tâm Sảnh đón tiếp.
-  - 🏛️ **Tile 20 - Biển hiệu "FPT UNIVERSITY DA NANG" (Obstacle):** Tích hợp 3 dải màu FPT (Cam `#f26f21`, Xanh lá `#22c55e`, Xanh dương `#2563eb`).
-  - ⚡ **Tile 21 - Bảng hiệu Neon DEVER Club "Code Your Dream" (Obstacle):** Biểu tượng cặp ngoặc `</>` phát sáng công nghệ.
-  - 🚩 **Tile 22 - Cột cờ FPT University (Obstacle):** Cột cờ inox và lá cờ FPT 3 màu tung bay tại sảnh đón.
-  - 🏢 **Tile 23 - Sàn gạch hoa cương Giảng đường Alpha FPTU:** Phối màu Cam FPT `#f26f21` và Navy `#002147`.
-- Tone màu chủ đạo toàn hệ thống được cập nhật theo bảng màu FPT Orange & Deep Navy sang trọng.
+### ✅ NÂNG CẤP BỘ GÕ, MÀN HÌNH 800x600 & BẢN SẮC FPTU ĐÀ NẴNG (Hoàn thành)
+- **Khắc phục lỗi phím Space & chữ 'E':** Xử lý triệt để Phaser Key Capture bằng `clearCaptures()`, `preventDefault = false` và Global Focus Manager.
+- **Mở rộng màn hình 800x600 px (Layout 1160px):** Nâng cấp 5 phòng lên 25 cột x 19 dòng.
+- **Linh vật Cóc Vàng FPTU, Biển hiệu FPT University Da Nang & Bảng Neon DEVER.**
+- **Git Commit:** `55e4211`
 
 ---
 
-## 🎮 HƯỚNG DẪN TRẢI NGHIỆM TRỰC TIẾP
-
-1. **Mở trình duyệt truy cập:** 👉 **`http://localhost:3000`**
-2. **Trải nghiệm các tính năng mới:**
-   - ⌨️ **Test gõ Space & Chữ E:**
-     - Đặt Nickname có khoảng trắng: `"Dev Alpha FPTU Đà Nẵng"` hoặc `"Nguyễn Văn Hùng"`.
-     - Nhấn `Enter` mở chat và gõ: `"Xin chào các bạn FPTU Đà Nẵng! Hôm nay DEVER Club có workshop lập trình game 2D."` ➔ Gõ dấu cách (Space) và chữ `e` hoàn toàn tự nhiên 100%.
-   - 🖼️ **Ngắm nhìn không gian 800x600 & Bản sắc FPTU:**
-     - Chiêm ngưỡng tượng **Cóc Vàng FPTU**, **Biển hiệu FPT University Da Nang**, **Cột cờ FPT** và **Bảng Neon DEVER Club**.
-     - Thử di chuyển trong bản đồ rộng 25x19 ô cực kỳ thoáng đãng.
-   - 🚪 **5 Không Gian:**
-     - Sảnh Alpha (`main_hall`), Tech Lab (`dever_lab`), Thư viện FPTU (`library_lounge`), Phòng Kỷ Niệm (`memory_room`), Không Gian Web (`web_room`).
+### ✅ TÍCH HỢP HỆ SINH THÁI LANDING PAGE FU-DEVER (Hoàn thành)
+- **Nhúng trực tiếp Landing Page chính thức:** `https://fu-dever-landingpage-v2.vercel.app/`
+- **Thanh Quick Portals Bar:** Member Portal, Admin Portal, GitHub, Facebook, Đơn Đăng Ký Thành Viên.
+- **Git Commit:** `b7e3044`
 
 ---
-*Hệ thống đã được kiểm thử tự động 100% PASSED và sẵn sàng phục vụ sinh viên FPTU!*
+
+### 🚀 EXPANSION v3: 7 PHÒNG, INVENTORY, WARDROBE, ANIMATED BEACONS & SPORTS COMPLEX (Hoàn thành)
+1. **Hiệu ứng Nhận diện Event Tương tác (Animated Beacons & Floating Badges):**
+   - Vòng tròn phát sáng nhấp nháy dưới sàn (`Pulsing Floor Beacon`) phân màu theo từng loại zone.
+   - Thẻ sự kiện lơ lửng trên đầu (`Floating Badge`) với animation bồng bềnh nhẹ nhàng giúp người chơi nhận biết rõ ràng mọi vị trí tương tác từ xa.
+2. **Hệ thống Túi Đồ & Trang Bị Cầm Tay (Inventory System):**
+   - Danh mục 7 vật phẩm chuẩn FPTU & Dev: 💻 *MacBook Pro Dev*, ⌨️ *Bàn phím cơ Keychron*, 🖱️ *Chuột Gaming*, 🐸 *Gấu bông Cóc Vàng*, 🔑 *Móc khóa Thẻ SV FPTU*, ☕ *Cốc Cà Phê Dev*, 🏆 *Cúp Hackathon*.
+   - Rải các điểm nhặt đồ (`Pickup Spots`) trên khắp bản đồ kèm hiệu ứng thu thập.
+   - Phím tắt `[I]` hoặc nút Túi đồ trên Header để mở giao diện Túi đồ chi tiết.
+   - Tính năng **Trang bị cầm tay**: Icon vật phẩm bay nhấp nhô bên cạnh vai nhân vật và đồng bộ realtime cho mọi người chơi khác nhìn thấy.
+3. **Phòng Media Hub (`media_hub`):**
+   - Tích hợp 5 trạm truyền thông: Fanpage Facebook FU-DEVER, TikTok FPTU Đà Nẵng, GitHub Organization, Đơn Tuyển Quân Thành Viên Mới, Kênh Hotline & Hòm Thư CLB.
+4. **Khu Phức Hợp Thể Thao FPT University Đà Nẵng (`sports_complex`):**
+   - ⚽ Sân bóng đá mini cỏ nhân tạo (Kèm Minigame sút phạt đền).
+   - 🏀 Sân bóng rổ FPTU (Kèm Minigame ném bóng 3 điểm).
+   - 🏸 Sân cầu lông / bóng chuyền tiêu chuẩn.
+   - 🏊 Hồ bơi sinh viên FPTU thư giãn.
+5. **Tủ Đồ Tùy Chỉnh Trang Phục (Wardrobe Customizer):**
+   - Tùy biến màu áo Hoodie FPTU (Cam FPT, Xanh DEVER, Đen Cyber, Hồng Neon, Xanh Ngọc).
+   - Đổi màu tóc và phụ kiện độc đáo (Kính râm Cool ngầu, Kính cận Tri thức, Tai nghe Gaming RGB, Vương miện Cóc Vàng).
+   - Live Canvas Preview thời gian thực và sinh texture động.
+6. **Smart YouTube URL Loader & 5 Presets Lofi Tuyển Chọn:**
+   - Bộ phân giải tự động nhận diện mọi link YouTube (thường, rút gọn `youtu.be`, `shorts`, `embed`) và chuyển đổi tức thì.
+   - 5 Preset Lofi chất lượng cao: *Lofi Girl, Synthwave Code Đêm, FPTU Coding Chill Sóng Não Alpha, Mưa Sơn Trà Đà Nẵng, Vietnamese Lofi Chillhop*.
+
+---
+
+## 🧪 BÁO CÁO NGHIỆM THU KIỂM THỬ (QA REPORT)
+- **Automated Test Suite (`.agent_system/test-expansion-v3.js`):** **6/6 TESTS PASSED (100%)**
+- **Production Build (`npm run build`):** **PASSED 100% (Built in 9.19s, 0 errors)**
+- **Dev Server:** Chạy cổng `3000` (Vite)
+- **Realtime Server:** Chạy cổng `3001` (Node.js/Socket.io)

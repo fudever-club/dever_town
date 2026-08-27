@@ -1,4 +1,5 @@
 import { INTERACTION_PRESETS } from '../config/interactions.js';
+import { LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
 import { PomodoroTimer } from './PomodoroTimer.js';
 
 export class InteractiveModal {
@@ -38,33 +39,30 @@ export class InteractiveModal {
   initEvents() {
     if (!this.modalEl) return;
 
-    // Nút đóng modal
     const closeBtn = document.getElementById('interactive-modal-close');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.hide());
     }
 
-    // Click ra ngoài backdrop để đóng
     this.modalEl.addEventListener('click', (e) => {
       if (e.target === this.modalEl) {
         this.hide();
       }
     });
 
-    // Phím Escape đóng modal
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen()) {
         this.hide();
       }
     });
 
-    // 1. Code Editor Run Button
+    // 1. Code Editor
     const runCodeBtn = document.getElementById('code-run-btn');
     if (runCodeBtn) {
       runCodeBtn.addEventListener('click', () => this.executeCode());
     }
 
-    // 2. Notes Auto-save
+    // 2. Notes
     const notesInput = document.getElementById('notes-textarea');
     if (notesInput) {
       const saved = localStorage.getItem('dever_club_notes');
@@ -74,7 +72,7 @@ export class InteractiveModal {
       });
     }
 
-    // 3. Pomodoro Buttons
+    // 3. Pomodoro
     const pomoStartBtn = document.getElementById('pomo-start-btn');
     const pomoPauseBtn = document.getElementById('pomo-pause-btn');
     const pomoResetBtn = document.getElementById('pomo-reset-btn');
@@ -83,7 +81,19 @@ export class InteractiveModal {
     if (pomoPauseBtn) pomoPauseBtn.addEventListener('click', () => this.pomodoro.pause());
     if (pomoResetBtn) pomoResetBtn.addEventListener('click', () => this.pomodoro.reset('work'));
 
-    // 4. Slide URL Loader
+    // 4. Lofi Music Loader & Presets
+    const lofiLoadBtn = document.getElementById('lofi-load-btn');
+    if (lofiLoadBtn) {
+      lofiLoadBtn.addEventListener('click', () => {
+        const input = document.getElementById('lofi-url-input');
+        if (input && input.value.trim()) {
+          const videoId = extractYouTubeVideoId(input.value.trim());
+          this.loadLofiVideo(videoId);
+        }
+      });
+    }
+
+    // 5. Slides
     const loadSlideBtn = document.getElementById('slide-load-btn');
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
@@ -94,7 +104,7 @@ export class InteractiveModal {
       });
     }
 
-    // 5. Memory Gallery Next/Prev
+    // 6. Memory Gallery
     const prevMemoryBtn = document.getElementById('memory-prev-btn');
     const nextMemoryBtn = document.getElementById('memory-next-btn');
 
@@ -114,15 +124,10 @@ export class InteractiveModal {
       });
     }
 
-    // 6. Website URL Loader & Quick Portal buttons
-    const loadWebBtn = document.getElementById('web-load-btn');
-    if (loadWebBtn) {
-      loadWebBtn.addEventListener('click', () => {
-        const input = document.getElementById('web-url-input');
-        if (input && input.value.trim()) {
-          this.loadWebsiteIframe(input.value.trim());
-        }
-      });
+    // 7. Sports Game Action
+    const sportActionBtn = document.getElementById('sports-action-btn');
+    if (sportActionBtn) {
+      sportActionBtn.addEventListener('click', () => this.playSportMiniGame());
     }
   }
 
@@ -140,11 +145,9 @@ export class InteractiveModal {
     if (titleEl) titleEl.textContent = zoneData.name || 'Khu Vực Tương Tác FU-DEVER';
     if (descEl) descEl.textContent = 'FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD';
 
-    // Ẩn tất cả các view panes
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));
 
-    // Hiển thị view pane tương ứng
     switch (zoneData.type) {
       case 'whiteboard_slides':
         this.setupSlidesView(zoneData);
@@ -163,6 +166,9 @@ export class InteractiveModal {
         break;
       case 'club_website':
         this.setupWebsiteView(zoneData);
+        break;
+      case 'sports_activity':
+        this.setupSportsView(zoneData);
         break;
       default:
         break;
@@ -202,8 +208,7 @@ export class InteractiveModal {
     pane.classList.remove('hidden');
 
     const preset = INTERACTION_PRESETS.whiteboard_slides;
-    const url = preset.defaultUrl;
-    this.loadSlideIframe(url);
+    this.loadSlideIframe(preset.defaultUrl);
   }
 
   loadSlideIframe(rawUrl) {
@@ -226,14 +231,10 @@ export class InteractiveModal {
     const jitsiUrl = INTERACTION_PRESETS.meeting_stage.getJitsiUrl(roomName);
 
     const iframe = document.getElementById('meeting-iframe');
-    if (iframe) {
-      iframe.src = jitsiUrl;
-    }
+    if (iframe) iframe.src = jitsiUrl;
 
     const gmeetBtn = document.getElementById('gmeet-open-btn');
-    if (gmeetBtn) {
-      gmeetBtn.href = `https://meet.google.com/new`;
-    }
+    if (gmeetBtn) gmeetBtn.href = `https://meet.google.com/new`;
   }
 
   setupCodeView(zoneData) {
@@ -281,9 +282,36 @@ export class InteractiveModal {
     if (!pane) return;
     pane.classList.remove('hidden');
 
+    this.renderLofiPresets();
+    this.loadLofiVideo('jfKfPfyJRdk');
+  }
+
+  renderLofiPresets() {
+    const listEl = document.getElementById('lofi-presets-list');
+    if (!listEl) return;
+
+    listEl.innerHTML = '';
+    LOFI_PRESETS.forEach(preset => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lofi-preset-btn';
+      btn.textContent = preset.name;
+      btn.title = preset.desc;
+
+      btn.addEventListener('click', () => {
+        const input = document.getElementById('lofi-url-input');
+        if (input) input.value = `https://youtu.be/${preset.videoId}`;
+        this.loadLofiVideo(preset.videoId);
+      });
+
+      listEl.appendChild(btn);
+    });
+  }
+
+  loadLofiVideo(videoId) {
     const lofiIframe = document.getElementById('lofi-iframe');
     if (lofiIframe) {
-      lofiIframe.src = INTERACTION_PRESETS.coffee_lofi.getEmbedUrl('jfKfPfyJRdk');
+      lofiIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=1`;
     }
   }
 
@@ -327,24 +355,20 @@ export class InteractiveModal {
     if (storyEl) storyEl.textContent = memory.story;
     if (counterEl) counterEl.textContent = `${this.currentMemoryIndex + 1} / ${memories.length}`;
 
-    // Vẽ tranh minh họa nghệ thuật Pixel lên Canvas
     if (canvasArt) {
       const ctx = canvasArt.getContext('2d');
       ctx.clearRect(0, 0, canvasArt.width, canvasArt.height);
 
-      // Nền gradient Deep Blue
       const grad = ctx.createLinearGradient(0, 0, canvasArt.width, canvasArt.height);
       grad.addColorStop(0, '#002147');
       grad.addColorStop(1, '#0f172a');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvasArt.width, canvasArt.height);
 
-      // Khung tranh mạ vàng
       ctx.strokeStyle = memory.accentColor || '#f59e0b';
       ctx.lineWidth = 4;
       ctx.strokeRect(10, 10, canvasArt.width - 20, canvasArt.height - 20);
 
-      // Pixel Art Header
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 16px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
@@ -391,13 +415,47 @@ export class InteractiveModal {
 
   loadWebsiteIframe(url) {
     const iframe = document.getElementById('web-iframe');
-    if (iframe) {
-      iframe.src = url;
-    }
+    if (iframe) iframe.src = url;
 
     const openTabBtn = document.getElementById('web-open-tab-btn');
-    if (openTabBtn) {
-      openTabBtn.href = url;
+    if (openTabBtn) openTabBtn.href = url;
+  }
+
+  setupSportsView(zoneData) {
+    const pane = document.getElementById('pane-sports');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const meta = zoneData.metadata || {};
+    const titleEl = document.getElementById('sports-game-title');
+    const descEl = document.getElementById('sports-game-desc');
+    const actionBtn = document.getElementById('sports-action-btn');
+    const scoreEl = document.getElementById('sports-score-display');
+
+    if (titleEl) titleEl.textContent = meta.title || 'HOẠT ĐỘNG THỂ THAO FPTU';
+    if (descEl) {
+      descEl.textContent = meta.sport === 'football'
+        ? '⚽ Hãy canh lực sút bóng vào góc chữ A để ghi bàn thắng vàng cho FU-DEVER!'
+        : '🏀 Hãy canh cự ly để thực hiện cú ném 3 điểm hoàn hảo vào rổ FPTU!';
+    }
+    if (actionBtn) {
+      actionBtn.textContent = meta.sport === 'football' ? 'SÚT BÓNG VÀO LƯỚI ⚽' : 'NÉM BÓNG VÀO RỔ 🏀';
+    }
+    if (scoreEl) scoreEl.textContent = 'Sẵn sàng thi đấu!';
+  }
+
+  playSportMiniGame() {
+    const scoreEl = document.getElementById('sports-score-display');
+    const meta = this.currentZone?.metadata || {};
+    const rand = Math.random();
+
+    if (rand > 0.3) {
+      const pts = Math.floor(Math.random() * 3) + 1;
+      scoreEl.textContent = `🎉 VÀO RỒI! Bạn vừa thực hiện pha ghi điểm đẳng cấp (+${pts} Điểm)!`;
+      scoreEl.className = 'sports-score-text success';
+    } else {
+      scoreEl.textContent = `⚡ Tiếc quá! Bóng đã trúng xà ngang cột dọc! Hãy thử lại phát nữa nhé!`;
+      scoreEl.className = 'sports-score-text fail';
     }
   }
 }

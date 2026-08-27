@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ITEMS_DATABASE } from '../config/items.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
   if (!str) return '';
@@ -20,22 +21,24 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     super(scene, x, y, textureKey, 0);
 
     this.id = options.id;
-    this.name = options.name || 'Thành viên';
+    this.name = options.name || 'Thành viên khác';
     this.avatarId = avatarId;
-    this.role = options.role || 'dev';
+    this.role = options.role || 'guest';
+    this.equippedItemId = options.equippedItemId || null;
 
     scene.add.existing(this);
 
     this.targetX = x;
     this.targetY = y;
     this.targetDirection = 'down';
-    this.isMoving = false;
-    this.lerpFactor = 0.25;
+    this.targetMoving = false;
+    this.currentDirection = 'down';
 
     this.speechBubble = null;
     this.speechTimer = null;
 
     this.createNameTag();
+    this.createEquippedItemDisplay();
     this.setDepth(this.y);
   }
 
@@ -65,30 +68,59 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.nameTagContainer.add(tagText);
   }
 
+  createEquippedItemDisplay() {
+    if (this.equippedContainer) {
+      this.equippedContainer.destroy();
+      this.equippedContainer = null;
+    }
+
+    if (!this.equippedItemId || !ITEMS_DATABASE[this.equippedItemId]) return;
+
+    const item = ITEMS_DATABASE[this.equippedItemId];
+    this.equippedContainer = this.scene.add.container(this.x + 14, this.y - 8);
+    this.equippedContainer.setDepth(1000002);
+
+    const bgGfx = this.scene.add.graphics();
+    bgGfx.fillStyle(0x0f172a, 0.85);
+    bgGfx.fillCircle(0, 0, 9);
+    bgGfx.lineStyle(1.5, Phaser.Display.Color.HexStringToColor(item.accentColor || '#f26f21').color, 1);
+    bgGfx.strokeCircle(0, 0, 9);
+
+    const icon = this.scene.add.text(0, 0, item.icon, {
+      fontSize: '10px'
+    }).setOrigin(0.5, 0.5);
+
+    this.equippedContainer.add([bgGfx, icon]);
+
+    this.scene.tweens.add({
+      targets: this.equippedContainer,
+      y: this.y - 12,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+  }
+
+  setEquippedItem(itemId) {
+    this.equippedItemId = itemId;
+    this.createEquippedItemDisplay();
+  }
+
   getRoleColor() {
     switch (this.role) {
       case 'admin': return 'rgba(217, 119, 6, 0.9)';
       case 'leader': return 'rgba(147, 51, 234, 0.9)';
       case 'dev': return 'rgba(37, 99, 235, 0.9)';
-      default: return 'rgba(30, 41, 59, 0.85)';
+      default: return 'rgba(71, 85, 105, 0.85)';
     }
-  }
-
-  updateProfile({ name, avatarId, role }) {
-    if (name) this.name = name.normalize('NFC');
-    if (role) this.role = role;
-    if (avatarId && avatarId !== this.avatarId) {
-      this.avatarId = avatarId;
-      this.setTexture(`char_${avatarId}`, 0);
-    }
-    this.createNameTag();
   }
 
   setTargetPosition(x, y, direction, isMoving) {
     this.targetX = x;
     this.targetY = y;
     this.targetDirection = direction || this.targetDirection;
-    this.isMoving = isMoving;
+    this.targetMoving = isMoving !== undefined ? isMoving : false;
   }
 
   showSpeechBubble(message) {
@@ -98,68 +130,76 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     }
     if (this.speechTimer) {
       this.speechTimer.remove();
+      this.speechTimer = null;
     }
 
-    const displayMsg = safeUnicodeTruncate(message, 45);
+    const maxChars = 50;
+    const safeText = safeUnicodeTruncate(message, maxChars);
 
-    this.speechBubble = this.scene.add.container(this.x, this.y - 48);
-    this.speechBubble.setDepth(1000003);
+    const bubbleContainer = this.scene.add.container(this.x, this.y - 52);
+    bubbleContainer.setDepth(1000002);
 
-    const text = this.scene.add.text(0, 0, displayMsg, {
+    const textObj = this.scene.add.text(0, 0, safeText, {
       fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       color: '#0f172a',
-      fontStyle: 'normal',
+      align: 'center',
+      wordWrap: { width: 170, useAdvancedWrap: true },
       padding: { top: 4, bottom: 4, left: 6, right: 6 },
-      lineSpacing: 3,
-      wordWrap: { width: 170, useAdvancedWrap: true }
+      lineSpacing: 3
     }).setOrigin(0.5, 0.5);
 
     const padX = 14;
     const padY = 8;
-    const w = text.width + padX;
-    const h = text.height + padY;
+    const boxW = Math.max(textObj.width + padX, 50);
+    const boxH = Math.max(textObj.height + padY, 24);
 
     const bg = this.scene.add.graphics();
-    bg.fillStyle(0xffffff, 0.96);
-    bg.fillRoundedRect(-w / 2, -h / 2, w, h, 6);
-    bg.lineStyle(1.5, 0x8b5cf6, 1); // Purple border for remote players
-    bg.strokeRoundedRect(-w / 2, -h / 2, w, h, 6);
+    bg.fillStyle(0xffffff, 0.95);
+    bg.fillRoundedRect(-boxW / 2, -boxH / 2, boxW, boxH, 8);
+    bg.lineStyle(2, 0x94a3b8, 1);
+    bg.strokeRoundedRect(-boxW / 2, -boxH / 2, boxW, boxH, 8);
 
-    bg.fillStyle(0xffffff, 0.96);
-    bg.beginPath();
-    bg.moveTo(-5, h / 2);
-    bg.lineTo(5, h / 2);
-    bg.lineTo(0, h / 2 + 5);
-    bg.closePath();
-    bg.fillPath();
+    bg.fillStyle(0xffffff, 0.95);
+    bg.fillTriangle(-5, boxH / 2 - 1, 5, boxH / 2 - 1, 0, boxH / 2 + 5);
 
-    this.speechBubble.add([bg, text]);
+    bubbleContainer.add([bg, textObj]);
+    this.speechBubble = bubbleContainer;
 
     this.speechTimer = this.scene.time.delayedCall(4500, () => {
       if (this.speechBubble) {
-        this.scene.tweens.add({
-          targets: this.speechBubble,
-          alpha: 0,
-          y: '-=10',
-          duration: 350,
-          onComplete: () => {
-            if (this.speechBubble) {
-              this.speechBubble.destroy();
-              this.speechBubble = null;
-            }
-          }
-        });
+        this.speechBubble.destroy();
+        this.speechBubble = null;
       }
     });
   }
 
-  update() {
-    this.x = Phaser.Math.Linear(this.x, this.targetX, this.lerpFactor);
-    this.y = Phaser.Math.Linear(this.y, this.targetY, this.lerpFactor);
+  updateProfile({ name, avatarId, role, equippedItemId }) {
+    if (name) this.name = name;
+    if (avatarId && avatarId !== this.avatarId) {
+      this.avatarId = avatarId;
+      const textureKey = `char_${avatarId}`;
+      if (this.scene.textures.exists(textureKey)) {
+        this.setTexture(textureKey, 0);
+      }
+    }
+    if (role) this.role = role;
+    if (equippedItemId !== undefined) {
+      this.setEquippedItem(equippedItemId);
+    }
+    this.createNameTag();
+  }
 
-    const animPrefix = this.isMoving ? 'walk' : 'idle';
-    const animKey = `${animPrefix}_${this.targetDirection}_${this.avatarId}`;
+  update() {
+    // Lerp nội suy mượt mà
+    const lerpFactor = 0.25;
+    this.x = Phaser.Math.Linear(this.x, this.targetX, lerpFactor);
+    this.y = Phaser.Math.Linear(this.y, this.targetY, lerpFactor);
+
+    this.currentDirection = this.targetDirection;
+
+    const animPrefix = this.targetMoving ? 'walk' : 'idle';
+    const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
 
     if (this.scene.anims.exists(animKey)) {
       this.anims.play(animKey, true);
@@ -170,8 +210,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.nameTagContainer) {
       this.nameTagContainer.setPosition(this.x, this.y - 28);
     }
+
     if (this.speechBubble) {
-      this.speechBubble.setPosition(this.x, this.y - 48);
+      this.speechBubble.setPosition(this.x, this.y - 52);
+    }
+
+    if (this.equippedContainer) {
+      this.equippedContainer.setPosition(this.x + 14, this.y - 8);
     }
   }
 
@@ -181,6 +226,9 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     }
     if (this.speechBubble) {
       this.speechBubble.destroy();
+    }
+    if (this.equippedContainer) {
+      this.equippedContainer.destroy();
     }
     if (this.speechTimer) {
       this.speechTimer.remove();

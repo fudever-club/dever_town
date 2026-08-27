@@ -1114,6 +1114,506 @@ body {
   opacity: 0.92;
 }
 
+.modal-card-lg {
+  width: 92%;
+  max-width: 780px;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.dever-toast {
+  position: fixed;
+  top: 70px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #f26f21;
+  box-shadow: 0 8px 24px rgba(242, 111, 33, 0.3);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 9999999;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: all 0.3s ease-out;
+}
+
+.dever-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   INVENTORY WORKSPACE
+   ========================================================================== */
+.btn-inventory {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+.btn-wardrobe {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+}
+.btn-emoji {
+  margin-right: 4px;
+}
+
+.inventory-workspace {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+}
+
+.panel-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.inventory-item-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.inventory-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.inventory-item-card.selected {
+  border-color: #f26f21 !important;
+  background: rgba(242, 111, 33, 0.12);
+  box-shadow: 0 0 12px rgba(242, 111, 33, 0.35);
+}
+
+.inventory-item-card.equipped {
+  border-color: #38bdf8 !important;
+}
+
+.inventory-item-card.empty {
+  opacity: 0.45;
+}
+
+.item-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.item-icon {
+  font-size: 24px;
+}
+
+.item-count {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #f26f21;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.equipped-badge {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0284c7;
+  color: white;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.item-card-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.item-detail-card {
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.item-detail-icon-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-icon-huge {
+  font-size: 40px;
+}
+
+.item-meta-tags {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.rarity-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.rarity-badge.common { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+.rarity-badge.uncommon { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+.rarity-badge.rare { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+.rarity-badge.epic { background: rgba(192, 132, 252, 0.2); color: #c084fc; }
+.rarity-badge.legendary { background: rgba(245, 158, 11, 0.25); color: #fbbf24; }
+.rarity-badge.mythic { background: rgba(236, 72, 153, 0.25); color: #f472b6; }
+
+.category-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+.item-detail-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.item-detail-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.item-detail-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.btn-equip {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-equip.equip {
+  background: linear-gradient(135deg, #f26f21, #ea580c);
+  color: white;
+}
+
+.btn-equip.unequip {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.btn-equip.disabled {
+  background: #1e293b;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   WARDROBE WORKSPACE
+   ========================================================================== */
+.wardrobe-workspace {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 18px;
+}
+
+.wardrobe-preview-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-box {
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #f26f21;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-apply-wardrobe {
+  width: 100%;
+  margin: 0;
+}
+
+.wardrobe-options-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.wardrobe-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wardrobe-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.wardrobe-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wardrobe-color-chip {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wardrobe-color-chip:hover {
+  transform: scale(1.15);
+}
+
+.wardrobe-color-chip.selected {
+  border-color: #ffffff;
+  box-shadow: 0 0 10px #f26f21;
+  transform: scale(1.15);
+}
+
+.wardrobe-acc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+
+.wardrobe-acc-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wardrobe-acc-card:hover {
+  background: rgba(242, 111, 33, 0.15);
+  border-color: #f26f21;
+}
+
+.wardrobe-acc-card.selected {
+  background: rgba(242, 111, 33, 0.2);
+  border-color: #f26f21;
+  box-shadow: 0 0 8px rgba(242, 111, 33, 0.4);
+}
+
+.acc-icon {
+  font-size: 16px;
+}
+
+.acc-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   LOFI PRESETS & SPORTS MINI-GAME
+   ========================================================================== */
+.coffee-topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lofi-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.lofi-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lofi-preset-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.lofi-presets-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lofi-preset-btn {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #38bdf8;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lofi-preset-btn:hover {
+  background: #0284c7;
+  color: white;
+  border-color: #38bdf8;
+}
+
+.sports-mini-workspace {
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.sports-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #22c55e;
+  margin: 0 0 6px 0;
+}
+
+.sports-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.sports-score-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 12px;
+}
+
+.sports-score-text.success {
+  color: #4ade80;
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.sports-score-text.fail {
+  color: #fbbf24;
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.sports-btn-action {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+}
+
+.sports-btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.6);
+}
+
 .hidden {
   display: none !important;
 }
@@ -1138,3 +1638,4 @@ body {
     height: 250px;
   }
 }
+

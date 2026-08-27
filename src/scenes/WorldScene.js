@@ -8,8 +8,12 @@ import { SocketManager } from '../network/SocketManager.js';
 import { ChatBox } from '../ui/ChatBox.js';
 import { AuthModal } from '../ui/AuthModal.js';
 import { InteractiveModal } from '../ui/InteractiveModal.js';
+import { InventoryModal } from '../ui/InventoryModal.js';
+import { WardrobeModal } from '../ui/WardrobeModal.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
+import { InventoryManager } from '../managers/InventoryManager.js';
 import { authService } from '../services/AuthService.js';
+import { TextureGenerator } from '../utils/TextureGenerator.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -23,10 +27,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   create() {
-    // 1. Giới hạn vật lý bản đồ (640x480)
     this.physics.world.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
 
-    // 2. Khởi tạo Local Player
+    // 1. Khởi tạo Local Player
     const user = authService.getUser();
     const mapData = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
     const spawnX = mapData.spawnPoint.x;
@@ -35,18 +38,19 @@ export class WorldScene extends Phaser.Scene {
     const initialName = user ? (user.display_name || user.displayName) : (localStorage.getItem('dever_nickname') || 'Dever Member');
     const initialAvatar = user ? (user.avatar_id || user.avatarId) : 'dev_hoodie';
     const initialRole = user ? user.role : (authService.isLoggedIn() ? 'dev' : 'guest');
+    const initialEquipped = localStorage.getItem('dever_equipped_item') || null;
 
     this.player = new Player(this, spawnX, spawnY, {
       name: initialName,
       avatarId: initialAvatar,
       role: initialRole,
+      equippedItemId: initialEquipped,
       isCurrentPlayer: true
     });
 
-    // 3. Khởi tạo Bộ điều khiển phím
+    // 2. Khởi tạo Controllers & Managers
     this.inputController = new InputController(this);
 
-    // 4. Khởi tạo Interaction Manager
     this.interactionManager = new InteractionManager(this, {
       onInteract: (zoneData) => {
         if (this.interactiveModal) {
@@ -55,23 +59,34 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 5. Xây dựng bản đồ phòng hiện tại
+    this.inventoryManager = new InventoryManager(this, {
+      onInventoryChange: () => {
+        if (this.inventoryModal && this.inventoryModal.isOpen()) {
+          this.inventoryModal.render();
+        }
+      },
+      onEquipChange: (item) => {
+        if (this.inventoryModal && this.inventoryModal.isOpen()) {
+          this.inventoryModal.render();
+        }
+      }
+    });
+
+    // 3. Xây dựng bản đồ phòng
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
-    // 6. Camera bám theo Player
+    // 4. Camera Follow
     const camera = this.cameras.main;
     camera.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
     camera.startFollow(this.player, true, 0.1, 0.1);
     camera.setRoundPixels(true);
 
-    // 7. HUD
+    // 5. HUD & Network
     this.createHUD();
-
-    // 8. Tích hợp Network Socket.io
     this.socketManager = new SocketManager(this);
     this.socketManager.connect();
 
-    // 9. Khởi tạo UI & Fullscreen
+    // 6. UI Modals
     this.initUI();
   }
 
@@ -81,7 +96,6 @@ export class WorldScene extends Phaser.Scene {
 
     this.currentRoomId = roomId;
 
-    // 1. Dọn dẹp tiles và obstacles cũ
     if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
       this.tileSprites = [];
@@ -97,21 +111,20 @@ export class WorldScene extends Phaser.Scene {
       this.portalGroup.clear(true, true);
     }
 
-    // 2. Xóa sạch Remote Players
     for (const remote of this.remotePlayers.values()) {
       remote.destroy();
     }
     this.remotePlayers.clear();
 
-    // 3. Khởi tạo Groups vật lý mới
     this.obstacleGroup = this.physics.add.staticGroup();
     this.portalGroup = this.physics.add.staticGroup();
 
     const cols = GAME_CONFIG.MAP_WIDTH_TILES;
     const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
-    // Solid tiles: 2 (Tường), 3 (Kệ sách), 4 (Bàn), 8 (Server Rack), 12 (Bảng), 14 (Quầy cà phê), 15 (Vách kính), 16 (Khung tranh), 17 (Bục cúp), 19 (Cóc Vàng FPTU), 20 (Biển hiệu FPTU), 21 (Neon DEVER), 22 (Cột cờ FPT)
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22]);
+
+    // Solid obstacles
+    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29]);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -131,7 +144,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // 4. Tạo Portals
+    // Portals
     if (mapData.portals) {
       mapData.portals.forEach(p => {
         const posX = p.tileX * tileSize + tileSize / 2;
@@ -154,12 +167,17 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
-    // 5. Cập nhật Interactive Zones
+    // Zones
     if (this.interactionManager) {
       this.interactionManager.setZones(mapData.zones || []);
     }
 
-    // 6. Cập nhật Va chạm
+    // Pickups for this room
+    if (this.inventoryManager) {
+      this.inventoryManager.loadPickupsForRoom(roomId);
+    }
+
+    // Colliders & Overlaps
     if (this.playerCollider) this.playerCollider.destroy();
     this.playerCollider = this.physics.add.collider(this.player, this.obstacleGroup);
 
@@ -170,13 +188,11 @@ export class WorldScene extends Phaser.Scene {
       (player, portal) => this.handlePortalOverlap(portal.portalData)
     );
 
-    // 7. Đặt lại vị trí Local Player
     if (spawnX !== undefined && spawnY !== undefined) {
       this.player.setPosition(spawnX, spawnY);
       this.player.body.reset(spawnX, spawnY);
     }
 
-    // 8. Cập nhật HUD & UI
     if (this.hudText) {
       this.hudText.setText(`DEVER TOWN | ${mapData.name}`);
     }
@@ -186,7 +202,6 @@ export class WorldScene extends Phaser.Scene {
       roomSelector.value = roomId;
     }
 
-    // 9. Thông báo Socket
     if (notifySocket && this.socketManager) {
       this.socketManager.switchRoom(roomId, spawnX, spawnY);
     }
@@ -217,7 +232,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   createHUD() {
-    this.hudText = this.add.text(12, 12, 'DEVER TOWN | Sảnh Chính Dever Town', {
+    this.hudText = this.add.text(12, 12, 'DEVER TOWN | Sảnh Chính Giảng Đường Alpha', {
       fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '600',
@@ -249,7 +264,20 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 3. Auth Modal
+    // 3. Inventory Modal
+    this.inventoryModal = new InventoryModal({
+      inventoryManager: this.inventoryManager
+    });
+
+    // 4. Wardrobe Modal
+    this.wardrobeModal = new WardrobeModal({
+      scene: this,
+      onApply: (config) => {
+        console.log('Đã áp dụng trang phục mới:', config);
+      }
+    });
+
+    // 5. Auth Modal
     this.authModal = new AuthModal({
       onAuthSuccess: ({ user, isGuest }) => {
         const name = user.display_name || user.displayName;
@@ -268,7 +296,21 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 4. Header Action Buttons
+    // 6. Header Buttons
+    const invBtn = document.getElementById('header-inventory-btn');
+    if (invBtn) {
+      invBtn.addEventListener('click', () => {
+        this.inventoryModal.toggle();
+      });
+    }
+
+    const wardrobeBtn = document.getElementById('header-wardrobe-btn');
+    if (wardrobeBtn) {
+      wardrobeBtn.addEventListener('click', () => {
+        this.wardrobeModal.show();
+      });
+    }
+
     const authBtn = document.getElementById('header-auth-btn');
     if (authBtn) {
       authBtn.addEventListener('click', () => {
@@ -294,7 +336,7 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
-    // 5. Quick Room Selector
+    // 7. Quick Room Selector
     const roomSelector = document.getElementById('room-selector');
     if (roomSelector) {
       roomSelector.addEventListener('change', (e) => {
@@ -311,7 +353,7 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
-    // 6. Fullscreen API Toggle
+    // 8. Fullscreen API
     const fsBtn = document.getElementById('fullscreen-btn');
     if (fsBtn) {
       fsBtn.addEventListener('click', () => this.toggleFullscreen());
@@ -384,17 +426,18 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /**
-   * --- SOCKET EVENT HANDLERS ---
-   */
-
   handleCurrentPlayers(players, myId) {
     for (const [id, pData] of Object.entries(players)) {
       if (id !== myId && !this.remotePlayers.has(id)) {
+        if (pData.wardrobeConfig) {
+          TextureGenerator.generateCustomAvatar(this, pData.wardrobeConfig, `char_${id}`);
+        }
+
         const remote = new RemotePlayer(this, pData.x, pData.y, {
           name: pData.name,
-          avatarId: pData.avatarId || 'dev_hoodie',
+          avatarId: pData.wardrobeConfig ? id : (pData.avatarId || 'dev_hoodie'),
           role: pData.role || 'dev',
+          equippedItemId: pData.equippedItemId,
           id
         });
         this.remotePlayers.set(id, remote);
@@ -404,10 +447,15 @@ export class WorldScene extends Phaser.Scene {
 
   handleNewPlayer(pData) {
     if (!this.remotePlayers.has(pData.id)) {
+      if (pData.wardrobeConfig) {
+        TextureGenerator.generateCustomAvatar(this, pData.wardrobeConfig, `char_${pData.id}`);
+      }
+
       const remote = new RemotePlayer(this, pData.x, pData.y, {
         name: pData.name,
-        avatarId: pData.avatarId || 'dev_hoodie',
+        avatarId: pData.wardrobeConfig ? pData.id : (pData.avatarId || 'dev_hoodie'),
         role: pData.role || 'dev',
+        equippedItemId: pData.equippedItemId,
         id: pData.id
       });
       this.remotePlayers.set(pData.id, remote);
@@ -421,10 +469,14 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  handlePlayerUpdated({ id, name, avatarId, role }) {
+  handlePlayerUpdated({ id, name, avatarId, role, equippedItemId, wardrobeConfig }) {
     const remote = this.remotePlayers.get(id);
     if (remote) {
-      remote.updateProfile({ name, avatarId, role });
+      if (wardrobeConfig) {
+        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, `char_${id}`);
+        avatarId = id;
+      }
+      remote.updateProfile({ name, avatarId, role, equippedItemId });
     }
   }
 
@@ -470,6 +522,10 @@ export class WorldScene extends Phaser.Scene {
 
     if (this.interactionManager && this.player) {
       this.interactionManager.update(this.player);
+    }
+
+    if (this.inventoryManager && this.player) {
+      this.inventoryManager.update(this.player);
     }
 
     for (const remote of this.remotePlayers.values()) {
