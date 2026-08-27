@@ -1,6 +1,6 @@
 {
   "name": "dever-town",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Thế giới Pixel 2D Gather.town style cho CLB / Trường học",
   "type": "module",
@@ -13,8 +13,10 @@
     "start": "node server/server.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "phaser": "^3.88.2",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"

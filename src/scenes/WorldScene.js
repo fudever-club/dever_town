@@ -5,27 +5,37 @@ import { Player } from '../entities/Player.js';
 import { RemotePlayer } from '../entities/RemotePlayer.js';
 import { SocketManager } from '../network/SocketManager.js';
 import { ChatBox } from '../ui/ChatBox.js';
-import { NicknameModal } from '../ui/NicknameModal.js';
+import { AuthModal } from '../ui/AuthModal.js';
+import { authService } from '../services/AuthService.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
     super('WorldScene');
-    this.remotePlayers = new Map(); // key: socketId, value: RemotePlayer
+    this.remotePlayers = new Map();
   }
 
   create() {
-    // 1. Giới hạn vật lý bản đồ (640x480)
+    // 1. Giới hạn vật lý bản đồ
     this.physics.world.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
 
     // 2. Tạo bản đồ Tilemap & Obstacle Group
     this.createMap();
 
-    // 3. Khởi tạo Local Player
+    // 3. Khởi tạo Local Player từ Auth Service hoặc Guest
+    const user = authService.getUser();
     const spawnX = 10 * GAME_CONFIG.TILE_SIZE + GAME_CONFIG.TILE_SIZE / 2; // 336
     const spawnY = 8 * GAME_CONFIG.TILE_SIZE + GAME_CONFIG.TILE_SIZE / 2;  // 272
-    const initialName = localStorage.getItem('dever_nickname') || 'Dever Member';
 
-    this.player = new Player(this, spawnX, spawnY, initialName, true);
+    const initialName = user ? (user.display_name || user.displayName) : (localStorage.getItem('dever_nickname') || 'Dever Member');
+    const initialAvatar = user ? (user.avatar_id || user.avatarId) : 'dev_hoodie';
+    const initialRole = user ? user.role : (authService.isLoggedIn() ? 'dev' : 'guest');
+
+    this.player = new Player(this, spawnX, spawnY, {
+      name: initialName,
+      avatarId: initialAvatar,
+      role: initialRole,
+      isCurrentPlayer: true
+    });
 
     // 4. Va chạm với vật cản
     this.physics.add.collider(this.player, this.obstacleGroup);
@@ -46,21 +56,17 @@ export class WorldScene extends Phaser.Scene {
     this.socketManager = new SocketManager(this);
     this.socketManager.connect();
 
-    // 9. Khởi tạo UI Chat Box & Nickname Modal
+    // 9. Khởi tạo UI (Chat Box, Auth Modal, Header User Widget)
     this.initUI();
   }
 
   createMap() {
-    const cols = GAME_CONFIG.MAP_WIDTH_TILES; // 20
-    const rows = GAME_CONFIG.MAP_HEIGHT_TILES; // 15
-    const tileSize = GAME_CONFIG.TILE_SIZE;    // 32
+    const cols = GAME_CONFIG.MAP_WIDTH_TILES;
+    const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
+    const tileSize = GAME_CONFIG.TILE_SIZE;
 
     this.obstacleGroup = this.physics.add.staticGroup();
 
-    /**
-     * Map Layout:
-     * 0: Grass, 1: Wood Floor, 2: Wall, 3: Bookshelf, 4: Desk, 5: Stone Path, 6: Carpet, 7: Flower
-     */
     const mapLayout = [
       [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 7, 0 ],
       [ 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 2, 0, 5, 0, 0 ],
@@ -118,21 +124,88 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 2. Nickname Modal
-    this.nicknameModal = new NicknameModal({
-      onConfirm: (newName) => {
+    // 2. Auth Modal
+    this.authModal = new AuthModal({
+      onAuthSuccess: ({ user, isGuest }) => {
+        const name = user.display_name || user.displayName;
+        const avatarId = user.avatar_id || user.avatarId || 'dev_hoodie';
+        const role = user.role || (isGuest ? 'guest' : 'dev');
+
+        // Cập nhật Player Entity
         if (this.player) {
-          this.player.updateName(newName);
+          this.player.updateProfile({ name, avatarId, role });
         }
+
+        // Cập nhật giao diện Header Profile
+        this.updateHeaderProfile(user);
+
+        // Kết nối lại Socket với token mới
         if (this.socketManager) {
-          this.socketManager.updateNickname(newName);
+          this.socketManager.reconnectWithAuth();
         }
       }
     });
 
-    // Nếu chưa từng đặt tên, tự hiện popup modal
-    if (!localStorage.getItem('dever_nickname')) {
-      this.nicknameModal.show();
+    // 3. Header Action Buttons
+    const authBtn = document.getElementById('header-auth-btn');
+    if (authBtn) {
+      authBtn.addEventListener('click', () => {
+        if (authService.isLoggedIn()) {
+          this.authModal.show('profile');
+        } else {
+          this.authModal.show('login');
+        }
+      });
+    }
+
+    const logoutBtn = document.getElementById('header-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        authService.logout();
+        this.player.updateProfile({
+          name: `Khách #${Math.floor(1000 + Math.random() * 9000)}`,
+          avatarId: 'dev_hoodie',
+          role: 'guest'
+        });
+        this.updateHeaderProfile(null);
+        this.socketManager.reconnectWithAuth();
+      });
+    }
+
+    // Cập nhật trạng thái Header ban đầu
+    const currentUser = authService.getUser();
+    this.updateHeaderProfile(currentUser);
+
+    // Nếu chưa từng có session đăng nhập hoặc guest, mở modal gợi ý
+    if (!currentUser && !localStorage.getItem('dever_nickname')) {
+      this.authModal.show('login');
+    }
+  }
+
+  updateHeaderProfile(user) {
+    const nameEl = document.getElementById('header-user-name');
+    const roleEl = document.getElementById('header-user-role');
+    const authBtn = document.getElementById('header-auth-btn');
+    const logoutBtn = document.getElementById('header-logout-btn');
+
+    if (user && user.display_name) {
+      if (nameEl) nameEl.textContent = user.display_name;
+      if (roleEl) {
+        roleEl.className = `role-tag ${user.role || 'dev'}`;
+        roleEl.textContent = user.role === 'admin' ? '👑 Admin' :
+                             user.role === 'leader' ? '⭐ Leader' :
+                             user.role === 'dev' ? '💻 Dev' : '👤 Khách';
+      }
+      if (authBtn) authBtn.textContent = '👤 Hồ Sơ';
+      if (logoutBtn) logoutBtn.classList.remove('hidden');
+    } else {
+      if (nameEl) nameEl.textContent = 'Khách vãng lai';
+      if (roleEl) {
+        roleEl.className = 'role-tag guest';
+        roleEl.textContent = '👤 Khách';
+      }
+      if (authBtn) authBtn.textContent = '🔑 Đăng Nhập / Đăng Ký';
+      if (logoutBtn) logoutBtn.classList.add('hidden');
     }
   }
 
@@ -143,7 +216,12 @@ export class WorldScene extends Phaser.Scene {
   handleCurrentPlayers(players, myId) {
     for (const [id, pData] of Object.entries(players)) {
       if (id !== myId && !this.remotePlayers.has(id)) {
-        const remote = new RemotePlayer(this, pData.x, pData.y, pData.name, id);
+        const remote = new RemotePlayer(this, pData.x, pData.y, {
+          name: pData.name,
+          avatarId: pData.avatarId || 'dev_hoodie',
+          role: pData.role || 'dev',
+          id
+        });
         this.remotePlayers.set(id, remote);
       }
     }
@@ -151,7 +229,12 @@ export class WorldScene extends Phaser.Scene {
 
   handleNewPlayer(pData) {
     if (!this.remotePlayers.has(pData.id)) {
-      const remote = new RemotePlayer(this, pData.x, pData.y, pData.name, pData.id);
+      const remote = new RemotePlayer(this, pData.x, pData.y, {
+        name: pData.name,
+        avatarId: pData.avatarId || 'dev_hoodie',
+        role: pData.role || 'dev',
+        id: pData.id
+      });
       this.remotePlayers.set(pData.id, remote);
     }
   }
@@ -163,10 +246,10 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  handlePlayerUpdated({ id, name }) {
+  handlePlayerUpdated({ id, name, avatarId, role }) {
     const remote = this.remotePlayers.get(id);
     if (remote) {
-      remote.updateName(name);
+      remote.updateProfile({ name, avatarId, role });
     }
   }
 
@@ -178,15 +261,13 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  handleNewChatMessage({ id, name, message, timestamp }) {
+  handleNewChatMessage({ id, name, role, avatarId, message, timestamp }) {
     const isSelf = this.socketManager.socket?.id === id;
 
-    // 1. Thêm vào khung Chat UI
     if (this.chatBox) {
-      this.chatBox.addMessage({ name, message, isSelf, timestamp });
+      this.chatBox.addMessage({ name, role, avatarId, message, isSelf, timestamp });
     }
 
-    // 2. Hiển thị Bong bóng hội thoại (Speech Bubble) trên đầu nhân vật
     if (isSelf && this.player) {
       this.player.showSpeechBubble(message);
     } else {
@@ -198,12 +279,10 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update() {
-    // 1. Cập nhật Local Player
     if (this.player && this.inputController) {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
 
-      // Gửi vị trí qua Socket (đã throttle 30 FPS)
       if (this.socketManager) {
         this.socketManager.sendMovement(
           this.player.x,
@@ -214,7 +293,6 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // 2. Cập nhật nội suy cho toàn bộ Remote Players
     for (const remote of this.remotePlayers.values()) {
       remote.update();
     }

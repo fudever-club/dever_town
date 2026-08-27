@@ -6,22 +6,26 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
    * @param {Phaser.Scene} scene
    * @param {number} x
    * @param {number} y
-   * @param {string} name
-   * @param {boolean} isCurrentPlayer
+   * @param {Object} options
    */
-  constructor(scene, x, y, name = 'Dev Member', isCurrentPlayer = true) {
-    super(scene, x, y, 'player_sprites', 1);
+  constructor(scene, x, y, options = {}) {
+    const avatarId = options.avatarId || 'dev_hoodie';
+    const textureKey = `avatar_${avatarId}`;
+
+    super(scene, x, y, scene.textures.exists(textureKey) ? textureKey : 'player_sprites', 1);
 
     this.scene = scene;
-    this.name = name;
-    this.isCurrentPlayer = isCurrentPlayer;
+    this.name = options.name || 'Dever Member';
+    this.avatarId = avatarId;
+    this.role = options.role || 'dev';
+    this.isCurrentPlayer = options.isCurrentPlayer !== undefined ? options.isCurrentPlayer : true;
     this.currentDirection = 'down';
 
-    // Thêm vào Scene và bật Physics
+    // Thêm vào Scene & Bật Physics
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    // Cấu hình Hitbox ở phần chân
+    // Hitbox chân
     this.body.setSize(GAME_CONFIG.HITBOX.WIDTH, GAME_CONFIG.HITBOX.HEIGHT);
     this.body.setOffset(GAME_CONFIG.HITBOX.OFFSET_X, GAME_CONFIG.HITBOX.OFFSET_Y);
     this.body.setCollideWorldBounds(true);
@@ -29,79 +33,101 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // Tạo Name Tag
     this.createNameTag();
 
-    // Khởi tạo Animation
+    // Khởi tạo Animations cho avatar này
     this.initAnimations();
 
-    // Biến lưu Speech Bubble
     this.bubbleContainer = null;
     this.bubbleTimer = null;
   }
 
+  getRolePrefix() {
+    switch (this.role) {
+      case 'admin': return '👑 ';
+      case 'leader': return '⭐ ';
+      case 'dev': return '💻 ';
+      case 'guest': return '👤 ';
+      default: return '';
+    }
+  }
+
+  getRoleColor() {
+    switch (this.role) {
+      case 'admin': return '#fbbf24'; // Vàng kim
+      case 'leader': return '#c084fc'; // Tím
+      case 'dev': return '#60a5fa';    // Xanh dương
+      default: return '#cbd5e1';        // Xám bạc
+    }
+  }
+
   createNameTag() {
-    this.nameText = this.scene.add.text(this.x, this.y - 24, this.name, {
+    if (this.nameText) this.nameText.destroy();
+
+    const rolePrefix = this.getRolePrefix();
+    const tagText = `${rolePrefix}${this.name}`;
+
+    this.nameText = this.scene.add.text(this.x, this.y - 24, tagText, {
       fontFamily: 'Outfit, sans-serif',
       fontSize: '11px',
       fontWeight: '600',
-      fill: '#fde047',
-      backgroundColor: 'rgba(15, 23, 42, 0.85)',
+      fill: this.getRoleColor(),
+      backgroundColor: 'rgba(15, 23, 42, 0.88)',
       padding: { x: 6, y: 2 }
     });
     this.nameText.setOrigin(0.5, 0.5);
     this.nameText.setDepth(999999);
   }
 
-  updateName(newName) {
-    this.name = newName;
-    if (this.nameText) {
-      this.nameText.setText(newName);
+  updateProfile({ name, avatarId, role }) {
+    if (name) this.name = name;
+    if (role) this.role = role;
+    if (avatarId && avatarId !== this.avatarId) {
+      this.setAvatar(avatarId);
+    }
+    this.createNameTag();
+  }
+
+  setAvatar(avatarId) {
+    this.avatarId = avatarId;
+    const textureKey = `avatar_${avatarId}`;
+    if (this.scene.textures.exists(textureKey)) {
+      this.setTexture(textureKey, 1);
+      this.initAnimations();
     }
   }
 
   initAnimations() {
     const anims = this.scene.anims;
-    if (anims.exists('player_walk_down')) return;
+    const key = `avatar_${this.avatarId}`;
+    const texture = this.scene.textures.exists(key) ? key : 'player_sprites';
 
-    anims.create({
-      key: 'player_walk_down',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 0, end: 2 }),
-      frameRate: 8,
-      repeat: -1
-    });
+    const animKeys = [
+      { key: `${key}_walk_down`, row: 0, start: 0, end: 2 },
+      { key: `${key}_walk_left`, row: 1, start: 3, end: 5 },
+      { key: `${key}_walk_right`, row: 2, start: 6, end: 8 },
+      { key: `${key}_walk_up`, row: 3, start: 9, end: 11 }
+    ];
 
-    anims.create({
-      key: 'player_walk_left',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 3, end: 5 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    anims.create({
-      key: 'player_walk_right',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 6, end: 8 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    anims.create({
-      key: 'player_walk_up',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 9, end: 11 }),
-      frameRate: 8,
-      repeat: -1
+    animKeys.forEach(({ key: aKey, start, end }) => {
+      if (!anims.exists(aKey)) {
+        anims.create({
+          key: aKey,
+          frames: anims.generateFrameNumbers(texture, { start, end }),
+          frameRate: 8,
+          repeat: -1
+        });
+      }
     });
   }
 
   update(inputData) {
     if (!this.body) return;
 
-    // Cập nhật Depth theo vị trí Y
     this.setDepth(this.y);
 
-    // Đồng bộ vị trí Name Tag
     if (this.nameText) {
       this.nameText.setPosition(Math.round(this.x), Math.round(this.y - 24));
     }
 
-    // Đồng bộ vị trí Bubble nếu có
     if (this.bubbleContainer) {
       this.bubbleContainer.setPosition(Math.round(this.x), Math.round(this.y - 44));
     }
@@ -109,6 +135,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (!this.isCurrentPlayer || !inputData) return;
 
     const { vector, left, right, up, down, isMoving } = inputData;
+    const animPrefix = `avatar_${this.avatarId}`;
 
     if (isMoving) {
       this.body.setVelocity(
@@ -118,16 +145,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
       if (left) {
         this.currentDirection = 'left';
-        this.anims.play('player_walk_left', true);
+        this.anims.play(`${animPrefix}_walk_left`, true);
       } else if (right) {
         this.currentDirection = 'right';
-        this.anims.play('player_walk_right', true);
+        this.anims.play(`${animPrefix}_walk_right`, true);
       } else if (up) {
         this.currentDirection = 'up';
-        this.anims.play('player_walk_up', true);
+        this.anims.play(`${animPrefix}_walk_up`, true);
       } else if (down) {
         this.currentDirection = 'down';
-        this.anims.play('player_walk_down', true);
+        this.anims.play(`${animPrefix}_walk_down`, true);
       }
     } else {
       this.body.setVelocity(0, 0);
@@ -147,7 +174,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.bubbleTimer.remove();
     }
 
-    const maxLen = 40;
+    const maxLen = 45;
     const displayMsg = message.length > maxLen ? message.substring(0, maxLen) + '...' : message;
 
     const bubble = this.scene.add.container(this.x, this.y - 44);
@@ -191,15 +218,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy(fromScene) {
-    if (this.nameText) {
-      this.nameText.destroy();
-    }
-    if (this.bubbleContainer) {
-      this.bubbleContainer.destroy();
-    }
-    if (this.bubbleTimer) {
-      this.bubbleTimer.remove();
-    }
+    if (this.nameText) this.nameText.destroy();
+    if (this.bubbleContainer) this.bubbleContainer.destroy();
+    if (this.bubbleTimer) this.bubbleTimer.remove();
     super.destroy(fromScene);
   }
 }

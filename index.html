@@ -11,32 +11,37 @@
 </head>
 <body>
   <div id="app-layout">
-    <!-- Header Controls -->
+    <!-- Header Navigation & Profile -->
     <header id="ui-header">
       <div class="logo-group">
         <span class="badge-logo">DEVER</span>
         <span class="brand-text">TOWN</span>
       </div>
 
+      <div class="user-profile-badge">
+        <span id="header-user-role" class="role-tag guest">👤 Khách</span>
+        <span id="header-user-name" class="user-name">Khách vãng lai</span>
+      </div>
+
       <div class="controls-hint">
-        <span>🎮 Di chuyển: <b>WASD</b> / <b>Mũi tên</b></span>
+        <span>🎮 <b>WASD</b> / <b>Mũi tên</b></span>
         <span class="divider">|</span>
-        <span>💬 Chat: Nhấn <b>Enter</b></span>
+        <span>💬 <b>Enter</b> chat</span>
       </div>
 
       <div class="header-actions">
+        <button id="header-auth-btn" class="btn-primary-sm">🔑 Đăng Nhập / Đổi Avatar</button>
+        <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản">Đăng xuất</button>
         <span id="online-count-badge" class="badge-online">1 Online</span>
-        <button id="edit-name-btn" class="btn-ghost" title="Đổi tên nhân vật">✏️ Đổi tên</button>
         <div class="status-indicator">
           <span class="dot online"></span>
-          <span class="status-text">Đang kết nối</span>
+          <span class="status-text">Online</span>
         </div>
       </div>
     </header>
 
     <!-- Main Workspace: Game Canvas + Live Chat -->
     <main id="main-content">
-      <!-- Game Canvas Container -->
       <div id="game-container"></div>
 
       <!-- Live Chat Box -->
@@ -48,7 +53,7 @@
 
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
-            👋 Chào mừng bạn đến với DEVER TOWN! Nhấn <b>Enter</b> để chat cùng mọi người.
+            👋 Chào mừng đến với <b>DEVER TOWN</b>! Đăng nhập để nhận huy hiệu 👑 Admin / ⭐ Leader / 💻 Dev và chọn Avatar độc quyền.
           </div>
         </div>
 
@@ -57,7 +62,7 @@
             type="text"
             id="chat-input"
             placeholder="Nhập tin nhắn (Enter để gửi)..."
-            maxlength="120"
+            maxlength="140"
             autocomplete="off"
           />
           <button type="submit" id="chat-send-btn">Gửi</button>
@@ -67,27 +72,137 @@
 
     <!-- Footer Note -->
     <footer id="ui-footer">
-      <span>💡 Mở nhiều tab trình duyệt để thử nghiệm tính năng Multiplayer Realtime qua Socket.io.</span>
+      <span>💡 Tài khoản mẫu thử nghiệm: Admin (<code>admin@devertown.com</code> / <code>admin123</code>), Leader (<code>leader@devertown.com</code> / <code>leader123</code>).</span>
     </footer>
   </div>
 
-  <!-- Nickname Modal -->
-  <div id="nickname-modal" class="modal-backdrop hidden">
-    <div class="modal-card">
+  <!-- AUTH & AVATAR MODAL DIALOG -->
+  <div id="auth-modal" class="modal-backdrop hidden">
+    <div class="modal-card auth-modal-card">
+      <button id="auth-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
       <div class="modal-icon">🎮</div>
-      <h2 class="modal-title">Chào mừng đến DEVER TOWN</h2>
-      <p class="modal-desc">Vui lòng nhập Biệt danh (Nickname) của bạn để bắt đầu tham gia cùng các thành viên khác:</p>
+      <h2 class="modal-title">DEVER TOWN IDENTITY</h2>
+      <p class="modal-desc">Đăng nhập tài khoản CLB hoặc tham gia nhanh với vai trò Khách:</p>
 
-      <form id="nickname-form">
-        <input
-          type="text"
-          id="nickname-input"
-          class="modal-input"
-          placeholder="Ví dụ: Dev Master, Hung Nguyen..."
-          maxlength="18"
-          required
-        />
-        <button type="submit" class="modal-btn">Vào Thị Trấn Ngay</button>
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" data-tab="login">Đăng Nhập</button>
+        <button type="button" class="auth-tab-btn" data-tab="register">Đăng Ký</button>
+        <button type="button" class="auth-tab-btn" data-tab="guest">Chơi Nhanh</button>
+        <button type="button" class="auth-tab-btn" data-tab="profile">Hồ Sơ & Avatar</button>
+      </div>
+
+      <div class="auth-error-msg hidden"></div>
+
+      <!-- Tab 1: Đăng Nhập -->
+      <form id="login-form" class="auth-pane">
+        <div class="form-group">
+          <label>Email thành viên:</label>
+          <input type="email" id="login-email" class="modal-input" placeholder="admin@devertown.com" required />
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu:</label>
+          <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="modal-btn">Đăng Nhập Vào Thị Trấn</button>
+      </form>
+
+      <!-- Tab 2: Đăng Ký -->
+      <form id="register-form" class="auth-pane hidden">
+        <div class="form-group">
+          <label>Email của bạn:</label>
+          <input type="email" id="reg-email" class="modal-input" placeholder="ten@fpt.edu.vn" required />
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu (tối thiểu 6 ký tự):</label>
+          <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+        </div>
+        <div class="form-group">
+          <label>Tên hiển thị trong game:</label>
+          <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Dev Alpha" maxlength="18" required />
+        </div>
+        <div class="form-group">
+          <label>Chọn phong cách Avatar Pixel:</label>
+          <div class="avatar-grid">
+            <div class="avatar-option selected" data-avatar="dev_hoodie">
+              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <span class="avatar-name">Developer</span>
+            </div>
+            <div class="avatar-option" data-avatar="cyberpunk_pink">
+              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <span class="avatar-name">Cyberpunk</span>
+            </div>
+            <div class="avatar-option" data-avatar="red_gamer">
+              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <span class="avatar-name">Gamer Pro</span>
+            </div>
+            <div class="avatar-option" data-avatar="green_coder">
+              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <span class="avatar-name">Coder</span>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="modal-btn">Tạo Tài Khoản & Vào Game</button>
+      </form>
+
+      <!-- Tab 3: Chơi Nhanh (Khách) -->
+      <form id="guest-form" class="auth-pane hidden">
+        <div class="form-group">
+          <label>Biệt danh của bạn:</label>
+          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Khách #8888" maxlength="18" required />
+        </div>
+        <div class="form-group">
+          <label>Chọn phong cách Avatar Pixel:</label>
+          <div class="avatar-grid">
+            <div class="avatar-option selected" data-avatar="dev_hoodie">
+              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <span class="avatar-name">Developer</span>
+            </div>
+            <div class="avatar-option" data-avatar="cyberpunk_pink">
+              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <span class="avatar-name">Cyberpunk</span>
+            </div>
+            <div class="avatar-option" data-avatar="red_gamer">
+              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <span class="avatar-name">Gamer Pro</span>
+            </div>
+            <div class="avatar-option" data-avatar="green_coder">
+              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <span class="avatar-name">Coder</span>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="modal-btn">Vào Chơi Nhanh</button>
+      </form>
+
+      <!-- Tab 4: Hồ sơ & Avatar Customization -->
+      <form id="profile-form" class="auth-pane hidden">
+        <div class="form-group">
+          <label>Tên hiển thị:</label>
+          <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="18" required />
+        </div>
+        <div class="form-group">
+          <label>Đổi phong cách Avatar Pixel:</label>
+          <div class="avatar-grid">
+            <div class="avatar-option selected" data-avatar="dev_hoodie">
+              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <span class="avatar-name">Developer</span>
+            </div>
+            <div class="avatar-option" data-avatar="cyberpunk_pink">
+              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <span class="avatar-name">Cyberpunk</span>
+            </div>
+            <div class="avatar-option" data-avatar="red_gamer">
+              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <span class="avatar-name">Gamer Pro</span>
+            </div>
+            <div class="avatar-option" data-avatar="green_coder">
+              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <span class="avatar-name">Coder</span>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="modal-btn">Lưu Thay Đổi</button>
       </form>
     </div>
   </div>

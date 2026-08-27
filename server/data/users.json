@@ -1,0 +1,29 @@
+[
+  {
+    "id": "usr_admin_001",
+    "email": "admin@devertown.com",
+    "password_hash": "$2a$10$yAbEDnSgih4vLvry2QprHePE5NwFlPbVK04gS3KE5jTcy3JrvqUmu",
+    "display_name": "Dever Admin",
+    "avatar_id": "cyberpunk_pink",
+    "role": "admin",
+    "created_at": "2026-08-27T02:45:15.955Z"
+  },
+  {
+    "id": "usr_leader_002",
+    "email": "leader@devertown.com",
+    "password_hash": "$2a$10$RHSuvnK80/K9fgcTAg24HOxrnmRmmv6G9.zVqd0tdG.0w4Fry.xbu",
+    "display_name": "Club President",
+    "avatar_id": "red_gamer",
+    "role": "leader",
+    "created_at": "2026-08-27T02:45:15.956Z"
+  },
+  {
+    "id": "usr_1d2da24e",
+    "email": "dev_1787798724881@dever.club",
+    "password_hash": "$2a$10$dJe9V79u.ZEgde80HZ7upeifUp.exiurc8UGA/IMiBvNa3rIU8OBi",
+    "display_name": "Pro Developer 2026",
+    "avatar_id": "green_coder",
+    "role": "dev",
+    "created_at": "2026-08-27T02:45:24.978Z"
+  }
+]

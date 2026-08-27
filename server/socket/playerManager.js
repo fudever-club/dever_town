@@ -1,6 +1,6 @@
 /**
  * PlayerManager: Quản lý trạng thái In-Memory của tất cả người chơi đang online.
- * Sẵn sàng mở rộng cho cơ chế lưu phiên và gán User ID trong Bước 3 & Bước 4.
+ * Hỗ trợ User ID, Display Name, Avatar ID và Role (Admin, Leader, Dev, Guest).
  */
 class PlayerManager {
   constructor() {
@@ -8,12 +8,15 @@ class PlayerManager {
   }
 
   /**
-   * Thêm người chơi mới khi tham gia
+   * Thêm hoặc khởi tạo người chơi mới
    */
-  addPlayer(socketId, data = {}) {
+  addPlayer(socketId, data = {}, authUser = null) {
     const player = {
       id: socketId,
-      name: data.name || `Dev #${socketId.substring(0, 4)}`,
+      userId: authUser ? authUser.id : (data.userId || null),
+      name: authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`),
+      avatarId: authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie'),
+      role: authUser ? authUser.role : (data.role || 'guest'),
       x: data.x || 336,
       y: data.y || 272,
       direction: data.direction || 'down',
@@ -21,20 +24,15 @@ class PlayerManager {
       roomId: data.roomId || 'main-hall',
       joinedAt: Date.now()
     };
+
     this.players.set(socketId, player);
     return player;
   }
 
-  /**
-   * Lấy thông tin 1 người chơi
-   */
   getPlayer(socketId) {
     return this.players.get(socketId);
   }
 
-  /**
-   * Cập nhật vị trí và hướng di chuyển
-   */
   updateMovement(socketId, { x, y, direction, isMoving }) {
     const player = this.players.get(socketId);
     if (!player) return null;
@@ -46,19 +44,16 @@ class PlayerManager {
     return player;
   }
 
-  /**
-   * Cập nhật Nickname
-   */
-  updateNickname(socketId, newName) {
+  updateProfile(socketId, { name, avatarId }) {
     const player = this.players.get(socketId);
     if (!player) return null;
-    player.name = newName.trim().substring(0, 20) || player.name;
+
+    if (name) player.name = name.trim().substring(0, 20);
+    if (avatarId) player.avatarId = avatarId;
+
     return player;
   }
 
-  /**
-   * Xóa người chơi khi disconnect
-   */
   removePlayer(socketId) {
     const player = this.players.get(socketId);
     if (player) {
@@ -68,9 +63,6 @@ class PlayerManager {
     return null;
   }
 
-  /**
-   * Lấy danh sách tất cả người chơi trong phòng (hoặc toàn server)
-   */
   getAllPlayers(roomId = null) {
     const result = {};
     for (const [id, p] of this.players.entries()) {

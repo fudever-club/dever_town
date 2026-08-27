@@ -1,5 +1,6 @@
 import { io } from 'socket.io-client';
 import { GAME_CONFIG } from '../config/gameConfig.js';
+import { authService } from '../services/AuthService.js';
 
 export class SocketManager {
   /**
@@ -14,16 +15,29 @@ export class SocketManager {
   }
 
   connect() {
-    if (this.socket) return;
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
+    }
 
-    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL}`);
+    const token = authService.getToken();
+    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL} (Token: ${token ? 'Có' : 'Không'})`);
+
     this.socket = io(GAME_CONFIG.NETWORK.SERVER_URL, {
       transports: ['websocket', 'polling'],
+      auth: {
+        token: token || null
+      },
       reconnectionAttempts: 10,
       reconnectionDelay: 2000
     });
 
     this.setupListeners();
+  }
+
+  reconnectWithAuth() {
+    console.log('🔄 Đang kết nối lại Socket với danh tính mới...');
+    this.connect();
   }
 
   setupListeners() {
@@ -32,9 +46,15 @@ export class SocketManager {
       console.log(`✅ [Socket] Đã kết nối với ID: ${this.socket.id}`);
       this.updateConnectionStatus(true);
 
-      // Nếu đã có Player trên Scene, gửi sự kiện Join ngay
+      // Nếu đã có Player, gửi sự kiện Join
       if (this.scene.player) {
-        this.join(this.scene.player.name, this.scene.player.x, this.scene.player.y);
+        this.join({
+          name: this.scene.player.name,
+          avatarId: this.scene.player.avatarId,
+          role: this.scene.player.role,
+          x: this.scene.player.x,
+          y: this.scene.player.y
+        });
       }
     });
 
@@ -44,55 +64,47 @@ export class SocketManager {
       this.updateConnectionStatus(false);
     });
 
-    // 1. Nhận danh sách tất cả người chơi hiện có trong phòng
     this.socket.on('currentPlayers', (players) => {
       this.scene.handleCurrentPlayers(players, this.socket.id);
     });
 
-    // 2. Có người chơi mới tham gia
     this.socket.on('newPlayer', (playerData) => {
       this.scene.handleNewPlayer(playerData);
     });
 
-    // 3. Người chơi khác di chuyển
     this.socket.on('playerMoved', (movementData) => {
       this.scene.handleRemoteMovement(movementData);
     });
 
-    // 4. Người chơi khác đổi tên
     this.socket.on('playerUpdated', (updateData) => {
       this.scene.handlePlayerUpdated(updateData);
     });
 
-    // 5. Người chơi khác ngắt kết nối
     this.socket.on('playerDisconnected', (socketId) => {
       this.scene.handlePlayerDisconnected(socketId);
     });
 
-    // 6. Nhận tin nhắn chat mới
     this.socket.on('newChatMessage', (chatData) => {
       this.scene.handleNewChatMessage(chatData);
     });
 
-    // 7. Đồng bộ số lượng người online
     this.socket.on('onlineCount', (count) => {
       this.updateOnlineCountUI(count);
     });
   }
 
-  join(name, x, y) {
+  join(options = {}) {
     if (!this.socket || !this.isConnected) return;
     this.socket.emit('joinGame', {
-      name: name || 'Dever Member',
-      x: Math.round(x),
-      y: Math.round(y),
+      name: options.name || 'Dever Member',
+      avatarId: options.avatarId || 'dev_hoodie',
+      role: options.role || 'guest',
+      x: Math.round(options.x || 336),
+      y: Math.round(options.y || 272),
       direction: 'down'
     });
   }
 
-  /**
-   * Gửi tọa độ di chuyển có cơ chế Throttling và Dirty Checking
-   */
   sendMovement(x, y, direction, isMoving) {
     if (!this.socket || !this.isConnected) return;
 
@@ -100,7 +112,6 @@ export class SocketManager {
     const roundedX = Math.round(x);
     const roundedY = Math.round(y);
 
-    // Kiểm tra dirty (vị trí hoặc trạng thái thay đổi)
     const hasPositionChanged = Math.abs(roundedX - this.lastPosition.x) > 0.5 ||
                                Math.abs(roundedY - this.lastPosition.y) > 0.5;
     const hasStateChanged = direction !== this.lastPosition.direction ||
@@ -108,7 +119,6 @@ export class SocketManager {
 
     if (!hasPositionChanged && !hasStateChanged) return;
 
-    // Throttle theo TICK_INTERVAL_MS trừ trường hợp vừa dừng lại (Stop Snap)
     const isStopEvent = !isMoving && this.lastPosition.isMoving;
     if (!isStopEvent && now - this.lastSentTime < GAME_CONFIG.NETWORK.TICK_INTERVAL_MS) {
       return;
@@ -130,9 +140,9 @@ export class SocketManager {
     this.socket.emit('sendChatMessage', { message });
   }
 
-  updateNickname(name) {
+  updateProfile({ name, avatarId }) {
     if (!this.socket || !this.isConnected) return;
-    this.socket.emit('updateNickname', { name });
+    this.socket.emit('updateProfile', { name, avatarId });
   }
 
   updateConnectionStatus(online) {
@@ -140,7 +150,7 @@ export class SocketManager {
     const dot = document.querySelector('.dot');
     if (statusText && dot) {
       if (online) {
-        statusText.textContent = 'Multiplayer Online';
+        statusText.textContent = 'Online';
         dot.className = 'dot online';
       } else {
         statusText.textContent = 'Mất kết nối...';
