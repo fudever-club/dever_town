@@ -365,10 +365,6 @@ export class WorldScene extends Phaser.Scene {
 
     const currentUser = authService.getUser();
     this.updateHeaderProfile(currentUser);
-
-    if (!currentUser && !localStorage.getItem('dever_nickname')) {
-      this.authModal.show('login');
-    }
   }
 
   toggleFullscreen() {

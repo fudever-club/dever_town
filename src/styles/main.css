@@ -1618,24 +1618,492 @@ body {
   display: none !important;
 }
 
-@media (max-width: 1200px) {
-  #ui-header {
-    width: 100%;
-  }
-  #main-content {
+/* ==========================================================================
+   WELCOME GATE / LANDING INTRO PORTAL
+   ========================================================================== */
+.gate-backdrop {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top center, #0f1c3f 0%, #060913 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000000;
+  padding: 20px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.gate-backdrop.fade-out {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+}
+
+.gate-card {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  width: 100%;
+  max-width: 980px;
+  background: rgba(11, 17, 33, 0.92);
+  border: 1.5px solid rgba(242, 111, 33, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 102, 204, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+.gate-hero-panel {
+  padding: 36px 32px;
+  background: linear-gradient(145deg, rgba(0, 33, 71, 0.45) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gate-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gate-code-bracket {
+  color: #38bdf8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 800;
+  background: rgba(56, 189, 248, 0.15);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.gate-brand-name {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.gate-brand-tag {
+  background: linear-gradient(135deg, #f26f21, #ea580c);
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.gate-main-title {
+  font-size: 38px;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%, #f26f21 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.gate-slogan {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f26f21;
+  letter-spacing: 1.5px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.gate-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.gate-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.gate-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.feat-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.feat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feat-text strong {
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+.feat-text span {
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.gate-stats-bar {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0, 102, 204, 0.12);
+  border: 1px solid rgba(0, 102, 204, 0.3);
+  padding: 8px 14px;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.stat-box {
+  font-size: 11px;
+  color: #93c5fd;
+}
+
+.stat-box strong {
+  color: #ffffff;
+  font-size: 13px;
+  margin-right: 2px;
+}
+
+.gate-form-panel {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.gate-form-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gate-form-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.gate-form-sub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.gate-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gate-tab-btn {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gate-tab-btn:hover {
+  color: #ffffff;
+}
+
+.gate-tab-btn.active {
+  background: #0066CC;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
+}
+
+.gate-form-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gate-submit-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(242, 111, 33, 0.4);
+}
+
+.btn-fpt-gradient {
+  background: linear-gradient(135deg, #f26f21 0%, #ea580c 50%, #0066CC 100%);
+}
+
+.gate-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(242, 111, 33, 0.6);
+}
+
+.btn-arrow {
+  width: 18px;
+  height: 18px;
+}
+
+.gate-hint {
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   ANIMATED BUGGY & DEVER LOGO LOADING SCREEN
+   ========================================================================== */
+.loading-backdrop {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0a1128 0%, #040711 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000001;
+  transition: opacity 0.5s ease;
+}
+
+.loading-backdrop.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 90%;
+  max-width: 460px;
+}
+
+/* Spinning Neon DEVER Logo */
+.spinning-logo-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.neon-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #f26f21;
+  border-right-color: #0066CC;
+  border-bottom-color: #38bdf8;
+  animation: spinNeonRing 1.8s linear infinite;
+  box-shadow: 0 0 16px rgba(0, 152, 255, 0.4);
+}
+
+@keyframes spinNeonRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.dever-logo-neon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  animation: pulseLogoGlow 1.5s ease-in-out infinite alternate;
+}
+
+.bracket-glow {
+  font-size: 16px;
+  font-weight: 800;
+  color: #38bdf8;
+  text-shadow: 0 0 10px #38bdf8;
+}
+
+.logo-text {
+  font-size: 13px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes pulseLogoGlow {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(0, 102, 204, 0.8)); }
+}
+
+/* Buggy Track Container */
+.buggy-track-container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Pixel Buggy Mascot Sprite */
+.pixel-buggy-mascot {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  left: 0;
+  animation: buggyWalk 0.25s steps(2, end) infinite;
+}
+
+@keyframes buggyWalk {
+  0% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+  100% { transform: translateY(0) rotate(-2deg); }
+}
+
+.buggy-antenna {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 6px;
+  background: #f26f21;
+  border-radius: 2px;
+}
+.buggy-antenna.left { left: 8px; transform: rotate(-20deg); }
+.buggy-antenna.right { right: 8px; transform: rotate(20deg); }
+
+.buggy-body {
+  position: absolute;
+  top: 5px;
+  left: 3px;
+  width: 26px;
+  height: 20px;
+  background: #0066CC;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 102, 204, 0.6);
+}
+
+.buggy-eye {
+  position: absolute;
+  top: 4px;
+  width: 4px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+.buggy-eye.left { left: 4px; }
+.buggy-eye.right { right: 4px; }
+
+.buggy-smile {
+  position: absolute;
+  bottom: 3px;
+  left: 7px;
+  width: 8px;
+  height: 3px;
+  background: #f26f21;
+  border-radius: 0 0 4px 4px;
+}
+
+.buggy-legs {
+  position: absolute;
+  bottom: 0;
+  left: 4px;
+  width: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buggy-leg {
+  width: 3px;
+  height: 7px;
+  background: #f26f21;
+  border-radius: 1px;
+}
+
+.loading-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0066CC 0%, #38bdf8 50%, #f26f21 100%);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(242, 111, 33, 0.6);
+}
+
+.loading-text-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.loading-status-text {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.loading-percent-text {
+  color: #f26f21;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .gate-card {
     grid-template-columns: 1fr;
-    justify-items: center;
-    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
   }
-  #game-container {
-    width: 100%;
-    max-width: 800px;
-    height: 500px;
-  }
-  #chat-wrapper {
-    width: 100%;
-    max-width: 800px;
-    height: 250px;
+  .gate-hero-panel {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
+
 

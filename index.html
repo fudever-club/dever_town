@@ -6,10 +6,183 @@
   <title>DEVER TOWN - FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/styles/main.css" />
 </head>
 <body>
+  <!-- ==========================================================================
+       0. WELCOME GATE / LANDING INTRO PORTAL
+       ========================================================================== -->
+  <div id="welcome-gate" class="gate-backdrop">
+    <div class="gate-card">
+      <!-- Left Side: Hero Info & Feature Highlights -->
+      <div class="gate-hero-panel">
+        <div class="gate-brand-row">
+          <span class="gate-code-bracket">&lt;/&gt;</span>
+          <span class="gate-brand-name">FU-DEVER</span>
+          <span class="gate-brand-tag">FPT UNIVERSITY ĐÀ NẴNG</span>
+        </div>
+
+        <h1 class="gate-main-title">DEVER TOWN</h1>
+        <p class="gate-slogan">WORK HARD - PLAY HARD</p>
+        <p class="gate-desc">
+          Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên Đại học FPT Đà Nẵng.
+          Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 7 phân khu chức năng sống động!
+        </p>
+
+        <div class="gate-features-grid">
+          <div class="gate-feature-item">
+            <span class="feat-icon">🏛️</span>
+            <div class="feat-text">
+              <strong>7 Phân Khu 2D</strong>
+              <span>Sảnh Alpha, Tech Lab, Thư viện, Kỷ niệm, Web, Media, Thể thao</span>
+            </div>
+          </div>
+          <div class="gate-feature-item">
+            <span class="feat-icon">⚡</span>
+            <div class="feat-text">
+              <strong>Multiplayer Realtime</strong>
+              <span>Gặp gỡ bạn bè, trò chuyện bong bóng thoại & chat tiếng Việt</span>
+            </div>
+          </div>
+          <div class="gate-feature-item">
+            <span class="feat-icon">🎒</span>
+            <div class="feat-text">
+              <strong>Túi Đồ & Trang Bị</strong>
+              <span>7 Vật phẩm FPTU/Dev, nhặt đồ và cầm trực tiếp trên tay</span>
+            </div>
+          </div>
+          <div class="gate-feature-item">
+            <span class="feat-icon">👔</span>
+            <div class="feat-text">
+              <strong>Tủ Đồ Custom</strong>
+              <span>Tùy biến Hoodie FPTU, màu tóc, tai nghe, kính râm, vương miện Cóc</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gate-stats-bar">
+          <div class="stat-box"><strong>9+</strong> Năm hoạt động</div>
+          <div class="stat-box"><strong>50+</strong> Thành viên</div>
+          <div class="stat-box"><strong>20+</strong> Giải thưởng</div>
+          <div class="stat-box"><strong>15+</strong> Dự án</div>
+        </div>
+      </div>
+
+      <!-- Right Side: Interactive Auth Form -->
+      <div class="gate-form-panel">
+        <div class="gate-form-header">
+          <h2 class="gate-form-title">Khám Phá Thế Giới</h2>
+          <p class="gate-form-sub">Chọn phương thức vào game để bắt đầu:</p>
+        </div>
+
+        <div class="gate-tabs">
+          <button type="button" class="gate-tab-btn active" data-tab="guest">⚡ Chơi Nhanh</button>
+          <button type="button" class="gate-tab-btn" data-tab="login">🔑 Đăng Nhập</button>
+          <button type="button" class="gate-tab-btn" data-tab="register">📝 Đăng Ký</button>
+        </div>
+
+        <div id="gate-error-msg" class="auth-error-box hidden"></div>
+
+        <!-- Tab 1: Guest Form -->
+        <form id="gate-form-guest" class="gate-form-pane">
+          <div class="form-group">
+            <label>Nhập Biệt danh (Hỗ trợ tiếng Việt & dấu cách):</label>
+            <input type="text" id="gate-guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
+          </div>
+          <button type="submit" class="gate-submit-btn btn-fpt-gradient">
+            <span>Bắt Đầu Khám Phá DEVER TOWN</span>
+            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+          <p class="gate-hint">Chế độ Khách cho phép bạn trải nghiệm đầy đủ bản đồ và tương tác ngay.</p>
+        </form>
+
+        <!-- Tab 2: Login Form -->
+        <form id="gate-form-login" class="gate-form-pane hidden">
+          <div class="form-group">
+            <label>Email Sinh viên / Thành viên:</label>
+            <input type="email" id="gate-login-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu:</label>
+            <input type="password" id="gate-login-password" class="modal-input" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="gate-submit-btn btn-fpt-gradient">Đăng Nhập Thành Viên</button>
+        </form>
+
+        <!-- Tab 3: Register Form -->
+        <form id="gate-form-register" class="gate-form-pane hidden">
+          <div class="form-group">
+            <label>Tên hiển thị:</label>
+            <input type="text" id="gate-reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
+          </div>
+          <div class="form-group">
+            <label>Email FPT / Cá nhân:</label>
+            <input type="email" id="gate-reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
+            <input type="password" id="gate-reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+          </div>
+          <button type="submit" class="gate-submit-btn btn-fpt-gradient">Tạo Tài Khoản Thành Viên</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       1. ANIMATED BUGGY MASCOT & DEVER LOGO LOADING SCREEN
+       ========================================================================== -->
+  <div id="game-loading-screen" class="loading-backdrop hidden">
+    <div class="loading-container">
+      <!-- Spinning Neon DEVER Logo -->
+      <div class="spinning-logo-wrapper">
+        <div class="neon-ring"></div>
+        <div class="dever-logo-neon">
+          <span class="bracket-glow">&lt;/&gt;</span>
+          <span class="logo-text">DEVER</span>
+        </div>
+      </div>
+
+      <!-- Animated Pixel Buggy Track -->
+      <div class="buggy-track-container">
+        <!-- Pixel Buggy Sprite -->
+        <div id="loading-buggy-sprite" class="pixel-buggy-mascot">
+          <div class="buggy-antenna left"></div>
+          <div class="buggy-antenna right"></div>
+          <div class="buggy-body">
+            <div class="buggy-eye left"></div>
+            <div class="buggy-eye right"></div>
+            <div class="buggy-smile"></div>
+          </div>
+          <div class="buggy-legs">
+            <div class="buggy-leg leg-1"></div>
+            <div class="buggy-leg leg-2"></div>
+            <div class="buggy-leg leg-3"></div>
+            <div class="buggy-leg leg-4"></div>
+          </div>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="loading-progress-bar">
+          <div id="loading-progress-fill" class="loading-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Loading Captions -->
+      <div class="loading-text-row">
+        <span id="loading-status-text" class="loading-status-text">Đang khởi tạo thế giới DEVER TOWN...</span>
+        <span id="loading-percent-text" class="loading-percent-text">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       2. MAIN APP WORKSPACE
+       ========================================================================== -->
   <div id="app">
     <!-- Header Navigation Bar -->
     <header id="main-header">
@@ -138,7 +311,7 @@
       <div class="footer-left">
         <span class="brand-tag">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</span>
         <span class="divider">|</span>
-        <span class="version-tag">DEVER TOWN v0.6.0 • WORK HARD PLAY HARD</span>
+        <span class="version-tag">DEVER TOWN v0.7.0 • WORK HARD PLAY HARD</span>
       </div>
       <div class="footer-right">
         <span>🎮 WASD/Mũi tên: Di chuyển</span>
@@ -149,6 +322,10 @@
       </div>
     </footer>
   </div>
+
+  <!-- ==========================================================================
+       3. MODAL DIALOGS
+       ========================================================================== -->
 
   <!-- 1. AUTH MODAL (LOGIN / REGISTER / GUEST / PROFILE) -->
   <div id="auth-modal" class="modal-backdrop hidden">
@@ -205,10 +382,10 @@
         <button type="submit" class="modal-btn">Tạo Tài Khoản Thành Viên</button>
       </form>
 
-      <!-- Tab 4: Profile & Wardrobe -->
+      <!-- Tab 4: Profile -->
       <form id="pane-profile" class="auth-pane hidden">
         <div class="form-group">
-          <label>Tên hiển thị:</label>
+          <label>Tên hiển thị mới:</label>
           <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="24" required />
         </div>
         <button type="submit" class="modal-btn">Lưu Thay Đổi</button>
@@ -272,7 +449,6 @@
       </div>
 
       <div class="wardrobe-workspace">
-        <!-- Live Preview Canvas -->
         <div class="wardrobe-preview-panel">
           <div class="preview-box">
             <canvas id="wardrobe-preview-canvas" width="160" height="160"></canvas>
@@ -281,21 +457,17 @@
           <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới ✨</button>
         </div>
 
-        <!-- Options Panel -->
         <div class="wardrobe-options-panel">
-          <!-- 1. Hoodie Color -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Màu Áo Hoodie FPTU & DEVER:</label>
             <div id="wardrobe-hoodie-list" class="wardrobe-chip-list"></div>
           </div>
 
-          <!-- 2. Hair Color -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Màu Tóc Cá Tính:</label>
             <div id="wardrobe-hair-list" class="wardrobe-chip-list"></div>
           </div>
 
-          <!-- 3. Accessories -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Phụ Kiện Công Nghệ & Linh Vật:</label>
             <div id="wardrobe-acc-list" class="wardrobe-acc-grid"></div>
@@ -454,7 +626,6 @@
             Mở trong Tab Mới
           </a>
         </div>
-        <!-- Quick Portals Links Row -->
         <div id="web-portals-container" class="web-portals-bar"></div>
         <div class="iframe-container">
           <iframe

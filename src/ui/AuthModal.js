@@ -11,25 +11,13 @@ export class AuthModal {
     this.selectedAvatar = 'dev_hoodie';
     this.currentTab = 'login';
 
-    this.initDOM();
     this.bindEvents();
-  }
-
-  initDOM() {
-    if (!this.modalEl) return;
-
-    this.avatars = [
-      { id: 'dev_hoodie', name: 'Developer', desc: 'Áo hoodie xanh & balo cam', color: '#3b82f6', icon: 'DEV' },
-      { id: 'cyberpunk_pink', name: 'Cyberpunk', desc: 'Neon hồng & kính VR', color: '#ec4899', icon: 'NEO' },
-      { id: 'red_gamer', name: 'Gamer Pro', desc: 'Hoodie đỏ & tai nghe', color: '#ef4444', icon: 'PRO' },
-      { id: 'green_coder', name: 'Hacker', desc: 'Bomber ngọc & kính mắt', color: '#10b981', icon: 'HEX' }
-    ];
   }
 
   bindEvents() {
     if (!this.modalEl) return;
 
-    // Ngăn chặn sự kiện phím từ các input trong modal lan ra ngoài canvas
+    // Chặn phím lan sang Phaser
     const inputs = this.modalEl.querySelectorAll('input, select, textarea');
     inputs.forEach(inp => {
       const stopBubble = (e) => e.stopPropagation();
@@ -38,8 +26,8 @@ export class AuthModal {
       inp.addEventListener('keypress', stopBubble);
     });
 
-    // Switch Tabs
-    const tabBtns = this.modalEl.querySelectorAll('.auth-tab-btn');
+    // Tab buttons
+    const tabBtns = this.modalEl.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
@@ -47,33 +35,23 @@ export class AuthModal {
       });
     });
 
-    // Avatar Selection
-    const avatarItems = this.modalEl.querySelectorAll('.avatar-option');
-    avatarItems.forEach(item => {
-      item.addEventListener('click', () => {
-        avatarItems.forEach(i => i.classList.remove('selected'));
-        item.classList.add('selected');
-        this.selectedAvatar = item.dataset.avatar;
-      });
-    });
-
     // Form Submissions
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-    }
-
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-      registerForm.addEventListener('submit', (e) => this.handleRegister(e));
-    }
-
-    const guestForm = document.getElementById('guest-form');
+    const guestForm = document.getElementById('pane-guest');
     if (guestForm) {
       guestForm.addEventListener('submit', (e) => this.handleGuest(e));
     }
 
-    const profileForm = document.getElementById('profile-form');
+    const loginForm = document.getElementById('pane-login');
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+    }
+
+    const registerForm = document.getElementById('pane-register');
+    if (registerForm) {
+      registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+    }
+
+    const profileForm = document.getElementById('pane-profile');
     if (profileForm) {
       profileForm.addEventListener('submit', (e) => this.handleUpdateProfile(e));
     }
@@ -84,31 +62,35 @@ export class AuthModal {
       closeBtn.addEventListener('click', () => this.hide());
     }
 
-    // Click ra ngoài backdrop để đóng
+    // Click backdrop
     this.modalEl.addEventListener('click', (e) => {
       if (e.target === this.modalEl) {
         this.hide();
       }
     });
 
-    // Phím Escape đóng modal
+    // Phím Escape
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !this.modalEl.classList.contains('hidden')) {
+      if (e.key === 'Escape' && this.isOpen()) {
         this.hide();
       }
     });
   }
 
+  isOpen() {
+    return this.modalEl && !this.modalEl.classList.contains('hidden');
+  }
+
   switchTab(tab) {
     this.currentTab = tab;
-    const tabBtns = this.modalEl.querySelectorAll('.auth-tab-btn');
+    const tabBtns = this.modalEl.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tab);
     });
 
     const panes = this.modalEl.querySelectorAll('.auth-pane');
     panes.forEach(pane => {
-      pane.classList.toggle('hidden', pane.id !== `${tab}-form` && pane.id !== `pane-${tab}`);
+      pane.classList.toggle('hidden', pane.id !== `pane-${tab}`);
     });
 
     this.clearError();
@@ -127,7 +109,7 @@ export class AuthModal {
   }
 
   showError(msg) {
-    const errorEl = this.modalEl.querySelector('.auth-error-msg');
+    const errorEl = document.getElementById('auth-error-msg');
     if (errorEl) {
       errorEl.textContent = msg;
       errorEl.classList.remove('hidden');
@@ -135,10 +117,33 @@ export class AuthModal {
   }
 
   clearError() {
-    const errorEl = this.modalEl.querySelector('.auth-error-msg');
+    const errorEl = document.getElementById('auth-error-msg');
     if (errorEl) {
       errorEl.textContent = '';
       errorEl.classList.add('hidden');
+    }
+  }
+
+  async handleGuest(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const nameInput = document.getElementById('guest-name');
+    const displayName = nameInput ? nameInput.value.trim() : 'Dever Member';
+
+    if (!displayName) {
+      this.showError('Vui lòng nhập biệt danh');
+      return;
+    }
+
+    localStorage.setItem('dever_nickname', displayName);
+    this.hide();
+
+    if (this.onAuthSuccess) {
+      this.onAuthSuccess({
+        user: { display_name: displayName, avatar_id: 'dev_hoodie', role: 'guest' },
+        isGuest: true
+      });
     }
   }
 
@@ -156,7 +161,7 @@ export class AuthModal {
         this.onAuthSuccess({ user, isGuest: false });
       }
     } catch (err) {
-      this.showError(err.message);
+      this.showError(err.message || 'Đăng nhập thất bại.');
     }
   }
 
@@ -173,28 +178,14 @@ export class AuthModal {
         email,
         password,
         displayName,
-        avatarId: this.selectedAvatar
+        avatarId: 'dev_hoodie'
       });
       this.hide();
       if (this.onAuthSuccess) {
         this.onAuthSuccess({ user, isGuest: false });
       }
     } catch (err) {
-      this.showError(err.message);
-    }
-  }
-
-  async handleGuest(e) {
-    e.preventDefault();
-    this.clearError();
-
-    const rawName = document.getElementById('guest-name').value.trim();
-    const name = rawName || `Khách #${Math.floor(1000 + Math.random() * 9000)}`;
-    const user = authService.setGuestSession(name, this.selectedAvatar);
-    this.hide();
-
-    if (this.onAuthSuccess) {
-      this.onAuthSuccess({ user, isGuest: true });
+      this.showError(err.message || 'Đăng ký thất bại.');
     }
   }
 
@@ -202,18 +193,18 @@ export class AuthModal {
     e.preventDefault();
     this.clearError();
 
-    const name = document.getElementById('profile-name').value.trim();
+    const displayName = document.getElementById('profile-name').value.trim();
+
     try {
-      const updatedUser = await authService.updateProfile({
-        displayName: name,
-        avatarId: this.selectedAvatar
+      const user = await authService.updateProfile({
+        displayName
       });
       this.hide();
       if (this.onAuthSuccess) {
-        this.onAuthSuccess({ user: updatedUser, isGuest: !authService.isLoggedIn() });
+        this.onAuthSuccess({ user, isGuest: false });
       }
     } catch (err) {
-      this.showError(err.message);
+      this.showError(err.message || 'Cập nhật thất bại.');
     }
   }
 }

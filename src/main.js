@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG } from './config/gameConfig.js';
 import { BootScene } from './scenes/BootScene.js';
 import { WorldScene } from './scenes/WorldScene.js';
+import { WelcomeGate } from './ui/WelcomeGate.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -26,6 +26,17 @@ const config = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  const game = new Phaser.Game(config);
-  window.__DEVER_GAME__ = game;
+  let game = null;
+
+  // Khởi tạo Welcome Gate & Loading transition
+  const welcomeGate = new WelcomeGate({
+    onEnterGame: ({ user, isGuest }) => {
+      if (!game) {
+        game = new Phaser.Game(config);
+        window.__DEVER_GAME__ = game;
+      }
+    }
+  });
+
+  window.__WELCOME_GATE__ = welcomeGate;
 });
