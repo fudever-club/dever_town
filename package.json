@@ -1,0 +1,18 @@
+{
+  "name": "dever-town",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Thế giới Pixel 2D Gather.town style cho CLB / Trường học",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.88.2"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}

@@ -11,8 +11,8 @@
 
 | Bước | Mô tả tính năng | Trạng thái | QA Verification | Git Commit |
 |---|---|---|---|---|
-| **Init** | Thiết lập Agent System & Workflow Protocol | ✅ HOÀN THÀNH | Đã cấu hình | Chờ commit đầu |
-| **Bước 1** | Khởi tạo Game Client 2D Top-down (Phaser 3 + Vite, Map 20x15, Character 4 hướng + animations, Camera follow, Collision vật cản) | 🔄 ĐANG THỰC HIỆN | Chờ kiểm thử | Chưa |
+| **Init** | Thiết lập Agent System & Workflow Protocol | ✅ HOÀN THÀNH | Đã cấu hình | `3d98406` |
+| **Bước 1** | Khởi tạo Game Client 2D Top-down (Phaser 3 + Vite, Map 20x15, Character 4 hướng + animations, Camera follow, Collision vật cản) | ✅ HOÀN THÀNH | ✅ 100% PASSED (Verified build & runtime) | Chờ commit Bước 1 |
 | **Bước 2** | Realtime Multiplayer (Node.js + Socket.io, đồng bộ vị trí, nickname trên đầu, disconnect) | ⏳ CHỜ | Chờ | Chưa |
 | **Bước 3** | Authentication & Database (JWT, PostgreSQL users schema) | ⏳ CHỜ | Chờ | Chưa |
 | **Bước 4** | Quản lý Club & Room đa bản đồ | ⏳ CHỜ | Chờ | Chưa |
