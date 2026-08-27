@@ -613,6 +613,35 @@ body {
   outline: none;
 }
 
+.web-portals-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #090d16;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.web-quick-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: #93c5fd;
+  background: rgba(0, 102, 204, 0.15);
+  border: 1px solid rgba(0, 102, 204, 0.35);
+  padding: 3px 9px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.web-quick-link:hover {
+  background: #0066CC;
+  color: #ffffff;
+  border-color: #0098FF;
+  box-shadow: 0 0 8px rgba(0, 152, 255, 0.4);
+}
+
 .meeting-status {
   font-size: 12px;
   color: #34d399;

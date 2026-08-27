@@ -114,7 +114,7 @@ export class InteractiveModal {
       });
     }
 
-    // 6. Website URL Loader & Fallback
+    // 6. Website URL Loader & Quick Portal buttons
     const loadWebBtn = document.getElementById('web-load-btn');
     if (loadWebBtn) {
       loadWebBtn.addEventListener('click', () => {
@@ -137,14 +137,14 @@ export class InteractiveModal {
     const titleEl = document.getElementById('interactive-modal-title');
     const descEl = document.getElementById('interactive-modal-desc');
 
-    if (titleEl) titleEl.textContent = zoneData.name || 'Khu Vực Tương Tác';
-    if (descEl) descEl.textContent = 'Không gian hoạt động chuyên biệt của DEVER TOWN';
+    if (titleEl) titleEl.textContent = zoneData.name || 'Khu Vực Tương Tác FU-DEVER';
+    if (descEl) descEl.textContent = 'FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD';
 
     // Ẩn tất cả các view panes
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));
 
-    // Hiển thị view pane tương ứng với type
+    // Hiển thị view pane tương ứng
     switch (zoneData.type) {
       case 'whiteboard_slides':
         this.setupSlidesView(zoneData);
@@ -222,7 +222,7 @@ export class InteractiveModal {
     if (!pane) return;
     pane.classList.remove('hidden');
 
-    const roomName = `DeverTown_${zoneData.id || 'Room'}`;
+    const roomName = `FU_DEVER_${zoneData.id || 'Alpha'}`;
     const jitsiUrl = INTERACTION_PRESETS.meeting_stage.getJitsiUrl(roomName);
 
     const iframe = document.getElementById('meeting-iframe');
@@ -321,8 +321,8 @@ export class InteractiveModal {
     if (dateEl) dateEl.textContent = memory.date;
     if (tagEl) {
       tagEl.textContent = memory.tag;
-      tagEl.style.borderColor = memory.accentColor || '#3b82f6';
-      tagEl.style.color = memory.accentColor || '#3b82f6';
+      tagEl.style.borderColor = memory.accentColor || '#0066CC';
+      tagEl.style.color = memory.accentColor || '#0066CC';
     }
     if (storyEl) storyEl.textContent = memory.story;
     if (counterEl) counterEl.textContent = `${this.currentMemoryIndex + 1} / ${memories.length}`;
@@ -332,10 +332,10 @@ export class InteractiveModal {
       const ctx = canvasArt.getContext('2d');
       ctx.clearRect(0, 0, canvasArt.width, canvasArt.height);
 
-      // Nền gradient
+      // Nền gradient Deep Blue
       const grad = ctx.createLinearGradient(0, 0, canvasArt.width, canvasArt.height);
-      grad.addColorStop(0, '#0f172a');
-      grad.addColorStop(1, '#1e293b');
+      grad.addColorStop(0, '#002147');
+      grad.addColorStop(1, '#0f172a');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvasArt.width, canvasArt.height);
 
@@ -344,15 +344,15 @@ export class InteractiveModal {
       ctx.lineWidth = 4;
       ctx.strokeRect(10, 10, canvasArt.width - 20, canvasArt.height - 20);
 
-      // Pixel Art Illustration
+      // Pixel Art Header
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 18px "JetBrains Mono", monospace';
+      ctx.font = 'bold 16px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(memory.title, canvasArt.width / 2, canvasArt.height / 2 - 10);
+      ctx.fillText(memory.title, canvasArt.width / 2, canvasArt.height / 2 - 12);
 
       ctx.fillStyle = memory.accentColor || '#38bdf8';
-      ctx.font = '14px Outfit, sans-serif';
-      ctx.fillText(`DEVER TOWN ARCHIVE • ${memory.date}`, canvasArt.width / 2, canvasArt.height / 2 + 20);
+      ctx.font = 'bold 13px "Outfit", sans-serif';
+      ctx.fillText(`FU-DEVER • FPTU ĐÀ NẴNG • ${memory.date}`, canvasArt.width / 2, canvasArt.height / 2 + 18);
     }
   }
 
@@ -368,6 +368,25 @@ export class InteractiveModal {
     if (input) input.value = url;
 
     this.loadWebsiteIframe(url);
+    this.renderPortalQuickLinks();
+  }
+
+  renderPortalQuickLinks() {
+    const container = document.getElementById('web-portals-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const portals = INTERACTION_PRESETS.club_website.portals;
+
+    portals.forEach(p => {
+      const a = document.createElement('a');
+      a.className = 'web-quick-link';
+      a.href = p.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = p.name;
+      container.appendChild(a);
+    });
   }
 
   loadWebsiteIframe(url) {

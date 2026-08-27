@@ -238,36 +238,48 @@
         "type": "club_website",
         "tileX": 11,
         "tileY": 6,
-        "name": "Cổng Thông Tin & Website CLB DEVER FPTU",
-        "label": "Mở Website CLB",
+        "name": "Landing Page Chính Thức FU-DEVER",
+        "label": "Mở Landing Page",
         "metadata": {
-          "url": "https://deverclub.com",
-          "fallbackUrl": "https://github.com",
-          "title": "DEVER CLUB OFFICIAL PORTAL"
+          "url": "https://fu-dever-landingpage-v2.vercel.app/",
+          "fallbackUrl": "https://github.com/fudever-club",
+          "title": "FU-DEVER LANDING PAGE - WORK HARD PLAY HARD"
+        }
+      },
+      {
+        "id": "zone_web_member_portal",
+        "type": "club_website",
+        "tileX": 3,
+        "tileY": 3,
+        "name": "Member Portal - Hệ Thống Thành Viên FU-DEVER",
+        "label": "Mở Member Portal",
+        "metadata": {
+          "url": "https://dever-client-sigma.vercel.app",
+          "title": "FU-DEVER MEMBER PORTAL"
         }
       },
       {
         "id": "zone_web_projects",
         "type": "club_website",
-        "tileX": 3,
+        "tileX": 19,
         "tileY": 3,
-        "name": "Showcase Sản Phẩm DEVER Coder",
+        "name": "Kho Dự Án & Sản Phẩm Công Nghệ (2D Game, AI, Web, Mobile)",
         "label": "Showcase Sản Phẩm",
         "metadata": {
-          "url": "https://github.com",
-          "title": "DỰ ÁN CÔNG NGHỆ NỔI BẬT"
+          "url": "https://github.com/fudever-club",
+          "title": "KHO SẢN PHẨM & DỰ ÁN FU-DEVER"
         }
       },
       {
-        "id": "zone_web_docs",
+        "id": "zone_web_recruitment",
         "type": "club_website",
-        "tileX": 19,
-        "tileY": 3,
-        "name": "Thư Viện Tài Liệu FPTU & Tech Blog",
-        "label": "Đọc Tech Blog",
+        "tileX": 11,
+        "tileY": 11,
+        "name": "Cổng Đăng Ký Thành Viên Mới FU-DEVER",
+        "label": "Đăng Ký Thành Viên",
         "metadata": {
-          "url": "https://developer.mozilla.org",
-          "title": "TECH BLOG & TÀI LIỆU LẬP TRÌNH"
+          "url": "https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill",
+          "title": "ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER"
         }
       }
     ]

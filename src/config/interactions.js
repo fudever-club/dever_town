@@ -1,109 +1,90 @@
 /**
- * Định nghĩa cấu hình, URL mặc định và Presets cho các Interactive Zones trong DEVER TOWN.
+ * Cấu hình toàn bộ Interactive Presets cho DEVER TOWN
+ * Tích hợp dữ liệu chính thức từ FU-DEVER (Đại học FPT Đà Nẵng)
  */
 export const INTERACTION_PRESETS = {
+  // 1. Màn chiếu Slide / Bảng vẽ Excalidraw
   whiteboard_slides: {
-    type: 'whiteboard_slides',
-    name: 'Màn Chiếu & Slide Thuyết Trình',
-    icon: 'presentation',
-    defaultUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vR6Z4eB-b3w2hG9g4q5i8u7y6t5r4e3w2q1a/embed?start=false&loop=false&delayms=3000',
-    presets: [
-      {
-        title: 'Giới thiệu DEVER Club & Tech Roadmap',
-        url: 'https://docs.google.com/presentation/d/e/2PACX-1vR6Z4eB-b3w2hG9g4q5i8u7y6t5r4e3w2q1a/embed?start=false&loop=false&delayms=3000',
-        note: 'Tài liệu định hướng và kế hoạch hoạt động CLB'
-      },
-      {
-        title: 'Bảng Vẽ & Kiến Trúc Excalidraw',
-        url: 'https://excalidraw.com',
-        note: 'Bảng trắng vẽ sơ đồ hệ thống realtime'
-      }
-    ]
+    title: 'Màn Chiếu & Slide Thuyết Trình FU-DEVER',
+    description: 'Tài liệu đào tạo, slide bài giảng công nghệ và sơ đồ kiến trúc hệ thống CLB.',
+    defaultUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000',
+    excalidrawUrl: 'https://excalidraw.com'
   },
 
+  // 2. Sân khấu họp nhóm Video Call
   meeting_stage: {
-    type: 'meeting_stage',
-    name: 'Phòng Họp & Video Call Trực Tuyến',
-    icon: 'video',
-    defaultRoom: 'DeverTown_MainHall',
-    getJitsiUrl: (roomName) => `https://meet.jit.si/${roomName || 'DeverTown_VirtualClub'}#config.prejoinPageEnabled=false&config.startWithAudioMuted=true`
+    title: 'Phòng Họp Trực Tuyến & Sân Khấu FU-DEVER',
+    description: 'Không gian họp video trực tiếp cho thành viên CLB (Jitsi Meet / Google Meet).',
+    getJitsiUrl: (roomName) => `https://meet.jit.si/FU_DEVER_${encodeURIComponent(roomName || 'Alpha')}`
   },
 
+  // 3. Bàn Lập Trình & Sổ tay Markdown
   code_editor: {
-    type: 'code_editor',
-    name: 'Bàn Lập Trình & Sổ Tay Ghi Chú',
-    icon: 'code',
-    defaultCode: `// Chào mừng đến với DEVER Code Sandbox!
-function calculateClubGrowth(members, months) {
-  const growthRate = 1.25; // Tăng trưởng 25% mỗi tháng
-  const total = Math.round(members * Math.pow(growthRate, months));
-  return \`Sau \${months} tháng, CLB sẽ đạt khoảng \${total} thành viên!\`;
-}
-
-console.log(calculateClubGrowth(15, 6));
-`,
-    defaultNotes: `# Ghi Chú Sinh Hoạt CLB DEVER TOWN
-- [x] Triển khai thành công Phaser 3 + Vite Game Engine.
-- [x] Hoàn thiện Multiplayer Realtime với Socket.io.
-- [x] Tích hợp Authentication JWT và 4 Avatar Pixel Art.
-- [x] Xây dựng hệ sinh thái 5 Không gian (Sảnh, Lab, Thư viện, Kỷ niệm, Web).
-- [x] Kích hoạt các vùng tương tác Proximity Interactive Zones.
-`
+    title: 'Bàn Lập Trình Live Code & Sổ Tay Sinh Viên FPTU',
+    description: 'Thực thi mã nguồn JavaScript trực tiếp và lưu trữ ghi chú cá nhân.',
+    defaultCode: `// 🚀 Chào mừng bạn đến với FU-DEVER Code Sandbox!\n// Slogan: WORK HARD - PLAY HARD\n\nconst club = {\n  name: 'FU-DEVER',\n  campus: 'FPT University Da Nang',\n  pillars: ['2D Game', 'Web App', 'Mobile App', 'Model AI'],\n  members: '50+ Members',\n  years: '9+ Years of Passion'\n};\n\nconsole.log("=== THÔNG TIN CLB FU-DEVER ===");\nconsole.log("Tên CLB:", club.name);\nconsole.log("Cơ sở:", club.campus);\nconsole.log("Các mảng chuyên môn:", club.pillars.join(", "));\nconsole.log("Đam mê kiến tạo tương lai!");`,
+    defaultNotes: `# 📝 SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FPT University Đà Nẵng\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
   },
 
+  // 4. Quầy Cà phê Lofi & Pomodoro Timer
   coffee_lofi: {
-    type: 'coffee_lofi',
-    name: 'Quầy Cà Phê & Pomodoro Study Timer',
-    icon: 'coffee',
-    youtubeId: 'jfKfPfyJRdk',
-    getEmbedUrl: (id) => `https://www.youtube-nocookie.com/embed/${id || 'jfKfPfyJRdk'}?autoplay=1&mute=0`
+    title: 'Quầy Cà Phê Chill Radio & Pomodoro FU-DEVER',
+    description: 'Không gian âm nhạc lofi thư giãn và bộ đếm thời gian tập trung 25/5 phút.',
+    getEmbedUrl: (videoId) => `https://www.youtube.com/embed/${videoId || 'jfKfPfyJRdk'}?autoplay=1&mute=0&controls=1`
   },
 
+  // 5. Phòng Triển Lãm Kỷ Niệm (Gallery)
   gallery_memory: {
-    type: 'gallery_memory',
-    name: 'Triển Lãm Kỷ Niệm & Cột Mốc CLB',
-    icon: 'image',
+    title: 'Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER',
+    description: 'Lưu trữ hành trình 9+ năm hoạt động, 20+ giải thưởng và các cột mốc lịch sử.',
     memories: [
       {
         id: 'founding',
-        title: 'Lễ Ra Mắt & Thành Lập CLB Lập Trình DEVER',
-        date: 'Tháng 09/2023',
+        title: 'Hành Trình 9+ Năm Phát Triển FU-DEVER',
+        date: 'Từ Năm 2017 - Nay',
         tag: 'Cột mốc lịch sử',
-        story: 'Ngày hội tụ đầu tiên của các thành viên đam mê công nghệ, chính thức đặt nền móng xây dựng ngôi nhà chung DEVER TOWN và phát triển các sản phẩm công nghệ sinh viên.',
-        accentColor: '#3b82f6'
+        accentColor: '#0066CC',
+        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FPTU Đà Nẵng, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với hơn 50+ thành viên năng động, 15+ dự án thực chiến và 20+ giải thưởng danh giá.'
       },
       {
         id: 'hackathon',
-        title: 'Vô Địch Cuộc Thi Lập Trình Hackathon Toàn Quốc',
-        date: 'Tháng 12/2024',
-        tag: 'Chiến tích vàng',
-        story: 'Đội ngũ DEVER Club xuất sắc vượt qua hơn 50 đội thi toàn quốc với giải pháp ứng dụng AI & Realtime Collaboration phục vụ giáo dục.',
-        accentColor: '#fbbf24'
+        title: '20+ Giải Thưởng ICPC & Hackathon Toàn Quốc',
+        date: '2020 - 2026',
+        tag: 'Bảng vàng vinh danh',
+        accentColor: '#f26f21',
+        story: 'Các thế hệ thành viên FU-DEVER liên tục ghi danh tại các kỳ thi Lập trình sinh viên Quốc tế ICPC, FPT Edu Hackathon, FPT Edu ResFes với những giải pháp công nghệ xuất sắc về AI, Web3 và Hệ thống phân tán.'
       },
       {
         id: 'teambuilding',
-        title: 'Chuyến Dã Ngoại & Gắn Kết Mùa Hè',
-        date: 'Mùa Hè 2025',
-        tag: 'Gắn kết thành viên',
-        story: 'Những khoảnh khắc bùng nổ năng lượng, đốt lửa trại và chia sẻ kinh nghiệm học tập, định hướng nghề nghiệp giữa các thế hệ thành viên CLB.',
-        accentColor: '#10b981'
+        title: 'Work Hard - Play Hard: Teambuilding Gắn Kết',
+        date: 'Hàng Năm',
+        tag: 'Văn hóa CLB',
+        accentColor: '#10b981',
+        story: 'Bên cạnh những giờ code căng thẳng, FU-DEVER luôn duy trì tinh thần Work Hard - Play Hard với các chuyến dã ngoại Sơn Trà, cắm trại biển Đà Nẵng và các buổi sinh hoạt giao lưu gắn kết các thế hệ.'
       },
       {
         id: 'workshop',
-        title: 'Workshop Chuyên Đề: Làm Chủ Fullstack & Realtime Systems',
+        title: 'Chuỗi Workshop Tech Talk: 2D Game, Web App & AI',
         date: 'Định kỳ hàng tháng',
-        tag: 'Đào tạo kỹ thuật',
-        story: 'Các buổi chia sẻ chuyên sâu về Node.js, WebSockets, Phaser 3, Kiến trúc Microservices và Clean Code do các anh chị Leader hướng dẫn.',
-        accentColor: '#a855f7'
+        tag: 'Học thuật & Đào tạo',
+        accentColor: '#8b5cf6',
+        story: 'Tổ chức các buổi chia sẻ chuyên sâu về 4 trụ cột công nghệ: 2D Game Engine (Phaser), Web/Mobile Application (Next.js, Flutter) và Mô hình Trí tuệ Nhân tạo (Machine Learning/LLMs) cho sinh viên toàn trường.'
       }
     ]
   },
 
+  // 6. Không Gian Website Showroom (Landing Page & Portals)
   club_website: {
-    type: 'club_website',
-    name: 'Không Gian Trải Nghiệm Website CLB',
-    icon: 'globe',
-    defaultUrl: 'https://deverclub.com',
-    fallbackUrl: 'https://github.com'
+    title: 'Showroom Cổng Thông Tin & Website Chính Thức FU-DEVER',
+    description: 'Khám phá Landing Page, Member Portal, Admin Portal và Kho dự án của CLB.',
+    defaultUrl: 'https://fu-dever-landingpage-v2.vercel.app/',
+    portals: [
+      { name: '🌐 Landing Page Chính Thức', url: 'https://fu-dever-landingpage-v2.vercel.app/' },
+      { name: '👤 Member Portal', url: 'https://dever-client-sigma.vercel.app' },
+      { name: '🛡️ Admin Portal', url: 'https://dever-admin-three.vercel.app' },
+      { name: '📝 Đơn Đăng Ký Thành Viên', url: 'https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill' },
+      { name: '🐙 GitHub FU-DEVER', url: 'https://github.com/fudever-club' },
+      { name: '📘 Fanpage Facebook', url: 'https://www.facebook.com/FPTUDever' }
+    ]
   }
 };
