@@ -10,10 +10,13 @@ import { AuthModal } from '../ui/AuthModal.js';
 import { InteractiveModal } from '../ui/InteractiveModal.js';
 import { InventoryModal } from '../ui/InventoryModal.js';
 import { WardrobeModal } from '../ui/WardrobeModal.js';
+import { SettingsModal } from '../ui/SettingsModal.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
 import { authService } from '../services/AuthService.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { audioManager } from '../utils/AudioManager.js';
+import { i18n } from '../config/i18n.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -22,8 +25,11 @@ export class WorldScene extends Phaser.Scene {
     this.remotePlayers = new Map();
     this.isTeleporting = false;
     this.lastTeleportTime = 0;
+    this.teleportGraceUntil = 0;
     this.tileSprites = [];
     this.portalLabels = [];
+    this.audioManager = audioManager;
+    this.i18n = i18n;
   }
 
   create() {
@@ -193,6 +199,8 @@ export class WorldScene extends Phaser.Scene {
       this.player.body.reset(spawnX, spawnY);
     }
 
+    this.teleportGraceUntil = performance.now() + 2000;
+
     if (this.hudText) {
       this.hudText.setText(`DEVER TOWN | ${mapData.name}`);
     }
@@ -211,10 +219,15 @@ export class WorldScene extends Phaser.Scene {
     if (this.isTeleporting) return;
 
     const now = performance.now();
-    if (now - this.lastTeleportTime < 1500) return;
+    if (now < this.teleportGraceUntil) return;
+    if (now - this.lastTeleportTime < 2000) return;
 
     this.isTeleporting = true;
     this.lastTeleportTime = now;
+
+    if (this.audioManager) {
+      this.audioManager.playTeleport();
+    }
 
     this.cameras.main.fadeOut(200, 11, 15, 25);
     this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -227,12 +240,14 @@ export class WorldScene extends Phaser.Scene {
       this.cameras.main.fadeIn(250, 11, 15, 25);
       this.cameras.main.once('camerafadeincomplete', () => {
         this.isTeleporting = false;
+        this.teleportGraceUntil = performance.now() + 2000;
       });
     });
   }
 
   createHUD() {
-    this.hudText = this.add.text(12, 12, 'DEVER TOWN | Sảnh Chính Giảng Đường Alpha', {
+    const mapData = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    this.hudText = this.add.text(12, 12, `DEVER TOWN | ${mapData.name}`, {
       fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '600',
@@ -242,6 +257,15 @@ export class WorldScene extends Phaser.Scene {
     });
     this.hudText.setScrollFactor(0);
     this.hudText.setDepth(1000000);
+
+    // Lắng nghe thay đổi ngôn ngữ
+    this.i18n.subscribe(() => {
+      const curMap = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+      const roomName = this.i18n.get(`rooms.${this.currentRoomId}`) || curMap.name;
+      if (this.hudText) {
+        this.hudText.setText(`DEVER TOWN | ${roomName}`);
+      }
+    });
   }
 
   initUI() {
@@ -277,7 +301,12 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 5. Auth Modal
+    // 5. Settings Modal
+    this.settingsModal = new SettingsModal({
+      scene: this
+    });
+
+    // 6. Auth Modal
     this.authModal = new AuthModal({
       onAuthSuccess: ({ user, isGuest }) => {
         const name = user.display_name || user.displayName;
@@ -505,6 +534,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
+
+      if (inputData.isMoving && this.audioManager) {
+        this.audioManager.playFootstep();
+      }
 
       if (this.socketManager) {
         this.socketManager.sendMovement(

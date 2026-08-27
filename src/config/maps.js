@@ -38,12 +38,12 @@ export const MAPS_CONFIG = {
       [  0,  7,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Sang Tech Lab' },
-      { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 420 }, label: 'Sang Thư Viện' },
-      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 680, y: 220 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 100, y: 220 }, label: 'Không Gian Web' },
-      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 680, y: 220 }, label: 'Media Hub' },
-      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 100, y: 304 }, label: 'Khu Thể Thao' }
+      { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
+      { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 600, y: 220 }, label: 'Phòng Kỷ Niệm' },
+      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 140, y: 220 }, label: 'Không Gian Web' },
+      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 600, y: 220 }, label: 'Media Hub' },
+      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 140, y: 304 }, label: 'Khu Thể Thao' }
     ],
     zones: [
       { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Tôn Chỉ FUDA' },
@@ -57,7 +57,7 @@ export const MAPS_CONFIG = {
     id: 'dever_lab',
     name: 'Phòng Nghiên Cứu & Sáng Tạo Dever Lab',
     description: 'Không gian Hackathon, trạm máy chủ và góc lập trình chuyên sâu của thành viên CLB DEVER.',
-    spawnPoint: { x: 400, y: 450 },
+    spawnPoint: { x: 400, y: 350 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9,  8,  8, 13, 15 ],
@@ -80,8 +80,8 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 12, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 100, y: 100 }, label: 'Về Sảnh Chính' },
-      { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 100, y: 100 }, label: 'Về Sảnh Chính' }
+      { tileX: 12, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
@@ -95,7 +95,7 @@ export const MAPS_CONFIG = {
     id: 'library_lounge',
     name: 'Thư Viện Tri Thức FUDA & Chill Lounge',
     description: 'Không gian tự học yên tĩnh, giá sách công nghệ và quầy cà phê giao lưu.',
-    spawnPoint: { x: 400, y: 420 },
+    spawnPoint: { x: 400, y: 350 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14, 13,  1,  3,  3,  3,  3, 13,  2 ],
@@ -118,8 +118,8 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 650, y: 100 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 650, y: 100 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 640, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 640, y: 80 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       { id: 'zone_lib_coffee', type: 'coffee_lofi', tileX: 15, tileY: 2, name: 'Quầy Cà Phê & Pomodoro', label: 'Cà Phê & Lofi' },
@@ -132,7 +132,7 @@ export const MAPS_CONFIG = {
     id: 'memory_room',
     name: 'Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER',
     description: 'Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử 9+ năm.',
-    spawnPoint: { x: 680, y: 220 },
+    spawnPoint: { x: 600, y: 220 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2, 16,  1, 16,  1, 16,  1, 17, 17,  1, 17, 17,  1, 16,  1, 16,  1, 16,  1, 17, 17,  1, 16, 13,  2 ],
@@ -155,7 +155,7 @@ export const MAPS_CONFIG = {
       [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
     ],
     portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 250 }, label: 'Về Sảnh Chính' }
+      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 240 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
@@ -221,7 +221,7 @@ export const MAPS_CONFIG = {
     id: 'web_room',
     name: 'Showroom Không Gian Web CLB FU-DEVER & FUDA',
     description: 'Không gian số Cyberpunk nhúng Cổng thông tin & Landing Page chính thức FU-DEVER.',
-    spawnPoint: { x: 100, y: 220 },
+    spawnPoint: { x: 140, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 18, 18, 18, 18,  8,  8,  8,  8, 18, 18, 18, 18,  8,  8, 18, 18, 18, 18,  8,  8, 13, 15 ],
@@ -244,7 +244,7 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 680, y: 250 }, label: 'Về Sảnh Chính' }
+      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 660, y: 240 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
@@ -302,7 +302,7 @@ export const MAPS_CONFIG = {
     id: 'media_hub',
     name: 'Trung Tâm Thông Tin & Truyền Thông FU-DEVER',
     description: 'Không gian tích hợp toàn bộ các kênh mạng xã hội, fanpage, tiktok, github và cổng liên hệ.',
-    spawnPoint: { x: 680, y: 220 },
+    spawnPoint: { x: 600, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
       [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
@@ -325,7 +325,7 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 420 }, label: 'Về Sảnh Chính' }
+      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 440 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
@@ -383,7 +383,7 @@ export const MAPS_CONFIG = {
     id: 'sports_complex',
     name: 'Khu Phức Hợp Thể Thao FUDA',
     description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông và hồ bơi sinh viên FUDA với lối đi thông thoáng kết nối 4 phân khu.',
-    spawnPoint: { x: 100, y: 304 },
+    spawnPoint: { x: 140, y: 304 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
@@ -407,7 +407,7 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 1, tileY: 9, targetRoomId: 'main_hall', targetSpawn: { x: 720, y: 420 }, label: 'Về Sảnh Chính' }
+      { tileX: 1, tileY: 9, targetRoomId: 'main_hall', targetSpawn: { x: 700, y: 440 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {

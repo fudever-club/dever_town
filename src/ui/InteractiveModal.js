@@ -1,6 +1,7 @@
 import { INTERACTION_PRESETS } from '../config/interactions.js';
 import { LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
 import { PomodoroTimer } from './PomodoroTimer.js';
+import { audioManager } from '../utils/AudioManager.js';
 
 export class InteractiveModal {
   /**
@@ -451,9 +452,11 @@ export class InteractiveModal {
 
     if (rand > 0.3) {
       const pts = Math.floor(Math.random() * 3) + 1;
+      audioManager.playVictory();
       scoreEl.textContent = `🎉 VÀO RỒI! Bạn vừa thực hiện pha ghi điểm đẳng cấp (+${pts} Điểm)!`;
       scoreEl.className = 'sports-score-text success';
     } else {
+      audioManager.playClick();
       scoreEl.textContent = `⚡ Tiếc quá! Bóng đã trúng xà ngang cột dọc! Hãy thử lại phát nữa nhé!`;
       scoreEl.className = 'sports-score-text fail';
     }

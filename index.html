@@ -21,6 +21,12 @@
           <img src="/assets/logos/dever_logo_nontext.png" class="gate-dever-logo" alt="DEVER Logo" width="32" height="32" />
           <span class="gate-brand-name">FU-DEVER</span>
           <span class="gate-brand-tag">FUDA</span>
+          <button type="button" id="gate-settings-btn" class="gate-settings-icon-btn" title="Cài Đặt / Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
         </div>
 
         <h1 class="gate-main-title">DEVER TOWN</h1>
@@ -238,10 +244,19 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          <span id="auth-btn-text">Hồ Sơ</span>
+          <span id="auth-btn-text" data-i18n="profileBtn">Hồ Sơ</span>
         </button>
 
-        <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản">Đăng xuất</button>
+        <!-- Nút Cài Đặt Hệ Thống (Âm Thanh & Ngôn Ngữ) -->
+        <button id="header-settings-btn" class="btn-primary-sm btn-settings" title="Cài Đặt Hệ Thống & Ngôn Ngữ">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span data-i18n="settingsBtn">Cài Đặt</span>
+        </button>
+
+        <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản" data-i18n="logoutBtn">Đăng xuất</button>
 
         <!-- Fullscreen Toggle -->
         <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
@@ -674,6 +689,82 @@
             <div id="sports-score-display" class="sports-score-text">Sẵn sàng thi đấu!</div>
             <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG VÀO LƯỚI</button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       5. SYSTEM SETTINGS MODAL (AUDIO & LANGUAGE)
+       ========================================================================== -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-md">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <div>
+            <h2 class="modal-title" data-i18n="settingsTitle">Cài Đặt Hệ Thống</h2>
+            <p class="modal-sub" data-i18n="settingsSub">Tùy chỉnh âm thanh, ngôn ngữ và hiển thị trong DEVER TOWN.</p>
+          </div>
+        </div>
+        <button type="button" id="settings-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="settings-body">
+        <!-- Ngôn ngữ -->
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="settingsLangLabel">Ngôn Ngữ Giao Diện (Language):</label>
+          <div class="settings-lang-row">
+            <button type="button" id="setting-lang-vi" class="settings-lang-btn active">
+              <span class="lang-flag">🇻🇳</span>
+              <span>Tiếng Việt</span>
+            </button>
+            <button type="button" id="setting-lang-en" class="settings-lang-btn">
+              <span class="lang-flag">🇬🇧</span>
+              <span>English</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Âm thanh -->
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="settingsAudioTitle">Âm Thanh & Hiệu Ứng Game:</label>
+          
+          <div class="settings-row">
+            <label class="settings-toggle-label">
+              <input type="checkbox" id="setting-audio-mute" />
+              <span data-i18n="settingsMasterMute">Tắt Toàn Bộ Âm Thanh (Master Mute)</span>
+            </label>
+          </div>
+
+          <div class="settings-slider-row">
+            <span class="slider-title" data-i18n="settingsVolumeLabel">Âm Lượng Tổng Thể:</span>
+            <input type="range" id="setting-audio-volume" min="0" max="1" step="0.05" value="0.7" class="settings-range" />
+            <span id="setting-volume-val" class="slider-val">70%</span>
+          </div>
+
+          <div class="settings-row">
+            <label class="settings-toggle-label">
+              <input type="checkbox" id="setting-audio-footsteps" checked />
+              <span data-i18n="settingsFootsteps">Bật Tiếng Bước Chân Khi Di Chuyển</span>
+            </label>
+          </div>
+
+          <div class="settings-row">
+            <label class="settings-toggle-label">
+              <input type="checkbox" id="setting-audio-sfx" checked />
+              <span data-i18n="settingsSfx">Bật Hiệu Ứng Âm Thanh (Click, Portal, Nhặt Đồ)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Cheatsheet điều khiển -->
+        <div class="settings-section controls-guide">
+          <label class="settings-label" data-i18n="settingsControlsTitle">Phím Tắt Điều Khiển:</label>
+          <p class="settings-hint" data-i18n="settingsControlsDesc">W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ</p>
         </div>
       </div>
     </div>

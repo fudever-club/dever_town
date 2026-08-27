@@ -1,4 +1,6 @@
 import { authService } from '../services/AuthService.js';
+import { audioManager } from '../utils/AudioManager.js';
+import { i18n } from '../config/i18n.js';
 
 export class WelcomeGate {
   /**
@@ -16,6 +18,8 @@ export class WelcomeGate {
   }
 
   initDOM() {
+    i18n.applyToDOM();
+
     // Tự động điền biệt danh cũ nếu có
     const savedNick = localStorage.getItem('dever_nickname');
     const guestInput = document.getElementById('gate-guest-name');
@@ -40,6 +44,7 @@ export class WelcomeGate {
     const tabBtns = this.gateEl.querySelectorAll('.gate-tab-btn');
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        audioManager.playClick();
         const tab = btn.dataset.tab;
         this.switchTab(tab);
       });

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE, PICKUP_SPOTS } from '../config/items.js';
+import { audioManager } from '../utils/AudioManager.js';
 
 export class InventoryManager {
   /**
@@ -70,6 +71,7 @@ export class InventoryManager {
       this.onInventoryChange(this.items);
     }
 
+    audioManager.playPickup();
     this.showToast(`+${amount} ${ITEMS_DATABASE[itemId].name} ${ITEMS_DATABASE[itemId].icon}`);
   }
 
