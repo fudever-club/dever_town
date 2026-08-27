@@ -15,7 +15,7 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
       });
 
-      // Tạo bảng users theo schema thiết kế
+      // Tạo bảng users & game_scores theo schema thiết kế
       await this.pool.query(`
         CREATE TABLE IF NOT EXISTS users (
           id VARCHAR(50) PRIMARY KEY,
@@ -24,11 +24,24 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
           display_name VARCHAR(50) NOT NULL,
           avatar_id VARCHAR(50) NOT NULL DEFAULT 'dev_hoodie',
           role VARCHAR(20) NOT NULL DEFAULT 'dev',
+          wardrobe_config JSONB DEFAULT '{}',
+          equipped_item_id VARCHAR(50) DEFAULT NULL,
           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS game_scores (
+          id VARCHAR(50) PRIMARY KEY,
+          user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          player_name VARCHAR(50) NOT NULL,
+          game_type VARCHAR(50) NOT NULL,
+          high_score INTEGER NOT NULL DEFAULT 0,
+          best_streak INTEGER NOT NULL DEFAULT 0,
+          last_played TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE (user_id, game_type)
         );
       `);
 
-      console.log(`🐘 [PostgresDB] Đã kết nối thành công và khởi tạo bảng users.`);
+      console.log(`🐘 [PostgresDB] Đã kết nối thành công và khởi tạo bảng users, game_scores.`);
     } catch (err) {
       console.warn(`⚠️ [PostgresDB] Lỗi khởi tạo PostgreSQL:`, err.message);
       throw err;
@@ -69,8 +82,49 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
     return res.rows[0] || null;
   }
 
+  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+    const query = `
+      UPDATE users
+      SET wardrobe_config = COALESCE($2, wardrobe_config),
+          equipped_item_id = COALESCE($3, equipped_item_id)
+      WHERE id = $1
+      RETURNING *;
+    `;
+    const res = await this.pool.query(query, [id, wardrobeConfig ? JSON.stringify(wardrobeConfig) : null, equippedItemId]);
+    return res.rows[0] || null;
+  }
+
+  async saveGameScore(userId, { gameType, score = 0, streak = 0, playerName = 'Thành viên' }) {
+    const query = `
+      INSERT INTO game_scores (id, user_id, player_name, game_type, high_score, best_streak, last_played)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      ON CONFLICT (user_id, game_type) DO UPDATE
+      SET player_name = EXCLUDED.player_name,
+          high_score = GREATEST(game_scores.high_score, EXCLUDED.high_score),
+          best_streak = GREATEST(game_scores.best_streak, EXCLUDED.best_streak),
+          last_played = NOW()
+      RETURNING *;
+    `;
+    const id = `sc_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const res = await this.pool.query(query, [id, userId, playerName, gameType, score, streak]);
+    return res.rows[0];
+  }
+
+  async getGameScores(userId) {
+    const res = await this.pool.query('SELECT * FROM game_scores WHERE user_id = $1', [userId]);
+    return res.rows;
+  }
+
+  async getLeaderboard(gameType, limit = 10) {
+    const res = await this.pool.query(
+      'SELECT * FROM game_scores WHERE game_type = $1 ORDER BY high_score DESC LIMIT $2',
+      [gameType, limit]
+    );
+    return res.rows;
+  }
+
   async getAllUsers() {
-    const res = await this.pool.query('SELECT id, email, display_name, avatar_id, role, created_at FROM users');
+    const res = await this.pool.query('SELECT id, email, display_name, avatar_id, role, wardrobe_config, equipped_item_id, created_at FROM users');
     return res.rows;
   }
 }

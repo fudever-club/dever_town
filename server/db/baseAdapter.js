@@ -22,6 +22,22 @@ export class BaseDatabaseAdapter {
     throw new Error('Method updateUser() must be implemented');
   }
 
+  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+    throw new Error('Method updateCustomization() must be implemented');
+  }
+
+  async saveGameScore(userId, { gameType, score, streak, playerName }) {
+    throw new Error('Method saveGameScore() must be implemented');
+  }
+
+  async getGameScores(userId) {
+    throw new Error('Method getGameScores() must be implemented');
+  }
+
+  async getLeaderboard(gameType, limit = 10) {
+    throw new Error('Method getLeaderboard() must be implemented');
+  }
+
   async getAllUsers() {
     throw new Error('Method getAllUsers() must be implemented');
   }

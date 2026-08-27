@@ -284,7 +284,48 @@
 
     <!-- Main Workspace (800x600 Game Canvas + 344px Live Chat = 1160px) -->
     <main id="main-content">
-      <div id="game-container"></div>
+      <div id="game-container">
+        <!-- First-time Player Onboarding Guide Overlay (Mục 1.4 Plan Add-on v3) -->
+        <div id="onboarding-guide-overlay" class="onboarding-guide-overlay hidden">
+          <div class="onboarding-card">
+            <div class="onboarding-header">
+              <span class="onboarding-badge">HƯỚNG DẪN TÂN THỦ</span>
+              <h3 class="onboarding-title">Chào mừng bạn đến với DEVER TOWN! 🎮</h3>
+            </div>
+            <div class="onboarding-grid">
+              <div class="onboarding-item">
+                <span class="onboarding-icon">🕹️</span>
+                <div>
+                  <h4>Di Chuyển</h4>
+                  <p>Dùng phím <strong>W, A, S, D</strong> hoặc <strong>Phím Mũi Tên</strong> để điều khiển nhân vật.</p>
+                </div>
+              </div>
+              <div class="onboarding-item">
+                <span class="onboarding-icon">⚡</span>
+                <div>
+                  <h4>Tương Tác Sự Kiện</h4>
+                  <p>Bước vào vòng sáng quanh đồ vật và nhấn phím <strong>[E]</strong> để mở Slide, Code, Lofi, Web, Thể thao.</p>
+                </div>
+              </div>
+              <div class="onboarding-item">
+                <span class="onboarding-icon">🎒</span>
+                <div>
+                  <h4>Túi Đồ FPTU</h4>
+                  <p>Nhấn phím <strong>[I]</strong> để mở Túi đồ, nhặt đồ rơi và cầm MacBook, Cóc Vàng, Bàn phím trên tay.</p>
+                </div>
+              </div>
+              <div class="onboarding-item">
+                <span class="onboarding-icon">🚪</span>
+                <div>
+                  <h4>7 Phòng Chức Năng</h4>
+                  <p>Bước qua cổng <strong>Portal màu tím</strong> hoặc dùng Menu đổi phòng trên thanh điều hướng.</p>
+                </div>
+              </div>
+            </div>
+            <button type="button" id="onboarding-close-btn" class="onboarding-btn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
+          </div>
+        </div>
+      </div>
 
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
@@ -678,16 +719,49 @@
         </div>
       </div>
 
-      <!-- View 7: Sports Mini-Game View -->
+      <!-- View 7: Sports Mini-Game View (Add-on v3 Timing Arcade) -->
       <div id="pane-sports" class="interactive-pane hidden">
         <div class="sports-mini-workspace">
           <div class="sports-header-box">
+            <div class="sports-badge-row">
+              <span id="sports-type-badge" class="sports-badge">⚽ PENALTY SHOOTOUT</span>
+              <span id="sports-streak-badge" class="sports-badge streak">🔥 Chuỗi: 0</span>
+              <span id="sports-high-badge" class="sports-badge high">🏆 Kỷ lục: 0</span>
+            </div>
             <h3 id="sports-game-title" class="sports-title">SÚT PHẠT ĐỀN MINI FUDA</h3>
-            <p id="sports-game-desc" class="sports-desc">Thử thách sút bóng ghi bàn hoặc ném bóng 3 điểm tại Sân Thể Thao FUDA!</p>
+            <p id="sports-game-desc" class="sports-desc">Chọn hướng sút và canh thanh lực vào vùng xanh để ghi bàn thắng vàng!</p>
           </div>
+
           <div class="sports-arena">
-            <div id="sports-score-display" class="sports-score-text">Sẵn sàng thi đấu!</div>
-            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG VÀO LƯỚI</button>
+            <!-- Direction Selector (Penalty) / Round tracker (Basketball) -->
+            <div id="sports-direction-bar" class="sports-direction-bar">
+              <button type="button" class="sports-dir-btn" data-dir="left">⬅️ Góc Trái</button>
+              <button type="button" class="sports-dir-btn active" data-dir="center">⬆️ Chính Diện</button>
+              <button type="button" class="sports-dir-btn" data-dir="right">➡️ Góc Phải</button>
+            </div>
+
+            <!-- Basketball Shot Rounds Tracker -->
+            <div id="sports-round-tracker" class="sports-round-tracker hidden">
+              <span class="round-label">Lượt ném:</span>
+              <div id="sports-balls-row" class="sports-balls-row"></div>
+            </div>
+
+            <!-- Timing Power Bar -->
+            <div class="sports-power-wrapper">
+              <div class="sports-power-label">
+                <span>Lực / Điểm Rơi:</span>
+                <span id="sports-power-val" class="power-val">50%</span>
+              </div>
+              <div class="sports-power-track">
+                <div class="power-zone-weak"></div>
+                <div class="power-zone-perfect"></div>
+                <div class="power-zone-over"></div>
+                <div id="sports-power-cursor" class="sports-power-cursor"></div>
+              </div>
+            </div>
+
+            <div id="sports-score-display" class="sports-score-text">Canh thanh lực và nhấn nút để thực hiện!</div>
+            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG NGAY ⚽</button>
           </div>
         </div>
       </div>

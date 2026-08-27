@@ -121,6 +121,80 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
     return user;
   }
 
+  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+    const user = this.users.get(id);
+    if (!user) return null;
+
+    if (wardrobeConfig !== undefined) user.wardrobe_config = wardrobeConfig;
+    if (equippedItemId !== undefined) user.equipped_item_id = equippedItemId;
+
+    await this.saveToFile();
+    return user;
+  }
+
+  getGameScoresFilePath() {
+    return path.resolve('server/data/game_scores.json');
+  }
+
+  async readGameScores() {
+    const filePath = this.getGameScoresFilePath();
+    if (!fs.existsSync(filePath)) return [];
+    try {
+      const raw = await fs.promises.readFile(filePath, 'utf-8');
+      return JSON.parse(raw || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  async writeGameScores(scores) {
+    const filePath = this.getGameScoresFilePath();
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const tempPath = `${filePath}.tmp`;
+    await fs.promises.writeFile(tempPath, JSON.stringify(scores, null, 2), 'utf-8');
+    await fs.promises.rename(tempPath, filePath);
+  }
+
+  async saveGameScore(userId, { gameType, score = 0, streak = 0, playerName = 'Thành viên' }) {
+    const scores = await this.readGameScores();
+    let record = scores.find(s => s.user_id === userId && s.game_type === gameType);
+
+    if (record) {
+      record.player_name = playerName;
+      record.high_score = Math.max(record.high_score || 0, score);
+      record.best_streak = Math.max(record.best_streak || 0, streak);
+      record.last_played = new Date().toISOString();
+    } else {
+      record = {
+        id: `sc_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        user_id: userId,
+        player_name: playerName,
+        game_type: gameType,
+        high_score: score,
+        best_streak: streak,
+        last_played: new Date().toISOString()
+      };
+      scores.push(record);
+    }
+
+    await this.writeGameScores(scores);
+    return record;
+  }
+
+  async getGameScores(userId) {
+    const scores = await this.readGameScores();
+    return scores.filter(s => s.user_id === userId);
+  }
+
+  async getLeaderboard(gameType, limit = 10) {
+    const scores = await this.readGameScores();
+    return scores
+      .filter(s => s.game_type === gameType)
+      .sort((a, b) => (b.high_score || 0) - (a.high_score || 0))
+      .slice(0, limit);
+  }
+
   async getAllUsers() {
     return Array.from(this.users.values()).map(u => {
       const { password_hash, ...safe } = u;

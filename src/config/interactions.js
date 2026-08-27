@@ -80,11 +80,13 @@ export const INTERACTION_PRESETS = {
     defaultUrl: 'https://fu-dever-landingpage-v2.vercel.app/',
     portals: [
       { name: '🌐 Landing Page Chính Thức', url: 'https://fu-dever-landingpage-v2.vercel.app/' },
-      { name: '👤 Member Portal', url: 'https://dever-client-sigma.vercel.app' },
-      { name: '🛡️ Admin Portal', url: 'https://dever-admin-three.vercel.app' },
-      { name: '📝 Đơn Đăng Ký Thành Viên', url: 'https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill' },
+      { name: '📝 Đơn Đăng Ký Thành Viên', url: 'https://forms.gle/2us1yB5Qp2HYejj28' },
+      { name: '📘 Fanpage FU-DEVER', url: 'https://www.facebook.com/FPTUDever' },
+      { name: '🏛️ Fanpage FUDA', url: 'https://www.facebook.com/daihocfptdanang' },
+      { name: '🎵 TikTok FUDA', url: 'https://www.tiktok.com/@daihocfptdanang' },
       { name: '🐙 GitHub FU-DEVER', url: 'https://github.com/fudever-club' },
-      { name: '📘 Fanpage Facebook', url: 'https://www.facebook.com/FPTUDever' }
+      { name: '👤 Member Portal', url: 'https://dever-client-sigma.vercel.app' },
+      { name: '🛡️ Admin Portal', url: 'https://dever-admin-three.vercel.app' }
     ]
   }
 };

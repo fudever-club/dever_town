@@ -283,6 +283,30 @@ export class WardrobeModal {
       this.onApply(this.currentConfig);
     }
 
+    this.syncToServer();
     this.hide();
+  }
+
+  async syncToServer() {
+    try {
+      const token = localStorage.getItem('dever_token');
+      if (!token) return;
+
+      const equippedItemId = localStorage.getItem('dever_equipped_item') || null;
+
+      await fetch('/api/auth/customization', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          wardrobeConfig: this.currentConfig,
+          equippedItemId
+        })
+      });
+    } catch (e) {
+      // Local storage fallback
+    }
   }
 }

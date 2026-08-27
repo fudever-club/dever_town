@@ -95,6 +95,7 @@ export class InventoryManager {
       this.scene.socketManager.socket?.emit('equipItem', { itemId });
     }
 
+    this.syncToServer(itemId);
     return true;
   }
 
@@ -112,6 +113,33 @@ export class InventoryManager {
 
     if (this.scene.socketManager) {
       this.scene.socketManager.socket?.emit('equipItem', { itemId: null });
+    }
+
+    this.syncToServer(null);
+    return true;
+  }
+
+  async syncToServer(equippedItemId) {
+    try {
+      const token = localStorage.getItem('dever_token');
+      if (!token) return;
+
+      const wardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+      const wardrobeConfig = wardrobeRaw ? JSON.parse(wardrobeRaw) : undefined;
+
+      await fetch('/api/auth/customization', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          wardrobeConfig,
+          equippedItemId
+        })
+      });
+    } catch (e) {
+      // LocalStorage fallback
     }
   }
 

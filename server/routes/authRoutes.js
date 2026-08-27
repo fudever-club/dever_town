@@ -2,13 +2,21 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { getDB } from '../db/index.js';
 import { generateToken, sanitizeUser, authenticateToken } from '../middleware/authMiddleware.js';
+import { createRateLimiter, sanitizeInput } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
+
+// Rate limiter chống brute-force mật khẩu (30 lần / 15 phút)
+const authLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxRequests: 30,
+  message: 'Bạn đã thử đăng ký / đăng nhập quá nhiều lần. Vui lòng đợi 15 phút trước khi thử lại!'
+});
 
 /**
  * POST /api/auth/register - Đăng ký tài khoản mới
  */
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, sanitizeInput, async (req, res) => {
   try {
     const { email, password, displayName, avatarId } = req.body;
 
@@ -68,19 +76,20 @@ router.post('/register', async (req, res) => {
 /**
  * POST /api/auth/login - Đăng nhập tài khoản
  */
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, sanitizeInput, async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Vui lòng cung cấp email và mật khẩu!'
+        message: 'Vui lòng điền đầy đủ email và mật khẩu!'
       });
     }
 
     const db = getDB();
     const user = await db.getUserByEmail(email);
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -88,6 +97,7 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // So khớp mật khẩu đã băm
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({
@@ -99,7 +109,7 @@ router.post('/login', async (req, res) => {
     const safeUser = sanitizeUser(user);
     const token = generateToken(user);
 
-    console.log(`🔑 [Auth] Đăng nhập thành công: ${safeUser.email} [${safeUser.role}]`);
+    console.log(`🔐 [Auth] Đăng nhập thành công: ${safeUser.email} [${safeUser.role}]`);
 
     return res.json({
       success: true,
@@ -126,7 +136,7 @@ router.get('/me', authenticateToken, (req, res) => {
 /**
  * PUT /api/auth/profile - Cập nhật thông tin hồ sơ (Tên hiển thị, Avatar)
  */
-router.put('/profile', authenticateToken, async (req, res) => {
+router.put('/profile', authenticateToken, sanitizeInput, async (req, res) => {
   try {
     const { displayName, avatarId } = req.body;
     const db = getDB();
@@ -145,6 +155,32 @@ router.put('/profile', authenticateToken, async (req, res) => {
     });
   } catch (err) {
     console.error('❌ [Auth Profile Update Error]:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
+  }
+});
+
+/**
+ * PUT /api/auth/customization - Lưu cấu hình Wardrobe & Equipped Item vào DB gắn với User ID (Mục 1.3 Add-on v3)
+ */
+router.put('/customization', authenticateToken, async (req, res) => {
+  try {
+    const { wardrobeConfig, equippedItemId } = req.body;
+    const db = getDB();
+
+    const updated = await db.updateCustomization(req.user.id, {
+      wardrobeConfig,
+      equippedItemId
+    });
+
+    const safeUser = sanitizeUser(updated);
+
+    return res.json({
+      success: true,
+      message: 'Lưu trạng thái cá nhân hóa thành công!',
+      user: safeUser
+    });
+  } catch (err) {
+    console.error('❌ [Auth Customization Error]:', err);
     return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
   }
 });

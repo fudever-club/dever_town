@@ -5,6 +5,7 @@ import cors from 'cors';
 import { setupSocketHandler } from './socket/socketHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
+import gameRoutes from './routes/gameRoutes.js';
 import { initDatabase, getDB } from './db/index.js';
 
 const app = express();
@@ -40,6 +41,7 @@ app.get('/api/health', (req, res) => {
 // 3. REST API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use('/api/game', gameRoutes);
 
 // 4. Cấu hình Socket.io
 const io = new Server(server, {
