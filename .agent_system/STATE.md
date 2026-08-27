@@ -15,6 +15,6 @@
 | **Bước 1** | Khởi tạo Game Client 2D Top-down (Phaser 3 + Vite, Map 20x15, Character 4 hướng + animations, Camera follow, Collision vật cản) | ✅ HOÀN THÀNH | ✅ 100% PASSED | `6cab84b` |
 | **Bước 2** | Realtime Multiplayer (Node.js + Socket.io, đồng bộ vị trí Lerp mượt mà, nickname trên đầu, Chatbox & Speech Bubble, ngắt kết nối) | ✅ HOÀN THÀNH | ✅ 100% PASSED | `42a23a7` |
 | **Bước 3** | Authentication, Profiles & Database (Đăng ký / Đăng nhập JWT, 4 Avatar Pixel Art, Role Badges 👑 Admin/⭐ Leader/💻 Dev, Hybrid Database) | ✅ HOÀN THÀNH | ✅ 100% PASSED (6/6 API Tests) | `c0103aa` |
-| **Bước 4** | Quản lý Club & Room đa bản đồ (Sảnh chính 🏛️, Dever Lab 💻, Thư viện 📚, Cổng dịch chuyển Portals, Socket Room Isolation) | ✅ HOÀN THÀNH | ✅ 100% PASSED (5/5 Room Tests) | Chờ commit Bước 4 |
-| **Bước 5** | Khu vực tương tác (Interactive Zones: nhúng Google Meet / Slides / Docs / Whiteboard, Proximity Interaction) | 🔄 TIẾP THEO | Chờ triển khai | Chưa |
-| **Bước 6** | Deploy thử nghiệm & Production Optimization | ⏳ CHỜ | Chờ | Chưa |
+| **Bước 4** | Quản lý Club & Room đa bản đồ (Sảnh chính 🏛️, Dever Lab 💻, Thư viện 📚, Cổng dịch chuyển Portals, Socket Room Isolation) | ✅ HOÀN THÀNH | ✅ 100% PASSED (5/5 Room Tests) | `bf072a3` |
+| **Bước 5** | Khu vực tương tác (Interactive Zones: nhúng Google Meet, Slides, Code Sandbox trực tiếp, Lofi Radio, Pomodoro Timer) | ✅ HOÀN THÀNH | ✅ 100% PASSED (5/5 Tests) | Chờ commit Bước 5 |
+| **Bước 6** | Deploy thử nghiệm & Production Optimization | ⏳ SẴN SÀNG | Chờ triển khai | Chưa |

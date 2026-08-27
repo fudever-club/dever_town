@@ -7,6 +7,8 @@ import { RemotePlayer } from '../entities/RemotePlayer.js';
 import { SocketManager } from '../network/SocketManager.js';
 import { ChatBox } from '../ui/ChatBox.js';
 import { AuthModal } from '../ui/AuthModal.js';
+import { InteractiveModal } from '../ui/InteractiveModal.js';
+import { InteractionManager } from '../managers/InteractionManager.js';
 import { authService } from '../services/AuthService.js';
 
 export class WorldScene extends Phaser.Scene {
@@ -41,39 +43,45 @@ export class WorldScene extends Phaser.Scene {
       isCurrentPlayer: true
     });
 
-    // 3. Xây dựng bản đồ phòng hiện tại
+    // 3. Khởi tạo Bộ điều khiển phím
+    this.inputController = new InputController(this);
+
+    // 4. Khởi tạo Interaction Manager
+    this.interactionManager = new InteractionManager(this, {
+      onInteract: (zoneData) => {
+        if (this.interactiveModal) {
+          this.interactiveModal.show(zoneData);
+        }
+      }
+    });
+
+    // 5. Xây dựng bản đồ phòng hiện tại
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
-    // 4. Camera bám theo Player
+    // 6. Camera bám theo Player
     const camera = this.cameras.main;
     camera.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
     camera.startFollow(this.player, true, 0.1, 0.1);
     camera.setRoundPixels(true);
 
-    // 5. Bộ điều khiển phím
-    this.inputController = new InputController(this);
-
-    // 6. HUD
+    // 7. HUD
     this.createHUD();
 
-    // 7. Tích hợp Network Socket.io
+    // 8. Tích hợp Network Socket.io
     this.socketManager = new SocketManager(this);
     this.socketManager.connect();
 
-    // 8. Khởi tạo UI
+    // 9. Khởi tạo UI
     this.initUI();
   }
 
-  /**
-   * Nạp cấu trúc bản đồ động theo Room ID (Sảnh, Tech Lab, Thư viện)
-   */
   loadRoom(roomId, spawnX, spawnY, notifySocket = true) {
     const mapData = MAPS_CONFIG[roomId];
     if (!mapData) return;
 
     this.currentRoomId = roomId;
 
-    // 1. Dọn dẹp các đối tượng tile và chướng ngại vật cũ
+    // 1. Dọn dẹp tiles và obstacles cũ
     if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
       this.tileSprites = [];
@@ -89,7 +97,7 @@ export class WorldScene extends Phaser.Scene {
       this.portalGroup.clear(true, true);
     }
 
-    // 2. Xóa sạch Remote Players của phòng cũ
+    // 2. Xóa sạch Remote Players
     for (const remote of this.remotePlayers.values()) {
       remote.destroy();
     }
@@ -102,8 +110,6 @@ export class WorldScene extends Phaser.Scene {
     const cols = GAME_CONFIG.MAP_WIDTH_TILES;
     const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
-
-    // Các loại tile là vật cản cứng: 2 (Tường), 3 (Kệ sách), 4 (Bàn), 8 (Server Rack), 12 (Bảng), 14 (Quầy cà phê), 15 (Vách kính)
     const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15]);
 
     for (let r = 0; r < rows; r++) {
@@ -124,7 +130,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // 4. Tạo các cổng dịch chuyển (Portals)
+    // 4. Tạo Portals
     if (mapData.portals) {
       mapData.portals.forEach(p => {
         const posX = p.tileX * tileSize + tileSize / 2;
@@ -135,7 +141,6 @@ export class WorldScene extends Phaser.Scene {
         portalObj.setVisible(false);
         portalObj.portalData = p;
 
-        // Nhãn chỉ dẫn lơ lửng phía trên cổng
         const label = this.add.text(posX, posY - 18, p.label, {
           fontFamily: 'Outfit, sans-serif',
           fontSize: '10px',
@@ -148,28 +153,29 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
-    // 5. Cập nhật va chạm
-    if (this.playerCollider) {
-      this.playerCollider.destroy();
+    // 5. Cập nhật Interactive Zones cho phòng này
+    if (this.interactionManager) {
+      this.interactionManager.setZones(mapData.zones || []);
     }
+
+    // 6. Cập nhật Va chạm
+    if (this.playerCollider) this.playerCollider.destroy();
     this.playerCollider = this.physics.add.collider(this.player, this.obstacleGroup);
 
-    if (this.portalOverlap) {
-      this.portalOverlap.destroy();
-    }
+    if (this.portalOverlap) this.portalOverlap.destroy();
     this.portalOverlap = this.physics.add.overlap(
       this.player,
       this.portalGroup,
       (player, portal) => this.handlePortalOverlap(portal.portalData)
     );
 
-    // 6. Đặt lại vị trí Local Player
+    // 7. Đặt lại vị trí Local Player
     if (spawnX !== undefined && spawnY !== undefined) {
       this.player.setPosition(spawnX, spawnY);
       this.player.body.reset(spawnX, spawnY);
     }
 
-    // 7. Cập nhật HUD & UI Header Dropdown
+    // 8. Cập nhật HUD & UI
     if (this.hudText) {
       this.hudText.setText(`DEVER TOWN | ${mapData.name}`);
     }
@@ -179,27 +185,21 @@ export class WorldScene extends Phaser.Scene {
       roomSelector.value = roomId;
     }
 
-    // 8. Thông báo Socket nếu đổi phòng chủ động
+    // 9. Thông báo Socket
     if (notifySocket && this.socketManager) {
       this.socketManager.switchRoom(roomId, spawnX, spawnY);
     }
   }
 
-  /**
-   * Xử lý khi nhân vật bước vào Cổng dịch chuyển
-   */
   handlePortalOverlap(portalData) {
     if (this.isTeleporting) return;
 
     const now = performance.now();
-    if (now - this.lastTeleportTime < 1500) return; // Cooldown 1.5s
+    if (now - this.lastTeleportTime < 1500) return;
 
     this.isTeleporting = true;
     this.lastTeleportTime = now;
 
-    console.log(`🌀 [Portal] Kích hoạt cổng chuyển sang: ${portalData.targetRoomId}`);
-
-    // Hiệu ứng Camera Fade Out
     this.cameras.main.fadeOut(200, 11, 15, 25);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.loadRoom(
@@ -236,7 +236,19 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 2. Auth Modal
+    // 2. Interactive Modal
+    this.interactiveModal = new InteractiveModal({
+      onOpen: () => {
+        if (this.inputController) this.inputController.disableInput();
+        if (this.player && this.player.body) this.player.body.setVelocity(0, 0);
+      },
+      onClose: () => {
+        if (this.inputController) this.inputController.enableInput();
+        if (this.game && this.game.canvas) this.game.canvas.focus();
+      }
+    });
+
+    // 3. Auth Modal
     this.authModal = new AuthModal({
       onAuthSuccess: ({ user, isGuest }) => {
         const name = user.display_name || user.displayName;
@@ -255,7 +267,7 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 3. Header Action Buttons
+    // 4. Header Action Buttons
     const authBtn = document.getElementById('header-auth-btn');
     if (authBtn) {
       authBtn.addEventListener('click', () => {
@@ -281,7 +293,7 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
-    // 4. Quick Room Selector Dropdown
+    // 5. Quick Room Selector
     const roomSelector = document.getElementById('room-selector');
     if (roomSelector) {
       roomSelector.addEventListener('change', (e) => {
@@ -403,6 +415,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update() {
+    // 1. Cập nhật Local Player di chuyển
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
@@ -417,6 +430,12 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
+    // 2. Cập nhật Proximity Interactive Zones
+    if (this.interactionManager && this.player) {
+      this.interactionManager.update(this.player);
+    }
+
+    // 3. Cập nhật Remote Players
     for (const remote of this.remotePlayers.values()) {
       remote.update();
     }

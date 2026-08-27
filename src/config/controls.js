@@ -3,6 +3,8 @@ import Phaser from 'phaser';
 export class InputController {
   constructor(scene) {
     this.scene = scene;
+    this.isDisabled = false;
+
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.wasd = scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -10,21 +12,42 @@ export class InputController {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D
     });
+
+    this.keyE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+  }
+
+  disableInput() {
+    this.isDisabled = true;
+  }
+
+  enableInput() {
+    this.isDisabled = false;
   }
 
   isInputBlocked() {
-    // Nếu người chơi đang focus vào ô input HTML (Chat, Modal Nickname...)
+    if (this.isDisabled) return true;
+
     if (typeof document !== 'undefined') {
       const activeEl = document.activeElement;
-      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
         return true;
       }
+      // Nếu bất kỳ modal nào đang mở
+      const authModal = document.getElementById('auth-modal');
+      const interactiveModal = document.getElementById('interactive-modal');
+
+      if (authModal && !authModal.classList.contains('hidden')) return true;
+      if (interactiveModal && !interactiveModal.classList.contains('hidden')) return true;
     }
     return false;
   }
 
+  isActionJustDown() {
+    if (this.isInputBlocked()) return false;
+    return Phaser.Input.Keyboard.JustDown(this.keyE);
+  }
+
   getMovementVector() {
-    // Nếu bị block thì trả về vector đứng yên
     if (this.isInputBlocked()) {
       return {
         vector: new Phaser.Math.Vector2(0, 0),
