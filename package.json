@@ -10,7 +10,8 @@
     "dev:all": "concurrently -k \"npm run server\" \"npm run dev\"",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "app:desktop": "electron electron/main.cjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

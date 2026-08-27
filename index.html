@@ -325,6 +325,37 @@
             <button type="button" id="onboarding-close-btn" class="onboarding-btn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
           </div>
         </div>
+
+        <!-- Mobile Touch Virtual Controls (D-Pad & Action Buttons) -->
+        <div id="mobile-touch-controls" class="mobile-touch-controls hidden">
+          <!-- Left: Virtual D-Pad -->
+          <div class="touch-dpad-container">
+            <button type="button" id="touch-btn-up" class="touch-dpad-btn up" aria-label="Lên">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </button>
+            <div class="touch-dpad-middle">
+              <button type="button" id="touch-btn-left" class="touch-dpad-btn left" aria-label="Trái">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <div class="touch-dpad-center"></div>
+              <button type="button" id="touch-btn-right" class="touch-dpad-btn right" aria-label="Phải">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+            <button type="button" id="touch-btn-down" class="touch-dpad-btn down" aria-label="Xuống">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+
+          <!-- Right: Touch Action Buttons -->
+          <div class="touch-actions-container">
+            <button type="button" id="touch-btn-chat" class="touch-action-btn chat" title="Mở Chat">💬</button>
+            <button type="button" id="touch-btn-inventory" class="touch-action-btn inv" title="Túi Đồ [I]">🎒</button>
+            <button type="button" id="touch-btn-interact" class="touch-action-btn interact" title="Tương Tác [E]">
+              <span>E</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Live Chat Box -->

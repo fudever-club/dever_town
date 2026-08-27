@@ -17,7 +17,9 @@ export const GAME_CONFIG = {
 
   // Cấu hình mạng realtime Socket.io
   NETWORK: {
-    SERVER_URL: window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin,
+    SERVER_URL: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SERVER_URL)
+      ? import.meta.env.VITE_SERVER_URL
+      : (window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin),
     TICK_RATE: 30, // 30 FPS network throttling
     TICK_INTERVAL_MS: 1000 / 30
   }

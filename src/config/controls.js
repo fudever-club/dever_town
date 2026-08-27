@@ -22,6 +22,15 @@ export class InputController {
 
     this.keyE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
+    // Trạng thái Touch D-Pad dành cho Mobile
+    this.touchInput = {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+      interactE: false
+    };
+
     if (scene.input && scene.input.keyboard) {
       scene.input.keyboard.clearCaptures();
       scene.input.keyboard.preventDefault = false;
@@ -130,6 +139,10 @@ export class InputController {
 
   isActionJustDown() {
     if (this.isInputBlocked()) return false;
+    if (this.touchInput.interactE) {
+      this.touchInput.interactE = false;
+      return true;
+    }
     return Phaser.Input.Keyboard.JustDown(this.keyE);
   }
 
@@ -153,10 +166,10 @@ export class InputController {
     let vx = 0;
     let vy = 0;
 
-    const left = this.cursors.left.isDown || this.wasd.left.isDown;
-    const right = this.cursors.right.isDown || this.wasd.right.isDown;
-    const up = this.cursors.up.isDown || this.wasd.up.isDown;
-    const down = this.cursors.down.isDown || this.wasd.down.isDown;
+    const left = this.cursors.left.isDown || this.wasd.left.isDown || this.touchInput.left;
+    const right = this.cursors.right.isDown || this.wasd.right.isDown || this.touchInput.right;
+    const up = this.cursors.up.isDown || this.wasd.up.isDown || this.touchInput.up;
+    const down = this.cursors.down.isDown || this.wasd.down.isDown || this.touchInput.down;
 
     if (left) vx -= 1;
     if (right) vx += 1;

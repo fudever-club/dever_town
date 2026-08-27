@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: dever-town-server
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+      # Bật biến này khi kết nối PostgreSQL Supabase/Neon
+      # - key: DATABASE_URL
+      #   sync: false

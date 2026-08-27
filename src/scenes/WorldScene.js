@@ -12,6 +12,7 @@ import { InventoryModal } from '../ui/InventoryModal.js';
 import { WardrobeModal } from '../ui/WardrobeModal.js';
 import { SettingsModal } from '../ui/SettingsModal.js';
 import { OnboardingGuide } from '../ui/OnboardingGuide.js';
+import { TouchControls } from '../ui/TouchControls.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
 import { authService } from '../services/AuthService.js';
@@ -326,9 +327,14 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 6. Onboarding Guide Cho Người Chơi Mới
+    // 6. Onboarding Guide & Mobile Touch Controls
     this.onboardingGuide = new OnboardingGuide();
     this.onboardingGuide.checkAndShow();
+
+    this.touchControls = new TouchControls({
+      inputController: this.inputController,
+      scene: this
+    });
 
     // 7. Header Buttons
     const invBtn = document.getElementById('header-inventory-btn');
