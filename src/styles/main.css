@@ -2094,6 +2094,33 @@ body {
   font-weight: 800;
 }
 
+/* ==========================================================================
+   OFFICIAL DEVER LOGO STYLES
+   ========================================================================== */
+.gate-dever-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(0, 102, 204, 0.6));
+  vertical-align: middle;
+}
+
+.header-dever-logo {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(0, 152, 255, 0.5));
+  vertical-align: middle;
+}
+
+.spinning-dever-logo {
+  max-width: 52px;
+  max-height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
+  animation: pulseLogoGlow 1.5s ease-in-out infinite alternate;
+}
+
 @media (max-width: 900px) {
   .gate-card {
     grid-template-columns: 1fr;
@@ -2105,5 +2132,6 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
+
 
 
