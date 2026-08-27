@@ -517,7 +517,46 @@ export class InteractiveModal {
       if (titleEl) titleEl.textContent = 'SÚT PHẠT ĐỀN 11M FUDA';
       if (descEl) descEl.textContent = 'Chọn góc sút (Trái/Giữa/Phải) và canh lực sút vào Vùng Xanh để đánh bại thủ môn!';
       if (actionBtn) actionBtn.textContent = 'SÚT BÓNG VÀO LƯỚI ⚽';
-      if (dirBar) dirBar.classList.remove('hidden');
+      if (dirBar) {
+        dirBar.classList.remove('hidden');
+        dirBar.innerHTML = `
+          <button type="button" class="sports-dir-btn" data-dir="left">Góc Trái ↖</button>
+          <button type="button" class="sports-dir-btn active" data-dir="center">Chính Diện ⬆</button>
+          <button type="button" class="sports-dir-btn" data-dir="right">Góc Phải ↗</button>
+        `;
+        dirBar.querySelectorAll('.sports-dir-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            dirBar.querySelectorAll('.sports-dir-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.sportsDirection = btn.dataset.dir;
+            audioManager.playClick();
+          });
+        });
+      }
+      if (roundTracker) roundTracker.classList.add('hidden');
+    } else if (this.sportsGameType === 'barista') {
+      if (typeBadge) typeBadge.textContent = '☕ PHA CHẾ CÀ PHÊ MUỐI & TRÀ SỮA';
+      if (streakBadge) streakBadge.classList.add('hidden');
+      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${this.baristaScore || 0}đ`;
+      if (titleEl) titleEl.textContent = 'QUẦY BARISTA CÀ PHÊ MUỐI & TRÀ SỮA DEVER';
+      if (descEl) descEl.textContent = 'Chọn loại đồ uống và canh chuẩn tỉ lệ vào Vùng Xanh (40%-75%) để pha chế chuẩn vị Barista!';
+      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG ☕';
+      if (dirBar) {
+        dirBar.classList.remove('hidden');
+        dirBar.innerHTML = `
+          <button type="button" class="sports-dir-btn active" data-dir="cafe_muoi">☕ Cà Phê Muối</button>
+          <button type="button" class="sports-dir-btn" data-dir="bac_xiu">🥛 Bạc Xỉu FPT</button>
+          <button type="button" class="sports-dir-btn" data-dir="tra_sua">🧋 Trà Sữa DEVER</button>
+        `;
+        dirBar.querySelectorAll('.sports-dir-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            dirBar.querySelectorAll('.sports-dir-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.sportsDirection = btn.dataset.dir;
+            audioManager.playClick();
+          });
+        });
+      }
       if (roundTracker) roundTracker.classList.add('hidden');
     } else {
       if (typeBadge) typeBadge.textContent = '🏀 NÉM BÓNG RỔ 3 ĐIỂM';
@@ -617,8 +656,32 @@ export class InteractiveModal {
 
       if (streakBadge) streakBadge.textContent = `🔥 Chuỗi: ${this.penaltyStreak}`;
       if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.penaltyHighScore}`;
+    } else if (this.sportsGameType === 'barista') {
+      // 2. Minigame Barista Cà Phê Muối & Trà Sữa DEVER
+      const isPerfect = power >= 40 && power <= 75;
+      const drinkNames = {
+        cafe_muoi: 'Cà Phê Muối Đà Nẵng',
+        bac_xiu: 'Bạc Xỉu Sữa Tươi 3 Tầng FPT',
+        tra_sua: 'Trà Sữa Trân Châu DEVER'
+      };
+      const drinkName = drinkNames[this.sportsDirection] || 'Cà Phê Muối Đà Nẵng';
+
+      if (isPerfect) {
+        this.baristaScore = (this.baristaScore || 0) + 30;
+        audioManager.playVictory();
+        scoreEl.textContent = `🎉 THÀNH CÔNG! Ly ${drinkName} chuẩn vị béo ngậy (+30đ & +20 Dever Points)!`;
+        scoreEl.className = 'sports-score-text success';
+        questManager.addPoints(20, 'Pha chế thành công ' + drinkName);
+        questManager.incrementProgress('barista_coffee', 1);
+        questManager.incrementProgress('focus_lofi_pomo', 1);
+      } else {
+        audioManager.playClick();
+        scoreEl.textContent = `⚡ Tỉ lệ pha chế ${power > 75 ? 'quá đậm' : 'hơi nhạt'}! Hãy canh lại vào Vùng Xanh nhé!`;
+        scoreEl.className = 'sports-score-text fail';
+      }
+      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${this.baristaScore || 0}đ`;
     } else {
-      // 2. Minigame Ném Bóng Rổ 3 Điểm (Basketball 3-Point Shootout)
+      // 3. Minigame Ném Bóng Rổ 3 Điểm (Basketball 3-Point Shootout)
       const isHit = power >= 42 && power <= 78;
       this.basketballShots.push(isHit);
 

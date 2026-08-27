@@ -8,7 +8,7 @@ export class TextureGenerator {
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 30;
+    const numTiles = 32;
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
@@ -49,6 +49,10 @@ export class TextureGenerator {
     this.drawVolleyballNet(ctx, 27 * tileSize, 0, tileSize); // 27: Lưới bóng chuyền / cầu lông (Obstacle)
     this.drawSwimmingPool(ctx, 28 * tileSize, 0, tileSize); // 28: Mặt nước hồ bơi FPTU
     this.drawMediaLedScreen(ctx, 29 * tileSize, 0, tileSize); // 29: Màn hình LED Media Hub (Obstacle)
+
+    // 30-31: Căn Tin & Quán Cà Phê FUDA
+    this.drawCanteenCounter(ctx, 30 * tileSize, 0, tileSize); // 30: Quầy Cơm Sinh Viên & Bánh Mì FUDA
+    this.drawCafeDiningTable(ctx, 31 * tileSize, 0, tileSize); // 31: Bàn Cà Phê Gỗ & Khăn Trải Bàn Chill
 
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
@@ -598,6 +602,63 @@ export class TextureGenerator {
     ctx.fillText('MEDIA', x + 16, y + 15);
     ctx.fillStyle = '#f26f21';
     ctx.fillText('FPTU', x + 16, y + 23);
+  }
+
+  // 30: Quầy Cơm Sinh Viên & Bánh Mì Canteen FUDA (Obstacle)
+  static drawCanteenCounter(ctx, x, y, size) {
+    // Sàn gạch ấm
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x, y, size, size);
+
+    // Thân quầy gỗ ấm
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 2, y + 8, size - 4, size - 10);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x + 2, y + 6, size - 4, 3);
+
+    // Khay inox đựng thức ăn nóng & khay cơm
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x + 4, y + 11, 10, 8);
+    ctx.fillRect(x + 18, y + 11, 10, 8);
+
+    // Cơm vàng & thức ăn
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 5, y + 12, 8, 3);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 19, y + 12, 8, 3);
+
+    // Hơi nóng bốc lên
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.fillRect(x + 8, y + 2, 2, 3);
+    ctx.fillRect(x + 22, y + 2, 2, 3);
+  }
+
+  // 31: Bàn Cà Phê Gỗ & Khăn Trải Bàn Chill (Obstacle)
+  static drawCafeDiningTable(ctx, x, y, size) {
+    // Sàn gỗ cafe
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Khăn trải bàn tròn / vuông màu kem
+    ctx.fillStyle = '#fef3c7';
+    ctx.fillRect(x + 4, y + 4, size - 8, size - 8);
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 4, y + 4, size - 8, size - 8);
+
+    // 2 Ly Cà Phê (Cà phê muối Đà Nẵng / Bạc xỉu)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 8, y + 10, 6, 6);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 8, y + 8, 6, 2); // Lớp kem muối béo
+
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 18, y + 12, 6, 8);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 19, y + 6, 2, 6); // Ống hút
+
+    // Lọ hoa nhỏ trên bàn
+    ctx.fillStyle = '#ec4899';
+    ctx.fillRect(x + 14, y + 16, 4, 4);
   }
 
   /**

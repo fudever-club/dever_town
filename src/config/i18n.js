@@ -24,7 +24,8 @@ export const TRANSLATIONS = {
       memory_room: 'Phòng Kỷ Niệm',
       web_room: 'Không Gian Web',
       media_hub: 'Media & MXH',
-      sports_complex: 'Khu Thể Thao'
+      sports_complex: 'Khu Thể Thao',
+      canteen_cafe: 'Căn Tin & Cafe'
     },
 
     // Welcome Gate
@@ -104,7 +105,8 @@ export const TRANSLATIONS = {
       memory_room: 'Memory Gallery',
       web_room: 'Web Showroom',
       media_hub: 'Media & Social',
-      sports_complex: 'Sports Complex'
+      sports_complex: 'Sports Complex',
+      canteen_cafe: 'Canteen & Cafe'
     },
 
     // Welcome Gate

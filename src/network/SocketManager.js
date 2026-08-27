@@ -184,17 +184,23 @@ export class SocketManager {
       onlineEl.textContent = `${counts.total} Online`;
     }
 
-    // Cập nhật số lượng 5 phòng
+    // Cập nhật số lượng 8 phòng
     const optMain = document.getElementById('opt-main_hall');
     const optLab = document.getElementById('opt-dever_lab');
     const optLib = document.getElementById('opt-library_lounge');
     const optMem = document.getElementById('opt-memory_room');
     const optWeb = document.getElementById('opt-web_room');
+    const optMedia = document.getElementById('opt-media_hub');
+    const optSports = document.getElementById('opt-sports_complex');
+    const optCafe = document.getElementById('opt-canteen_cafe');
 
-    if (optMain) optMain.textContent = `Sảnh Chính (${counts.main_hall || 0})`;
-    if (optLab) optLab.textContent = `Dever Lab (${counts.dever_lab || 0})`;
-    if (optLib) optLib.textContent = `Thư Viện (${counts.library_lounge || 0})`;
+    if (optMain) optMain.textContent = `Sảnh Alpha (${counts.main_hall || 0})`;
+    if (optLab) optLab.textContent = `Tech Lab (${counts.dever_lab || 0})`;
+    if (optLib) optLib.textContent = `Thư Viện FUDA (${counts.library_lounge || 0})`;
     if (optMem) optMem.textContent = `Phòng Kỷ Niệm (${counts.memory_room || 0})`;
     if (optWeb) optWeb.textContent = `Không Gian Web (${counts.web_room || 0})`;
+    if (optMedia) optMedia.textContent = `Media & MXH (${counts.media_hub || 0})`;
+    if (optSports) optSports.textContent = `Khu Thể Thao (${counts.sports_complex || 0})`;
+    if (optCafe) optCafe.textContent = `Căn Tin & Cafe (${counts.canteen_cafe || 0})`;
   }
 }

@@ -56,6 +56,24 @@ export const ITEMS_DATABASE = {
     desc: 'Cốc giữ nhiệt 24h chứa đầy cà phê nguyên chất, xua tan cơn buồn ngủ khi chạy deadline.',
     accentColor: '#f59e0b'
   },
+  danang_salt_coffee: {
+    id: 'danang_salt_coffee',
+    name: 'Ly Cà Phê Muối Đà Nẵng',
+    icon: '☕',
+    rarity: 'epic',
+    tag: 'Đặc Sản Đà Nẵng',
+    desc: 'Cà phê phin đậm đà kết hợp lớp kem mặn béo ngậy nức tiếng Đà Nẵng, bí kíp giữ tỉnh táo của Dev FUDA.',
+    accentColor: '#d97706'
+  },
+  fuda_banh_mi: {
+    id: 'fuda_banh_mi',
+    name: 'Bánh Mì Chả Canteen FUDA',
+    icon: '🥖',
+    rarity: 'rare',
+    tag: 'Ẩm Thực Canteen',
+    desc: 'Bánh mì giòn rụm kẹp chả bò Đà Nẵng thơm nức, tiếp năng lượng tức thì trong 5 phút nghỉ giữa giờ.',
+    accentColor: '#ea580c'
+  },
   hackathon_trophy: {
     id: 'hackathon_trophy',
     name: 'Cúp Vô Địch Hackathon Mini',
@@ -68,7 +86,7 @@ export const ITEMS_DATABASE = {
 };
 
 /**
- * Danh sách các điểm nhặt vật phẩm phân bố trên 7 bản đồ
+ * Danh sách các điểm nhặt vật phẩm phân bố trên 8 bản đồ
  */
 export const PICKUP_SPOTS = [
   { id: 'spot_macbook', itemId: 'macbook_dev', roomId: 'dever_lab', tileX: 4, tileY: 4 },
@@ -77,5 +95,7 @@ export const PICKUP_SPOTS = [
   { id: 'spot_frog', itemId: 'golden_frog_plush', roomId: 'main_hall', tileX: 11, tileY: 5 },
   { id: 'spot_keychain', itemId: 'fptu_keychain', roomId: 'library_lounge', tileX: 2, tileY: 4 },
   { id: 'spot_coffee', itemId: 'thermos_coffee', roomId: 'library_lounge', tileX: 16, tileY: 3 },
-  { id: 'spot_trophy', itemId: 'hackathon_trophy', roomId: 'memory_room', tileX: 10, tileY: 2 }
+  { id: 'spot_trophy', itemId: 'hackathon_trophy', roomId: 'memory_room', tileX: 10, tileY: 2 },
+  { id: 'spot_salt_coffee', itemId: 'danang_salt_coffee', roomId: 'canteen_cafe', tileX: 22, tileY: 3 },
+  { id: 'spot_banh_mi', itemId: 'fuda_banh_mi', roomId: 'canteen_cafe', tileX: 3, tileY: 3 }
 ];

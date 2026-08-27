@@ -48,9 +48,9 @@ async function runTests() {
   assert(mainCss.includes('@keyframes spin360'), 'main.css chứa keyframes hoạt ảnh spin360');
   assert(mainCss.includes('.network-ping-badge.good'), 'main.css chứa styles màu cho network ping');
 
-  // Test 6: Zero-Regression 7 phòng
+  // Test 6: Zero-Regression 8 phòng
   const { MAPS_CONFIG } = await import('../src/config/maps.js');
-  assert(Object.keys(MAPS_CONFIG).length === 7, 'Bảo toàn tuyệt đối 7 phòng trong MAPS_CONFIG');
+  assert(Object.keys(MAPS_CONFIG).length === 8, 'Bảo toàn tuyệt đối 8 phòng trong MAPS_CONFIG');
 
   console.log(`\n========================================`);
   console.log(`KẾT QUẢ KIỂM THỬ MULTIPLAYER SMOOTH & LAG SPINNER: ${passedTests}/${totalTests} TESTS PASSED (${Math.round((passedTests/totalTests)*100)}%)`);

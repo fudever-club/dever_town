@@ -48,6 +48,14 @@ export const DAILY_QUESTS_DEF = [
     icon: '💬',
     target: 1,
     points: 15
+  },
+  {
+    id: 'barista_coffee',
+    title: 'Thợ Pha Chế Barista ☕',
+    desc: 'Pha thành công 1 ly Cà Phê Muối hoặc Trà Sữa tại Căn Tin & Cafe',
+    icon: '☕',
+    target: 1,
+    points: 25
   }
 ];
 

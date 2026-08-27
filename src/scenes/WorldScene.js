@@ -86,9 +86,12 @@ export class WorldScene extends Phaser.Scene {
     // 3. Xây dựng bản đồ phòng
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
-    // 4. Camera Follow
+    // 4. Camera Follow với vùng đệm rộng rãi (Headroom Padding)
+    // Giúp khi đi lên phía Bắc (North) camera có không gian mở rộng thoáng đãng, không bị gò bó hoặc che khuất tên phòng
     const camera = this.cameras.main;
-    camera.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
+    const PADDING_X = 64;
+    const PADDING_Y = 96;
+    camera.setBounds(-PADDING_X, -PADDING_Y, GAME_CONFIG.MAP_WIDTH + PADDING_X * 2, GAME_CONFIG.MAP_HEIGHT + PADDING_Y * 2);
     camera.startFollow(this.player, true, 0.1, 0.1);
     camera.setRoundPixels(true);
 
@@ -107,6 +110,11 @@ export class WorldScene extends Phaser.Scene {
 
     this.currentRoomId = roomId;
     questManager.recordRoomVisit(roomId);
+
+    if (this.hudText) {
+      const roomName = this.i18n ? (this.i18n.get(`rooms.${roomId}`) || mapData.name) : mapData.name;
+      this.hudText.setText(`DEVER TOWN | ${roomName}`);
+    }
 
     if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
@@ -136,7 +144,7 @@ export class WorldScene extends Phaser.Scene {
     const tileSize = GAME_CONFIG.TILE_SIZE;
 
     // Solid obstacles
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29]);
+    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29, 30, 31]);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -253,13 +261,15 @@ export class WorldScene extends Phaser.Scene {
 
   createHUD() {
     const mapData = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
-    this.hudText = this.add.text(12, 12, `DEVER TOWN | ${mapData.name}`, {
+    const roomName = this.i18n ? (this.i18n.get(`rooms.${this.currentRoomId}`) || mapData.name) : mapData.name;
+
+    this.hudText = this.add.text(14, 14, `DEVER TOWN | ${roomName}`, {
       fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
-      fontSize: '12px',
-      fontWeight: '600',
+      fontSize: '11px',
+      fontWeight: '700',
       color: '#38bdf8',
-      backgroundColor: 'rgba(15, 23, 42, 0.85)',
-      padding: { x: 8, y: 4 }
+      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+      padding: { x: 10, y: 6 }
     });
     this.hudText.setScrollFactor(0);
     this.hudText.setDepth(1000000);
@@ -267,9 +277,9 @@ export class WorldScene extends Phaser.Scene {
     // Lắng nghe thay đổi ngôn ngữ
     this.i18n.subscribe(() => {
       const curMap = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
-      const roomName = this.i18n.get(`rooms.${this.currentRoomId}`) || curMap.name;
+      const rName = this.i18n.get(`rooms.${this.currentRoomId}`) || curMap.name;
       if (this.hudText) {
-        this.hudText.setText(`DEVER TOWN | ${roomName}`);
+        this.hudText.setText(`DEVER TOWN | ${rName}`);
       }
     });
   }

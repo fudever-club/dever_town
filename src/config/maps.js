@@ -30,8 +30,8 @@ export const MAPS_CONFIG = {
       [  2, 23,  4, 23, 23,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6, 23, 23,  4, 23, 23,  0,  0 ],
       [  2, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5,  5 ],
       [  2, 23,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23,  5,  7 ],
-      [ 10, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5, 10 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  5,  0 ],
+      [  2, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5, 10 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  5,  0 ],
       [  0,  0,  7,  0, 22, 22,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0, 22, 22,  0,  7,  5,  0 ],
       [  0,  7,  0,  0,  0,  0,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
       [  0,  0,  0,  7,  0,  0,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  7,  0,  0,  5,  0 ],
@@ -43,7 +43,9 @@ export const MAPS_CONFIG = {
       { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 600, y: 220 }, label: 'Phòng Kỷ Niệm' },
       { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 140, y: 220 }, label: 'Không Gian Web' },
       { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 600, y: 220 }, label: 'Media Hub' },
-      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 140, y: 304 }, label: 'Khu Thể Thao' }
+      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 140, y: 304 }, label: 'Khu Thể Thao' },
+      { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' },
+      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' }
     ],
     zones: [
       { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Tôn Chỉ FUDA' },
@@ -445,6 +447,77 @@ export const MAPS_CONFIG = {
         name: 'Hồ Bơi Sinh Viên FUDA & Ghế Thư Giãn',
         label: 'Lofi Thư Giãn Bờ Hồ',
         metadata: { sport: 'pool', title: 'HỒ BƠI SINH VIÊN FUDA' }
+      }
+    ]
+  },
+
+  canteen_cafe: {
+    id: 'canteen_cafe',
+    name: 'Căn Tin & Quán Cà Phê FUDA - DEVER Lounge',
+    description: 'Không gian ẩm thực sinh viên, quầy cà phê muối Đà Nẵng, góc acoustic chill và pha chế barista.',
+    spawnPoint: { x: 400, y: 120 },
+    layout: [
+      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 30, 30, 30, 30, 30, 15,  1,  1, 11, 11,  1,  1, 11, 11,  1, 15, 14, 14, 14, 14, 21, 21, 13, 15 ],
+      [ 15, 30, 30, 30, 30, 30, 15,  1,  1, 11, 11,  1,  1, 11, 11,  1, 15, 14, 14, 14, 14, 14, 14,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15, 13,  1,  1,  1,  1,  1,  1,  1, 11, 11, 19, 19, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1, 13, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11, 19, 19, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  4,  1,  4,  4,  1,  1, 15 ],
+      [ 15,  1, 31, 31,  1, 31, 31,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  4,  1,  4,  4,  1,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  6,  6, 12, 12,  6,  6,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15, 13,  1, 31, 31,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1, 31, 31,  1, 13,  1, 15 ],
+      [ 15,  1,  1, 31, 31,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 31, 31,  1,  1,  1, 15 ],
+      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
+    ],
+    portals: [
+      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 400 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 400 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      {
+        id: 'zone_canteen_food',
+        type: 'whiteboard_slides',
+        tileX: 4,
+        tileY: 2,
+        name: 'Quầy Cơm Sinh Viên & Bánh Mì FUDA',
+        label: 'Thực Đơn Canteen',
+        metadata: { title: 'THỰC ĐƠN CĂN TIN FUDA' }
+      },
+      {
+        id: 'zone_cafe_barista',
+        type: 'sports_activity',
+        tileX: 19,
+        tileY: 2,
+        name: 'Quầy Barista Cà Phê Muối & Trà Sữa DEVER',
+        label: 'Pha Chế Cà Phê',
+        metadata: { sport: 'barista', title: 'PHA CHẾ CÀ PHÊ MUỐI & TRÀ SỮA' }
+      },
+      {
+        id: 'zone_cafe_acoustic',
+        type: 'coffee_lofi',
+        tileX: 5,
+        tileY: 13,
+        name: 'Góc Nhạc Acoustic Cafe & Pomodoro',
+        label: 'Acoustic Chill',
+        metadata: { title: 'NHẠC ACOUSTIC CAFE ĐÀ NẴNG' }
+      },
+      {
+        id: 'zone_cafe_meeting',
+        type: 'meeting_stage',
+        tileX: 19,
+        tileY: 13,
+        name: 'Bàn Tròn Thảo Luận & Boardgame',
+        label: 'Bàn Họp Nhóm',
+        metadata: { title: 'BÀN THẢO LUẬN CANTEEN' }
       }
     ]
   }
