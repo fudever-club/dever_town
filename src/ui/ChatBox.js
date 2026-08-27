@@ -1,17 +1,13 @@
-/**
- * ChatBox: Điều khiển giao diện Chat HTML, hiển thị Role Badges và phím tắt Enter.
- */
 export class ChatBox {
   /**
    * @param {Object} options
    * @param {Function} options.onSendMessage
    */
-  constructor({ onSendMessage }) {
+  constructor({ onSendMessage } = {}) {
     this.onSendMessage = onSendMessage;
-    this.messagesContainer = document.getElementById('chat-messages');
-    this.chatInput = document.getElementById('chat-input');
     this.chatForm = document.getElementById('chat-form');
-    this.chatWrapper = document.getElementById('chat-wrapper');
+    this.chatInput = document.getElementById('chat-input');
+    this.chatMessages = document.getElementById('chat-messages');
 
     this.initEvents();
   }
@@ -19,95 +15,107 @@ export class ChatBox {
   initEvents() {
     if (!this.chatForm || !this.chatInput) return;
 
+    // Bắt sự kiện submit form
     this.chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
       this.handleSend();
     });
 
+    // Lắng nghe phím Enter và kiểm tra IME Composition (tránh gửi nhầm khi đang gõ dấu tiếng Việt)
+    this.chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.isComposing) {
+        e.preventDefault();
+        this.handleSend();
+      }
+    });
+
+    // Phím Enter toàn cục để focus nhanh vào chatbox khi đang chơi game
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const isFocused = document.activeElement === this.chatInput;
-        if (!isFocused) {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
           const authModal = document.getElementById('auth-modal');
-          if (!authModal || authModal.classList.contains('hidden')) {
+          const interactiveModal = document.getElementById('interactive-modal');
+          const isModalOpen = (authModal && !authModal.classList.contains('hidden')) ||
+                              (interactiveModal && !interactiveModal.classList.contains('hidden'));
+
+          if (!isModalOpen && this.chatInput) {
             e.preventDefault();
             this.chatInput.focus();
           }
-        }
-      } else if (e.key === 'Escape') {
-        if (document.activeElement === this.chatInput) {
-          this.chatInput.blur();
         }
       }
     });
   }
 
   handleSend() {
-    const text = this.chatInput.value.trim();
-    if (!text) {
+    if (!this.chatInput) return;
+    const raw = this.chatInput.value || '';
+    const text = Array.from(raw.normalize('NFC').trim()).slice(0, 140).join('');
+
+    if (text.length > 0) {
+      if (this.onSendMessage) {
+        this.onSendMessage(text);
+      }
+      this.chatInput.value = '';
       this.chatInput.blur();
-      return;
-    }
-
-    if (this.onSendMessage) {
-      this.onSendMessage(text);
-    }
-
-    this.chatInput.value = '';
-    this.chatInput.blur();
-  }
-
-  getRoleBadgeHTML(role) {
-    switch (role) {
-      case 'admin':
-        return '<span class="role-tag admin">👑 Admin</span>';
-      case 'leader':
-        return '<span class="role-tag leader">⭐ Leader</span>';
-      case 'dev':
-        return '<span class="role-tag dev">💻 Dev</span>';
-      default:
-        return '<span class="role-tag guest">👤 Khách</span>';
     }
   }
 
-  addMessage({ name, message, role = 'dev', isSelf = false, timestamp = Date.now() }) {
-    if (!this.messagesContainer) return;
+  /**
+   * Thêm tin nhắn mới vào danh sách chat
+   */
+  addMessage({ name, role, avatarId, message, isSelf = false, timestamp = Date.now() }) {
+    if (!this.chatMessages) return;
 
     const timeStr = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const normalizedName = (name || 'Thành viên').normalize('NFC');
+    const normalizedMsg = (message || '').normalize('NFC');
 
-    const msgEl = document.createElement('div');
-    msgEl.className = `chat-item ${isSelf ? 'self' : 'other'}`;
+    const itemDiv = document.createElement('div');
+    itemDiv.className = `chat-item ${isSelf ? 'self' : 'other'}`;
 
+    const roleClass = role || 'guest';
+    const roleLabel = role === 'admin' ? 'Admin' :
+                      role === 'leader' ? 'Leader' :
+                      role === 'dev' ? 'Dev' : 'Khách';
+
+    // Xây dựng DOM an toàn chống XSS
     const metaDiv = document.createElement('div');
     metaDiv.className = 'chat-meta';
 
-    // Role badge
-    metaDiv.innerHTML = `
-      ${this.getRoleBadgeHTML(role)}
-      <span class="chat-author">${this.escapeHTML(name)}</span>
-      <span class="chat-time">${timeStr}</span>
-    `;
+    const roleBadge = document.createElement('span');
+    roleBadge.className = `role-tag ${roleClass}`;
+    roleBadge.textContent = roleLabel;
+
+    const authorSpan = document.createElement('span');
+    authorSpan.className = 'chat-author';
+    authorSpan.textContent = normalizedName;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'chat-time';
+    timeSpan.textContent = timeStr;
+
+    if (isSelf) {
+      metaDiv.appendChild(timeSpan);
+      metaDiv.appendChild(authorSpan);
+      metaDiv.appendChild(roleBadge);
+    } else {
+      metaDiv.appendChild(roleBadge);
+      metaDiv.appendChild(authorSpan);
+      metaDiv.appendChild(timeSpan);
+    }
 
     const bodyDiv = document.createElement('div');
     bodyDiv.className = 'chat-body';
-    bodyDiv.textContent = message;
+    bodyDiv.textContent = normalizedMsg;
 
-    msgEl.appendChild(metaDiv);
-    msgEl.appendChild(bodyDiv);
+    itemDiv.appendChild(metaDiv);
+    itemDiv.appendChild(bodyDiv);
 
-    this.messagesContainer.appendChild(msgEl);
-    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-  }
+    this.chatMessages.appendChild(itemDiv);
 
-  escapeHTML(str) {
-    return str.replace(/[&<>'"]/g,
-      tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-      }[tag] || tag)
-    );
+    // Tự động cuộn xuống tin nhắn mới nhất
+    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
   }
 }

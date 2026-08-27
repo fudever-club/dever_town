@@ -64,12 +64,12 @@ export class SocketManager {
       this.updateConnectionStatus(false);
     });
 
-    // 1. Nhận danh sách người chơi trong phòng hiện tại
+    // 1. Danh sách người chơi trong phòng
     this.socket.on('currentPlayers', (players) => {
       this.scene.handleCurrentPlayers(players, this.socket.id);
     });
 
-    // 2. Có người chơi mới vào phòng
+    // 2. Người chơi mới
     this.socket.on('newPlayer', (playerData) => {
       this.scene.handleNewPlayer(playerData);
     });
@@ -184,13 +184,17 @@ export class SocketManager {
       onlineEl.textContent = `${counts.total} Online`;
     }
 
-    // Cập nhật số lượng từng phòng trong dropdown
+    // Cập nhật số lượng 5 phòng
     const optMain = document.getElementById('opt-main_hall');
     const optLab = document.getElementById('opt-dever_lab');
     const optLib = document.getElementById('opt-library_lounge');
+    const optMem = document.getElementById('opt-memory_room');
+    const optWeb = document.getElementById('opt-web_room');
 
-    if (optMain) optMain.textContent = `🏛️ Sảnh Chính (${counts.main_hall || 0})`;
-    if (optLab) optLab.textContent = `💻 Dever Lab (${counts.dever_lab || 0})`;
-    if (optLib) optLib.textContent = `📚 Thư Viện (${counts.library_lounge || 0})`;
+    if (optMain) optMain.textContent = `Sảnh Chính (${counts.main_hall || 0})`;
+    if (optLab) optLab.textContent = `Dever Lab (${counts.dever_lab || 0})`;
+    if (optLib) optLib.textContent = `Thư Viện (${counts.library_lounge || 0})`;
+    if (optMem) optMem.textContent = `Phòng Kỷ Niệm (${counts.memory_room || 0})`;
+    if (optWeb) optWeb.textContent = `Không Gian Web (${counts.web_room || 0})`;
   }
 }

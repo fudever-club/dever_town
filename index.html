@@ -7,35 +7,70 @@
   <link rel="stylesheet" href="/src/styles/main.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="app-layout">
-    <!-- Header Navigation, Room Switcher & Profile -->
+    <!-- Header Navigation, Room Switcher, Profile & Fullscreen -->
     <header id="ui-header">
       <div class="logo-group">
+        <svg class="header-icon brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
+        </svg>
         <span class="badge-logo">DEVER</span>
         <span class="brand-text">TOWN</span>
       </div>
 
-      <!-- Quick Room Switcher -->
+      <!-- Quick Room Switcher (Data-Driven 5 Rooms) -->
       <div class="room-selector-group">
-        <label for="room-selector" class="room-label">📍 Phòng:</label>
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
         <select id="room-selector" class="room-select">
-          <option id="opt-main_hall" value="main_hall">🏛️ Sảnh Chính (1)</option>
-          <option id="opt-dever_lab" value="dever_lab">💻 Dever Lab (0)</option>
-          <option id="opt-library_lounge" value="library_lounge">📚 Thư Viện (0)</option>
+          <option id="opt-main_hall" value="main_hall">Sảnh Chính (1)</option>
+          <option id="opt-dever_lab" value="dever_lab">Dever Lab (0)</option>
+          <option id="opt-library_lounge" value="library_lounge">Thư Viện (0)</option>
+          <option id="opt-memory_room" value="memory_room">Phòng Kỷ Niệm (0)</option>
+          <option id="opt-web_room" value="web_room">Không Gian Web (0)</option>
         </select>
       </div>
 
+      <!-- User Profile Badge -->
       <div class="user-profile-badge">
-        <span id="header-user-role" class="role-tag guest">👤 Khách</span>
+        <span id="header-user-role" class="role-tag guest">Khách</span>
         <span id="header-user-name" class="user-name">Khách vãng lai</span>
       </div>
 
+      <!-- Header Actions -->
       <div class="header-actions">
-        <button id="header-auth-btn" class="btn-primary-sm">🔑 Đăng Nhập / Đổi Avatar</button>
+        <button id="header-auth-btn" class="btn-primary-sm" title="Tài khoản & Đổi Avatar">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="auth-btn-text">Đăng Nhập</span>
+        </button>
+
         <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản">Đăng xuất</button>
+
+        <!-- Fullscreen API Toggle Button -->
+        <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
+          <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+          <svg id="fullscreen-icon-compress" class="btn-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="14" y1="10" x2="21" y2="3"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+        </button>
+
         <span id="online-count-badge" class="badge-online">1 Online</span>
         <div class="status-indicator">
           <span class="dot online"></span>
@@ -51,13 +86,18 @@
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
         <div class="chat-header">
-          <span class="chat-title">💬 Kênh Chat Trong Phòng</span>
-          <span class="chat-sub">Thành viên cùng không gian</span>
+          <div class="chat-header-title">
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="chat-title">Kênh Chat Trong Phòng</span>
+          </div>
+          <span class="chat-sub">Realtime Room Channel</span>
         </div>
 
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
-            👋 Chào mừng đến với <b>DEVER TOWN</b>! Bước lại gần Bàn học, Màn chiếu hoặc Quầy Cà phê rồi nhấn <b>[E]</b> để tương tác.
+            Chào mừng đến với <b>DEVER TOWN</b>! Sử dụng phím <b>WASD</b> để di chuyển, bước lại gần đồ vật và nhấn <b>[E]</b> để tương tác.
           </div>
         </div>
 
@@ -76,7 +116,7 @@
 
     <!-- Footer Note -->
     <footer id="ui-footer">
-      <span>💡 Phím tắt: <b>WASD</b> di chuyển | <b>[E]</b> Tương tác đồ vật | <b>Enter</b> Chat | <b>Esc</b> Đóng cửa sổ.</span>
+      <span>Điều khiển: <b>WASD</b> / Mũi tên di chuyển • <b>[E]</b> Tương tác đồ vật • <b>Enter</b> Chat • <b>Esc</b> Đóng cửa sổ</span>
     </footer>
   </div>
 
@@ -84,7 +124,18 @@
   <div id="auth-modal" class="modal-backdrop hidden">
     <div class="modal-card auth-modal-card">
       <button id="auth-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
-      <div class="modal-icon">🎮</div>
+      <div class="modal-icon-svg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+          <line x1="7" y1="2" x2="7" y2="22"></line>
+          <line x1="17" y1="2" x2="17" y2="22"></line>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <line x1="2" y1="7" x2="7" y2="7"></line>
+          <line x1="2" y1="17" x2="7" y2="17"></line>
+          <line x1="17" y1="17" x2="22" y2="17"></line>
+          <line x1="17" y1="7" x2="22" y2="7"></line>
+        </svg>
+      </div>
       <h2 class="modal-title">DEVER TOWN IDENTITY</h2>
       <p class="modal-desc">Đăng nhập tài khoản CLB hoặc tham gia nhanh với vai trò Khách:</p>
 
@@ -128,19 +179,19 @@
           <label>Chọn phong cách Avatar Pixel:</label>
           <div class="avatar-grid">
             <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
               <span class="avatar-name">Developer</span>
             </div>
             <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
               <span class="avatar-name">Cyberpunk</span>
             </div>
             <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
               <span class="avatar-name">Gamer Pro</span>
             </div>
             <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <div class="avatar-badge" style="background: #10b981;">HEX</div>
               <span class="avatar-name">Coder</span>
             </div>
           </div>
@@ -158,19 +209,19 @@
           <label>Chọn phong cách Avatar Pixel:</label>
           <div class="avatar-grid">
             <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
               <span class="avatar-name">Developer</span>
             </div>
             <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
               <span class="avatar-name">Cyberpunk</span>
             </div>
             <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
               <span class="avatar-name">Gamer Pro</span>
             </div>
             <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <div class="avatar-badge" style="background: #10b981;">HEX</div>
               <span class="avatar-name">Coder</span>
             </div>
           </div>
@@ -188,19 +239,19 @@
           <label>Đổi phong cách Avatar Pixel:</label>
           <div class="avatar-grid">
             <div class="avatar-option selected" data-avatar="dev_hoodie">
-              <div class="avatar-badge" style="background: #2563eb;">💻</div>
+              <div class="avatar-badge" style="background: #2563eb;">DEV</div>
               <span class="avatar-name">Developer</span>
             </div>
             <div class="avatar-option" data-avatar="cyberpunk_pink">
-              <div class="avatar-badge" style="background: #ec4899;">🕶️</div>
+              <div class="avatar-badge" style="background: #ec4899;">NEO</div>
               <span class="avatar-name">Cyberpunk</span>
             </div>
             <div class="avatar-option" data-avatar="red_gamer">
-              <div class="avatar-badge" style="background: #ef4444;">🎧</div>
+              <div class="avatar-badge" style="background: #ef4444;">PRO</div>
               <span class="avatar-name">Gamer Pro</span>
             </div>
             <div class="avatar-option" data-avatar="green_coder">
-              <div class="avatar-badge" style="background: #10b981;">⚡</div>
+              <div class="avatar-badge" style="background: #10b981;">HEX</div>
               <span class="avatar-name">Coder</span>
             </div>
           </div>
@@ -210,13 +261,13 @@
     </div>
   </div>
 
-  <!-- 2. INTERACTIVE ZONE MODAL DIALOG -->
+  <!-- 2. INTERACTIVE ZONE MODAL DIALOG (6 VIEWS) -->
   <div id="interactive-modal" class="modal-backdrop hidden">
     <div class="modal-card interactive-modal-card">
       <button id="interactive-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
       <div class="modal-header-section">
-        <h2 id="interactive-modal-title" class="modal-title">✨ Khu Vực Tương Tác</h2>
-        <p id="interactive-modal-desc" class="modal-desc">Không gian hoạt động chuyên biệt</p>
+        <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác</h2>
+        <p id="interactive-modal-desc" class="modal-desc">Không gian hoạt động chuyên biệt của DEVER TOWN</p>
       </div>
 
       <!-- View 1: Slides & Whiteboard View -->
@@ -240,7 +291,7 @@
       <!-- View 2: Video Meeting Stage View -->
       <div id="pane-meeting" class="interactive-pane hidden">
         <div class="meeting-topbar">
-          <span class="meeting-status">🟢 Phòng họp trực tuyến sẵn sàng</span>
+          <span class="meeting-status">Phòng họp trực tuyến sẵn sàng</span>
           <a id="gmeet-open-btn" href="https://meet.google.com" target="_blank" class="btn-sm-action" rel="noopener">Mở Google Meet</a>
         </div>
         <div class="iframe-container">
@@ -255,21 +306,19 @@
       <!-- View 3: Code Sandbox & Notes View -->
       <div id="pane-code" class="interactive-pane hidden">
         <div class="code-workspace-grid">
-          <!-- Code Editor -->
           <div class="code-editor-box">
             <div class="code-box-header">
-              <span>⚡ Trình Soạn Thảo JavaScript</span>
-              <button type="button" id="code-run-btn" class="btn-run-code">▶ Chạy Code</button>
+              <span>Trình Soạn Thảo JavaScript</span>
+              <button type="button" id="code-run-btn" class="btn-run-code">Chạy Code</button>
             </div>
             <textarea id="code-textarea" class="code-font" spellcheck="false" placeholder="// Viết code JavaScript tại đây..."></textarea>
             <div class="code-output-title">Kết quả Console:</div>
-            <pre id="code-output" class="code-console">Nhấn "▶ Chạy Code" để xem kết quả...</pre>
+            <pre id="code-output" class="code-console">Nhấn "Chạy Code" để xem kết quả...</pre>
           </div>
 
-          <!-- Notes Notepad -->
           <div class="notes-box">
             <div class="code-box-header">
-              <span>📝 Sổ Tay Markdown CLB</span>
+              <span>Sổ Tay Markdown CLB</span>
               <span class="auto-save-hint">Tự lưu</span>
             </div>
             <textarea id="notes-textarea" spellcheck="false" placeholder="# Ghi chú nội dung buổi học..."></textarea>
@@ -280,9 +329,8 @@
       <!-- View 4: Coffee & Pomodoro View -->
       <div id="pane-coffee" class="interactive-pane hidden">
         <div class="coffee-workspace-grid">
-          <!-- Lofi Player -->
           <div class="lofi-player-box">
-            <div class="lofi-title">🎧 Lofi Chill Radio - Dever Lounge</div>
+            <div class="lofi-title">Lofi Chill Radio - Dever Lounge</div>
             <div class="lofi-iframe-wrapper">
               <iframe
                 id="lofi-iframe"
@@ -294,18 +342,65 @@
             </div>
           </div>
 
-          <!-- Pomodoro Timer -->
           <div class="pomodoro-box">
             <div class="pomo-header">
-              <span id="pomo-mode-badge" class="pomo-badge work">🎯 Tập trung (25p)</span>
+              <span id="pomo-mode-badge" class="pomo-badge work">Tập trung (25p)</span>
             </div>
             <div id="pomo-timer-display" class="pomo-display">25:00</div>
             <div class="pomo-controls">
-              <button type="button" id="pomo-start-btn" class="pomo-btn start">▶ Bắt Đầu</button>
-              <button type="button" id="pomo-pause-btn" class="pomo-btn pause">⏸ Tạm Dừng</button>
-              <button type="button" id="pomo-reset-btn" class="pomo-btn reset">🔄 Đặt Lại</button>
+              <button type="button" id="pomo-start-btn" class="pomo-btn start">Bắt Đầu</button>
+              <button type="button" id="pomo-pause-btn" class="pomo-btn pause">Tạm Dừng</button>
+              <button type="button" id="pomo-reset-btn" class="pomo-btn reset">Đặt Lại</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- View 5: Memory Gallery View -->
+      <div id="pane-gallery" class="interactive-pane hidden">
+        <div class="gallery-workspace">
+          <div class="gallery-canvas-wrapper">
+            <canvas id="memory-art-canvas" width="460" height="240"></canvas>
+            <div class="gallery-nav-bar">
+              <button type="button" id="memory-prev-btn" class="gallery-nav-btn">&larr; Kỷ niệm trước</button>
+              <span id="memory-slide-counter" class="gallery-counter">1 / 4</span>
+              <button type="button" id="memory-next-btn" class="gallery-nav-btn">Kỷ niệm tiếp theo &rarr;</button>
+            </div>
+          </div>
+          <div class="gallery-info-panel">
+            <div class="gallery-meta-row">
+              <span id="memory-slide-tag" class="gallery-tag">Cột mốc</span>
+              <span id="memory-slide-date" class="gallery-date">2024</span>
+            </div>
+            <h3 id="memory-slide-title" class="gallery-title">Tiêu đề sự kiện</h3>
+            <p id="memory-slide-story" class="gallery-story">Nội dung chi tiết kỷ niệm...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 6: Club Website Showroom View -->
+      <div id="pane-website" class="interactive-pane hidden">
+        <div class="web-topbar">
+          <div class="web-address-bar">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <input type="text" id="web-url-input" class="modal-input-sm" value="https://deverclub.com" />
+            <button type="button" id="web-load-btn" class="btn-sm-action">Tải lại</button>
+          </div>
+          <a id="web-open-tab-btn" href="https://deverclub.com" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
+            Mở trong Tab Mới
+          </a>
+        </div>
+        <div class="iframe-container">
+          <iframe
+            id="web-iframe"
+            src="about:blank"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            allow="fullscreen"
+          ></iframe>
         </div>
       </div>
     </div>

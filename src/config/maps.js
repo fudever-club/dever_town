@@ -1,220 +1,267 @@
 /**
- * Định nghĩa cấu hình 3 bản đồ chuyên biệt cho DEVER TOWN:
+ * Cấu hình 5 bản đồ chuyên biệt cho DEVER TOWN:
  * 1. main_hall: Sảnh chính tiếp đón & hội trường chung
  * 2. dever_lab: Phòng nghiên cứu công nghệ & Hackathon
  * 3. library_lounge: Thư viện tri thức & Chill lounge
+ * 4. memory_room: Phòng Triển lãm Kỷ niệm & Cúp thành tích CLB
+ * 5. web_room: Showroom Không gian Web CLB & Showcase
  *
  * Danh mục Tile Indices:
  * 0: Cỏ, 1: Sàn gỗ, 2: Tường gạch, 3: Kệ sách, 4: Bàn làm việc & Laptop, 5: Đá cuội, 6: Thảm xanh, 7: Hoa
  * 8: Server Rack, 9: Sàn Cyan Cyber, 10: Cổng Portal, 11: Thảm đỏ, 12: Bảng trắng, 13: Cây cảnh, 14: Quầy cà phê, 15: Vách kính
+ * 16: Khung tranh kỷ niệm mạ vàng, 17: Bục cúp vàng lưu niệm, 18: Sàn lưới Cyber Web
  */
 
 export const MAPS_CONFIG = {
   main_hall: {
     id: 'main_hall',
-    name: '🏛️ Sảnh Chính Dever Town',
-    description: 'Khu vực giao lưu chung, sảnh đón tiếp và thảm họp lớn.',
+    name: 'Sảnh Chính Dever Town',
+    description: 'Khu vực giao lưu chung, sảnh đón tiếp và thảm họp lớn kết nối 4 không gian.',
     spawnPoint: { x: 320, y: 280 },
     layout: [
-      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
-      [  2,  2, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10,  2,  2,  0,  0,  7,  0 ], // Row 0
-      [  2, 13,  1, 13,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  2,  0,  5,  0,  0 ], // Row 1
-      [  2,  1,  1,  1,  4,  4,  1,  1,  4,  4,  1,  1,  1,  1,  1,  2,  0,  5,  0,  7 ], // Row 2 (Bàn thuyết trình col 4-5)
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  0,  5,  5,  5 ], // Row 3
-      [  2,  1,  4,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  1,  2,  0,  0,  0,  5 ], // Row 4 (Thảm họp trung tâm col 5-10)
-      [  2,  1,  4,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  1,  2,  7,  0,  0,  5 ], // Row 5
-      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  5,  5,  5,  5 ], // Row 6
-      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  5,  0,  0,  0 ], // Row 7
-      [  2,  1,  4,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  4,  1,  2,  7,  0,  7,  0 ], // Row 8
-      [  2,  1,  4,  1,  1,  4,  4,  1,  1,  4,  4,  1,  1,  4,  1,  2,  0,  0,  0,  0 ], // Row 9
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  0,  5,  5,  5 ], // Row 10
-      [  2,  3,  3,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3,  3,  2,  0,  5,  0,  7 ], // Row 11
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  0,  5,  0,  0 ], // Row 12
-      [  0,  0,  7,  0,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0 ], // Row 13
-      [  0,  7,  0,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  0,  0,  7,  0 ]  // Row 14
+      [  2,  2, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10,  2,  2,  0,  0,  7,  0 ],
+      [  2, 13,  1, 13,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  2,  0,  5,  0,  0 ],
+      [  2,  1,  1,  1,  4,  4,  1,  1,  4,  4,  1,  1,  1,  1,  1,  2,  0,  5,  0,  7 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  0,  5,  5,  5 ],
+      [  2,  1,  4,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  1,  2,  0,  0,  0,  5 ],
+      [  2,  1,  4,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  1,  2,  7,  0,  0,  5 ],
+      [ 10,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1, 10,  5,  5,  5,  5 ],
+      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  5,  0,  0,  0 ],
+      [  2,  1,  4,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  4,  1,  2,  7,  0,  7,  0 ],
+      [  2,  1,  4,  1,  1,  4,  4,  1,  1,  4,  4,  1,  1,  4,  1,  2,  0,  0,  0,  0 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  0,  5,  5,  5 ],
+      [  2,  3,  3,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3,  3,  2,  0,  5,  0,  7 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  0,  5,  0,  0 ],
+      [  0,  0,  7,  0,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0 ],
+      [  0,  7,  0,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      {
-        tileX: 2,
-        tileY: 0,
-        targetRoomId: 'dever_lab',
-        targetSpawn: { x: 320, y: 380 },
-        label: '💻 Sang Tech Lab'
-      },
-      {
-        tileX: 13,
-        tileY: 0,
-        targetRoomId: 'library_lounge',
-        targetSpawn: { x: 320, y: 380 },
-        label: '📚 Sang Thư Viện'
-      }
+      { tileX: 2, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 320, y: 380 }, label: 'Sang Tech Lab' },
+      { tileX: 13, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 320, y: 380 }, label: 'Sang Thư Viện' },
+      { tileX: 0, tileY: 6, targetRoomId: 'memory_room', targetSpawn: { x: 550, y: 200 }, label: 'Phòng Kỷ Niệm' },
+      { tileX: 15, tileY: 6, targetRoomId: 'web_room', targetSpawn: { x: 80, y: 200 }, label: 'Không Gian Web' }
     ],
     zones: [
-      {
-        id: 'zone_main_slides',
-        type: 'whiteboard_slides',
-        tileX: 5,
-        tileY: 2,
-        name: 'Màn Chiếu Sảnh Đón Tiếp',
-        label: '📊 [E] Xem Slide CLB'
-      },
-      {
-        id: 'zone_main_meeting',
-        type: 'meeting_stage',
-        tileX: 8,
-        tileY: 5,
-        name: 'Sân Khấu Họp Toàn Thể',
-        label: '🎤 [E] Họp Nhóm Video'
-      },
-      {
-        id: 'zone_main_coffee',
-        type: 'coffee_lofi',
-        tileX: 17,
-        tileY: 4,
-        name: 'Vườn Trà & Thư Giãn',
-        label: '☕ [E] Nhạc Lofi & Pomodoro'
-      }
+      { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Xem Slide CLB' },
+      { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 8, tileY: 5, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Nhóm Video' },
+      { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 17, tileY: 4, name: 'Vườn Trà & Thư Giãn', label: 'Nhạc Lofi & Pomodoro' }
     ]
   },
 
   dever_lab: {
     id: 'dever_lab',
-    name: '💻 Phòng Nghiên Cứu Dever Lab',
+    name: 'Phòng Nghiên Cứu Dever Lab',
     description: 'Khu vực Hackathon, bàn máy tính cấu hình cao, máy chủ Server Racks.',
     spawnPoint: { x: 320, y: 380 },
     layout: [
-      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
-      [ 15, 15, 15, 15, 15, 12, 12, 15, 15, 15, 15, 15, 12, 12, 15, 15, 15, 15, 15, 15 ], // Row 0 (Bảng trắng col 5-6, 12-13)
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  9,  9,  9,  9,  8,  8, 15 ], // Row 1
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8, 15 ], // Row 2
-      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ], // Row 3
-      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ], // Row 4
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ], // Row 5
-      [ 15, 13,  9,  9,  4,  4,  9,  9,  6,  6,  6,  6,  9,  9,  4,  4,  9,  9, 13, 15 ], // Row 6 (Bàn thảo luận trung tâm)
-      [ 15,  9,  9,  9,  4,  4,  9,  9,  6,  6,  6,  6,  9,  9,  4,  4,  9,  9,  9, 15 ], // Row 7
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  6,  6,  6,  6,  9,  9,  9,  9,  9,  9,  9, 15 ], // Row 8
-      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ], // Row 9
-      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ], // Row 10
-      [ 15, 13,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 13, 15 ], // Row 11
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8, 15 ], // Row 12
-      [ 15, 15, 15, 15, 15, 15, 15, 15,  9, 10, 10,  9, 15, 15, 15, 15, 15, 15, 15, 15 ], // Row 13
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]  // Row 14
+      [ 15, 15, 15, 15, 15, 12, 12, 15, 15, 15, 15, 15, 12, 12, 15, 15, 15, 15, 15, 15 ],
+      [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  9,  9,  9,  9,  8,  8, 15 ],
+      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8, 15 ],
+      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15, 13,  9,  9,  4,  4,  9,  9,  6,  6,  6,  6,  9,  9,  4,  4,  9,  9, 13, 15 ],
+      [ 15,  9,  9,  9,  4,  4,  9,  9,  6,  6,  6,  6,  9,  9,  4,  4,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  6,  6,  6,  6,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
+      [ 15, 13,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 13, 15 ],
+      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15,  9, 10, 10,  9, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      {
-        tileX: 9,
-        tileY: 13,
-        targetRoomId: 'main_hall',
-        targetSpawn: { x: 80, y: 80 },
-        label: '🏛️ Về Sảnh Chính'
-      },
-      {
-        tileX: 10,
-        tileY: 13,
-        targetRoomId: 'main_hall',
-        targetSpawn: { x: 80, y: 80 },
-        label: '🏛️ Về Sảnh Chính'
-      }
+      { tileX: 9, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 10, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 80 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
-      {
-        id: 'zone_lab_whiteboard',
-        type: 'whiteboard_slides',
-        tileX: 6,
-        tileY: 1,
-        name: 'Bảng Sơ Đồ Kiến Trúc Hệ Thống',
-        label: '📊 [E] Bảng Kiến Trúc'
-      },
-      {
-        id: 'zone_lab_code_a',
-        type: 'code_editor',
-        tileX: 5,
-        tileY: 3,
-        name: 'Bàn Lập Trình Hackathon Đội A',
-        label: '🖥️ [E] Mở Code Sandbox'
-      },
-      {
-        id: 'zone_lab_meeting',
-        type: 'meeting_stage',
-        tileX: 10,
-        tileY: 7,
-        name: 'Bàn Thảo Luận Kỹ Thuật Lab',
-        label: '🎤 [E] Họp Kỹ Thuật'
-      },
-      {
-        id: 'zone_lab_code_b',
-        type: 'code_editor',
-        tileX: 15,
-        tileY: 3,
-        name: 'Bàn Lập Trình Hackathon Đội B',
-        label: '🖥️ [E] Mở Code Sandbox'
-      }
+      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', tileX: 6, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc Hệ Thống', label: 'Bảng Kiến Trúc' },
+      { id: 'zone_lab_code_a', type: 'code_editor', tileX: 5, tileY: 3, name: 'Bàn Lập Trình Hackathon Đội A', label: 'Mở Code Sandbox' },
+      { id: 'zone_lab_meeting', type: 'meeting_stage', tileX: 10, tileY: 7, name: 'Bàn Thảo Luận Kỹ Thuật Lab', label: 'Họp Kỹ Thuật' },
+      { id: 'zone_lab_code_b', type: 'code_editor', tileX: 15, tileY: 3, name: 'Bàn Lập Trình Hackathon Đội B', label: 'Mở Code Sandbox' }
     ]
   },
 
   library_lounge: {
     id: 'library_lounge',
-    name: '📚 Thư Viện Tri Thức & Chill Lounge',
+    name: 'Thư Viện Tri Thức & Chill Lounge',
     description: 'Không gian tự học yên tĩnh, giá sách chuyên ngành, thảm đọc sách và quầy cà phê.',
     spawnPoint: { x: 320, y: 380 },
     layout: [
-      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ], // Row 0
-      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14, 13,  1,  2 ], // Row 1
-      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14,  1,  1,  2 ], // Row 2
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ], // Row 3
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  2 ], // Row 4
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  2 ], // Row 5
-      [  2,  1,  1,  1,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  1,  1,  1,  1,  1,  2 ], // Row 6
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  2 ], // Row 7
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  2 ], // Row 8
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ], // Row 9
-      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  2 ], // Row 10
-      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  2 ], // Row 11
-      [  2, 13,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  2 ], // Row 12
-      [  2,  2,  2,  2,  2,  2,  2,  2,  1, 10, 10,  1,  2,  2,  2,  2,  2,  2,  2,  2 ], // Row 13
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]  // Row 14
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14, 13,  1,  2 ],
+      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  2 ],
+      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  2 ],
+      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  2 ],
+      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  2 ],
+      [  2, 13,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  1, 10, 10,  1,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      {
-        tileX: 9,
-        tileY: 13,
-        targetRoomId: 'main_hall',
-        targetSpawn: { x: 430, y: 80 },
-        label: '🏛️ Về Sảnh Chính'
-      },
-      {
-        tileX: 10,
-        tileY: 13,
-        targetRoomId: 'main_hall',
-        targetSpawn: { x: 430, y: 80 },
-        label: '🏛️ Về Sảnh Chính'
-      }
+      { tileX: 9, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 430, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 10, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 430, y: 80 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      { id: 'zone_lib_coffee', type: 'coffee_lofi', tileX: 15, tileY: 2, name: 'Quầy Cà Phê Sách & Pomodoro', label: 'Cà Phê & Lofi' },
+      { id: 'zone_lib_slides', type: 'whiteboard_slides', tileX: 9, tileY: 6, name: 'Khu Đọc Tài Liệu Chuyên Ngành', label: 'Tài Liệu Sách' },
+      { id: 'zone_lib_code', type: 'code_editor', tileX: 5, tileY: 11, name: 'Bàn Tự Học & Ghi Chú Bài Tập', label: 'Sổ Tay & Code' }
+    ]
+  },
+
+  memory_room: {
+    id: 'memory_room',
+    name: 'Phòng Triển Lãm Kỷ Niệm',
+    description: 'Không gian bảo tàng trưng bày hình ảnh các cột mốc, cúp thành tích và lịch sử CLB.',
+    spawnPoint: { x: 550, y: 200 },
+    layout: [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2, 16,  1, 16,  1, 16,  1, 17, 17,  1, 17, 17,  1, 16,  1, 16,  1, 16, 13,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  2 ],
+      [  2, 16, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 11,  1, 16,  2 ],
+      [  2,  1, 11,  1, 17,  1,  4,  4,  1,  1,  4,  4,  1, 17,  1,  1, 11,  1,  1,  2 ],
+      [  2,  1, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 11,  1, 10,  2 ],
+      [  2, 16, 11,  1, 17,  1,  4,  4,  1,  1,  4,  4,  1, 17,  1,  1, 11,  1,  1,  2 ],
+      [  2,  1, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 11,  1, 16,  2 ],
+      [  2,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2, 16,  1, 16,  1, 16,  1,  1,  1,  1,  1,  1,  1, 16,  1, 16,  1, 16, 13,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
+      [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
+    ],
+    portals: [
+      { tileX: 18, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 60, y: 200 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
-        id: 'zone_lib_coffee',
-        type: 'coffee_lofi',
-        tileX: 15,
-        tileY: 2,
-        name: 'Quầy Cà Phê Sách & Pomodoro',
-        label: '☕ [E] Cà Phê & Lofi'
+        id: 'zone_mem_founding',
+        type: 'gallery_memory',
+        tileX: 3,
+        tileY: 1,
+        name: 'Lễ Thành Lập CLB DEVER',
+        label: 'Xem Kỷ Niệm Thành Lập',
+        metadata: {
+          title: 'Lễ Ra Mắt & Thành Lập CLB Lập Trình DEVER',
+          date: 'Tháng 09/2023',
+          story: 'Ngày hội tụ đầu tiên của các thành viên đam mê công nghệ, chính thức đặt nền móng xây dựng ngôi nhà chung DEVER TOWN.',
+          imgId: 'founding'
+        }
       },
       {
-        id: 'zone_lib_slides',
-        type: 'whiteboard_slides',
+        id: 'zone_mem_hackathon',
+        type: 'gallery_memory',
+        tileX: 9,
+        tileY: 1,
+        name: 'Chiến Tích Vô Địch Hackathon',
+        label: 'Xem Cúp Vô Địch Hackathon',
+        metadata: {
+          title: 'Vô Địch Cuộc Thi Lập Trình Hackathon Toàn Quốc',
+          date: 'Tháng 12/2024',
+          story: 'Đội ngũ DEVER Club xuất sắc vượt qua hơn 50 đội thi toàn quốc với giải pháp ứng dụng AI & Realtime Collaboration.',
+          imgId: 'hackathon'
+        }
+      },
+      {
+        id: 'zone_mem_teambuilding',
+        type: 'gallery_memory',
+        tileX: 15,
+        tileY: 1,
+        name: 'Teambuilding & Ngoại Khóa',
+        label: 'Xem Album Teambuilding',
+        metadata: {
+          title: 'Chuyến Dã Ngoại & Gắn Kết Mùa Hè',
+          date: 'Mùa Hè 2025',
+          story: 'Những khoảnh khắc bùng nổ năng lượng, đốt lửa trại và chia sẻ kinh nghiệm học tập giữa các thế hệ thành viên.',
+          imgId: 'teambuilding'
+        }
+      },
+      {
+        id: 'zone_mem_workshop',
+        type: 'gallery_memory',
+        tileX: 1,
+        tileY: 7,
+        name: 'Chuỗi Workshop Công Nghệ',
+        label: 'Xem Workshop Chuyên Đề',
+        metadata: {
+          title: "Workshop 'Làm Chủ Fullstack & Game 2D'",
+          date: 'Hàng Tháng',
+          story: 'Các buổi chia sẻ chuyên sâu về Node.js, WebSockets, Phaser 3 và Kiến trúc hệ thống phân tán cho sinh viên.',
+          imgId: 'workshop'
+        }
+      }
+    ]
+  },
+
+  web_room: {
+    id: 'web_room',
+    name: 'Showroom Không Gian Web CLB',
+    description: 'Không gian công nghệ số Cyberpunk nhúng trực tiếp Cổng thông tin & Website CLB.',
+    spawnPoint: { x: 80, y: 200 },
+    layout: [
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15,  8,  8, 18, 18, 18, 18,  8,  8,  8,  8, 18, 18, 18, 18,  8,  8, 13, 13, 15 ],
+      [ 15, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 15 ],
+      [ 15, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18, 18, 15 ],
+      [ 15, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18, 18, 15 ],
+      [ 15, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 15 ],
+      [ 15, 10, 18, 18,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6, 18, 18, 18, 18, 18, 15 ],
+      [ 15, 18, 18, 18,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6, 18, 18, 18, 18, 18, 15 ],
+      [ 15, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 15 ],
+      [ 15, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18, 18, 15 ],
+      [ 15, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18,  4,  4, 18, 18, 18, 15 ],
+      [ 15, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 15 ],
+      [ 15,  8,  8, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,  8,  8, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
+    ],
+    portals: [
+      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 480, y: 200 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      {
+        id: 'zone_web_main',
+        type: 'club_website',
         tileX: 9,
         tileY: 6,
-        name: 'Khu Đọc Tài Liệu Chuyên Ngành',
-        label: '📊 [E] Tài Liệu Sách'
+        name: 'Cổng Thông Tin & Website Chính Thức CLB',
+        label: 'Mở Website CLB',
+        metadata: {
+          url: 'https://deverclub.com',
+          fallbackUrl: 'https://github.com',
+          title: 'DEVER CLUB OFFICIAL PORTAL'
+        }
       },
       {
-        id: 'zone_lib_code',
-        type: 'code_editor',
-        tileX: 5,
-        tileY: 11,
-        name: 'Bàn Tự Học & Ghi Chú Bài Tập',
-        label: '🖥️ [E] Sổ Tay & Code'
+        id: 'zone_web_projects',
+        type: 'club_website',
+        tileX: 3,
+        tileY: 3,
+        name: 'Showcase Dự Án Thành Viên',
+        label: 'Showcase Sản Phẩm',
+        metadata: {
+          url: 'https://github.com',
+          title: 'DỰ ÁN CÔNG NGHỆ NỔI BẬT'
+        }
+      },
+      {
+        id: 'zone_web_docs',
+        type: 'club_website',
+        tileX: 15,
+        tileY: 3,
+        name: 'Thư Viện Tài Liệu & Tech Blog',
+        label: 'Đọc Tech Blog',
+        metadata: {
+          url: 'https://developer.mozilla.org',
+          title: 'TECH BLOG & TÀI LIỆU LẬP TRÌNH'
+        }
       }
     ]
   }

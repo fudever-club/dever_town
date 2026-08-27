@@ -71,7 +71,7 @@ export class WorldScene extends Phaser.Scene {
     this.socketManager = new SocketManager(this);
     this.socketManager.connect();
 
-    // 9. Khởi tạo UI
+    // 9. Khởi tạo UI & Fullscreen
     this.initUI();
   }
 
@@ -110,7 +110,8 @@ export class WorldScene extends Phaser.Scene {
     const cols = GAME_CONFIG.MAP_WIDTH_TILES;
     const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15]);
+    // Solid tiles: 2 (Tường), 3 (Kệ sách), 4 (Bàn), 8 (Server Rack), 12 (Bảng), 14 (Quầy cà phê), 15 (Vách kính), 16 (Khung tranh), 17 (Bục cúp)
+    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17]);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -142,18 +143,18 @@ export class WorldScene extends Phaser.Scene {
         portalObj.portalData = p;
 
         const label = this.add.text(posX, posY - 18, p.label, {
-          fontFamily: 'Outfit, sans-serif',
+          fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '10px',
           fontWeight: '700',
           color: '#c084fc',
           backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          padding: { x: 4, y: 2 }
+          padding: { x: 5, y: 2 }
         }).setOrigin(0.5, 0.5).setDepth(99999);
         this.portalLabels.push(label);
       });
     }
 
-    // 5. Cập nhật Interactive Zones cho phòng này
+    // 5. Cập nhật Interactive Zones
     if (this.interactionManager) {
       this.interactionManager.setZones(mapData.zones || []);
     }
@@ -216,8 +217,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   createHUD() {
-    this.hudText = this.add.text(12, 12, 'DEVER TOWN | 🏛️ Sảnh Chính Dever Town', {
-      fontFamily: 'Outfit, sans-serif',
+    this.hudText = this.add.text(12, 12, 'DEVER TOWN | Sảnh Chính Dever Town', {
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '600',
       color: '#38bdf8',
@@ -310,6 +311,16 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
+    // 6. Fullscreen API Toggle
+    const fsBtn = document.getElementById('fullscreen-btn');
+    if (fsBtn) {
+      fsBtn.addEventListener('click', () => this.toggleFullscreen());
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      this.updateFullscreenIcon();
+    });
+
     const currentUser = authService.getUser();
     this.updateHeaderProfile(currentUser);
 
@@ -318,29 +329,57 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.warn('Error attempting to enable fullscreen:', err.message);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
+
+  updateFullscreenIcon() {
+    const isFs = !!document.fullscreenElement;
+    const expandIcon = document.getElementById('fullscreen-icon-expand');
+    const compressIcon = document.getElementById('fullscreen-icon-compress');
+
+    if (expandIcon && compressIcon) {
+      if (isFs) {
+        expandIcon.classList.add('hidden');
+        compressIcon.classList.remove('hidden');
+      } else {
+        expandIcon.classList.remove('hidden');
+        compressIcon.classList.add('hidden');
+      }
+    }
+  }
+
   updateHeaderProfile(user) {
     const nameEl = document.getElementById('header-user-name');
     const roleEl = document.getElementById('header-user-role');
-    const authBtn = document.getElementById('header-auth-btn');
+    const authBtnText = document.getElementById('auth-btn-text');
     const logoutBtn = document.getElementById('header-logout-btn');
 
     if (user && user.display_name) {
       if (nameEl) nameEl.textContent = user.display_name;
       if (roleEl) {
         roleEl.className = `role-tag ${user.role || 'dev'}`;
-        roleEl.textContent = user.role === 'admin' ? '👑 Admin' :
-                             user.role === 'leader' ? '⭐ Leader' :
-                             user.role === 'dev' ? '💻 Dev' : '👤 Khách';
+        roleEl.textContent = user.role === 'admin' ? 'Admin' :
+                             user.role === 'leader' ? 'Leader' :
+                             user.role === 'dev' ? 'Dev' : 'Khách';
       }
-      if (authBtn) authBtn.textContent = '👤 Hồ Sơ';
+      if (authBtnText) authBtnText.textContent = 'Hồ Sơ';
       if (logoutBtn) logoutBtn.classList.remove('hidden');
     } else {
       if (nameEl) nameEl.textContent = 'Khách vãng lai';
       if (roleEl) {
         roleEl.className = 'role-tag guest';
-        roleEl.textContent = '👤 Khách';
+        roleEl.textContent = 'Khách';
       }
-      if (authBtn) authBtn.textContent = '🔑 Đăng Nhập / Đăng Ký';
+      if (authBtnText) authBtnText.textContent = 'Đăng Nhập';
       if (logoutBtn) logoutBtn.classList.add('hidden');
     }
   }
@@ -415,7 +454,6 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update() {
-    // 1. Cập nhật Local Player di chuyển
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
@@ -430,12 +468,10 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // 2. Cập nhật Proximity Interactive Zones
     if (this.interactionManager && this.player) {
       this.interactionManager.update(this.player);
     }
 
-    // 3. Cập nhật Remote Players
     for (const remote of this.remotePlayers.values()) {
       remote.update();
     }

@@ -4,7 +4,12 @@ export default defineConfig({
   server: {
     port: 3000,
     open: false,
-    host: true
+    host: true,
+    watch: {
+      usePolling: true,
+      interval: 1000,
+      ignored: ['**/*.md', '**/.git/**', '**/server/data/**']
+    }
   },
   build: {
     target: 'esnext',

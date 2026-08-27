@@ -12,6 +12,7 @@ export class InteractiveModal {
     this.onClose = onClose;
     this.modalEl = document.getElementById('interactive-modal');
     this.currentZone = null;
+    this.currentMemoryIndex = 0;
 
     this.initPomodoro();
     this.initEvents();
@@ -24,12 +25,12 @@ export class InteractiveModal {
         const badgeEl = document.getElementById('pomo-mode-badge');
         if (timeEl) timeEl.textContent = timeStr;
         if (badgeEl) {
-          badgeEl.textContent = mode === 'work' ? '🎯 Tập trung (25p)' : '☕ Nghỉ ngơi (5p)';
+          badgeEl.textContent = mode === 'work' ? 'Tập trung (25p)' : 'Nghỉ ngơi (5p)';
           badgeEl.className = `pomo-badge ${mode}`;
         }
       },
       onComplete: (mode) => {
-        alert(mode === 'work' ? '🎉 Đã hết 25 phút tập trung! Hãy nghỉ giải lao 5 phút.' : '⚡ Hết giờ nghỉ ngơi! Bắt đầu phiên làm việc mới nào.');
+        alert(mode === 'work' ? 'Đã hết 25 phút tập trung! Hãy nghỉ giải lao 5 phút.' : 'Hết giờ nghỉ ngơi! Bắt đầu phiên làm việc mới nào.');
       }
     });
   }
@@ -75,13 +76,44 @@ export class InteractiveModal {
     if (pomoPauseBtn) pomoPauseBtn.addEventListener('click', () => this.pomodoro.pause());
     if (pomoResetBtn) pomoResetBtn.addEventListener('click', () => this.pomodoro.reset('work'));
 
-    // 4. Custom Slide URL Input
+    // 4. Slide URL Loader
     const loadSlideBtn = document.getElementById('slide-load-btn');
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
         const input = document.getElementById('slide-url-input');
         if (input && input.value.trim()) {
           this.loadSlideIframe(input.value.trim());
+        }
+      });
+    }
+
+    // 5. Memory Gallery Next/Prev
+    const prevMemoryBtn = document.getElementById('memory-prev-btn');
+    const nextMemoryBtn = document.getElementById('memory-next-btn');
+
+    if (prevMemoryBtn) {
+      prevMemoryBtn.addEventListener('click', () => {
+        const memories = INTERACTION_PRESETS.gallery_memory.memories;
+        this.currentMemoryIndex = (this.currentMemoryIndex - 1 + memories.length) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      });
+    }
+
+    if (nextMemoryBtn) {
+      nextMemoryBtn.addEventListener('click', () => {
+        const memories = INTERACTION_PRESETS.gallery_memory.memories;
+        this.currentMemoryIndex = (this.currentMemoryIndex + 1) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      });
+    }
+
+    // 6. Website URL Loader & Fallback
+    const loadWebBtn = document.getElementById('web-load-btn');
+    if (loadWebBtn) {
+      loadWebBtn.addEventListener('click', () => {
+        const input = document.getElementById('web-url-input');
+        if (input && input.value.trim()) {
+          this.loadWebsiteIframe(input.value.trim());
         }
       });
     }
@@ -98,8 +130,8 @@ export class InteractiveModal {
     const titleEl = document.getElementById('interactive-modal-title');
     const descEl = document.getElementById('interactive-modal-desc');
 
-    if (titleEl) titleEl.textContent = `${zoneData.icon || '✨'} ${zoneData.name}`;
-    if (descEl) descEl.textContent = `Vùng tương tác không gian DEVER TOWN`;
+    if (titleEl) titleEl.textContent = zoneData.name || 'Khu Vực Tương Tác';
+    if (descEl) descEl.textContent = 'Không gian hoạt động chuyên biệt của DEVER TOWN';
 
     // Ẩn tất cả các view panes
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
@@ -119,6 +151,12 @@ export class InteractiveModal {
       case 'coffee_lofi':
         this.setupCoffeeView(zoneData);
         break;
+      case 'gallery_memory':
+        this.setupGalleryView(zoneData);
+        break;
+      case 'club_website':
+        this.setupWebsiteView(zoneData);
+        break;
       default:
         break;
     }
@@ -134,7 +172,6 @@ export class InteractiveModal {
     if (!this.modalEl) return;
     this.modalEl.classList.add('hidden');
 
-    // Dọn dẹp iframes để dừng audio/video phát ngầm
     const slideIframe = document.getElementById('slide-iframe');
     if (slideIframe) slideIframe.src = 'about:blank';
 
@@ -143,6 +180,9 @@ export class InteractiveModal {
 
     const lofiIframe = document.getElementById('lofi-iframe');
     if (lofiIframe) lofiIframe.src = 'about:blank';
+
+    const webIframe = document.getElementById('web-iframe');
+    if (webIframe) webIframe.src = 'about:blank';
 
     if (this.onClose) {
       this.onClose();
@@ -164,7 +204,6 @@ export class InteractiveModal {
     if (!iframe) return;
 
     let targetUrl = rawUrl;
-    // Tự động chuyển link Google Drive / Slides /edit sang /embed
     if (targetUrl.includes('docs.google.com/presentation') && targetUrl.includes('/edit')) {
       targetUrl = targetUrl.replace(/\/edit.*$/, '/embed?start=false&loop=false&delayms=3000');
     }
@@ -212,21 +251,21 @@ export class InteractiveModal {
     if (!codeArea || !outputEl) return;
 
     const code = codeArea.value;
-    outputEl.textContent = '⏳ Đang chạy mã nguồn...\n';
+    outputEl.textContent = 'Đang chạy mã nguồn...\n';
 
     const logs = [];
     const customConsole = {
       log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-      error: (...args) => logs.push('❌ Lỗi: ' + args.join(' ')),
-      warn: (...args) => logs.push('⚠️ Cảnh báo: ' + args.join(' '))
+      error: (...args) => logs.push('Lỗi: ' + args.join(' ')),
+      warn: (...args) => logs.push('Cảnh báo: ' + args.join(' '))
     };
 
     try {
       const runFn = new Function('console', code);
       runFn(customConsole);
-      outputEl.textContent = logs.length > 0 ? logs.join('\n') : '✅ Mã chạy thành công (Không có console output).';
+      outputEl.textContent = logs.length > 0 ? logs.join('\n') : 'Mã chạy thành công (Không có console output).';
     } catch (err) {
-      outputEl.textContent = `💥 Lỗi thực thi: ${err.message}`;
+      outputEl.textContent = `Lỗi thực thi: ${err.message}`;
     }
   }
 
@@ -238,6 +277,101 @@ export class InteractiveModal {
     const lofiIframe = document.getElementById('lofi-iframe');
     if (lofiIframe) {
       lofiIframe.src = INTERACTION_PRESETS.coffee_lofi.getEmbedUrl('jfKfPfyJRdk');
+    }
+  }
+
+  setupGalleryView(zoneData) {
+    const pane = document.getElementById('pane-gallery');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const memories = INTERACTION_PRESETS.gallery_memory.memories;
+    const meta = zoneData.metadata;
+
+    let targetIdx = 0;
+    if (meta && meta.imgId) {
+      const found = memories.findIndex(m => m.id === meta.imgId);
+      if (found !== -1) targetIdx = found;
+    }
+
+    this.currentMemoryIndex = targetIdx;
+    this.renderMemorySlide(memories[this.currentMemoryIndex]);
+  }
+
+  renderMemorySlide(memory) {
+    if (!memory) return;
+
+    const titleEl = document.getElementById('memory-slide-title');
+    const dateEl = document.getElementById('memory-slide-date');
+    const tagEl = document.getElementById('memory-slide-tag');
+    const storyEl = document.getElementById('memory-slide-story');
+    const counterEl = document.getElementById('memory-slide-counter');
+    const canvasArt = document.getElementById('memory-art-canvas');
+
+    const memories = INTERACTION_PRESETS.gallery_memory.memories;
+
+    if (titleEl) titleEl.textContent = memory.title;
+    if (dateEl) dateEl.textContent = memory.date;
+    if (tagEl) {
+      tagEl.textContent = memory.tag;
+      tagEl.style.borderColor = memory.accentColor || '#3b82f6';
+      tagEl.style.color = memory.accentColor || '#3b82f6';
+    }
+    if (storyEl) storyEl.textContent = memory.story;
+    if (counterEl) counterEl.textContent = `${this.currentMemoryIndex + 1} / ${memories.length}`;
+
+    // Vẽ tranh minh họa nghệ thuật Pixel lên Canvas
+    if (canvasArt) {
+      const ctx = canvasArt.getContext('2d');
+      ctx.clearRect(0, 0, canvasArt.width, canvasArt.height);
+
+      // Nền gradient
+      const grad = ctx.createLinearGradient(0, 0, canvasArt.width, canvasArt.height);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvasArt.width, canvasArt.height);
+
+      // Khung tranh mạ vàng
+      ctx.strokeStyle = memory.accentColor || '#f59e0b';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(10, 10, canvasArt.width - 20, canvasArt.height - 20);
+
+      // Pixel Art Illustration
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 18px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(memory.title, canvasArt.width / 2, canvasArt.height / 2 - 10);
+
+      ctx.fillStyle = memory.accentColor || '#38bdf8';
+      ctx.font = '14px Outfit, sans-serif';
+      ctx.fillText(`DEVER TOWN ARCHIVE • ${memory.date}`, canvasArt.width / 2, canvasArt.height / 2 + 20);
+    }
+  }
+
+  setupWebsiteView(zoneData) {
+    const pane = document.getElementById('pane-website');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const meta = zoneData.metadata || {};
+    const url = meta.url || INTERACTION_PRESETS.club_website.defaultUrl;
+
+    const input = document.getElementById('web-url-input');
+    if (input) input.value = url;
+
+    this.loadWebsiteIframe(url);
+  }
+
+  loadWebsiteIframe(url) {
+    const iframe = document.getElementById('web-iframe');
+    if (iframe) {
+      iframe.src = url;
+    }
+
+    const openTabBtn = document.getElementById('web-open-tab-btn');
+    if (openTabBtn) {
+      openTabBtn.href = url;
     }
   }
 }

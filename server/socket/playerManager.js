@@ -1,5 +1,13 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const roomsFilePath = path.join(__dirname, '../data/rooms.json');
+
 /**
- * PlayerManager: Quản lý trạng thái In-Memory của tất cả người chơi theo từng Phòng (Room Isolation).
+ * PlayerManager: Quản lý trạng thái In-Memory của tất cả người chơi theo từng Phòng (Data-Driven Room Isolation).
  */
 class PlayerManager {
   constructor() {
@@ -10,7 +18,7 @@ class PlayerManager {
     const player = {
       id: socketId,
       userId: authUser ? authUser.id : (data.userId || null),
-      name: authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`),
+      name: (authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`)).normalize('NFC'),
       avatarId: authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie'),
       role: authUser ? authUser.role : (data.role || 'guest'),
       x: data.x || 320,
@@ -44,7 +52,7 @@ class PlayerManager {
     const player = this.players.get(socketId);
     if (!player) return null;
 
-    if (name) player.name = name.trim().substring(0, 20);
+    if (name) player.name = Array.from(name.normalize('NFC').trim()).slice(0, 20).join('');
     if (avatarId) player.avatarId = avatarId;
 
     return player;
@@ -83,16 +91,31 @@ class PlayerManager {
   }
 
   getRoomCounts() {
-    const counts = {
-      main_hall: 0,
-      dever_lab: 0,
-      library_lounge: 0,
-      total: this.players.size
-    };
+    const counts = { total: this.players.size };
+
+    // Tự động khởi tạo các phòng từ data-driven schema
+    try {
+      if (fs.existsSync(roomsFilePath)) {
+        const raw = fs.readFileSync(roomsFilePath, 'utf-8');
+        const roomsData = JSON.parse(raw);
+        for (const rId of Object.keys(roomsData)) {
+          counts[rId] = 0;
+        }
+      }
+    } catch (e) {
+      // Fallback
+      counts.main_hall = 0;
+      counts.dever_lab = 0;
+      counts.library_lounge = 0;
+      counts.memory_room = 0;
+      counts.web_room = 0;
+    }
 
     for (const p of this.players.values()) {
       if (counts[p.roomId] !== undefined) {
         counts[p.roomId]++;
+      } else {
+        counts[p.roomId] = 1;
       }
     }
 

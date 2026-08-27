@@ -57,21 +57,16 @@ export function setupSocketHandler(io) {
       const { player, oldRoomId, newRoomId } = result;
       console.log(`🚪 [Switch Room] ${player.name} chuyển từ [${oldRoomId}] ➔ [${newRoomId}]`);
 
-      // Rời kênh phòng cũ & báo cho các client trong phòng cũ xóa sprite
       socket.leave(oldRoomId);
       socket.to(oldRoomId).emit('playerDisconnected', socket.id);
 
-      // Vào kênh phòng mới
       socket.join(newRoomId);
 
-      // Gửi danh sách người chơi trong phòng mới cho client
       const newRoomPlayers = playerManager.getAllPlayers(newRoomId);
       socket.emit('currentPlayers', newRoomPlayers);
 
-      // Báo cho các client trong phòng mới về sự xuất hiện của người chơi
       socket.to(newRoomId).emit('newPlayer', player);
 
-      // Cập nhật thống kê số lượng phòng
       io.emit('roomCounts', playerManager.getRoomCounts());
     });
 
@@ -92,14 +87,15 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 4. Xử lý Chat Realtime (Phân lập theo Room)
+     * 4. Xử lý Chat Realtime (Unicode Safe & Phân lập theo Room)
      */
     socket.on('sendChatMessage', (data) => {
       const player = playerManager.getPlayer(socket.id);
       if (!player) return;
 
       const rawMsg = data?.message || '';
-      const cleanMsg = rawMsg.trim().substring(0, 150);
+      // Chuẩn hóa Unicode NFC và cắt chuỗi an toàn theo ký tự (Grapheme safe)
+      const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
       if (!cleanMsg) return;
 
       const chatPayload = {
@@ -113,7 +109,6 @@ export function setupSocketHandler(io) {
       };
 
       console.log(`💬 [Chat:${player.roomId}] [${player.role.toUpperCase()}] ${player.name}: ${cleanMsg}`);
-      // Phát tin nhắn cho mọi người trong cùng phòng (bao gồm người gửi)
       io.to(player.roomId).emit('newChatMessage', chatPayload);
     });
 

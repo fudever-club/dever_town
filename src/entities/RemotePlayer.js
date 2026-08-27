@@ -1,7 +1,12 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG } from '../config/gameConfig.js';
 
-export class RemotePlayer extends Phaser.Physics.Arcade.Sprite {
+function safeUnicodeTruncate(str, maxLen = 45) {
+  if (!str) return '';
+  const chars = Array.from(str.normalize('NFC'));
+  return chars.length > maxLen ? chars.slice(0, maxLen).join('') + '...' : chars.join('');
+}
+
+export class RemotePlayer extends Phaser.GameObjects.Sprite {
   /**
    * @param {Phaser.Scene} scene
    * @param {number} x
@@ -10,204 +15,138 @@ export class RemotePlayer extends Phaser.Physics.Arcade.Sprite {
    */
   constructor(scene, x, y, options = {}) {
     const avatarId = options.avatarId || 'dev_hoodie';
-    const textureKey = `avatar_${avatarId}`;
+    const textureKey = `char_${avatarId}`;
 
-    super(scene, x, y, scene.textures.exists(textureKey) ? textureKey : 'player_sprites', 1);
+    super(scene, x, y, textureKey, 0);
 
-    this.scene = scene;
-    this.name = options.name || 'Dever Member';
-    this.id = options.id || '';
+    this.id = options.id;
+    this.name = options.name || 'Thành viên';
     this.avatarId = avatarId;
     this.role = options.role || 'dev';
+
+    scene.add.existing(this);
 
     this.targetX = x;
     this.targetY = y;
     this.targetDirection = 'down';
-    this.targetIsMoving = false;
+    this.isMoving = false;
+    this.lerpFactor = 0.25;
 
-    // Thêm vào Scene
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
-    this.body.setImmovable(true);
-    this.body.moves = false;
+    this.speechBubble = null;
+    this.speechTimer = null;
 
-    // Tạo Name Tag
     this.createNameTag();
-
-    // Khởi tạo Animations
-    this.initAnimations();
-
-    this.bubbleContainer = null;
-    this.bubbleTimer = null;
+    this.setDepth(this.y);
   }
 
-  getRolePrefix() {
-    switch (this.role) {
-      case 'admin': return '👑 ';
-      case 'leader': return '⭐ ';
-      case 'dev': return '💻 ';
-      case 'guest': return '👤 ';
-      default: return '';
+  createNameTag() {
+    if (this.nameTagContainer) {
+      this.nameTagContainer.destroy();
     }
+
+    this.nameTagContainer = this.scene.add.container(this.x, this.y - 28);
+    this.nameTagContainer.setDepth(1000001);
+
+    const rolePrefix = this.role === 'admin' ? '[Admin] ' :
+                       this.role === 'leader' ? '[Leader] ' :
+                       this.role === 'dev' ? '[Dev] ' : '';
+
+    const displayName = `${rolePrefix}${this.name}`;
+
+    const tagText = this.scene.add.text(0, 0, displayName, {
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontSize: '11px',
+      fontWeight: '600',
+      color: '#ffffff',
+      backgroundColor: this.getRoleColor(),
+      padding: { x: 5, y: 2 }
+    }).setOrigin(0.5, 0.5);
+
+    this.nameTagContainer.add(tagText);
   }
 
   getRoleColor() {
     switch (this.role) {
-      case 'admin': return '#fbbf24';
-      case 'leader': return '#c084fc';
-      case 'dev': return '#60a5fa';
-      default: return '#cbd5e1';
+      case 'admin': return 'rgba(217, 119, 6, 0.9)';
+      case 'leader': return 'rgba(147, 51, 234, 0.9)';
+      case 'dev': return 'rgba(37, 99, 235, 0.9)';
+      default: return 'rgba(30, 41, 59, 0.85)';
     }
-  }
-
-  createNameTag() {
-    if (this.nameText) this.nameText.destroy();
-
-    const rolePrefix = this.getRolePrefix();
-    const tagText = `${rolePrefix}${this.name}`;
-
-    this.nameText = this.scene.add.text(this.x, this.y - 24, tagText, {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '11px',
-      fontWeight: '600',
-      fill: this.getRoleColor(),
-      backgroundColor: 'rgba(15, 23, 42, 0.88)',
-      padding: { x: 6, y: 2 }
-    });
-    this.nameText.setOrigin(0.5, 0.5);
-    this.nameText.setDepth(999999);
   }
 
   updateProfile({ name, avatarId, role }) {
-    if (name) this.name = name;
+    if (name) this.name = name.normalize('NFC');
     if (role) this.role = role;
     if (avatarId && avatarId !== this.avatarId) {
-      this.setAvatar(avatarId);
+      this.avatarId = avatarId;
+      this.setTexture(`char_${avatarId}`, 0);
     }
     this.createNameTag();
-  }
-
-  setAvatar(avatarId) {
-    this.avatarId = avatarId;
-    const textureKey = `avatar_${avatarId}`;
-    if (this.scene.textures.exists(textureKey)) {
-      this.setTexture(textureKey, 1);
-      this.initAnimations();
-    }
-  }
-
-  initAnimations() {
-    const anims = this.scene.anims;
-    const key = `avatar_${this.avatarId}`;
-    const texture = this.scene.textures.exists(key) ? key : 'player_sprites';
-
-    const animKeys = [
-      { key: `${key}_walk_down`, row: 0, start: 0, end: 2 },
-      { key: `${key}_walk_left`, row: 1, start: 3, end: 5 },
-      { key: `${key}_walk_right`, row: 2, start: 6, end: 8 },
-      { key: `${key}_walk_up`, row: 3, start: 9, end: 11 }
-    ];
-
-    animKeys.forEach(({ key: aKey, start, end }) => {
-      if (!anims.exists(aKey)) {
-        anims.create({
-          key: aKey,
-          frames: anims.generateFrameNumbers(texture, { start, end }),
-          frameRate: 8,
-          repeat: -1
-        });
-      }
-    });
   }
 
   setTargetPosition(x, y, direction, isMoving) {
     this.targetX = x;
     this.targetY = y;
     this.targetDirection = direction || this.targetDirection;
-    this.targetIsMoving = isMoving;
-
-    const dist = Phaser.Math.Distance.Between(this.x, this.y, this.targetX, this.targetY);
-    if (dist > GAME_CONFIG.NETWORK.MAX_SNAP_DISTANCE) {
-      this.setPosition(this.targetX, this.targetY);
-    }
-  }
-
-  update() {
-    const lerpFactor = GAME_CONFIG.NETWORK.LERP_FACTOR;
-    this.x = Phaser.Math.Linear(this.x, this.targetX, lerpFactor);
-    this.y = Phaser.Math.Linear(this.y, this.targetY, lerpFactor);
-
-    this.setDepth(this.y);
-
-    if (this.nameText) {
-      this.nameText.setPosition(Math.round(this.x), Math.round(this.y - 24));
-    }
-
-    if (this.bubbleContainer) {
-      this.bubbleContainer.setPosition(Math.round(this.x), Math.round(this.y - 44));
-    }
-
-    const animPrefix = `avatar_${this.avatarId}`;
-
-    if (this.targetIsMoving) {
-      const animKey = `${animPrefix}_walk_${this.targetDirection}`;
-      if (this.anims.currentAnim?.key !== animKey || !this.anims.isPlaying) {
-        this.anims.play(animKey, true);
-      }
-    } else {
-      if (this.anims.isPlaying) {
-        this.anims.stop();
-      }
-      const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
-      this.setFrame(idleFrames[this.targetDirection] || 1);
-    }
+    this.isMoving = isMoving;
   }
 
   showSpeechBubble(message) {
-    if (this.bubbleContainer) {
-      this.bubbleContainer.destroy();
-      this.bubbleContainer = null;
+    if (this.speechBubble) {
+      this.speechBubble.destroy();
+      this.speechBubble = null;
     }
-    if (this.bubbleTimer) {
-      this.bubbleTimer.remove();
+    if (this.speechTimer) {
+      this.speechTimer.remove();
     }
 
-    const maxLen = 45;
-    const displayMsg = message.length > maxLen ? message.substring(0, maxLen) + '...' : message;
+    const displayMsg = safeUnicodeTruncate(message, 45);
 
-    const bubble = this.scene.add.container(this.x, this.y - 44);
-    bubble.setDepth(1000001);
+    this.speechBubble = this.scene.add.container(this.x, this.y - 48);
+    this.speechBubble.setDepth(1000003);
 
     const text = this.scene.add.text(0, 0, displayMsg, {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '12px',
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontSize: '11px',
       color: '#0f172a',
-      wordWrap: { width: 160 }
+      fontStyle: 'normal',
+      padding: { top: 4, bottom: 4, left: 6, right: 6 },
+      lineSpacing: 3,
+      wordWrap: { width: 170, useAdvancedWrap: true }
     }).setOrigin(0.5, 0.5);
 
-    const padX = 16;
-    const padY = 10;
+    const padX = 14;
+    const padY = 8;
     const w = text.width + padX;
     const h = text.height + padY;
 
     const bg = this.scene.add.graphics();
-    bg.fillStyle(0xffffff, 0.95);
+    bg.fillStyle(0xffffff, 0.96);
     bg.fillRoundedRect(-w / 2, -h / 2, w, h, 6);
-    bg.fillTriangle(0, h / 2 + 5, -5, h / 2, 5, h / 2);
+    bg.lineStyle(1.5, 0x8b5cf6, 1); // Purple border for remote players
+    bg.strokeRoundedRect(-w / 2, -h / 2, w, h, 6);
 
-    bubble.add([bg, text]);
-    this.bubbleContainer = bubble;
+    bg.fillStyle(0xffffff, 0.96);
+    bg.beginPath();
+    bg.moveTo(-5, h / 2);
+    bg.lineTo(5, h / 2);
+    bg.lineTo(0, h / 2 + 5);
+    bg.closePath();
+    bg.fillPath();
 
-    this.bubbleTimer = this.scene.time.delayedCall(4500, () => {
-      if (this.bubbleContainer) {
+    this.speechBubble.add([bg, text]);
+
+    this.speechTimer = this.scene.time.delayedCall(4500, () => {
+      if (this.speechBubble) {
         this.scene.tweens.add({
-          targets: this.bubbleContainer,
+          targets: this.speechBubble,
           alpha: 0,
-          duration: 400,
+          y: '-=10',
+          duration: 350,
           onComplete: () => {
-            if (this.bubbleContainer) {
-              this.bubbleContainer.destroy();
-              this.bubbleContainer = null;
+            if (this.speechBubble) {
+              this.speechBubble.destroy();
+              this.speechBubble = null;
             }
           }
         });
@@ -215,10 +154,37 @@ export class RemotePlayer extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  update() {
+    this.x = Phaser.Math.Linear(this.x, this.targetX, this.lerpFactor);
+    this.y = Phaser.Math.Linear(this.y, this.targetY, this.lerpFactor);
+
+    const animPrefix = this.isMoving ? 'walk' : 'idle';
+    const animKey = `${animPrefix}_${this.targetDirection}_${this.avatarId}`;
+
+    if (this.scene.anims.exists(animKey)) {
+      this.anims.play(animKey, true);
+    }
+
+    this.setDepth(this.y);
+
+    if (this.nameTagContainer) {
+      this.nameTagContainer.setPosition(this.x, this.y - 28);
+    }
+    if (this.speechBubble) {
+      this.speechBubble.setPosition(this.x, this.y - 48);
+    }
+  }
+
   destroy(fromScene) {
-    if (this.nameText) this.nameText.destroy();
-    if (this.bubbleContainer) this.bubbleContainer.destroy();
-    if (this.bubbleTimer) this.bubbleTimer.remove();
+    if (this.nameTagContainer) {
+      this.nameTagContainer.destroy();
+    }
+    if (this.speechBubble) {
+      this.speechBubble.destroy();
+    }
+    if (this.speechTimer) {
+      this.speechTimer.remove();
+    }
     super.destroy(fromScene);
   }
 }

@@ -1,7 +1,15 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG } from '../config/gameConfig.js';
 
-export class Player extends Phaser.Physics.Arcade.Sprite {
+/**
+ * Hàm cắt chuỗi an toàn chuẩn Unicode Grapheme (tránh cắt giữa chừng ký tự có dấu hoặc emoji)
+ */
+function safeUnicodeTruncate(str, maxLen = 45) {
+  if (!str) return '';
+  const chars = Array.from(str.normalize('NFC'));
+  return chars.length > maxLen ? chars.slice(0, maxLen).join('') + '...' : chars.join('');
+}
+
+export class Player extends Phaser.GameObjects.Sprite {
   /**
    * @param {Phaser.Scene} scene
    * @param {number} x
@@ -10,206 +18,142 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
    */
   constructor(scene, x, y, options = {}) {
     const avatarId = options.avatarId || 'dev_hoodie';
-    const textureKey = `avatar_${avatarId}`;
+    const textureKey = `char_${avatarId}`;
 
-    super(scene, x, y, scene.textures.exists(textureKey) ? textureKey : 'player_sprites', 1);
+    super(scene, x, y, textureKey, 0);
 
-    this.scene = scene;
     this.name = options.name || 'Dever Member';
     this.avatarId = avatarId;
-    this.role = options.role || 'dev';
-    this.isCurrentPlayer = options.isCurrentPlayer !== undefined ? options.isCurrentPlayer : true;
-    this.currentDirection = 'down';
+    this.role = options.role || 'guest';
+    this.isCurrentPlayer = options.isCurrentPlayer || false;
 
-    // Thêm vào Scene & Bật Physics
+    // Đưa vào Scene và bật Arcade Physics
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    // Hitbox chân
-    this.body.setSize(GAME_CONFIG.HITBOX.WIDTH, GAME_CONFIG.HITBOX.HEIGHT);
-    this.body.setOffset(GAME_CONFIG.HITBOX.OFFSET_X, GAME_CONFIG.HITBOX.OFFSET_Y);
+    // Cấu hình Hitbox chỉ ở phần chân (18x14 px)
+    this.body.setSize(18, 14);
+    this.body.setOffset(7, 18);
     this.body.setCollideWorldBounds(true);
 
-    // Tạo Name Tag
+    this.currentDirection = 'down';
+    this.speechBubble = null;
+    this.speechTimer = null;
+
+    // Tạo Name Tag trên đầu
     this.createNameTag();
 
-    // Khởi tạo Animations cho avatar này
-    this.initAnimations();
-
-    this.bubbleContainer = null;
-    this.bubbleTimer = null;
+    // Bật Depth Sorting 2.5D
+    this.setDepth(this.y);
   }
 
-  getRolePrefix() {
-    switch (this.role) {
-      case 'admin': return '👑 ';
-      case 'leader': return '⭐ ';
-      case 'dev': return '💻 ';
-      case 'guest': return '👤 ';
-      default: return '';
+  createNameTag() {
+    if (this.nameTagContainer) {
+      this.nameTagContainer.destroy();
     }
+
+    this.nameTagContainer = this.scene.add.container(this.x, this.y - 28);
+    this.nameTagContainer.setDepth(1000001);
+
+    const rolePrefix = this.role === 'admin' ? '[Admin] ' :
+                       this.role === 'leader' ? '[Leader] ' :
+                       this.role === 'dev' ? '[Dev] ' : '';
+
+    const displayName = `${rolePrefix}${this.name}`;
+
+    const tagText = this.scene.add.text(0, 0, displayName, {
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontSize: '11px',
+      fontWeight: '600',
+      color: '#ffffff',
+      backgroundColor: this.getRoleColor(),
+      padding: { x: 5, y: 2 }
+    }).setOrigin(0.5, 0.5);
+
+    this.nameTagContainer.add(tagText);
   }
 
   getRoleColor() {
     switch (this.role) {
-      case 'admin': return '#fbbf24'; // Vàng kim
-      case 'leader': return '#c084fc'; // Tím
-      case 'dev': return '#60a5fa';    // Xanh dương
-      default: return '#cbd5e1';        // Xám bạc
+      case 'admin': return 'rgba(217, 119, 6, 0.9)'; // Amber
+      case 'leader': return 'rgba(147, 51, 234, 0.9)'; // Purple
+      case 'dev': return 'rgba(37, 99, 235, 0.9)'; // Blue
+      default: return 'rgba(30, 41, 59, 0.85)'; // Slate
     }
   }
 
-  createNameTag() {
-    if (this.nameText) this.nameText.destroy();
-
-    const rolePrefix = this.getRolePrefix();
-    const tagText = `${rolePrefix}${this.name}`;
-
-    this.nameText = this.scene.add.text(this.x, this.y - 24, tagText, {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '11px',
-      fontWeight: '600',
-      fill: this.getRoleColor(),
-      backgroundColor: 'rgba(15, 23, 42, 0.88)',
-      padding: { x: 6, y: 2 }
-    });
-    this.nameText.setOrigin(0.5, 0.5);
-    this.nameText.setDepth(999999);
-  }
-
   updateProfile({ name, avatarId, role }) {
-    if (name) this.name = name;
+    if (name) this.name = name.normalize('NFC');
     if (role) this.role = role;
     if (avatarId && avatarId !== this.avatarId) {
-      this.setAvatar(avatarId);
+      this.avatarId = avatarId;
+      this.setTexture(`char_${avatarId}`, 0);
     }
     this.createNameTag();
   }
 
-  setAvatar(avatarId) {
-    this.avatarId = avatarId;
-    const textureKey = `avatar_${avatarId}`;
-    if (this.scene.textures.exists(textureKey)) {
-      this.setTexture(textureKey, 1);
-      this.initAnimations();
-    }
-  }
-
-  initAnimations() {
-    const anims = this.scene.anims;
-    const key = `avatar_${this.avatarId}`;
-    const texture = this.scene.textures.exists(key) ? key : 'player_sprites';
-
-    const animKeys = [
-      { key: `${key}_walk_down`, row: 0, start: 0, end: 2 },
-      { key: `${key}_walk_left`, row: 1, start: 3, end: 5 },
-      { key: `${key}_walk_right`, row: 2, start: 6, end: 8 },
-      { key: `${key}_walk_up`, row: 3, start: 9, end: 11 }
-    ];
-
-    animKeys.forEach(({ key: aKey, start, end }) => {
-      if (!anims.exists(aKey)) {
-        anims.create({
-          key: aKey,
-          frames: anims.generateFrameNumbers(texture, { start, end }),
-          frameRate: 8,
-          repeat: -1
-        });
-      }
-    });
-  }
-
-  update(inputData) {
-    if (!this.body) return;
-
-    this.setDepth(this.y);
-
-    if (this.nameText) {
-      this.nameText.setPosition(Math.round(this.x), Math.round(this.y - 24));
-    }
-
-    if (this.bubbleContainer) {
-      this.bubbleContainer.setPosition(Math.round(this.x), Math.round(this.y - 44));
-    }
-
-    if (!this.isCurrentPlayer || !inputData) return;
-
-    const { vector, left, right, up, down, isMoving } = inputData;
-    const animPrefix = `avatar_${this.avatarId}`;
-
-    if (isMoving) {
-      this.body.setVelocity(
-        vector.x * GAME_CONFIG.PLAYER_SPEED,
-        vector.y * GAME_CONFIG.PLAYER_SPEED
-      );
-
-      if (left) {
-        this.currentDirection = 'left';
-        this.anims.play(`${animPrefix}_walk_left`, true);
-      } else if (right) {
-        this.currentDirection = 'right';
-        this.anims.play(`${animPrefix}_walk_right`, true);
-      } else if (up) {
-        this.currentDirection = 'up';
-        this.anims.play(`${animPrefix}_walk_up`, true);
-      } else if (down) {
-        this.currentDirection = 'down';
-        this.anims.play(`${animPrefix}_walk_down`, true);
-      }
-    } else {
-      this.body.setVelocity(0, 0);
-      this.anims.stop();
-
-      const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
-      this.setFrame(idleFrames[this.currentDirection] || 1);
-    }
-  }
-
+  /**
+   * Hiển thị Speech Bubble với bộ xử lý Unicode tiếng Việt hoàn chỉnh
+   */
   showSpeechBubble(message) {
-    if (this.bubbleContainer) {
-      this.bubbleContainer.destroy();
-      this.bubbleContainer = null;
+    if (this.speechBubble) {
+      this.speechBubble.destroy();
+      this.speechBubble = null;
     }
-    if (this.bubbleTimer) {
-      this.bubbleTimer.remove();
+    if (this.speechTimer) {
+      this.speechTimer.remove();
     }
 
-    const maxLen = 45;
-    const displayMsg = message.length > maxLen ? message.substring(0, maxLen) + '...' : message;
+    const displayMsg = safeUnicodeTruncate(message, 45);
 
-    const bubble = this.scene.add.container(this.x, this.y - 44);
-    bubble.setDepth(1000001);
+    this.speechBubble = this.scene.add.container(this.x, this.y - 48);
+    this.speechBubble.setDepth(1000003);
 
+    // Text object với font stack hỗ trợ Unicode đầy đủ và padding chống cắt dấu
     const text = this.scene.add.text(0, 0, displayMsg, {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '12px',
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontSize: '11px',
       color: '#0f172a',
-      wordWrap: { width: 160 }
+      fontStyle: 'normal',
+      padding: { top: 4, bottom: 4, left: 6, right: 6 },
+      lineSpacing: 3,
+      wordWrap: { width: 170, useAdvancedWrap: true }
     }).setOrigin(0.5, 0.5);
 
-    const padX = 16;
-    const padY = 10;
+    const padX = 14;
+    const padY = 8;
     const w = text.width + padX;
     const h = text.height + padY;
 
     const bg = this.scene.add.graphics();
-    bg.fillStyle(0xffffff, 0.95);
+    bg.fillStyle(0xffffff, 0.96);
     bg.fillRoundedRect(-w / 2, -h / 2, w, h, 6);
-    bg.fillTriangle(0, h / 2 + 5, -5, h / 2, 5, h / 2);
+    bg.lineStyle(1.5, 0x3b82f6, 1);
+    bg.strokeRoundedRect(-w / 2, -h / 2, w, h, 6);
 
-    bubble.add([bg, text]);
-    this.bubbleContainer = bubble;
+    // Mũi nhọn phía dưới bong bóng
+    bg.fillStyle(0xffffff, 0.96);
+    bg.beginPath();
+    bg.moveTo(-5, h / 2);
+    bg.lineTo(5, h / 2);
+    bg.lineTo(0, h / 2 + 5);
+    bg.closePath();
+    bg.fillPath();
 
-    this.bubbleTimer = this.scene.time.delayedCall(4500, () => {
-      if (this.bubbleContainer) {
+    this.speechBubble.add([bg, text]);
+
+    // Tự động mờ dần và biến mất sau 4.5s
+    this.speechTimer = this.scene.time.delayedCall(4500, () => {
+      if (this.speechBubble) {
         this.scene.tweens.add({
-          targets: this.bubbleContainer,
+          targets: this.speechBubble,
           alpha: 0,
-          duration: 400,
+          y: '-=10',
+          duration: 350,
           onComplete: () => {
-            if (this.bubbleContainer) {
-              this.bubbleContainer.destroy();
-              this.bubbleContainer = null;
+            if (this.speechBubble) {
+              this.speechBubble.destroy();
+              this.speechBubble = null;
             }
           }
         });
@@ -217,10 +161,58 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  stopMovement() {
+    if (this.body) {
+      this.body.setVelocity(0, 0);
+    }
+    const animKey = `idle_${this.currentDirection}_${this.avatarId}`;
+    if (this.scene.anims.exists(animKey)) {
+      this.anims.play(animKey, true);
+    }
+  }
+
+  update(inputData) {
+    const speed = 160;
+    const { vector, isMoving, left, right, up, down } = inputData;
+
+    this.body.setVelocity(vector.x * speed, vector.y * speed);
+
+    // Xác định hướng nhìn
+    if (down) this.currentDirection = 'down';
+    else if (up) this.currentDirection = 'up';
+    else if (left) this.currentDirection = 'left';
+    else if (right) this.currentDirection = 'right';
+
+    // Chạy Animation tương ứng với Avatar
+    const animPrefix = isMoving ? 'walk' : 'idle';
+    const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
+
+    if (this.scene.anims.exists(animKey)) {
+      this.anims.play(animKey, true);
+    }
+
+    // Cập nhật độ sâu 2.5D Depth Sorting
+    this.setDepth(this.y);
+
+    // Cập nhật vị trí Name Tag & Speech Bubble
+    if (this.nameTagContainer) {
+      this.nameTagContainer.setPosition(this.x, this.y - 28);
+    }
+    if (this.speechBubble) {
+      this.speechBubble.setPosition(this.x, this.y - 48);
+    }
+  }
+
   destroy(fromScene) {
-    if (this.nameText) this.nameText.destroy();
-    if (this.bubbleContainer) this.bubbleContainer.destroy();
-    if (this.bubbleTimer) this.bubbleTimer.remove();
+    if (this.nameTagContainer) {
+      this.nameTagContainer.destroy();
+    }
+    if (this.speechBubble) {
+      this.speechBubble.destroy();
+    }
+    if (this.speechTimer) {
+      this.speechTimer.remove();
+    }
     super.destroy(fromScene);
   }
 }
