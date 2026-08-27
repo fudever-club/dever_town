@@ -26,14 +26,24 @@ const config = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  let game = null;
+  // 1. Khởi động Game Phaser ngay lập tức
+  const game = new Phaser.Game(config);
+  window.__DEVER_GAME__ = game;
 
-  // Khởi tạo Welcome Gate & Loading transition
+  // 2. Khởi tạo Welcome Gate & Loading Overlay
   const welcomeGate = new WelcomeGate({
     onEnterGame: ({ user, isGuest }) => {
-      if (!game) {
-        game = new Phaser.Game(config);
-        window.__DEVER_GAME__ = game;
+      const scene = game.scene.getScene('WorldScene');
+      if (scene && scene.player) {
+        scene.player.updateProfile({
+          name: user.display_name || user.displayName,
+          avatarId: user.avatar_id || user.avatarId || 'dev_hoodie',
+          role: user.role || (isGuest ? 'guest' : 'dev')
+        });
+        scene.updateHeaderProfile(user);
+        if (scene.socketManager) {
+          scene.socketManager.reconnectWithAuth();
+        }
       }
     }
   });

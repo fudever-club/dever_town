@@ -17,6 +17,7 @@ body {
   align-items: center;
 }
 
+#app,
 #app-layout {
   display: flex;
   flex-direction: column;
@@ -66,6 +67,7 @@ body {
 }
 
 /* --- HEADER --- */
+#main-header,
 #ui-header {
   width: 1160px;
   max-width: 100%;
