@@ -1,15 +1,11 @@
 /**
- * PlayerManager: Quản lý trạng thái In-Memory của tất cả người chơi đang online.
- * Hỗ trợ User ID, Display Name, Avatar ID và Role (Admin, Leader, Dev, Guest).
+ * PlayerManager: Quản lý trạng thái In-Memory của tất cả người chơi theo từng Phòng (Room Isolation).
  */
 class PlayerManager {
   constructor() {
     this.players = new Map(); // key: socketId, value: PlayerData
   }
 
-  /**
-   * Thêm hoặc khởi tạo người chơi mới
-   */
   addPlayer(socketId, data = {}, authUser = null) {
     const player = {
       id: socketId,
@@ -17,11 +13,11 @@ class PlayerManager {
       name: authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`),
       avatarId: authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie'),
       role: authUser ? authUser.role : (data.role || 'guest'),
-      x: data.x || 336,
-      y: data.y || 272,
+      x: data.x || 320,
+      y: data.y || 280,
       direction: data.direction || 'down',
       isMoving: false,
-      roomId: data.roomId || 'main-hall',
+      roomId: data.roomId || 'main_hall',
       joinedAt: Date.now()
     };
 
@@ -54,6 +50,19 @@ class PlayerManager {
     return player;
   }
 
+  switchRoom(socketId, newRoomId, x = 320, y = 280) {
+    const player = this.players.get(socketId);
+    if (!player) return null;
+
+    const oldRoomId = player.roomId;
+    player.roomId = newRoomId;
+    player.x = x;
+    player.y = y;
+    player.isMoving = false;
+
+    return { player, oldRoomId, newRoomId };
+  }
+
   removePlayer(socketId) {
     const player = this.players.get(socketId);
     if (player) {
@@ -73,8 +82,21 @@ class PlayerManager {
     return result;
   }
 
-  getOnlineCount() {
-    return this.players.size;
+  getRoomCounts() {
+    const counts = {
+      main_hall: 0,
+      dever_lab: 0,
+      library_lounge: 0,
+      total: this.players.size
+    };
+
+    for (const p of this.players.values()) {
+      if (counts[p.roomId] !== undefined) {
+        counts[p.roomId]++;
+      }
+    }
+
+    return counts;
   }
 }
 

@@ -11,22 +11,26 @@
 </head>
 <body>
   <div id="app-layout">
-    <!-- Header Navigation & Profile -->
+    <!-- Header Navigation, Room Switcher & Profile -->
     <header id="ui-header">
       <div class="logo-group">
         <span class="badge-logo">DEVER</span>
         <span class="brand-text">TOWN</span>
       </div>
 
+      <!-- Quick Room Switcher -->
+      <div class="room-selector-group">
+        <label for="room-selector" class="room-label">📍 Phòng:</label>
+        <select id="room-selector" class="room-select">
+          <option id="opt-main_hall" value="main_hall">🏛️ Sảnh Chính (1)</option>
+          <option id="opt-dever_lab" value="dever_lab">💻 Dever Lab (0)</option>
+          <option id="opt-library_lounge" value="library_lounge">📚 Thư Viện (0)</option>
+        </select>
+      </div>
+
       <div class="user-profile-badge">
         <span id="header-user-role" class="role-tag guest">👤 Khách</span>
         <span id="header-user-name" class="user-name">Khách vãng lai</span>
-      </div>
-
-      <div class="controls-hint">
-        <span>🎮 <b>WASD</b> / <b>Mũi tên</b></span>
-        <span class="divider">|</span>
-        <span>💬 <b>Enter</b> chat</span>
       </div>
 
       <div class="header-actions">
@@ -47,13 +51,13 @@
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
         <div class="chat-header">
-          <span class="chat-title">💬 Kênh Chat Thị Trấn</span>
-          <span class="chat-sub">Mọi người trong phòng</span>
+          <span class="chat-title">💬 Kênh Chat Trong Phòng</span>
+          <span class="chat-sub">Thành viên cùng không gian</span>
         </div>
 
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
-            👋 Chào mừng đến với <b>DEVER TOWN</b>! Đăng nhập để nhận huy hiệu 👑 Admin / ⭐ Leader / 💻 Dev và chọn Avatar độc quyền.
+            👋 Chào mừng đến với <b>DEVER TOWN</b>! Bước vào Cổng ma thuật hoặc dùng menu chọn phòng ở trên để chuyển không gian.
           </div>
         </div>
 
@@ -72,7 +76,7 @@
 
     <!-- Footer Note -->
     <footer id="ui-footer">
-      <span>💡 Tài khoản mẫu thử nghiệm: Admin (<code>admin@devertown.com</code> / <code>admin123</code>), Leader (<code>leader@devertown.com</code> / <code>leader123</code>).</span>
+      <span>💡 Cổng dịch chuyển (Portals): Đi vào vùng có nhãn trên bản đồ để tự động dịch chuyển giữa các phòng.</span>
     </footer>
   </div>
 

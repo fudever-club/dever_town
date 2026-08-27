@@ -21,7 +21,7 @@ export class SocketManager {
     }
 
     const token = authService.getToken();
-    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL} (Token: ${token ? 'Có' : 'Không'})`);
+    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL}`);
 
     this.socket = io(GAME_CONFIG.NETWORK.SERVER_URL, {
       transports: ['websocket', 'polling'],
@@ -46,12 +46,12 @@ export class SocketManager {
       console.log(`✅ [Socket] Đã kết nối với ID: ${this.socket.id}`);
       this.updateConnectionStatus(true);
 
-      // Nếu đã có Player, gửi sự kiện Join
       if (this.scene.player) {
         this.join({
           name: this.scene.player.name,
           avatarId: this.scene.player.avatarId,
           role: this.scene.player.role,
+          roomId: this.scene.currentRoomId || 'main_hall',
           x: this.scene.player.x,
           y: this.scene.player.y
         });
@@ -64,32 +64,39 @@ export class SocketManager {
       this.updateConnectionStatus(false);
     });
 
+    // 1. Nhận danh sách người chơi trong phòng hiện tại
     this.socket.on('currentPlayers', (players) => {
       this.scene.handleCurrentPlayers(players, this.socket.id);
     });
 
+    // 2. Có người chơi mới vào phòng
     this.socket.on('newPlayer', (playerData) => {
       this.scene.handleNewPlayer(playerData);
     });
 
+    // 3. Người chơi khác di chuyển
     this.socket.on('playerMoved', (movementData) => {
       this.scene.handleRemoteMovement(movementData);
     });
 
+    // 4. Người chơi khác đổi profile
     this.socket.on('playerUpdated', (updateData) => {
       this.scene.handlePlayerUpdated(updateData);
     });
 
+    // 5. Người chơi khác rời phòng hoặc disconnect
     this.socket.on('playerDisconnected', (socketId) => {
       this.scene.handlePlayerDisconnected(socketId);
     });
 
+    // 6. Tin nhắn chat mới trong phòng
     this.socket.on('newChatMessage', (chatData) => {
       this.scene.handleNewChatMessage(chatData);
     });
 
-    this.socket.on('onlineCount', (count) => {
-      this.updateOnlineCountUI(count);
+    // 7. Thống kê số lượng người online theo phòng
+    this.socket.on('roomCounts', (counts) => {
+      this.updateRoomCountsUI(counts);
     });
   }
 
@@ -99,9 +106,20 @@ export class SocketManager {
       name: options.name || 'Dever Member',
       avatarId: options.avatarId || 'dev_hoodie',
       role: options.role || 'guest',
-      x: Math.round(options.x || 336),
-      y: Math.round(options.y || 272),
+      roomId: options.roomId || 'main_hall',
+      x: Math.round(options.x || 320),
+      y: Math.round(options.y || 280),
       direction: 'down'
+    });
+  }
+
+  switchRoom(targetRoomId, x, y) {
+    if (!this.socket || !this.isConnected) return;
+    console.log(`📡 [Socket Emit] switchRoom ➔ ${targetRoomId} at (${x}, ${y})`);
+    this.socket.emit('switchRoom', {
+      targetRoomId,
+      x: Math.round(x),
+      y: Math.round(y)
     });
   }
 
@@ -159,10 +177,20 @@ export class SocketManager {
     }
   }
 
-  updateOnlineCountUI(count) {
+  updateRoomCountsUI(counts) {
+    // Cập nhật tổng online
     const onlineEl = document.getElementById('online-count-badge');
-    if (onlineEl) {
-      onlineEl.textContent = `${count} Online`;
+    if (onlineEl && counts.total !== undefined) {
+      onlineEl.textContent = `${counts.total} Online`;
     }
+
+    // Cập nhật số lượng từng phòng trong dropdown
+    const optMain = document.getElementById('opt-main_hall');
+    const optLab = document.getElementById('opt-dever_lab');
+    const optLib = document.getElementById('opt-library_lounge');
+
+    if (optMain) optMain.textContent = `🏛️ Sảnh Chính (${counts.main_hall || 0})`;
+    if (optLab) optLab.textContent = `💻 Dever Lab (${counts.dever_lab || 0})`;
+    if (optLib) optLib.textContent = `📚 Thư Viện (${counts.library_lounge || 0})`;
   }
 }

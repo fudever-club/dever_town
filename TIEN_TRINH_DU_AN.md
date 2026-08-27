@@ -8,7 +8,7 @@
 ## 🎯 TỔNG QUAN TIẾN ĐỘ
 
 ```
-[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [🔄 Bước 4: Multi-Room & Clubs] ➔ [⏳ Bước 5: Interactive Zones]
+[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room & Clubs] ➔ [🔄 Bước 5: Interactive Zones]
 ```
 
 ---
@@ -17,7 +17,7 @@
 
 ### ✅ BƯỚC 1: Khởi tạo Game Client 2D Top-Down (Hoàn thành)
 - **Engine:** Phaser 3.88 + Vite 6 (JavaScript module ES6).
-- **Đồ họa Pixel Art:** Tự sinh bộ texture trên Canvas trong bộ nhớ qua `TextureGenerator.js` (8 loại tile + Spritesheet 4 hướng x 3 frame).
+- **Đồ họa Pixel Art:** Tự sinh bộ texture trên Canvas trong bộ nhớ qua `TextureGenerator.js`.
 - **Hệ thống điều khiển:** WASD + phím Mũi tên với Vector Normalization.
 - **Vật lý & Chiều sâu:** Arcade Physics với hitbox phần chân (18x14px), phân lớp 2.5D Depth (`depth = y`), va chạm chuẩn xác với tường gạch, giá sách, bàn ghế.
 - **Camera & UI:** Camera Lerp follow mượt mà, viền bản đồ cố định.
@@ -26,55 +26,47 @@
 ---
 
 ### ✅ BƯỚC 2: Multiplayer Realtime & Live Chatbox (Hoàn thành)
-- **Backend Realtime:** Node.js + Express + Socket.io trên cổng `3001` (hỗ trợ WebSocket & HTTP Long-polling).
-- **Đồng bộ vị trí mượt mà:**
-  - Client gửi gói tin di chuyển Throttled 30 FPS với Dirty Checking.
-  - Remote Player sử dụng thuật toán nội suy tuyến tính (Linear Interpolation - Lerp) để triệt tiêu hiện tượng giật lag.
-- **Live Chat & Speech Bubble:**
-  - Khung chat Glassmorphism hiện đại phía dưới/phải, phím tắt `Enter` mở chat và gửi tin.
-  - Cách ly sự kiện bàn phím: khi đang gõ chat, phím WASD không làm nhân vật di chuyển.
-  - Bong bóng thoại (Speech Bubble) bay lơ lửng trên đầu nhân vật, tự động mờ dần và biến mất sau 4.5 giây.
-- **Quản lý Nickname & Người online:**
-  - Modal nhập Biệt danh khi vào thị trấn, lưu LocalStorage.
-  - Đổi tên linh hoạt tức thì, đồng bộ Name Tag tới toàn bộ người chơi khác.
-  - Tự động xóa nhân vật khi ngắt kết nối (Disconnect).
+- **Backend Realtime:** Node.js + Express + Socket.io trên cổng `3001` (WebSocket & Long-polling).
+- **Đồng bộ vị trí mượt mà:** Client gửi gói tin di chuyển Throttled 30 FPS với Dirty Checking; Remote Player nội suy Lerp mượt mà.
+- **Live Chat & Speech Bubble:** Khung chat Glassmorphism, phím `Enter`, cách ly phím gõ, bong bóng thoại (Speech Bubble) bay trên đầu nhân vật mờ dần sau 4.5s.
+- **Quản lý Nickname & Người online:** Modal nhập Biệt danh, đổi tên linh hoạt, tự xóa nhân vật khi ngắt kết nối.
 - **Git Commit:** `42a23a7`
 
 ---
 
 ### ✅ BƯỚC 3: Authentication, Profiles & Hybrid Database Layer (Hoàn thành)
-- **REST API Xác thực:**
-  - `POST /api/auth/register`: Đăng ký tài khoản (băm mật khẩu `bcryptjs` 10 salt rounds).
-  - `POST /api/auth/login`: Đăng nhập cấp phát JWT token an toàn (`jsonwebtoken`).
-  - `GET /api/auth/me`: Xác thực token lấy thông tin người dùng.
-  - `PUT /api/auth/profile`: Cập nhật tên hiển thị và đổi avatar.
-- **Hybrid Database Architecture (Zero-Crash Fallback):**
-  - Tự động kết nối PostgreSQL khi có biến môi trường `DATABASE_URL`.
-  - Tự động fallback an toàn sang `server/data/users.json` với cơ chế ghi file nguyên tử (Atomic file write), kèm 2 tài khoản mẫu (Admin: `admin@devertown.com` / `admin123`, Leader: `leader@devertown.com` / `leader123`).
-- **Bộ sưu tập 4 Avatar Pixel Art & Role Badges:**
-  - `dev_hoodie` (Developer truyền thống: Áo hoodie xanh, balo cam).
-  - `cyberpunk_pink` (Cyberpunk Neon: Áo hồng neon, tóc cyan, kính VR).
-  - `red_gamer` (Gamer Pro: Áo đỏ, tai nghe gaming).
-  - `green_coder` (Emerald Hacker: Áo bomber xanh ngọc, kính mắt tri thức).
-  - Hệ thống huy hiệu vai trò: 👑 Admin, ⭐ Leader, 💻 Dev, 👤 Khách hiển thị trên Name Tag và trong từng tin nhắn Chat.
-- **Socket.io Handshake Auth:** Xác thực JWT token ngay tại Socket Handshake Middleware, liên kết danh tính người dùng và ngăn chặn giả mạo vai trò.
-- **Kiểm thử tự động:** Đạt 6/6 bài test API & Socket Authentication 100% PASSED.
-- **Git Commit:** *Chờ commit Bước 3*
+- **REST API Xác thực:** `POST /api/auth/register` (băm bcrypt), `POST /api/auth/login` (cấp JWT), `GET /api/auth/me`, `PUT /api/auth/profile`.
+- **Hybrid Database Architecture (Zero-Crash Fallback):** Tự động nhận diện `DATABASE_URL` (PostgreSQL) hoặc fallback an toàn sang `server/data/users.json` với cơ chế ghi file nguyên tử.
+- **Bộ sưu tập 4 Avatar Pixel Art & Role Badges:** Developer Hoodie, Cyberpunk Neon, Red Gamer Pro, Emerald Hacker; Huy hiệu vai trò: 👑 Admin, ⭐ Leader, 💻 Dev, 👤 Khách.
+- **Socket Handshake Auth:** Xác thực JWT token tại Handshake Middleware.
+- **Git Commit:** `c0103aa`
 
 ---
 
-### 🔄 BƯỚC 4: Quản lý Club & Đa bản đồ (Multi-Room) (Đang thực hiện)
-- Hệ thống phòng:
-  - 🏛️ **Sảnh chính (Main Hall)**: Khu giao lưu chung, sân vườn, thảm họp.
-  - 💻 **Phòng CLB Dever Lab (Code Room)**: Dãy bàn máy tính, bảng ý tưởng, giá sách công nghệ.
-  - 📚 **Thư viện Yên tĩnh (Library Lounge)**: Khu tự học, sofa, sách chuyên ngành.
-  - 🌿 **Khu Vườn Ngoài Trời (Outdoor Garden)**: Cây cối, đài phun nước, thảm cỏ dã ngoại.
-- Cửa chuyển phòng (Teleport Doors / Portals) tự động chuyển Scene và chuyển Socket Room (`socket.join(roomId)`).
+### ✅ BƯỚC 4: Quản lý Club & Đa bản đồ (Multi-Room Architecture) (Hoàn thành)
+- **Hệ sinh thái 3 Không gian chuyên biệt:**
+  - 🏛️ **Sảnh chính (`main_hall`)**: Khu vực đón tiếp, thảm họp lớn, vườn hoa ngoài trời, cổng sang Tech Lab và Thư viện.
+  - 💻 **Dever Lab (`dever_lab`)**: Phòng Hackathon, bàn máy tính, máy chủ Server Racks, bảng sơ đồ kiến trúc Whiteboard.
+  - 📚 **Thư viện (`library_lounge`)**: Kệ sách chuyên ngành, thảm đỏ Lounge, quầy cà phê & nước uống.
+- **Cổng dịch chuyển (Teleport Portals):**
+  - Bước vào cổng ma thuật trên bản đồ tự động kích hoạt chuyển phòng kèm hiệu ứng Camera Fade In/Out mượt mà.
+  - Cơ chế chống lặp vô tận (Teleport Cooldown 1.5s).
+- **Quick Room Selector Dropdown:** Menu chọn phòng nhanh trên thanh Header hiển thị số lượng người online theo thời gian thực tại từng phòng.
+- **Socket.io Room Isolation:**
+  - `socket.join(roomId)` và `socket.leave(roomId)` phân lập hoàn toàn tọa độ và sự kiện giữa các phòng.
+  - Kênh Chat và Speech Bubble được định tuyến theo đúng phòng người chơi đang đứng, không bị lộ tin nhắn sang phòng khác.
+- **Kiểm thử tự động:** Đạt 5/5 bài test Multi-Room Isolation 100% PASSED.
+- **Git Commit:** *Chờ commit Bước 4*
 
 ---
 
-### ⏳ BƯỚC 5: Khu vực tương tác (Interactive Zones) (Sắp tới)
-- Vùng tương tác bàn học, sân khấu: Phím `[E]` mở popup nhúng Google Slides, Google Meet, YouTube, Whiteboard.
+### 🔄 BƯỚC 5: Khu vực tương tác (Interactive Zones & Embed) (Đang thực hiện)
+- Thiết lập các vùng tương tác trên bản đồ:
+  - 🖥️ **Bàn Máy tính / Bàn Code**: Nhấn phím `[E]` mở Trình soạn thảo Code / Whiteboard / Ghi chú nhóm.
+  - 📊 **Bảng Trắng & Màn Chiếu**: Nhấn phím `[E]` mở Slide thuyết trình (Google Slides nhúng).
+  - 🎤 **Khu Thảo luận Nhóm / Sân khấu**: Nhấn phím `[E]` mở cuộc gọi họp nhóm (Google Meet / Jitsi Meet).
+  - ☕ **Quầy Cà phê / Thư giãn**: Nhấn phím `[E]` phát nhạc Lofi Chill Youtube / Pomodoro Timer.
+- Proximity Notification HUD: Hiển thị tooltip gợi ý `"Nhấn [E] để tương tác..."` khi người chơi tiến lại gần đồ vật.
 
 ---
 

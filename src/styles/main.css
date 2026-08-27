@@ -40,7 +40,7 @@ body {
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  gap: 12px;
+  gap: 10px;
 }
 
 .logo-group {
@@ -65,6 +65,39 @@ body {
   letter-spacing: 1px;
 }
 
+/* Room Selector */
+.room-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.room-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.room-select {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.room-select option {
+  background: #1e293b;
+  color: #ffffff;
+}
+
 .user-profile-badge {
   display: flex;
   align-items: center;
@@ -76,7 +109,7 @@ body {
 }
 
 .user-profile-badge .user-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #f1f5f9;
 }
@@ -142,7 +175,7 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .badge-online {
@@ -159,9 +192,9 @@ body {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border: none;
-  padding: 5px 12px;
+  padding: 5px 11px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -175,7 +208,7 @@ body {
   background: rgba(255, 255, 255, 0.06);
   color: #cbd5e1;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 5px 10px;
+  padding: 5px 9px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;

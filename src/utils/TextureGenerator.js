@@ -1,16 +1,16 @@
 /**
- * TextureGenerator: Sinh bộ Texture Pixel Art Tileset và 4 Bộ Avatar Spritesheets trong bộ nhớ.
+ * TextureGenerator: Sinh bộ Texture Pixel Art Tileset 16 Tiles & 4 Bộ Avatar Spritesheets trong bộ nhớ.
  */
 export class TextureGenerator {
   /**
-   * Tạo Canvas Tileset 32x32
+   * Tạo Canvas Tileset 16 Tiles (8 cột x 2 hàng, kích thước 32x32 mỗi ô)
    */
   static generateTileset(scene, key = 'town_tileset') {
     if (scene.textures.exists(key)) return;
 
     const tileSize = 32;
     const cols = 8;
-    const rows = 2;
+    const rows = 2; // Tổng 16 tiles
     const canvas = document.createElement('canvas');
     canvas.width = cols * tileSize; // 256
     canvas.height = rows * tileSize; // 64
@@ -24,7 +24,8 @@ export class TextureGenerator {
       ctx.restore();
     };
 
-    // 1. Tile 0: Grass (Cỏ xanh)
+    // Hàng 0: Tiles cơ bản
+    // 0. Cỏ xanh (Grass)
     drawTile(0, 0, (c, s) => {
       c.fillStyle = '#4ade80';
       c.fillRect(0, 0, s, s);
@@ -40,7 +41,7 @@ export class TextureGenerator {
       c.fillRect(20, 12, 2, 2);
     });
 
-    // 2. Tile 1: Wood Floor (Sàn gỗ CLB)
+    // 1. Sàn gỗ CLB (Wood Parquet)
     drawTile(1, 0, (c, s) => {
       c.fillStyle = '#d97706';
       c.fillRect(0, 0, s, s);
@@ -55,7 +56,7 @@ export class TextureGenerator {
       c.fillRect(18, 18, 12, 2);
     });
 
-    // 3. Tile 2: Brick Wall (Tường gạch)
+    // 2. Tường gạch CLB (Brick Wall)
     drawTile(2, 0, (c, s) => {
       c.fillStyle = '#475569';
       c.fillRect(0, 0, s, s);
@@ -72,7 +73,7 @@ export class TextureGenerator {
       c.fillRect(0, 0, s, 2);
     });
 
-    // 4. Tile 3: Bookshelf (Kệ sách)
+    // 3. Tủ sách kỹ thuật (Bookshelf)
     drawTile(3, 0, (c, s) => {
       c.fillStyle = '#78350f';
       c.fillRect(0, 0, s, s);
@@ -93,7 +94,7 @@ export class TextureGenerator {
       c.fillRect(0, 28, s, 4);
     });
 
-    // 5. Tile 4: Desk (Bàn làm việc)
+    // 4. Bàn làm việc & Laptop (Work Desk)
     drawTile(4, 0, (c, s) => {
       c.fillStyle = '#854d0e';
       c.fillRect(2, 4, 28, 24);
@@ -109,7 +110,7 @@ export class TextureGenerator {
       c.fillRect(24, 12, 3, 4);
     });
 
-    // 6. Tile 5: Stone Path (Đường đá)
+    // 5. Đường đá cuội (Stone Path)
     drawTile(5, 0, (c, s) => {
       c.fillStyle = '#334155';
       c.fillRect(0, 0, s, s);
@@ -124,7 +125,7 @@ export class TextureGenerator {
       c.fillRect(6, 19, 5, 4);
     });
 
-    // 7. Tile 6: Carpet (Thảm hội trường)
+    // 6. Thảm xanh Sảnh (Blue Carpet)
     drawTile(6, 0, (c, s) => {
       c.fillStyle = '#1e3a8a';
       c.fillRect(0, 0, s, s);
@@ -136,7 +137,7 @@ export class TextureGenerator {
       c.fillRect(12, 12, 8, 8);
     });
 
-    // 8. Tile 7: Flowers (Vườn hoa)
+    // 7. Vườn hoa CLB (Flower Grass)
     drawTile(7, 0, (c, s) => {
       c.fillStyle = '#22c55e';
       c.fillRect(0, 0, s, s);
@@ -153,15 +154,147 @@ export class TextureGenerator {
       c.fillRect(9, 21, 2, 2);
     });
 
+    // Hàng 1: Tiles nâng cao cho Tech Lab & Library Lounge
+    // 8. Server Rack Máy chủ (Tech Server Rack)
+    drawTile(0, 1, (c, s) => {
+      c.fillStyle = '#0f172a';
+      c.fillRect(2, 0, 28, s);
+      c.fillStyle = '#1e293b';
+      c.fillRect(4, 2, 24, 6);
+      c.fillRect(4, 10, 24, 6);
+      c.fillRect(4, 18, 24, 6);
+      c.fillRect(4, 26, 24, 5);
+      // Đèn tín hiệu nhấp nháy LED
+      c.fillStyle = '#22c55e';
+      c.fillRect(6, 4, 3, 2);
+      c.fillRect(6, 12, 3, 2);
+      c.fillRect(6, 20, 3, 2);
+      c.fillStyle = '#38bdf8';
+      c.fillRect(11, 4, 3, 2);
+      c.fillRect(11, 12, 3, 2);
+      c.fillStyle = '#f59e0b';
+      c.fillRect(16, 20, 3, 2);
+      c.fillRect(21, 28, 4, 2);
+    });
+
+    // 9. Sàn công nghệ Tech Slate (Cyan Cyber Floor)
+    drawTile(1, 1, (c, s) => {
+      c.fillStyle = '#0f172a';
+      c.fillRect(0, 0, s, s);
+      c.fillStyle = '#1e293b';
+      c.fillRect(1, 1, s - 2, s - 2);
+      c.fillStyle = '#06b6d4';
+      c.fillRect(0, 0, s, 1);
+      c.fillRect(0, 0, 1, s);
+      c.fillStyle = '#0284c7';
+      c.fillRect(s - 1, 0, 1, s);
+      c.fillRect(0, s - 1, s, 1);
+      // Mạch điện tử trang trí
+      c.fillStyle = '#38bdf8';
+      c.fillRect(14, 14, 4, 4);
+    });
+
+    // 10. Cổng dịch chuyển Portal Pad (Warp Portal)
+    drawTile(2, 1, (c, s) => {
+      c.fillStyle = '#1e1b4b';
+      c.fillRect(0, 0, s, s);
+      c.fillStyle = '#8b5cf6';
+      c.beginPath();
+      c.arc(s / 2, s / 2, 13, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = '#c084fc';
+      c.beginPath();
+      c.arc(s / 2, s / 2, 9, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = '#ffffff';
+      c.beginPath();
+      c.arc(s / 2, s / 2, 4, 0, Math.PI * 2);
+      c.fill();
+    });
+
+    // 11. Thảm đỏ Lounge thư giãn (Red Carpet)
+    drawTile(3, 1, (c, s) => {
+      c.fillStyle = '#881337';
+      c.fillRect(0, 0, s, s);
+      c.fillStyle = '#e11d48';
+      c.fillRect(2, 2, 28, 28);
+      c.fillStyle = '#fb7185';
+      c.fillRect(6, 6, 20, 20);
+      c.fillStyle = '#fecdd3';
+      c.fillRect(12, 12, 8, 8);
+    });
+
+    // 12. Bảng trắng Whiteboard / Projector
+    drawTile(4, 1, (c, s) => {
+      c.fillStyle = '#475569';
+      c.fillRect(1, 2, 30, 28);
+      c.fillStyle = '#f8fafc';
+      c.fillRect(3, 4, 26, 24);
+      // Nét vẽ sơ đồ kiến trúc trên bảng
+      c.fillStyle = '#2563eb';
+      c.fillRect(6, 8, 8, 4);
+      c.fillRect(18, 8, 8, 4);
+      c.fillStyle = '#dc2626';
+      c.fillRect(14, 16, 6, 8);
+      c.fillStyle = '#10b981';
+      c.fillRect(6, 16, 6, 2);
+    });
+
+    // 13. Chậu cây cảnh Decor (Potted Plant)
+    drawTile(5, 1, (c, s) => {
+      c.fillStyle = '#d97706';
+      c.fillRect(0, 0, s, s); // Nền sàn gỗ
+      // Chậu gốm
+      c.fillStyle = '#b45309';
+      c.fillRect(8, 18, 16, 12);
+      c.fillStyle = '#d97706';
+      c.fillRect(6, 16, 20, 3);
+      // Tán cây xanh
+      c.fillStyle = '#15803d';
+      c.beginPath();
+      c.arc(16, 11, 9, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = '#22c55e';
+      c.beginPath();
+      c.arc(16, 9, 6, 0, Math.PI * 2);
+      c.fill();
+    });
+
+    // 14. Quầy Cà phê & Drinks (Coffee Bar)
+    drawTile(6, 1, (c, s) => {
+      c.fillStyle = '#78350f';
+      c.fillRect(0, 0, s, s);
+      c.fillStyle = '#a16207';
+      c.fillRect(2, 2, 28, 28);
+      // Máy pha cà phê
+      c.fillStyle = '#0f172a';
+      c.fillRect(6, 6, 12, 14);
+      c.fillStyle = '#ef4444';
+      c.fillRect(22, 10, 4, 5); // Tách cà phê đỏ
+      c.fillStyle = '#ffffff';
+      c.fillRect(22, 7, 2, 3); // Làn khói
+    });
+
+    // 15. Vách kính văn phòng hiện đại (Glass Wall)
+    drawTile(7, 1, (c, s) => {
+      c.fillStyle = '#0f172a';
+      c.fillRect(0, 0, s, s);
+      c.fillStyle = '#0284c7';
+      c.fillRect(2, 2, 28, 28);
+      c.fillStyle = '#38bdf8';
+      c.fillRect(4, 4, 24, 24);
+      // Vệt phản chiếu ánh sáng kính
+      c.fillStyle = '#e0f2fe';
+      c.fillRect(6, 6, 3, 20);
+      c.fillRect(16, 6, 2, 16);
+    });
+
     scene.textures.addSpriteSheet(key, canvas, {
       frameWidth: tileSize,
       frameHeight: tileSize
     });
   }
 
-  /**
-   * Cấu hình bảng màu cho 4 phong cách Avatar
-   */
   static AVATAR_PALETTES = {
     dev_hoodie: {
       id: 'dev_hoodie',
@@ -209,14 +342,10 @@ export class TextureGenerator {
     }
   };
 
-  /**
-   * Sinh toàn bộ 4 bộ Spritesheet Avatar
-   */
   static generateAllAvatars(scene) {
     for (const [key, palette] of Object.entries(this.AVATAR_PALETTES)) {
       this.generateAvatarSpritesheet(scene, `avatar_${key}`, palette);
     }
-    // Tạo alias cho key mặc định player_sprites
     if (!scene.textures.exists('player_sprites')) {
       this.generateAvatarSpritesheet(scene, 'player_sprites', this.AVATAR_PALETTES.dev_hoodie);
     }
@@ -228,11 +357,11 @@ export class TextureGenerator {
     const frameW = 32;
     const frameH = 32;
     const cols = 3;
-    const rows = 4; // 0: Down, 1: Left, 2: Right, 3: Up
+    const rows = 4;
 
     const canvas = document.createElement('canvas');
-    canvas.width = cols * frameW; // 96
-    canvas.height = rows * frameH; // 128
+    canvas.width = cols * frameW;
+    canvas.height = rows * frameH;
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
@@ -247,7 +376,6 @@ export class TextureGenerator {
       const armSwing = walkPhase !== 0 ? walkPhase * 2 : 0;
 
       if (dir === 'down') {
-        // Chân & Giày
         ctx.fillStyle = pants;
         ctx.fillRect(10, 20, 5, 6 + legOffsetL);
         ctx.fillRect(17, 20, 5, 6 + legOffsetR);
@@ -255,13 +383,11 @@ export class TextureGenerator {
         ctx.fillRect(9, 25 + legOffsetL, 6, 4);
         ctx.fillRect(17, 25 + legOffsetR, 6, 4);
 
-        // Áo
         ctx.fillStyle = shirt;
         ctx.fillRect(9, 13, 14, 8);
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(13, 15, 6, 3); // Logo áo
+        ctx.fillRect(13, 15, 6, 3);
 
-        // Tay áo
         ctx.fillStyle = shirt;
         ctx.fillRect(6, 14 + armSwing, 3, 6);
         ctx.fillRect(23, 14 - armSwing, 3, 6);
@@ -269,7 +395,6 @@ export class TextureGenerator {
         ctx.fillRect(6, 19 + armSwing, 3, 3);
         ctx.fillRect(23, 19 - armSwing, 3, 3);
 
-        // Đầu & Mặt
         ctx.fillStyle = skin;
         ctx.fillRect(8, 4, 16, 10);
         ctx.fillStyle = '#0f172a';
@@ -282,7 +407,6 @@ export class TextureGenerator {
         ctx.fillRect(9, 11, 2, 2);
         ctx.fillRect(21, 11, 2, 2);
 
-        // Tóc
         ctx.fillStyle = hair;
         ctx.fillRect(7, 2, 18, 5);
         ctx.fillRect(6, 5, 3, 5);
@@ -290,7 +414,6 @@ export class TextureGenerator {
         ctx.fillRect(10, 6, 4, 2);
         ctx.fillRect(18, 6, 4, 2);
 
-        // Phụ kiện
         if (accessory === 'visor') {
           ctx.fillStyle = '#06b6d4';
           ctx.fillRect(9, 7, 14, 4);
@@ -311,7 +434,6 @@ export class TextureGenerator {
           ctx.fillRect(18, 8, 3, 2);
         }
       } else if (dir === 'up') {
-        // Hướng nhìn lên
         ctx.fillStyle = pants;
         ctx.fillRect(10, 20, 5, 6 + legOffsetL);
         ctx.fillRect(17, 20, 5, 6 + legOffsetR);
@@ -339,7 +461,6 @@ export class TextureGenerator {
           ctx.fillRect(8, 2, 16, 2);
         }
       } else if (dir === 'left') {
-        // Hướng nhìn sang trái
         ctx.fillStyle = pants;
         ctx.fillRect(12 + legOffsetL, 20, 6, 6);
         ctx.fillStyle = shoes;
@@ -378,7 +499,6 @@ export class TextureGenerator {
           ctx.fillRect(10, 7, 5, 4);
         }
       } else if (dir === 'right') {
-        // Hướng nhìn sang phải
         ctx.fillStyle = pants;
         ctx.fillRect(14 - legOffsetL, 20, 6, 6);
         ctx.fillStyle = shoes;
