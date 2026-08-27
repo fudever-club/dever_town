@@ -164,19 +164,20 @@ router.put('/profile', authenticateToken, sanitizeInput, async (req, res) => {
  */
 router.put('/customization', authenticateToken, async (req, res) => {
   try {
-    const { wardrobeConfig, equippedItemId } = req.body;
+    const { wardrobeConfig, equippedItemId, deverPoints } = req.body;
     const db = getDB();
 
     const updated = await db.updateCustomization(req.user.id, {
       wardrobeConfig,
-      equippedItemId
+      equippedItemId,
+      deverPoints
     });
 
     const safeUser = sanitizeUser(updated);
 
     return res.json({
       success: true,
-      message: 'Lưu trạng thái cá nhân hóa thành công!',
+      message: 'Lưu trạng thái cá nhân hóa & điểm thưởng thành công!',
       user: safeUser
     });
   } catch (err) {

@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>DEVER TOWN - FU-DEVER • FUDA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -237,6 +237,13 @@
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
           <span>Tủ Đồ</span>
+        </button>
+
+        <!-- Nút Nhiệm Vụ Hằng Ngày & Tích Điểm -->
+        <button id="header-quests-btn" class="btn-primary-sm btn-quests" title="Nhiệm Vụ Hằng Ngày & Điểm Thưởng">
+          <span class="quest-coin-icon">🪙</span>
+          <span id="header-points-display" class="header-points-text">0</span>
+          <span data-i18n="questsBtn">Nhiệm Vụ</span>
         </button>
 
         <button id="header-auth-btn" class="btn-primary-sm" title="Tài khoản & Đổi Avatar">
@@ -870,6 +877,64 @@
         <div class="settings-section controls-guide">
           <label class="settings-label" data-i18n="settingsControlsTitle">Phím Tắt Điều Khiển:</label>
           <p class="settings-hint" data-i18n="settingsControlsDesc">W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       6. DAILY QUESTS & REWARD POINTS MODAL
+       ========================================================================== -->
+  <div id="quest-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-title-icon">🪙</span>
+          <div>
+            <h2 class="modal-title">Nhiệm Vụ Hằng Ngày & Tích Điểm</h2>
+            <p class="modal-sub">Hoàn thành thử thách mỗi ngày để tích lũy DEVER Points và mở rương quà bí mật!</p>
+          </div>
+        </div>
+        <button type="button" id="quest-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body quest-modal-body">
+        <!-- Top Stats Banner -->
+        <div class="quest-stats-banner">
+          <div class="quest-stat-col">
+            <span class="stat-label">Danh Hiệu Hiện Tại</span>
+            <span id="quest-user-rank" class="stat-rank-val">🌱 Tân Binh FU-DEVER</span>
+          </div>
+          <div class="quest-stat-col points-highlight">
+            <span class="stat-label">Ví Điểm Thưởng</span>
+            <span id="quest-user-points" class="stat-points-val">0 DEVER Points</span>
+          </div>
+        </div>
+
+        <!-- Daily Milestone Chest Card -->
+        <div id="quest-milestone-box" class="quest-milestone-card">
+          <div class="milestone-icon-box">🎁</div>
+          <div class="milestone-info">
+            <div class="milestone-title-row">
+              <h4>Rương Thưởng Hoàn Thành Ngày</h4>
+              <span id="quest-prog-text" class="milestone-badge">0 / 6 Hoàn thành</span>
+            </div>
+            <p>Hoàn thành ít nhất 4/6 nhiệm vụ trong ngày để mở rương nhận thêm <strong>+50 🪙 Dever Points</strong>!</p>
+            <div class="milestone-progress-bar">
+              <div id="quest-prog-fill" class="milestone-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <button type="button" id="quest-claim-milestone-btn" class="milestone-btn locked" disabled>
+            Khóa (Cần 4 NV)
+          </button>
+        </div>
+
+        <!-- Quests List -->
+        <div class="quest-list-wrapper">
+          <h4 class="quest-section-title">Danh Sách Nhiệm Vụ Hôm Nay</h4>
+          <div id="quest-items-list" class="quest-items-grid">
+            <!-- Dynamic Quests Rendered via QuestModal.js -->
+          </div>
         </div>
       </div>
     </div>

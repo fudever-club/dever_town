@@ -121,12 +121,13 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
     return user;
   }
 
-  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+  async updateCustomization(id, { wardrobeConfig, equippedItemId, deverPoints }) {
     const user = this.users.get(id);
     if (!user) return null;
 
     if (wardrobeConfig !== undefined) user.wardrobe_config = wardrobeConfig;
     if (equippedItemId !== undefined) user.equipped_item_id = equippedItemId;
+    if (deverPoints !== undefined) user.dever_points = deverPoints;
 
     await this.saveToFile();
     return user;

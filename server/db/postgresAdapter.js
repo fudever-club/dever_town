@@ -82,15 +82,21 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
     return res.rows[0] || null;
   }
 
-  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+  async updateCustomization(id, { wardrobeConfig, equippedItemId, deverPoints }) {
     const query = `
       UPDATE users
       SET wardrobe_config = COALESCE($2, wardrobe_config),
-          equipped_item_id = COALESCE($3, equipped_item_id)
+          equipped_item_id = COALESCE($3, equipped_item_id),
+          dever_points = COALESCE($4, dever_points)
       WHERE id = $1
       RETURNING *;
     `;
-    const res = await this.pool.query(query, [id, wardrobeConfig ? JSON.stringify(wardrobeConfig) : null, equippedItemId]);
+    const res = await this.pool.query(query, [
+      id,
+      wardrobeConfig ? JSON.stringify(wardrobeConfig) : null,
+      equippedItemId,
+      deverPoints !== undefined ? deverPoints : null
+    ]);
     return res.rows[0] || null;
   }
 

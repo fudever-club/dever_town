@@ -13,8 +13,10 @@ import { WardrobeModal } from '../ui/WardrobeModal.js';
 import { SettingsModal } from '../ui/SettingsModal.js';
 import { OnboardingGuide } from '../ui/OnboardingGuide.js';
 import { TouchControls } from '../ui/TouchControls.js';
+import { QuestModal } from '../ui/QuestModal.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
+import { questManager } from '../managers/QuestManager.js';
 import { authService } from '../services/AuthService.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { audioManager } from '../utils/AudioManager.js';
@@ -103,6 +105,7 @@ export class WorldScene extends Phaser.Scene {
     if (!mapData) return;
 
     this.currentRoomId = roomId;
+    questManager.recordRoomVisit(roomId);
 
     if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
@@ -275,6 +278,7 @@ export class WorldScene extends Phaser.Scene {
     this.chatBox = new ChatBox({
       onSendMessage: (message) => {
         this.socketManager.sendChatMessage(message);
+        questManager.incrementProgress('chat_connect', 1);
       }
     });
 
@@ -308,7 +312,10 @@ export class WorldScene extends Phaser.Scene {
       scene: this
     });
 
-    // 6. Auth Modal
+    // 6. Quests & Points Modal
+    this.questModal = new QuestModal();
+
+    // 7. Auth Modal
     this.authModal = new AuthModal({
       onAuthSuccess: ({ user, isGuest }) => {
         const name = user.display_name || user.displayName;
@@ -327,7 +334,7 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 6. Onboarding Guide & Mobile Touch Controls
+    // 8. Onboarding Guide & Mobile Touch Controls
     this.onboardingGuide = new OnboardingGuide();
     this.onboardingGuide.checkAndShow();
 

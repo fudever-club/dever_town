@@ -22,7 +22,7 @@ export class BaseDatabaseAdapter {
     throw new Error('Method updateUser() must be implemented');
   }
 
-  async updateCustomization(id, { wardrobeConfig, equippedItemId }) {
+  async updateCustomization(id, { wardrobeConfig, equippedItemId, deverPoints }) {
     throw new Error('Method updateCustomization() must be implemented');
   }
 

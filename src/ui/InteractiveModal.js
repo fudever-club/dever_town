@@ -1,6 +1,7 @@
 import { INTERACTION_PRESETS } from '../config/interactions.js';
 import { LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
 import { PomodoroTimer } from './PomodoroTimer.js';
+import { questManager } from '../managers/QuestManager.js';
 import { audioManager } from '../utils/AudioManager.js';
 
 export class InteractiveModal {
@@ -79,7 +80,12 @@ export class InteractiveModal {
     const pomoPauseBtn = document.getElementById('pomo-pause-btn');
     const pomoResetBtn = document.getElementById('pomo-reset-btn');
 
-    if (pomoStartBtn) pomoStartBtn.addEventListener('click', () => this.pomodoro.start());
+    if (pomoStartBtn) {
+      pomoStartBtn.addEventListener('click', () => {
+        this.pomodoro.start();
+        questManager.incrementProgress('focus_lofi_pomo', 1);
+      });
+    }
     if (pomoPauseBtn) pomoPauseBtn.addEventListener('click', () => this.pomodoro.pause());
     if (pomoResetBtn) pomoResetBtn.addEventListener('click', () => this.pomodoro.reset('work'));
 
@@ -91,6 +97,7 @@ export class InteractiveModal {
         if (input && input.value.trim()) {
           const videoId = extractYouTubeVideoId(input.value.trim());
           this.loadLofiVideo(videoId);
+          questManager.incrementProgress('focus_lofi_pomo', 1);
         }
       });
     }
@@ -597,6 +604,7 @@ export class InteractiveModal {
         scoreEl.textContent = `${reasonText} (Chuỗi thắng: 🔥 ${this.penaltyStreak})`;
         scoreEl.className = 'sports-score-text success';
 
+        questManager.incrementProgress('penalty_goal', 1);
         this.syncScoreToServer('penalty', this.penaltyStreak * 10, this.penaltyStreak);
       } else {
         this.penaltyStreak = 0;
@@ -635,6 +643,8 @@ export class InteractiveModal {
           this.basketballHighScore = totalPts;
           localStorage.setItem('dever_bball_high', this.basketballHighScore.toString());
         }
+
+        questManager.incrementProgress('basketball_shoot', 1);
 
         setTimeout(() => {
           scoreEl.textContent = `🏆 HOÀN THÀNH PHIÊN NÉM: ${hits}/10 Trúng (${rate}%) - Tổng: ${totalPts} Điểm! ${rate >= 70 ? '⭐ Danh hiệu: Tay Ném Vàng FUDA!' : 'Hãy tiếp tục rèn luyện nhé!'}`;
