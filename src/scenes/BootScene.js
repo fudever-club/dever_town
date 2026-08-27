@@ -11,16 +11,16 @@ export class BootScene extends Phaser.Scene {
     const height = this.cameras.main.height;
 
     this.add.text(width / 2, height / 2, 'Đang tải Dever Town...', {
-      fontFamily: 'Outfit, sans-serif',
+      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '16px',
       color: '#60a5fa'
     }).setOrigin(0.5, 0.5);
 
-    // 1. Sinh Tileset bản đồ
-    TextureGenerator.generateTileset(this, 'town_tileset');
+    // 1. Sinh Tileset bản đồ (19 tiles)
+    TextureGenerator.generateTileset(this);
 
     // 2. Sinh toàn bộ 4 bộ Spritesheet Avatar Pixel Art
-    TextureGenerator.generateAllAvatars(this);
+    TextureGenerator.generateAllCharacterSpritesheets(this);
   }
 
   create() {

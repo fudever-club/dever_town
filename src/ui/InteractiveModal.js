@@ -44,6 +44,13 @@ export class InteractiveModal {
       closeBtn.addEventListener('click', () => this.hide());
     }
 
+    // Click ra ngoài backdrop để đóng
+    this.modalEl.addEventListener('click', (e) => {
+      if (e.target === this.modalEl) {
+        this.hide();
+      }
+    });
+
     // Phím Escape đóng modal
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen()) {

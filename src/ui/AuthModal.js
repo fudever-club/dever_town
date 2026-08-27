@@ -75,6 +75,20 @@ export class AuthModal {
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.hide());
     }
+
+    // Click ra ngoài backdrop để đóng
+    this.modalEl.addEventListener('click', (e) => {
+      if (e.target === this.modalEl) {
+        this.hide();
+      }
+    });
+
+    // Phím Escape đóng modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !this.modalEl.classList.contains('hidden')) {
+        this.hide();
+      }
+    });
   }
 
   switchTab(tab) {
@@ -86,7 +100,7 @@ export class AuthModal {
 
     const panes = this.modalEl.querySelectorAll('.auth-pane');
     panes.forEach(pane => {
-      pane.classList.toggle('hidden', pane.id !== `pane-${tab}`);
+      pane.classList.toggle('hidden', pane.id !== `${tab}-form` && pane.id !== `pane-${tab}`);
     });
 
     this.clearError();

@@ -415,6 +415,10 @@ export class TextureGenerator {
   /**
    * Tạo 4 bộ Spritesheets cho 4 phong cách Avatar
    */
+  static generateAllAvatars(scene) {
+    return this.generateAllCharacterSpritesheets(scene);
+  }
+
   static generateAllCharacterSpritesheets(scene) {
     const avatarConfigs = [
       { id: 'dev_hoodie', hair: '#1e293b', skin: '#fcd34d', shirt: '#2563eb', pants: '#1e293b', name: 'Dev Alpha' },
