@@ -7,28 +7,89 @@
   <link rel="stylesheet" href="/src/styles/main.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="game-wrapper">
+  <div id="app-layout">
+    <!-- Header Controls -->
     <header id="ui-header">
-      <div class="logo">
-        <span class="badge">DEVER</span> TOWN
+      <div class="logo-group">
+        <span class="badge-logo">DEVER</span>
+        <span class="brand-text">TOWN</span>
       </div>
+
       <div class="controls-hint">
-        <span>🎮 Di chuyển: <b>WASD</b> hoặc <b>Phím Mũi Tên</b></span>
+        <span>🎮 Di chuyển: <b>WASD</b> / <b>Mũi tên</b></span>
+        <span class="divider">|</span>
+        <span>💬 Chat: Nhấn <b>Enter</b></span>
       </div>
-      <div class="status-indicator">
-        <span class="dot online"></span>
-        <span class="status-text">Client Sẵn Sàng</span>
+
+      <div class="header-actions">
+        <span id="online-count-badge" class="badge-online">1 Online</span>
+        <button id="edit-name-btn" class="btn-ghost" title="Đổi tên nhân vật">✏️ Đổi tên</button>
+        <div class="status-indicator">
+          <span class="dot online"></span>
+          <span class="status-text">Đang kết nối</span>
+        </div>
       </div>
     </header>
 
-    <main id="game-container"></main>
+    <!-- Main Workspace: Game Canvas + Live Chat -->
+    <main id="main-content">
+      <!-- Game Canvas Container -->
+      <div id="game-container"></div>
 
+      <!-- Live Chat Box -->
+      <section id="chat-wrapper">
+        <div class="chat-header">
+          <span class="chat-title">💬 Kênh Chat Thị Trấn</span>
+          <span class="chat-sub">Mọi người trong phòng</span>
+        </div>
+
+        <div id="chat-messages" class="chat-messages-box">
+          <div class="chat-welcome">
+            👋 Chào mừng bạn đến với DEVER TOWN! Nhấn <b>Enter</b> để chat cùng mọi người.
+          </div>
+        </div>
+
+        <form id="chat-form" class="chat-input-area">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Nhập tin nhắn (Enter để gửi)..."
+            maxlength="120"
+            autocomplete="off"
+          />
+          <button type="submit" id="chat-send-btn">Gửi</button>
+        </form>
+      </section>
+    </main>
+
+    <!-- Footer Note -->
     <footer id="ui-footer">
-      <div class="tip">💡 Mẹo: Nhân vật không thể đi xuyên qua tường gạch, giá sách và viền bản đồ.</div>
+      <span>💡 Mở nhiều tab trình duyệt để thử nghiệm tính năng Multiplayer Realtime qua Socket.io.</span>
     </footer>
+  </div>
+
+  <!-- Nickname Modal -->
+  <div id="nickname-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-icon">🎮</div>
+      <h2 class="modal-title">Chào mừng đến DEVER TOWN</h2>
+      <p class="modal-desc">Vui lòng nhập Biệt danh (Nickname) của bạn để bắt đầu tham gia cùng các thành viên khác:</p>
+
+      <form id="nickname-form">
+        <input
+          type="text"
+          id="nickname-input"
+          class="modal-input"
+          placeholder="Ví dụ: Dev Master, Hung Nguyen..."
+          maxlength="18"
+          required
+        />
+        <button type="submit" class="modal-btn">Vào Thị Trấn Ngay</button>
+      </form>
+    </div>
   </div>
 
   <script type="module" src="/src/main.js"></script>

@@ -12,7 +12,30 @@ export class InputController {
     });
   }
 
+  isInputBlocked() {
+    // Nếu người chơi đang focus vào ô input HTML (Chat, Modal Nickname...)
+    if (typeof document !== 'undefined') {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   getMovementVector() {
+    // Nếu bị block thì trả về vector đứng yên
+    if (this.isInputBlocked()) {
+      return {
+        vector: new Phaser.Math.Vector2(0, 0),
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+        isMoving: false
+      };
+    }
+
     let vx = 0;
     let vy = 0;
 

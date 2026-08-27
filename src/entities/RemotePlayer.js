@@ -1,36 +1,34 @@
 import Phaser from 'phaser';
 import { GAME_CONFIG } from '../config/gameConfig.js';
 
-export class Player extends Phaser.Physics.Arcade.Sprite {
+export class RemotePlayer extends Phaser.Physics.Arcade.Sprite {
   /**
    * @param {Phaser.Scene} scene
    * @param {number} x
    * @param {number} y
    * @param {string} name
-   * @param {boolean} isCurrentPlayer
+   * @param {string} id
    */
-  constructor(scene, x, y, name = 'Dev Member', isCurrentPlayer = true) {
+  constructor(scene, x, y, name = 'Dev Member', id = '') {
     super(scene, x, y, 'player_sprites', 1);
 
     this.scene = scene;
     this.name = name;
-    this.isCurrentPlayer = isCurrentPlayer;
-    this.currentDirection = 'down';
+    this.id = id;
 
-    // Thêm vào Scene và bật Physics
+    this.targetX = x;
+    this.targetY = y;
+    this.targetDirection = 'down';
+    this.targetIsMoving = false;
+
+    // Thêm vào Scene
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
-    // Cấu hình Hitbox ở phần chân
-    this.body.setSize(GAME_CONFIG.HITBOX.WIDTH, GAME_CONFIG.HITBOX.HEIGHT);
-    this.body.setOffset(GAME_CONFIG.HITBOX.OFFSET_X, GAME_CONFIG.HITBOX.OFFSET_Y);
-    this.body.setCollideWorldBounds(true);
+    this.body.setImmovable(true);
+    this.body.moves = false; // Vị trí do Lerp điều khiển
 
     // Tạo Name Tag
     this.createNameTag();
-
-    // Khởi tạo Animation
-    this.initAnimations();
 
     // Biến lưu Speech Bubble
     this.bubbleContainer = null;
@@ -42,7 +40,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       fontFamily: 'Outfit, sans-serif',
       fontSize: '11px',
       fontWeight: '600',
-      fill: '#fde047',
+      fill: '#93c5fd',
       backgroundColor: 'rgba(15, 23, 42, 0.85)',
       padding: { x: 6, y: 2 }
     });
@@ -57,88 +55,55 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  initAnimations() {
-    const anims = this.scene.anims;
-    if (anims.exists('player_walk_down')) return;
+  setTargetPosition(x, y, direction, isMoving) {
+    this.targetX = x;
+    this.targetY = y;
+    this.targetDirection = direction || this.targetDirection;
+    this.targetIsMoving = isMoving;
 
-    anims.create({
-      key: 'player_walk_down',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 0, end: 2 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    anims.create({
-      key: 'player_walk_left',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 3, end: 5 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    anims.create({
-      key: 'player_walk_right',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 6, end: 8 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    anims.create({
-      key: 'player_walk_up',
-      frames: anims.generateFrameNumbers('player_sprites', { start: 9, end: 11 }),
-      frameRate: 8,
-      repeat: -1
-    });
+    // Nếu khoảng cách quá xa (lag mạng hoặc spawn lại), snap ngay lập tức
+    const dist = Phaser.Math.Distance.Between(this.x, this.y, this.targetX, this.targetY);
+    if (dist > GAME_CONFIG.NETWORK.MAX_SNAP_DISTANCE) {
+      this.setPosition(this.targetX, this.targetY);
+    }
   }
 
-  update(inputData) {
-    if (!this.body) return;
+  update() {
+    // 1. Nội suy tọa độ Lerp mượt mà
+    const lerpFactor = GAME_CONFIG.NETWORK.LERP_FACTOR;
+    this.x = Phaser.Math.Linear(this.x, this.targetX, lerpFactor);
+    this.y = Phaser.Math.Linear(this.y, this.targetY, lerpFactor);
 
-    // Cập nhật Depth theo vị trí Y
+    // 2. Cập nhật Depth theo vị trí Y (2.5D sorting)
     this.setDepth(this.y);
 
-    // Đồng bộ vị trí Name Tag
+    // 3. Cập nhật Name Tag
     if (this.nameText) {
       this.nameText.setPosition(Math.round(this.x), Math.round(this.y - 24));
     }
 
-    // Đồng bộ vị trí Bubble nếu có
+    // 4. Cập nhật Bubble vị trí nếu có
     if (this.bubbleContainer) {
       this.bubbleContainer.setPosition(Math.round(this.x), Math.round(this.y - 44));
     }
 
-    if (!this.isCurrentPlayer || !inputData) return;
-
-    const { vector, left, right, up, down, isMoving } = inputData;
-
-    if (isMoving) {
-      this.body.setVelocity(
-        vector.x * GAME_CONFIG.PLAYER_SPEED,
-        vector.y * GAME_CONFIG.PLAYER_SPEED
-      );
-
-      if (left) {
-        this.currentDirection = 'left';
-        this.anims.play('player_walk_left', true);
-      } else if (right) {
-        this.currentDirection = 'right';
-        this.anims.play('player_walk_right', true);
-      } else if (up) {
-        this.currentDirection = 'up';
-        this.anims.play('player_walk_up', true);
-      } else if (down) {
-        this.currentDirection = 'down';
-        this.anims.play('player_walk_down', true);
+    // 5. Cập nhật Animation
+    if (this.targetIsMoving) {
+      const animKey = `player_walk_${this.targetDirection}`;
+      if (this.anims.currentAnim?.key !== animKey || !this.anims.isPlaying) {
+        this.anims.play(animKey, true);
       }
     } else {
-      this.body.setVelocity(0, 0);
-      this.anims.stop();
-
+      if (this.anims.isPlaying) {
+        this.anims.stop();
+      }
       const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
-      this.setFrame(idleFrames[this.currentDirection] || 1);
+      this.setFrame(idleFrames[this.targetDirection] || 1);
     }
   }
 
   showSpeechBubble(message) {
+    // Xóa bubble cũ nếu còn
     if (this.bubbleContainer) {
       this.bubbleContainer.destroy();
       this.bubbleContainer = null;
@@ -168,11 +133,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     const bg = this.scene.add.graphics();
     bg.fillStyle(0xffffff, 0.95);
     bg.fillRoundedRect(-w / 2, -h / 2, w, h, 6);
+    // Mũi nhọn bong bóng thoại
     bg.fillTriangle(0, h / 2 + 5, -5, h / 2, 5, h / 2);
 
     bubble.add([bg, text]);
     this.bubbleContainer = bubble;
 
+    // Tự động mờ dần và hủy sau 4.5s
     this.bubbleTimer = this.scene.time.delayedCall(4500, () => {
       if (this.bubbleContainer) {
         this.scene.tweens.add({
