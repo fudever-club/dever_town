@@ -468,46 +468,72 @@ body {
   border-top-left-radius: 2px;
 }
 
-.chat-input-area {
-  padding: 10px;
+/* --- CHAT INPUT FORM --- */
+.chat-input-row, .chat-input-area, #chat-form {
+  padding: 12px 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
+  align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-.chat-input-area input {
+.chat-input, .chat-input-area input, #chat-input {
   flex: 1;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
-  border-radius: 8px;
+  width: 100%;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 14px;
+  border-radius: 10px;
   color: #ffffff;
   font-size: 13px;
   font-family: inherit;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.chat-input-area input:focus {
+.chat-input::placeholder, .chat-input-area input::placeholder {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.chat-input:focus, .chat-input-area input:focus, #chat-input:focus {
   border-color: #f26f21;
-  box-shadow: 0 0 10px rgba(242, 111, 33, 0.3);
+  background: rgba(30, 41, 59, 1);
+  box-shadow: 0 0 12px rgba(242, 111, 33, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.chat-input-area button {
+.chat-send-btn, .chat-input-area button {
   background: linear-gradient(135deg, #f26f21, #ea580c);
   color: white;
   border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(242, 111, 33, 0.4);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-.chat-input-area button:hover {
-  opacity: 0.92;
+.chat-send-btn .send-icon {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+}
+
+.chat-send-btn:hover, .chat-input-area button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(242, 111, 33, 0.6);
+  opacity: 0.95;
+}
+
+.chat-send-btn:active, .chat-input-area button:active {
+  transform: translateY(1px);
 }
 
 /* --- FOOTER --- */
