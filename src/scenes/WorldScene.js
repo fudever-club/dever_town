@@ -14,6 +14,7 @@ import { SettingsModal } from '../ui/SettingsModal.js';
 import { OnboardingGuide } from '../ui/OnboardingGuide.js';
 import { TouchControls } from '../ui/TouchControls.js';
 import { QuestModal } from '../ui/QuestModal.js';
+import { NetworkStatusOverlay } from '../ui/NetworkStatusOverlay.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
 import { questManager } from '../managers/QuestManager.js';
@@ -343,6 +344,11 @@ export class WorldScene extends Phaser.Scene {
       scene: this
     });
 
+    // 9. Network Status & Lag Spinner Overlay
+    this.networkStatusOverlay = new NetworkStatusOverlay({
+      socketManager: this.socketManager
+    });
+
     // 7. Header Buttons
     const invBtn = document.getElementById('header-inventory-btn');
     if (invBtn) {
@@ -548,7 +554,7 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  update() {
+  update(time, delta) {
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
@@ -576,7 +582,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     for (const remote of this.remotePlayers.values()) {
-      remote.update();
+      remote.update(time, delta);
     }
   }
 }

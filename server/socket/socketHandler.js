@@ -63,12 +63,12 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 3. Đồng bộ di chuyển Realtime
+     * 3. Đồng bộ di chuyển Realtime (Tối ưu volatile chống tích luỹ lag)
      */
     socket.on('playerMovement', (movementData) => {
       const updated = playerManager.updateMovement(socket.id, movementData);
       if (updated) {
-        socket.to(updated.roomId).emit('playerMoved', {
+        socket.volatile.to(updated.roomId).emit('playerMoved', {
           id: socket.id,
           x: updated.x,
           y: updated.y,
@@ -76,6 +76,13 @@ export function setupSocketHandler(io) {
           isMoving: updated.isMoving
         });
       }
+    });
+
+    /**
+     * 3b. Heartbeat Ping/Pong để đo độ trễ Latency
+     */
+    socket.on('pingCheck', (clientTs) => {
+      socket.emit('pongCheck', clientTs);
     });
 
     /**

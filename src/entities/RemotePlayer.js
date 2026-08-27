@@ -33,6 +33,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.targetDirection = 'down';
     this.targetMoving = false;
     this.currentDirection = 'down';
+    this.lastPacketTime = performance.now();
 
     this.speechBubble = null;
     this.speechTimer = null;
@@ -121,6 +122,14 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.targetY = y;
     this.targetDirection = direction || this.targetDirection;
     this.targetMoving = isMoving !== undefined ? isMoving : false;
+    this.lastPacketTime = performance.now();
+
+    // Nếu khoảng cách nhảy vọt quá xa (> 100px), snap ngay tức thì tránh glitch trượt map
+    const distSq = (this.x - x) * (this.x - x) + (this.y - y) * (this.y - y);
+    if (distSq > 10000) {
+      this.x = x;
+      this.y = y;
+    }
   }
 
   showSpeechBubble(message) {
@@ -190,15 +199,30 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.createNameTag();
   }
 
-  update() {
-    // Lerp nội suy mượt mà
-    const lerpFactor = 0.25;
-    this.x = Phaser.Math.Linear(this.x, this.targetX, lerpFactor);
-    this.y = Phaser.Math.Linear(this.y, this.targetY, lerpFactor);
+  update(time, delta = 16.67) {
+    const distSq = (this.targetX - this.x) * (this.targetX - this.x) + (this.targetY - this.y) * (this.targetY - this.y);
+
+    if (distSq > 10000) {
+      // Nhảy vọt lớn (teleport / spawn)
+      this.x = this.targetX;
+      this.y = this.targetY;
+    } else if (distSq < 0.64 && !this.targetMoving) {
+      // Đã đến rất gần mục tiêu và không di chuyển -> Snap triệt tiêu vi rung
+      this.x = this.targetX;
+      this.y = this.targetY;
+    } else {
+      // Nội suy thích ứng theo delta time: mượt mà ở mọi FPS (30 - 120 FPS)
+      const lerpSpeed = this.targetMoving ? 0.32 : 0.45;
+      const dtFactor = Math.min(1.0, (delta / 16.67) * lerpSpeed);
+      this.x = Phaser.Math.Linear(this.x, this.targetX, dtFactor);
+      this.y = Phaser.Math.Linear(this.y, this.targetY, dtFactor);
+    }
 
     this.currentDirection = this.targetDirection;
 
-    const animPrefix = this.targetMoving ? 'walk' : 'idle';
+    // Tự động kích hoạt animation walk nếu đang di chuyển hoặc khoảng cách còn xa
+    const isVisiblyMoving = this.targetMoving || distSq > 4;
+    const animPrefix = isVisiblyMoving ? 'walk' : 'idle';
     const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
 
     if (this.scene.anims.exists(animKey)) {

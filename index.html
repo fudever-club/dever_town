@@ -280,6 +280,10 @@
             <line x1="3" y1="21" x2="10" y2="14"></line>
           </svg>
         </button>
+        <!-- Network Latency / Ping Indicator -->
+        <span id="network-ping-badge" class="network-ping-badge good" title="Độ trễ máy chủ Realtime (Ping)">
+          <span class="ping-dot green"></span> 35ms
+        </span>
 
         <span id="online-count-badge" class="badge-online">1 Online</span>
         <div class="status-indicator">
@@ -361,6 +365,21 @@
             <button type="button" id="touch-btn-interact" class="touch-action-btn interact" title="Tương Tác [E]">
               <span>E</span>
             </button>
+          </div>
+        </div>
+
+        <!-- Server Lag / Syncing Spinner Activity Overlay -->
+        <div id="lag-spinner-overlay" class="lag-spinner-overlay hidden">
+          <div class="lag-spinner-card">
+            <div class="lag-spinner-circle">
+              <div class="spinner-ring outer"></div>
+              <div class="spinner-ring inner"></div>
+              <span class="spinner-core-icon">⚡</span>
+            </div>
+            <div class="lag-spinner-text-group">
+              <h4 id="lag-spinner-text" class="lag-spinner-title">Đang đồng bộ kết nối máy chủ...</h4>
+              <p id="lag-spinner-sub" class="lag-spinner-sub">Hệ thống đang tự động tối ưu hóa đường truyền mạng và vị trí nhân vật...</p>
+            </div>
           </div>
         </div>
       </div>
