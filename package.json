@@ -48,6 +48,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "pg": "^8.23.0",
     "phaser": "^3.88.2",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
