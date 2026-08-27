@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DEVER TOWN - 2D Pixel Club World</title>
+  <title>DEVER TOWN - FPT UNIVERSITY DA NANG 2D PIXEL WORLD</title>
   <link rel="stylesheet" href="/src/styles/main.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,7 @@
         </svg>
         <span class="badge-logo">DEVER</span>
         <span class="brand-text">TOWN</span>
+        <span class="fptu-tag">FPTU ĐÀ NẴNG</span>
       </div>
 
       <!-- Quick Room Switcher (Data-Driven 5 Rooms) -->
@@ -29,9 +30,9 @@
           <circle cx="12" cy="10" r="3"></circle>
         </svg>
         <select id="room-selector" class="room-select">
-          <option id="opt-main_hall" value="main_hall">Sảnh Chính (1)</option>
-          <option id="opt-dever_lab" value="dever_lab">Dever Lab (0)</option>
-          <option id="opt-library_lounge" value="library_lounge">Thư Viện (0)</option>
+          <option id="opt-main_hall" value="main_hall">Sảnh Alpha (1)</option>
+          <option id="opt-dever_lab" value="dever_lab">Tech Lab (0)</option>
+          <option id="opt-library_lounge" value="library_lounge">Thư Viện FPTU (0)</option>
           <option id="opt-memory_room" value="memory_room">Phòng Kỷ Niệm (0)</option>
           <option id="opt-web_room" value="web_room">Không Gian Web (0)</option>
         </select>
@@ -79,7 +80,7 @@
       </div>
     </header>
 
-    <!-- Main Workspace: Game Canvas + Live Chat -->
+    <!-- Main Workspace (800x600 Game Canvas + 344px Live Chat = 1160px) -->
     <main id="main-content">
       <div id="game-container"></div>
 
@@ -90,14 +91,14 @@
             <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
-            <span class="chat-title">Kênh Chat Trong Phòng</span>
+            <span class="chat-title">Kênh Chat FPTU & DEVER</span>
           </div>
           <span class="chat-sub">Realtime Room Channel</span>
         </div>
 
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
-            Chào mừng đến với <b>DEVER TOWN</b>! Sử dụng phím <b>WASD</b> để di chuyển, bước lại gần đồ vật và nhấn <b>[E]</b> để tương tác.
+            Chào mừng đến với <b>DEVER TOWN - Đại học FPT Đà Nẵng</b>! Sử dụng phím <b>WASD</b> để di chuyển, bước lại gần bục tượng Cóc Vàng hoặc khung tranh và nhấn <b>[E]</b> để tương tác.
           </div>
         </div>
 
@@ -105,7 +106,7 @@
           <input
             type="text"
             id="chat-input"
-            placeholder="Nhập tin nhắn (Enter để gửi)..."
+            placeholder="Nhập tin nhắn tiếng Việt (Enter để gửi)..."
             maxlength="140"
             autocomplete="off"
           />
@@ -116,7 +117,7 @@
 
     <!-- Footer Note -->
     <footer id="ui-footer">
-      <span>Điều khiển: <b>WASD</b> / Mũi tên di chuyển • <b>[E]</b> Tương tác đồ vật • <b>Enter</b> Chat • <b>Esc</b> Đóng cửa sổ</span>
+      <span>Đại học FPT Đà Nẵng • <b>CLB DEVER</b> • Điều khiển: <b>WASD</b> di chuyển • <b>[E]</b> Tương tác đồ vật • <b>Enter</b> Chat • <b>Esc</b> Đóng cửa sổ</span>
     </footer>
   </div>
 
@@ -125,7 +126,7 @@
     <div class="modal-card auth-modal-card">
       <button id="auth-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
       <div class="modal-icon-svg">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#f26f21" stroke-width="2">
           <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
           <line x1="7" y1="2" x2="7" y2="22"></line>
           <line x1="17" y1="2" x2="17" y2="22"></line>
@@ -136,7 +137,7 @@
           <line x1="17" y1="7" x2="22" y2="7"></line>
         </svg>
       </div>
-      <h2 class="modal-title">DEVER TOWN IDENTITY</h2>
+      <h2 class="modal-title">DEVER TOWN IDENTITY • FPTU</h2>
       <p class="modal-desc">Đăng nhập tài khoản CLB hoặc tham gia nhanh với vai trò Khách:</p>
 
       <div class="auth-tabs">
@@ -152,7 +153,7 @@
       <form id="login-form" class="auth-pane">
         <div class="form-group">
           <label>Email thành viên:</label>
-          <input type="email" id="login-email" class="modal-input" placeholder="admin@devertown.com" required />
+          <input type="email" id="login-email" class="modal-input" placeholder="member@fpt.edu.vn" required />
         </div>
         <div class="form-group">
           <label>Mật khẩu:</label>
@@ -172,8 +173,8 @@
           <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
         </div>
         <div class="form-group">
-          <label>Tên hiển thị trong game:</label>
-          <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Dev Alpha" maxlength="18" required />
+          <label>Tên hiển thị trong game (chấp nhận dấu cách):</label>
+          <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FPT" maxlength="24" required />
         </div>
         <div class="form-group">
           <label>Chọn phong cách Avatar Pixel:</label>
@@ -202,8 +203,8 @@
       <!-- Tab 3: Chơi Nhanh (Khách) -->
       <form id="guest-form" class="auth-pane hidden">
         <div class="form-group">
-          <label>Biệt danh của bạn:</label>
-          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Khách #8888" maxlength="18" required />
+          <label>Biệt danh của bạn (chấp nhận dấu cách):</label>
+          <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Coder FPTU Đà Nẵng" maxlength="24" required />
         </div>
         <div class="form-group">
           <label>Chọn phong cách Avatar Pixel:</label>
@@ -233,7 +234,7 @@
       <form id="profile-form" class="auth-pane hidden">
         <div class="form-group">
           <label>Tên hiển thị:</label>
-          <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="18" required />
+          <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="24" required />
         </div>
         <div class="form-group">
           <label>Đổi phong cách Avatar Pixel:</label>
@@ -266,7 +267,7 @@
     <div class="modal-card interactive-modal-card">
       <button id="interactive-modal-close" class="modal-close-btn" title="Đóng">&times;</button>
       <div class="modal-header-section">
-        <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác</h2>
+        <h2 id="interactive-modal-title" class="modal-title">Khu Vực Tương Tác FPTU & DEVER</h2>
         <p id="interactive-modal-desc" class="modal-desc">Không gian hoạt động chuyên biệt của DEVER TOWN</p>
       </div>
 
@@ -318,10 +319,10 @@
 
           <div class="notes-box">
             <div class="code-box-header">
-              <span>Sổ Tay Markdown CLB</span>
+              <span>Sổ Tay Markdown CLB DEVER</span>
               <span class="auto-save-hint">Tự lưu</span>
             </div>
-            <textarea id="notes-textarea" spellcheck="false" placeholder="# Ghi chú nội dung buổi học..."></textarea>
+            <textarea id="notes-textarea" spellcheck="false" placeholder="# Ghi chú nội dung buổi học FPTU..."></textarea>
           </div>
         </div>
       </div>
@@ -330,7 +331,7 @@
       <div id="pane-coffee" class="interactive-pane hidden">
         <div class="coffee-workspace-grid">
           <div class="lofi-player-box">
-            <div class="lofi-title">Lofi Chill Radio - Dever Lounge</div>
+            <div class="lofi-title">Lofi Chill Radio - Dever Lounge FPTU</div>
             <div class="lofi-iframe-wrapper">
               <iframe
                 id="lofi-iframe"

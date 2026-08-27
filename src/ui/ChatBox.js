@@ -15,6 +15,14 @@ export class ChatBox {
   initEvents() {
     if (!this.chatForm || !this.chatInput) return;
 
+    // Ngăn chặn sự kiện phím từ ô chat lan ra ngoài window / canvas
+    const stopBubble = (e) => {
+      e.stopPropagation();
+    };
+    this.chatInput.addEventListener('keydown', stopBubble);
+    this.chatInput.addEventListener('keyup', stopBubble);
+    this.chatInput.addEventListener('keypress', stopBubble);
+
     // Bắt sự kiện submit form
     this.chatForm.addEventListener('submit', (e) => {
       e.preventDefault();

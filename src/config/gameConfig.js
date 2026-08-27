@@ -1,32 +1,24 @@
+/**
+ * Cấu hình toàn cục cho DEVER TOWN Game Client (Chuẩn Viewport Mở Rộng 800x600)
+ */
 export const GAME_CONFIG = {
+  // Bản đồ mở rộng chuẩn 25x19 ô (800x608 px)
   TILE_SIZE: 32,
-  MAP_WIDTH_TILES: 20,
-  MAP_HEIGHT_TILES: 15,
-  get MAP_WIDTH() {
-    return this.TILE_SIZE * this.MAP_WIDTH_TILES; // 640
+  MAP_WIDTH_TILES: 25,
+  MAP_HEIGHT_TILES: 19,
+  MAP_WIDTH: 800,
+  MAP_HEIGHT: 608,
+
+  // Thông số nhân vật
+  PLAYER: {
+    SPEED: 160,
+    INITIAL_SPAWN: { x: 400, y: 350 }
   },
-  get MAP_HEIGHT() {
-    return this.TILE_SIZE * this.MAP_HEIGHT_TILES; // 480
-  },
-  PLAYER_SPEED: 160,
-  SPRITE_WIDTH: 32,
-  SPRITE_HEIGHT: 32,
-  HITBOX: {
-    WIDTH: 18,
-    HEIGHT: 14,
-    OFFSET_X: 7,
-    OFFSET_Y: 18
-  },
+
+  // Cấu hình mạng realtime Socket.io
   NETWORK: {
-    // Tự động nhận URL backend Socket.io
-    SERVER_URL: import.meta.env.VITE_SOCKET_URL || (
-      typeof window !== 'undefined' && window.location.port === '3000'
-        ? `${window.location.protocol}//${window.location.hostname}:3001`
-        : typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001'
-    ),
-    TICK_RATE: 30, // 30 FPS sync
-    TICK_INTERVAL_MS: 1000 / 30, // ~33.3ms
-    LERP_FACTOR: 0.25,
-    MAX_SNAP_DISTANCE: 120 // Nếu độ lệch quá lớn (>120px) thì teleport thay vì lerp
+    SERVER_URL: window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin,
+    TICK_RATE: 30, // 30 FPS network throttling
+    TICK_INTERVAL_MS: 1000 / 30
   }
 };

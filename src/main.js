@@ -6,16 +6,16 @@ import { WorldScene } from './scenes/WorldScene.js';
 const config = {
   type: Phaser.AUTO,
   parent: 'game-container',
-  width: GAME_CONFIG.MAP_WIDTH,
-  height: GAME_CONFIG.MAP_HEIGHT,
+  width: 800,
+  height: 600,
   pixelArt: true,
   roundPixels: true,
-  backgroundColor: '#0f172a',
+  backgroundColor: '#070a12',
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },
-      debug: false // Đặt true nếu muốn thấy khung hitbox xanh lá để debug
+      debug: false
     }
   },
   scene: [BootScene, WorldScene],
@@ -27,5 +27,5 @@ const config = {
 
 window.addEventListener('DOMContentLoaded', () => {
   const game = new Phaser.Game(config);
-  window.__DEVER_GAME__ = game; // Giúp QA Verifier và test scripts có thể truy cập
+  window.__DEVER_GAME__ = game;
 });

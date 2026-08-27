@@ -110,8 +110,8 @@ export class WorldScene extends Phaser.Scene {
     const cols = GAME_CONFIG.MAP_WIDTH_TILES;
     const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
-    // Solid tiles: 2 (Tường), 3 (Kệ sách), 4 (Bàn), 8 (Server Rack), 12 (Bảng), 14 (Quầy cà phê), 15 (Vách kính), 16 (Khung tranh), 17 (Bục cúp)
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17]);
+    // Solid tiles: 2 (Tường), 3 (Kệ sách), 4 (Bàn), 8 (Server Rack), 12 (Bảng), 14 (Quầy cà phê), 15 (Vách kính), 16 (Khung tranh), 17 (Bục cúp), 19 (Cóc Vàng FPTU), 20 (Biển hiệu FPTU), 21 (Neon DEVER), 22 (Cột cờ FPT)
+    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22]);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {

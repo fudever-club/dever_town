@@ -5,6 +5,13 @@ export class InputController {
     this.scene = scene;
     this.isDisabled = false;
 
+    // 1. Tắt toàn bộ Key Captures mặc định của Phaser để không chặn phím Space, E, W, A, S, D trên trình duyệt
+    if (scene.input && scene.input.keyboard) {
+      scene.input.keyboard.clearCaptures();
+      scene.input.keyboard.preventDefault = false;
+    }
+
+    // 2. Khởi tạo phím di chuyển và phím tương tác
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.wasd = scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -14,14 +21,58 @@ export class InputController {
     });
 
     this.keyE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+
+    // Đảm bảo sau khi addKey thì Phaser vẫn không gọi preventDefault()
+    if (scene.input && scene.input.keyboard) {
+      scene.input.keyboard.clearCaptures();
+      scene.input.keyboard.preventDefault = false;
+    }
+
+    // 3. Trình quản lý Focus / Blur toàn cục (Global Focus Manager)
+    this.setupGlobalFocusManager();
+  }
+
+  setupGlobalFocusManager() {
+    if (typeof document === 'undefined') return;
+
+    // Khi người dùng click vào bất kỳ ô nhập liệu (Chat, Nickname, Email, Notes...)
+    document.addEventListener('focusin', (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
+        if (this.scene && this.scene.input && this.scene.input.keyboard) {
+          this.scene.input.keyboard.enabled = false;
+        }
+        if (this.scene.player) {
+          this.scene.player.stopMovement();
+        }
+      }
+    });
+
+    // Khi người dùng click ra ngoài hoặc đóng modal
+    document.addEventListener('focusout', (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
+        if (this.scene && this.scene.input && this.scene.input.keyboard) {
+          this.scene.input.keyboard.enabled = true;
+          this.scene.input.keyboard.resetKeys();
+        }
+      }
+    });
   }
 
   disableInput() {
     this.isDisabled = true;
+    if (this.scene && this.scene.input && this.scene.input.keyboard) {
+      this.scene.input.keyboard.enabled = false;
+    }
   }
 
   enableInput() {
     this.isDisabled = false;
+    if (this.scene && this.scene.input && this.scene.input.keyboard) {
+      this.scene.input.keyboard.enabled = true;
+      this.scene.input.keyboard.resetKeys();
+    }
   }
 
   isInputBlocked() {
@@ -29,10 +80,9 @@ export class InputController {
 
     if (typeof document !== 'undefined') {
       const activeEl = document.activeElement;
-      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable)) {
         return true;
       }
-      // Nếu bất kỳ modal nào đang mở
       const authModal = document.getElementById('auth-modal');
       const interactiveModal = document.getElementById('interactive-modal');
 

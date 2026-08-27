@@ -3,13 +3,13 @@ import { authService } from '../services/AuthService.js';
 export class AuthModal {
   /**
    * @param {Object} options
-   * @param {Function} options.onAuthSuccess - Callback khi xác thực hoặc đổi thông tin thành công
+   * @param {Function} options.onAuthSuccess
    */
   constructor({ onAuthSuccess }) {
     this.onAuthSuccess = onAuthSuccess;
     this.modalEl = document.getElementById('auth-modal');
     this.selectedAvatar = 'dev_hoodie';
-    this.currentTab = 'login'; // 'login', 'register', 'guest', 'profile'
+    this.currentTab = 'login';
 
     this.initDOM();
     this.bindEvents();
@@ -18,17 +18,25 @@ export class AuthModal {
   initDOM() {
     if (!this.modalEl) return;
 
-    // Avatar preview cards configuration
     this.avatars = [
-      { id: 'dev_hoodie', name: 'Developer', desc: 'Áo hoodie xanh & balo cam', color: '#3b82f6', icon: '💻' },
-      { id: 'cyberpunk_pink', name: 'Cyberpunk', desc: 'Neon hồng & kính VR', color: '#ec4899', icon: '🕶️' },
-      { id: 'red_gamer', name: 'Gamer Pro', desc: 'Hoodie đỏ & tai nghe', color: '#ef4444', icon: '🎧' },
-      { id: 'green_coder', name: 'Hacker', desc: 'Bomber ngọc & kính mắt', color: '#10b981', icon: '⚡' }
+      { id: 'dev_hoodie', name: 'Developer', desc: 'Áo hoodie xanh & balo cam', color: '#3b82f6', icon: 'DEV' },
+      { id: 'cyberpunk_pink', name: 'Cyberpunk', desc: 'Neon hồng & kính VR', color: '#ec4899', icon: 'NEO' },
+      { id: 'red_gamer', name: 'Gamer Pro', desc: 'Hoodie đỏ & tai nghe', color: '#ef4444', icon: 'PRO' },
+      { id: 'green_coder', name: 'Hacker', desc: 'Bomber ngọc & kính mắt', color: '#10b981', icon: 'HEX' }
     ];
   }
 
   bindEvents() {
     if (!this.modalEl) return;
+
+    // Ngăn chặn sự kiện phím từ các input trong modal lan ra ngoài canvas
+    const inputs = this.modalEl.querySelectorAll('input, select, textarea');
+    inputs.forEach(inp => {
+      const stopBubble = (e) => e.stopPropagation();
+      inp.addEventListener('keydown', stopBubble);
+      inp.addEventListener('keyup', stopBubble);
+      inp.addEventListener('keypress', stopBubble);
+    });
 
     // Switch Tabs
     const tabBtns = this.modalEl.querySelectorAll('.auth-tab-btn');
@@ -138,7 +146,7 @@ export class AuthModal {
     e.preventDefault();
     this.clearError();
 
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
     try {
@@ -156,9 +164,9 @@ export class AuthModal {
     e.preventDefault();
     this.clearError();
 
-    const email = document.getElementById('reg-email').value;
+    const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
-    const displayName = document.getElementById('reg-name').value;
+    const displayName = document.getElementById('reg-name').value.trim();
 
     try {
       const user = await authService.register({
@@ -180,7 +188,8 @@ export class AuthModal {
     e.preventDefault();
     this.clearError();
 
-    const name = document.getElementById('guest-name').value.trim() || `Khách #${Math.floor(1000 + Math.random() * 9000)}`;
+    const rawName = document.getElementById('guest-name').value.trim();
+    const name = rawName || `Khách #${Math.floor(1000 + Math.random() * 9000)}`;
     const user = authService.setGuestSession(name, this.selectedAvatar);
     this.hide();
 
