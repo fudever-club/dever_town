@@ -1,8 +1,38 @@
 {
   "name": "dever-town",
   "version": "0.3.0",
-  "private": true,
-  "description": "Thế giới Pixel 2D Gather.town style cho CLB / Trường học",
+  "private": false,
+  "description": "DEVER TOWN — Thế giới Pixel 2D Multiplayer (Gather.town style) dành cho CLB FU-DEVER · FPT University Đà Nẵng. Built with Phaser 3, Node.js & Socket.io.",
+  "author": {
+    "name": "RaH11 (Nguyen Thai Hung)",
+    "email": "hungnguyen.190206@gmail.com",
+    "url": "https://github.com/huanight19RaH"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/huanight19RaH/DEVER_TOWN#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huanight19RaH/DEVER_TOWN.git"
+  },
+  "bugs": {
+    "url": "https://github.com/huanight19RaH/DEVER_TOWN/issues"
+  },
+  "keywords": [
+    "phaser3",
+    "pixel-art",
+    "2d-game",
+    "multiplayer",
+    "socket-io",
+    "gather-town",
+    "fu-dever",
+    "fuda",
+    "fpt-university",
+    "da-nang",
+    "vite",
+    "nodejs",
+    "webgame",
+    "electron"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
