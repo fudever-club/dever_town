@@ -292,6 +292,8 @@ export class InteractiveModal {
     if (!pane) return;
     pane.classList.remove('hidden');
 
+    questManager.incrementProgress('focus_lofi_pomo', 1);
+
     this.renderLofiPresets();
     this.loadLofiVideo('jfKfPfyJRdk');
   }
@@ -658,7 +660,7 @@ export class InteractiveModal {
       if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.penaltyHighScore}`;
     } else if (this.sportsGameType === 'barista') {
       // 2. Minigame Barista Cà Phê Muối & Trà Sữa DEVER
-      const isPerfect = power >= 40 && power <= 75;
+      const isPerfect = power >= 35 && power <= 80;
       const drinkNames = {
         cafe_muoi: 'Cà Phê Muối Đà Nẵng',
         bac_xiu: 'Bạc Xỉu Sữa Tươi 3 Tầng FPT',
@@ -666,18 +668,20 @@ export class InteractiveModal {
       };
       const drinkName = drinkNames[this.sportsDirection] || 'Cà Phê Muối Đà Nẵng';
 
+      // Luôn ghi nhận hoàn thành nhiệm vụ hằng ngày khi thực hiện pha chế
+      questManager.incrementProgress('barista_coffee', 1);
+      questManager.incrementProgress('focus_lofi_pomo', 1);
+
       if (isPerfect) {
         this.baristaScore = (this.baristaScore || 0) + 30;
         audioManager.playVictory();
-        scoreEl.textContent = `🎉 THÀNH CÔNG! Ly ${drinkName} chuẩn vị béo ngậy (+30đ & +20 Dever Points)!`;
+        scoreEl.textContent = `🎉 THÀNH CÔNG XUẤT SẮC! Ly ${drinkName} chuẩn vị béo ngậy (+30đ Barista & +20 Dever Points)!`;
         scoreEl.className = 'sports-score-text success';
         questManager.addPoints(20, 'Pha chế thành công ' + drinkName);
-        questManager.incrementProgress('barista_coffee', 1);
-        questManager.incrementProgress('focus_lofi_pomo', 1);
       } else {
         audioManager.playClick();
-        scoreEl.textContent = `⚡ Tỉ lệ pha chế ${power > 75 ? 'quá đậm' : 'hơi nhạt'}! Hãy canh lại vào Vùng Xanh nhé!`;
-        scoreEl.className = 'sports-score-text fail';
+        scoreEl.textContent = `☕ Ly ${drinkName} đã pha xong! (Canh vào Vùng Xanh để nhận thêm điểm Barista hoàn hảo nhé!)`;
+        scoreEl.className = 'sports-score-text success';
       }
       if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${this.baristaScore || 0}đ`;
     } else {

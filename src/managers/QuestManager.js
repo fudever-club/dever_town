@@ -86,12 +86,27 @@ export class QuestManager {
       if (savedDate === today) {
         const savedQuests = localStorage.getItem('dever_quests_state');
         if (savedQuests) {
-          this.quests = JSON.parse(savedQuests);
+          try {
+            this.quests = JSON.parse(savedQuests) || {};
+          } catch (e) {
+            this.quests = {};
+          }
         }
         this.milestoneClaimed = localStorage.getItem('dever_quest_milestone') === 'true';
       } else {
         this.resetDailyQuests(today);
       }
+
+      // Tự động đồng bộ và nạp tất cả nhiệm vụ mới nếu chưa có trong LocalStorage
+      DAILY_QUESTS_DEF.forEach(def => {
+        if (!this.quests[def.id]) {
+          this.quests[def.id] = {
+            progress: 0,
+            completed: false,
+            claimed: false
+          };
+        }
+      });
     } catch (e) {
       this.resetDailyQuests(new Date().toDateString());
     }
@@ -111,6 +126,7 @@ export class QuestManager {
     if (typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem('dever_quest_date', dateStr);
+        localStorage.setItem('dever_quest_milestone', 'false');
       } catch (e) {}
     }
     this.saveState();
@@ -128,13 +144,12 @@ export class QuestManager {
   }
 
   saveState() {
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem('dever_points', this.points.toString());
-        localStorage.setItem('dever_quests_state', JSON.stringify(this.quests));
-        localStorage.setItem('dever_quest_milestone', this.milestoneClaimed.toString());
-      } catch (e) {}
-    }
+    if (typeof localStorage === 'undefined') return;
+    try {
+      localStorage.setItem('dever_points', this.points.toString());
+      localStorage.setItem('dever_quests_state', JSON.stringify(this.quests));
+      localStorage.setItem('dever_quest_milestone', this.milestoneClaimed.toString());
+    } catch (e) {}
     this.notifyListeners();
   }
 
@@ -152,16 +167,24 @@ export class QuestManager {
   }
 
   getState() {
+    const questsList = DAILY_QUESTS_DEF.map(def => {
+      const q = this.quests[def.id] || { progress: 0, completed: false, claimed: false };
+      const completed = q.progress >= def.target || q.completed;
+      return {
+        ...def,
+        progress: q.progress,
+        completed: completed,
+        claimed: q.claimed
+      };
+    });
+
+    const completedCount = questsList.filter(q => q.completed).length;
+
     return {
       points: this.points,
       rank: this.getRankInfo(),
-      quests: DAILY_QUESTS_DEF.map(def => ({
-        ...def,
-        progress: this.quests[def.id]?.progress || 0,
-        completed: (this.quests[def.id]?.progress || 0) >= def.target,
-        claimed: this.quests[def.id]?.claimed || false
-      })),
-      completedCount: Object.values(this.quests).filter(q => q.completed).length,
+      quests: questsList,
+      completedCount: completedCount,
       totalCount: DAILY_QUESTS_DEF.length,
       milestoneClaimed: this.milestoneClaimed,
       milestoneReward: 50
@@ -178,22 +201,24 @@ export class QuestManager {
   incrementProgress(questId, amount = 1) {
     this.checkDailyReset();
     const def = DAILY_QUESTS_DEF.find(q => q.id === questId);
-    if (!def) return;
+    if (!def) return false;
 
     if (!this.quests[questId]) {
       this.quests[questId] = { progress: 0, completed: false, claimed: false };
     }
 
     const q = this.quests[questId];
-    if (q.completed) return;
+    if (q.completed) return false;
 
     q.progress = Math.min(def.target, q.progress + amount);
     if (q.progress >= def.target && !q.completed) {
       q.completed = true;
+      audioManager.playVictory();
       this.showToast(`🎉 Nhiệm vụ hoàn thành: ${def.title}!`);
     }
 
     this.saveState();
+    return true;
   }
 
   recordRoomVisit(roomId) {
@@ -225,14 +250,35 @@ export class QuestManager {
     this.milestoneClaimed = true;
     this.points += 50;
     audioManager.playVictory();
-    this.showToast(`🎁 Nhận thưởng ngày +50 Dever Points!`);
+    this.showToast('🎁 Chúc mừng! Mở rương thưởng ngày nhận +50 Dever Points!');
     this.saveState();
     this.syncPointsToServer();
     return true;
   }
 
+  addPoints(amount, reason = '') {
+    this.points += amount;
+    if (reason) {
+      this.showToast(`🪙 +${amount} Điểm (${reason})!`);
+    }
+    this.saveState();
+    this.syncPointsToServer();
+  }
+
+  showToast(message) {
+    if (typeof document === 'undefined') return;
+    const toast = document.createElement('div');
+    toast.className = 'quest-toast-banner';
+    toast.innerHTML = `<span>⚡</span><span>${message}</span>`;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  }
+
   async syncPointsToServer() {
-    if (typeof localStorage === 'undefined' || typeof fetch === 'undefined') return;
     try {
       const token = localStorage.getItem('dever_token');
       if (!token) return;
@@ -243,27 +289,9 @@ export class QuestManager {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          deverPoints: this.points
-        })
+        body: JSON.stringify({ deverPoints: this.points })
       });
     } catch (e) {}
-  }
-
-  showToast(message) {
-    if (typeof document === 'undefined') return;
-    const existing = document.querySelector('.quest-toast-banner');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.className = 'quest-toast-banner';
-    toast.innerHTML = `<span class="toast-icon">✨</span> <span>${message}</span>`;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 400);
-    }, 2800);
   }
 }
 
