@@ -4,21 +4,36 @@ export class NetworkStatusOverlay {
     this.overlayEl = document.getElementById('lag-spinner-overlay');
     this.spinnerTextEl = document.getElementById('lag-spinner-text');
     this.spinnerSubEl = document.getElementById('lag-spinner-sub');
+    this.closeBtnEl = document.getElementById('lag-spinner-close-btn');
     this.pingBadgeEl = document.getElementById('network-ping-badge');
     this.currentPing = 0;
     this.isLagging = false;
+    this.isManuallyDismissed = false;
     this.pingInterval = null;
+    this.disconnectTimer = null;
     this.consecutiveHighPing = 0;
 
     this.init();
   }
 
   init() {
+    if (this.closeBtnEl) {
+      this.closeBtnEl.addEventListener('click', () => {
+        this.isManuallyDismissed = true;
+        this.hideLagSpinner();
+      });
+    }
+
     if (!this.socketManager) return;
 
-    // Listen for socket events
+    // Check if socket is already connected
     if (this.socketManager.socket) {
       this.bindSocketEvents(this.socketManager.socket);
+
+      if (this.socketManager.socket.connected) {
+        this.updateStatus(true, 35);
+        this.hideLagSpinner();
+      }
     }
 
     this.startPingLoop();
@@ -33,27 +48,56 @@ export class NetworkStatusOverlay {
     });
 
     socket.on('connect', () => {
-      this.updateStatus(true, this.currentPing);
+      this.clearDisconnectTimer();
+      this.isManuallyDismissed = false;
+      this.updateStatus(true, this.currentPing || 35);
       this.hideLagSpinner();
     });
 
     socket.on('disconnect', () => {
       this.updateStatus(false, 0);
-      this.showLagSpinner('⚠️ Mất kết nối tới máy chủ', 'Đang tự động thử kết nối lại...');
+      this.scheduleDisconnectWarning('⚠️ Mất kết nối tới máy chủ', 'Đang tự động kết nối lại trong nền (bạn vẫn có thể chơi bình thường)...');
     });
 
     socket.on('connect_error', () => {
-      this.showLagSpinner('🔄 Máy chủ đang bận hoặc gián đoạn', 'Đang kết nối lại...');
+      this.updateStatus(false, 0);
+      this.scheduleDisconnectWarning('🔄 Máy chủ đang bận hoặc đang khởi động', 'Đang tự động kết nối lại... Bạn có thể tiếp tục di chuyển và khám phá.');
     });
 
     socket.on('reconnect_attempt', (attempt) => {
-      this.showLagSpinner(`🔄 Đang thử kết nối lại (Lần ${attempt})...`, 'Vui lòng chờ trong giây lát...');
+      this.updateStatus(false, 0);
+      if (attempt > 3) {
+        this.scheduleDisconnectWarning(`🔄 Đang thử kết nối lại (Lần ${attempt})...`, 'Hệ thống đang tìm kiếm đường truyền ổn định nhất...');
+      }
     });
 
     socket.on('reconnect', () => {
+      this.clearDisconnectTimer();
+      this.isManuallyDismissed = false;
       this.hideLagSpinner();
-      this.updateStatus(true, this.currentPing);
+      this.updateStatus(true, this.currentPing || 35);
     });
+  }
+
+  scheduleDisconnectWarning(title, sub) {
+    if (this.disconnectTimer) return;
+
+    // Chờ 4 giây nếu mất kết nối thực sự kéo dài mới hiện thông báo
+    this.disconnectTimer = setTimeout(() => {
+      if (!this.socketManager || !this.socketManager.isConnected) {
+        if (!this.isManuallyDismissed) {
+          this.showLagSpinner(title, sub);
+        }
+      }
+      this.disconnectTimer = null;
+    }, 4000);
+  }
+
+  clearDisconnectTimer() {
+    if (this.disconnectTimer) {
+      clearTimeout(this.disconnectTimer);
+      this.disconnectTimer = null;
+    }
   }
 
   startPingLoop() {
@@ -72,7 +116,7 @@ export class NetworkStatusOverlay {
 
     if (ping > 350) {
       this.consecutiveHighPing++;
-      if (this.consecutiveHighPing >= 2) {
+      if (this.consecutiveHighPing >= 2 && !this.isManuallyDismissed) {
         this.showLagSpinner(
           `⚠️ Đường truyền đang giật lag (${ping}ms)`,
           'Máy chủ đang tối ưu hóa và nội suy lại dữ liệu chuyển động...'
@@ -127,6 +171,7 @@ export class NetworkStatusOverlay {
   }
 
   destroy() {
+    this.clearDisconnectTimer();
     if (this.pingInterval) clearInterval(this.pingInterval);
   }
 }

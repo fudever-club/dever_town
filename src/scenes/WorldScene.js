@@ -98,10 +98,12 @@ export class WorldScene extends Phaser.Scene {
     // 5. HUD & Network
     this.createHUD();
     this.socketManager = new SocketManager(this);
-    this.socketManager.connect();
 
-    // 6. UI Modals
+    // 6. UI Modals & Network Monitor
     this.initUI();
+
+    // 7. Connect Realtime Socket
+    this.socketManager.connect();
   }
 
   loadRoom(roomId, spawnX, spawnY, notifySocket = true) {

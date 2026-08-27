@@ -3253,42 +3253,46 @@ body {
 }
 
 /* ==========================================================================
-   SERVER LAG & SYNC SPINNER OVERLAY
+   SERVER LAG & SYNC SPINNER OVERLAY (Non-intrusive Top Floating Banner)
    ========================================================================== */
 .lag-spinner-overlay {
   position: absolute;
-  inset: 0;
-  background: rgba(7, 10, 18, 0.72);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100000;
-  transition: opacity 0.3s ease;
-  pointer-events: auto;
-  border-radius: 14px;
+  pointer-events: none;
+  width: auto;
+  max-width: 90%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lag-spinner-overlay.hidden {
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  pointer-events: none;
 }
 
 .lag-spinner-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 14px;
   background: rgba(15, 23, 42, 0.95);
   border: 1.5px solid rgba(242, 111, 33, 0.6);
-  padding: 24px 32px;
-  border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(242, 111, 33, 0.35);
-  max-width: 420px;
-  width: 90%;
-  text-align: center;
+  padding: 10px 18px;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85), 0 0 24px rgba(242, 111, 33, 0.35);
+  pointer-events: auto;
+  backdrop-filter: blur(12px);
   animation: slideDown 0.3s ease;
 }
 
 .lag-spinner-circle {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3297,7 +3301,7 @@ body {
 .spinner-ring.outer {
   position: absolute;
   inset: 0;
-  border: 3.5px solid transparent;
+  border: 2.5px solid transparent;
   border-top-color: #f26f21;
   border-right-color: #38bdf8;
   border-radius: 50%;
@@ -3306,8 +3310,8 @@ body {
 
 .spinner-ring.inner {
   position: absolute;
-  inset: 7px;
-  border: 3px solid transparent;
+  inset: 4px;
+  border: 2px solid transparent;
   border-bottom-color: #f59e0b;
   border-left-color: #a855f7;
   border-radius: 50%;
@@ -3315,30 +3319,53 @@ body {
 }
 
 .spinner-core-icon {
-  font-size: 20px;
-  filter: drop-shadow(0 0 8px #f26f21);
+  font-size: 13px;
+  filter: drop-shadow(0 0 6px #f26f21);
   animation: pulseCore 1.2s ease-in-out infinite;
 }
 
 .lag-spinner-text-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
+  text-align: left;
 }
 
 .lag-spinner-title {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   color: #f87171;
   margin: 0;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .lag-spinner-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: #94a3b8;
-  line-height: 1.45;
+  line-height: 1.35;
   margin: 0;
+}
+
+.lag-spinner-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.lag-spinner-close-btn:hover {
+  background: rgba(242, 111, 33, 0.25);
+  color: #ffffff;
+  border-color: #f26f21;
+  box-shadow: 0 0 10px rgba(242, 111, 33, 0.3);
 }
 
 @keyframes spin360 {

@@ -41,10 +41,19 @@ export class SocketManager {
   }
 
   setupListeners() {
+    if (this.scene.networkStatusOverlay) {
+      this.scene.networkStatusOverlay.bindSocketEvents(this.socket);
+    }
+
     this.socket.on('connect', () => {
       this.isConnected = true;
       console.log(`✅ [Socket] Đã kết nối với ID: ${this.socket.id}`);
       this.updateConnectionStatus(true);
+
+      if (this.scene.networkStatusOverlay) {
+        this.scene.networkStatusOverlay.updateStatus(true, 35);
+        this.scene.networkStatusOverlay.hideLagSpinner();
+      }
 
       if (this.scene.player) {
         this.join({
