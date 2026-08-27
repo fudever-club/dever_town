@@ -179,6 +179,19 @@ export class InteractiveModal {
       case 'sports_activity':
         this.setupSportsView(zoneData);
         break;
+      case 'fptu_student_portal':
+        this.setupFptuPortalView(zoneData);
+        break;
+      case 'canteen_menus':
+        this.setupCanteenMenuView(zoneData);
+        break;
+      case 'campus_map':
+        this.setupCampusMapView(zoneData);
+        break;
+      case 'dever_charter':
+      case 'swe201c_guide':
+        this.setupCharterGuideView(zoneData);
+        break;
       default:
         break;
     }
@@ -779,6 +792,221 @@ export class InteractiveModal {
       });
     } catch (e) {
       // Offline fallback
+    }
+  }
+
+  setupFptuPortalView(zoneData) {
+    const pane = document.getElementById('pane-fptu-portal');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const portalDef = INTERACTION_PRESETS.fptu_student_portal;
+    const systemsGrid = document.getElementById('fptu-systems-grid');
+    const examGrid = document.getElementById('fptu-exam-apps-grid');
+
+    if (systemsGrid) {
+      systemsGrid.innerHTML = '';
+      portalDef.systems.forEach(sys => {
+        const card = document.createElement('a');
+        card.href = sys.url;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        card.className = 'fptu-system-card';
+        card.innerHTML = `
+          <div class="fptu-card-header">
+            <span class="fptu-card-badge" style="background: ${sys.color}20; color: ${sys.color}; border: 1px solid ${sys.color}40;">${sys.badge}</span>
+            <span class="fptu-card-arrow">↗</span>
+          </div>
+          <h4 class="fptu-card-name">${sys.name}</h4>
+          <p class="fptu-card-desc">${sys.desc}</p>
+        `;
+        card.addEventListener('click', () => audioManager.playClick());
+        systemsGrid.appendChild(card);
+      });
+    }
+
+    if (examGrid) {
+      examGrid.innerHTML = '';
+      portalDef.examApps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'fptu-exam-card';
+        card.innerHTML = `
+          <div class="exam-card-badge">${app.tag}</div>
+          <h4 class="exam-card-name">${app.name}</h4>
+          <p class="exam-card-purpose">${app.purpose}</p>
+          <p class="exam-card-guide">💡 ${app.guide}</p>
+          <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="exam-card-download-btn">
+            📥 Tải Bộ Cài Đặt / Truy Cập
+          </a>
+        `;
+        const btn = card.querySelector('.exam-card-download-btn');
+        if (btn) btn.addEventListener('click', () => audioManager.playClick());
+        examGrid.appendChild(card);
+      });
+    }
+  }
+
+  setupCanteenMenuView(zoneData) {
+    const pane = document.getElementById('pane-canteen-menu');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const canteenDef = INTERACTION_PRESETS.canteen_menus;
+    const tabsBar = document.getElementById('canteen-tabs-bar');
+    const imgEl = document.getElementById('canteen-menu-img');
+    const fullBtn = document.getElementById('canteen-img-full-btn');
+    const titleEl = document.getElementById('canteen-tab-title');
+    const descEl = document.getElementById('canteen-tab-desc');
+    const highlightsList = document.getElementById('canteen-highlights-list');
+
+    const selectTab = (tab) => {
+      if (imgEl) imgEl.src = tab.image;
+      if (fullBtn) fullBtn.href = tab.image;
+      if (titleEl) titleEl.textContent = tab.name;
+      if (descEl) descEl.textContent = tab.desc;
+
+      if (highlightsList) {
+        highlightsList.innerHTML = '';
+        tab.highlights.forEach(h => {
+          const item = document.createElement('div');
+          item.className = 'canteen-highlight-item';
+          item.textContent = h;
+          highlightsList.appendChild(item);
+        });
+      }
+
+      if (tabsBar) {
+        tabsBar.querySelectorAll('.canteen-tab-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.tabId === tab.id);
+        });
+      }
+    };
+
+    if (tabsBar) {
+      tabsBar.innerHTML = '';
+      canteenDef.tabs.forEach((tab, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.tabId = tab.id;
+        btn.className = `canteen-tab-btn ${idx === 0 ? 'active' : ''}`;
+        btn.textContent = tab.name;
+        btn.addEventListener('click', () => {
+          audioManager.playClick();
+          selectTab(tab);
+        });
+        tabsBar.appendChild(btn);
+      });
+    }
+
+    if (canteenDef.tabs.length > 0) {
+      selectTab(canteenDef.tabs[0]);
+    }
+  }
+
+  setupCampusMapView(zoneData) {
+    const pane = document.getElementById('pane-campus-map');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const mapDef = INTERACTION_PRESETS.campus_map;
+    const listEl = document.getElementById('campus-locations-list');
+
+    if (listEl) {
+      listEl.innerHTML = '';
+      mapDef.locations.forEach(loc => {
+        const item = document.createElement('div');
+        item.className = 'campus-loc-item';
+        item.innerHTML = `
+          <span class="loc-num">${loc.num}</span>
+          <div class="loc-details">
+            <h4 class="loc-name">${loc.name}</h4>
+            <p class="loc-desc">${loc.desc}</p>
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+  }
+
+  setupCharterGuideView(zoneData) {
+    const pane = document.getElementById('pane-charter-guide');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const charterTabBtn = document.getElementById('tab-btn-charter');
+    const sweTabBtn = document.getElementById('tab-btn-swe');
+    const contentBox = document.getElementById('charter-content-box');
+
+    const renderCharter = () => {
+      if (charterTabBtn) charterTabBtn.classList.add('active');
+      if (sweTabBtn) sweTabBtn.classList.remove('active');
+      const def = INTERACTION_PRESETS.dever_charter;
+
+      if (contentBox) {
+        contentBox.innerHTML = `
+          <div class="charter-doc-card">
+            <h3 class="charter-doc-title">${def.title}</h3>
+            <p class="charter-doc-sub">${def.description}</p>
+            <div class="charter-info-grid">
+              <div class="charter-stat"><strong>🎯 Sứ Mệnh:</strong> ${def.mission}</div>
+              <div class="charter-stat"><strong>🌟 Tầm Nhìn:</strong> ${def.vision}</div>
+              <div class="charter-stat"><strong>💰 Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
+            </div>
+            <h4 class="charter-sec-heading">Cơ Cấu Ban Chủ Nhiệm (BCN) CLB</h4>
+            <div class="charter-roles-list">
+              ${def.roles.map(r => `
+                <div class="charter-role-item">
+                  <strong>${r.title}:</strong> <span>${r.desc}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    const renderSWE = () => {
+      if (charterTabBtn) charterTabBtn.classList.remove('active');
+      if (sweTabBtn) sweTabBtn.classList.add('active');
+      const def = INTERACTION_PRESETS.swe201c_guide;
+
+      if (contentBox) {
+        contentBox.innerHTML = `
+          <div class="charter-doc-card">
+            <h3 class="charter-doc-title">${def.title}</h3>
+            <p class="charter-doc-sub">${def.description}</p>
+            <div class="swe-authors-tag">✍️ Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
+            <h4 class="charter-sec-heading">5 Chủ Đề Trọng Tâm Đề Thi PE SWE201c Thực Tế</h4>
+            <div class="swe-topics-list">
+              ${def.topics.map(t => `
+                <div class="swe-topic-item">
+                  <h5 class="swe-topic-name">${t.name}</h5>
+                  <p class="swe-topic-desc">${t.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    if (charterTabBtn) {
+      charterTabBtn.onclick = () => {
+        audioManager.playClick();
+        renderCharter();
+      };
+    }
+    if (sweTabBtn) {
+      sweTabBtn.onclick = () => {
+        audioManager.playClick();
+        renderSWE();
+      };
+    }
+
+    if (zoneData.type === 'swe201c_guide') {
+      renderSWE();
+    } else {
+      renderCharter();
     }
   }
 }

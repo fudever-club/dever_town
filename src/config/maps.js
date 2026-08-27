@@ -12,7 +12,7 @@
 export const MAPS_CONFIG = {
   main_hall: {
     id: 'main_hall',
-    name: 'Sảnh Chính Giảng Đường Alpha - FUDA',
+    name: 'Tòa Alpha - Sảnh Chính & Hội Trường FPTU',
     description: 'Hội trường trung tâm FUDA, tượng Cóc Vàng và kết nối 6 phân khu chức năng.',
     spawnPoint: { x: 400, y: 350 },
     layout: [
@@ -49,6 +49,7 @@ export const MAPS_CONFIG = {
     ],
     zones: [
       { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Tôn Chỉ FUDA' },
+      { id: 'zone_main_campus_map', type: 'campus_map', tileX: 18, tileY: 2, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
       { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
       { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
       { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' }
@@ -57,7 +58,7 @@ export const MAPS_CONFIG = {
 
   dever_lab: {
     id: 'dever_lab',
-    name: 'Phòng Nghiên Cứu & Sáng Tạo Dever Lab',
+    name: 'Tòa Gamma - Tech & AI Lab (DEVER)',
     description: 'Không gian Hackathon, trạm máy chủ và góc lập trình chuyên sâu của thành viên CLB DEVER.',
     spawnPoint: { x: 400, y: 350 },
     layout: [
@@ -95,8 +96,8 @@ export const MAPS_CONFIG = {
 
   library_lounge: {
     id: 'library_lounge',
-    name: 'Thư Viện Tri Thức FUDA & Chill Lounge',
-    description: 'Không gian tự học yên tĩnh, giá sách công nghệ và quầy cà phê giao lưu.',
+    name: 'Tòa Beta - Thư Viện Tri Thức & Phòng Tự Học',
+    description: 'Không gian tự học yên tĩnh, tài liệu ôn thi SWE201c, quy chế CLB và quầy cà phê giao lưu.',
     spawnPoint: { x: 400, y: 350 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
@@ -124,8 +125,10 @@ export const MAPS_CONFIG = {
       { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 640, y: 80 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
+      { id: 'zone_lib_swe', type: 'swe201c_guide', tileX: 3, tileY: 2, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
+      { id: 'zone_lib_charter', type: 'dever_charter', tileX: 11, tileY: 6, name: 'Bàn Quy Chế Hoạt Động CLB', label: 'Quy Chế CLB' },
       { id: 'zone_lib_coffee', type: 'coffee_lofi', tileX: 15, tileY: 2, name: 'Quầy Cà Phê & Pomodoro', label: 'Cà Phê & Lofi' },
-      { id: 'zone_lib_slides', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Khu Đọc Tài Liệu', label: 'Tài Liệu Sách' },
+      { id: 'zone_lib_slides', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Khu Đọc Tài Liệu Ôn Thi', label: 'Tài Liệu Sách' },
       { id: 'zone_lib_code', type: 'code_editor', tileX: 5, tileY: 11, name: 'Bàn Tự Học & Sổ Tay', label: 'Sổ Tay & Code' }
     ]
   },
@@ -221,8 +224,8 @@ export const MAPS_CONFIG = {
 
   web_room: {
     id: 'web_room',
-    name: 'Showroom Không Gian Web CLB FU-DEVER & FUDA',
-    description: 'Không gian số Cyberpunk nhúng Cổng thông tin & Landing Page chính thức FU-DEVER.',
+    name: 'Không Gian Web & IT Helpdesk FPTU',
+    description: 'Không gian số nhúng Cổng thông tin, Landing Page chính thức và Bàn hỗ trợ IT Helpdesk trường.',
     spawnPoint: { x: 140, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
@@ -249,6 +252,14 @@ export const MAPS_CONFIG = {
       { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 660, y: 240 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
+      {
+        id: 'zone_web_fptu_portal',
+        type: 'fptu_student_portal',
+        tileX: 7,
+        tileY: 3,
+        name: 'Trạm IT Helpdesk & Cổng Phần Mềm Thi',
+        label: 'Phần Mềm Thi'
+      },
       {
         id: 'zone_web_main',
         type: 'club_website',
@@ -302,8 +313,8 @@ export const MAPS_CONFIG = {
 
   media_hub: {
     id: 'media_hub',
-    name: 'Trung Tâm Thông Tin & Truyền Thông FU-DEVER',
-    description: 'Không gian tích hợp toàn bộ các kênh mạng xã hội, fanpage, tiktok, github và cổng liên hệ.',
+    name: 'Cổng Thông Tin Học Vụ & Media Hub',
+    description: 'Không gian tích hợp toàn bộ các cổng thông tin FAP, FLM, LMS, phần mềm thi và mạng xã hội CLB.',
     spawnPoint: { x: 600, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
@@ -330,6 +341,14 @@ export const MAPS_CONFIG = {
       { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 440 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
+      {
+        id: 'zone_media_portal',
+        type: 'fptu_student_portal',
+        tileX: 11,
+        tileY: 2,
+        name: 'Cổng Tiện Ích Học Vụ & Phần Mềm Thi',
+        label: 'Cổng FPTU & Thi'
+      },
       {
         id: 'zone_media_facebook',
         type: 'club_website',
@@ -383,8 +402,8 @@ export const MAPS_CONFIG = {
 
   sports_complex: {
     id: 'sports_complex',
-    name: 'Khu Phức Hợp Thể Thao FUDA',
-    description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông và hồ bơi sinh viên FUDA với lối đi thông thoáng kết nối 4 phân khu.',
+    name: 'Khu Phức Hợp Thể Thao & Nhà Võ Vovinam',
+    description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông, nhà võ Vovinam và hồ bơi sinh viên FUDA.',
     spawnPoint: { x: 140, y: 304 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
@@ -453,8 +472,8 @@ export const MAPS_CONFIG = {
 
   canteen_cafe: {
     id: 'canteen_cafe',
-    name: 'Căn Tin & Quán Cà Phê FUDA - DEVER Lounge',
-    description: 'Không gian ẩm thực sinh viên, quầy cà phê muối Đà Nẵng, góc acoustic chill và pha chế barista.',
+    name: 'Căn Tin FUDA & The High Deli Lounge',
+    description: 'Không gian ẩm thực sinh viên, thực đơn 3 căn tin thực tế, quầy cà phê muối Đà Nẵng và pha chế barista.',
     spawnPoint: { x: 400, y: 120 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
@@ -485,11 +504,11 @@ export const MAPS_CONFIG = {
     zones: [
       {
         id: 'zone_canteen_food',
-        type: 'whiteboard_slides',
+        type: 'canteen_menus',
         tileX: 4,
         tileY: 2,
-        name: 'Quầy Cơm Sinh Viên & Bánh Mì FUDA',
-        label: 'Thực Đơn Canteen',
+        name: 'Quầy Thực Đơn Căn Tin FUDA (Tầng 1 & 2)',
+        label: 'Thực Đơn Thật',
         metadata: { title: 'THỰC ĐƠN CĂN TIN FUDA' }
       },
       {

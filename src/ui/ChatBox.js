@@ -8,8 +8,11 @@ export class ChatBox {
     this.chatForm = document.getElementById('chat-form');
     this.chatInput = document.getElementById('chat-input');
     this.chatMessages = document.getElementById('chat-messages');
+    this.stickerBtn = document.getElementById('chat-sticker-btn');
+    this.stickerPopover = document.getElementById('chat-sticker-popover');
 
     this.initEvents();
+    this.initStickers();
   }
 
   initEvents() {
@@ -54,6 +57,56 @@ export class ChatBox {
         }
       }
     });
+  }
+
+  initStickers() {
+    if (!this.stickerBtn || !this.stickerPopover) return;
+
+    // Render 11 stickers
+    this.stickerPopover.innerHTML = '';
+    const header = document.createElement('div');
+    header.className = 'sticker-popover-header';
+    header.textContent = 'Bộ Sticker FU-DEVER';
+    this.stickerPopover.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'sticker-popover-grid';
+
+    for (let i = 1; i <= 11; i++) {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'sticker-select-item';
+      item.title = `Sticker #${i}`;
+      item.innerHTML = `<img src="/assets/stickers/${i}.png" alt="Sticker ${i}" loading="lazy" />`;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.sendSticker(i);
+      });
+      grid.appendChild(item);
+    }
+    this.stickerPopover.appendChild(grid);
+
+    // Toggle popover
+    this.stickerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.stickerPopover.classList.toggle('hidden');
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (this.stickerPopover && !this.stickerPopover.contains(e.target) && e.target !== this.stickerBtn) {
+        this.stickerPopover.classList.add('hidden');
+      }
+    });
+  }
+
+  sendSticker(stickerId) {
+    if (this.stickerPopover) {
+      this.stickerPopover.classList.add('hidden');
+    }
+    if (this.onSendMessage) {
+      this.onSendMessage(`[sticker:${stickerId}]`);
+    }
   }
 
   handleSend() {
@@ -116,14 +169,30 @@ export class ChatBox {
 
     const bodyDiv = document.createElement('div');
     bodyDiv.className = 'chat-body';
-    bodyDiv.textContent = normalizedMsg;
+
+    // Kiểm tra tin nhắn Sticker
+    const stickerMatch = normalizedMsg.match(/^\[sticker:(\d+)\]$/);
+    if (stickerMatch) {
+      const stickerNum = parseInt(stickerMatch[1], 10);
+      if (stickerNum >= 1 && stickerNum <= 11) {
+        const stickerImg = document.createElement('img');
+        stickerImg.src = `/assets/stickers/${stickerNum}.png`;
+        stickerImg.className = 'chat-sticker-img';
+        stickerImg.alt = `Sticker ${stickerNum}`;
+        bodyDiv.appendChild(stickerImg);
+      } else {
+        bodyDiv.textContent = normalizedMsg;
+      }
+    } else {
+      bodyDiv.textContent = normalizedMsg;
+    }
 
     itemDiv.appendChild(metaDiv);
     itemDiv.appendChild(bodyDiv);
 
     this.chatMessages.appendChild(itemDiv);
 
-    // Tự động cuộn xuống tin nhắn mới nhất
+    // Auto-scroll xuống dòng cuối cùng
     this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
   }
 }

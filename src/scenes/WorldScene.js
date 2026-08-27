@@ -406,6 +406,19 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
+    const fptuPortalBtn = document.getElementById('header-fptu-portal-btn');
+    if (fptuPortalBtn) {
+      fptuPortalBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.interactiveModal.openForZone({
+          id: 'quick_fptu_portal',
+          type: 'fptu_student_portal',
+          name: 'Cổng Tiện Ích Học Vụ & Phần Mềm Thi FPTU',
+          label: 'Cổng FPTU & Thi'
+        });
+      });
+    }
+
     const authBtn = document.getElementById('header-auth-btn');
     if (authBtn) {
       authBtn.addEventListener('click', () => {
