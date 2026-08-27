@@ -2098,27 +2098,39 @@ body {
    OFFICIAL DEVER LOGO STYLES
    ========================================================================== */
 .gate-dever-logo {
-  height: 28px;
-  width: auto;
+  height: 32px;
+  width: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  flex-shrink: 0;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(0, 102, 204, 0.6));
   vertical-align: middle;
+  display: inline-block;
 }
 
 .header-dever-logo {
-  height: 26px;
-  width: auto;
+  height: 24px;
+  width: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  flex-shrink: 0;
   object-fit: contain;
   filter: drop-shadow(0 0 6px rgba(0, 152, 255, 0.5));
   vertical-align: middle;
+  display: inline-block;
 }
 
 .spinning-dever-logo {
-  max-width: 52px;
-  max-height: 52px;
+  width: 48px;
+  height: 48px;
+  max-width: 48px;
+  max-height: 48px;
+  flex-shrink: 0;
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
   animation: pulseLogoGlow 1.5s ease-in-out infinite alternate;
+  display: block;
 }
 
 @media (max-width: 900px) {
