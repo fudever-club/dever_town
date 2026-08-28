@@ -149,15 +149,18 @@ export class WelcomeGate {
   }
 
   startLoadingAndEnter({ user, isGuest }) {
-    // Ẩn Welcome Gate
-    if (this.gateEl) {
-      this.gateEl.classList.add('fade-out');
-      setTimeout(() => {
-        this.gateEl.classList.add('hidden');
-      }, 400);
+    // 1. Blur bất kỳ input nào đang focus để giải phóng bàn phím
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
     }
 
-    // Hiển thị Animated Buggy Loading Screen
+    // 2. Ẩn Welcome Gate ngay lập tức
+    if (this.gateEl) {
+      this.gateEl.classList.add('fade-out');
+      this.gateEl.classList.add('hidden');
+    }
+
+    // 3. Hiển thị Animated Buggy Loading Screen
     if (this.loadingEl) {
       this.loadingEl.classList.remove('hidden');
       this.loadingEl.classList.remove('fade-out');
@@ -169,11 +172,17 @@ export class WelcomeGate {
         this.loadingEl.classList.add('fade-out');
         setTimeout(() => {
           this.loadingEl.classList.add('hidden');
-        }, 500);
+        }, 300);
       }
 
       if (this.onEnterGame) {
         this.onEnterGame({ user, isGuest });
+      }
+
+      // Khôi phục focus vào canvas trò chơi
+      const canvas = document.querySelector('#game-container canvas');
+      if (canvas) {
+        canvas.focus();
       }
     });
   }

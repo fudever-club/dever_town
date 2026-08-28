@@ -47,11 +47,13 @@ export class InputController {
     document.addEventListener('focusin', (e) => {
       const tag = e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
-        if (this.scene?.input?.keyboard) {
-          this.scene.input.keyboard.enabled = false;
-        }
-        if (this.scene?.player) {
-          this.scene.player.stopMovement();
+        if (!e.target.closest('.hidden') && !e.target.closest('.fade-out')) {
+          if (this.scene?.input?.keyboard) {
+            this.scene.input.keyboard.enabled = false;
+          }
+          if (this.scene?.player) {
+            this.scene.player.stopMovement();
+          }
         }
       }
     });
@@ -91,26 +93,39 @@ export class InputController {
   isTypingActive() {
     if (typeof document === 'undefined') return false;
     const activeEl = document.activeElement;
-    return activeEl && (
-      activeEl.tagName === 'INPUT' ||
-      activeEl.tagName === 'TEXTAREA' ||
-      activeEl.isContentEditable
-    );
+    if (!activeEl) return false;
+
+    const isField = activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable;
+    if (!isField) return false;
+
+    // Nếu ô nhập liệu đang nằm trong một modal bị ẩn (hidden / fade-out) -> tự động blur và không tính là đang gõ
+    if (activeEl.closest('.hidden') || activeEl.closest('.fade-out')) {
+      if (typeof activeEl.blur === 'function') activeEl.blur();
+      return false;
+    }
+
+    return true;
   }
 
   isModalOpen() {
     if (typeof document === 'undefined') return false;
     const welcomeGate = document.getElementById('welcome-gate');
+    const gameLoading = document.getElementById('game-loading-screen');
     const authModal = document.getElementById('auth-modal');
     const interactiveModal = document.getElementById('interactive-modal');
     const inventoryModal = document.getElementById('inventory-modal');
     const wardrobeModal = document.getElementById('wardrobe-modal');
+    const settingsModal = document.getElementById('settings-modal');
+    const questModal = document.getElementById('quest-modal');
 
-    if (welcomeGate && !welcomeGate.classList.contains('hidden')) return true;
+    if (welcomeGate && !welcomeGate.classList.contains('hidden') && !welcomeGate.classList.contains('fade-out')) return true;
+    if (gameLoading && !gameLoading.classList.contains('hidden') && !gameLoading.classList.contains('fade-out')) return true;
     if (authModal && !authModal.classList.contains('hidden')) return true;
     if (interactiveModal && !interactiveModal.classList.contains('hidden')) return true;
     if (inventoryModal && !inventoryModal.classList.contains('hidden')) return true;
     if (wardrobeModal && !wardrobeModal.classList.contains('hidden')) return true;
+    if (settingsModal && !settingsModal.classList.contains('hidden')) return true;
+    if (questModal && !questModal.classList.contains('hidden')) return true;
 
     return false;
   }

@@ -4,6 +4,8 @@ class AuthService {
   constructor() {
     this.token = localStorage.getItem('dever_token') || null;
     this.user = null;
+    this.pendingSyncData = {};
+    this.syncTimer = null;
     try {
       const stored = localStorage.getItem('dever_user');
       this.user = stored ? JSON.parse(stored) : null;
@@ -170,30 +172,50 @@ class AuthService {
 
   async syncFullProfile(payload = {}) {
     if (!this.token) {
-      // Khách vãng lai: cập nhật nhanh vào local memory
+      // Khách vãng lai: không gửi request
       return null;
     }
 
-    try {
-      const res = await fetch(`${this.getBaseUrl()}/api/auth/sync-profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.token}`
-        },
-        body: JSON.stringify(payload)
-      });
+    // Gộp payload vào hàng đợi đồng bộ
+    this.pendingSyncData = {
+      ...this.pendingSyncData,
+      ...payload
+    };
 
-      const data = await res.json();
-      if (res.ok && data.success && data.user) {
-        this.user = data.user;
-        localStorage.setItem('dever_user', JSON.stringify(data.user));
-        return data.user;
-      }
-    } catch (err) {
-      console.warn('⚠️ Lỗi đồng bộ dữ liệu người dùng lên máy chủ:', err);
+    if (this.syncTimer) {
+      clearTimeout(this.syncTimer);
     }
-    return null;
+
+    return new Promise((resolve) => {
+      this.syncTimer = setTimeout(async () => {
+        const dataToSend = { ...this.pendingSyncData };
+        this.pendingSyncData = {};
+        this.syncTimer = null;
+
+        try {
+          const res = await fetch(`${this.getBaseUrl()}/api/auth/sync-profile`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            },
+            body: JSON.stringify(dataToSend)
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success && data.user) {
+            this.user = data.user;
+            localStorage.setItem('dever_user', JSON.stringify(data.user));
+            resolve(data.user);
+          } else {
+            resolve(null);
+          }
+        } catch (err) {
+          console.warn('⚠️ Lỗi đồng bộ dữ liệu người dùng lên máy chủ:', err);
+          resolve(null);
+        }
+      }, 400);
+    });
   }
 
   logout() {

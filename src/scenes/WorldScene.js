@@ -379,7 +379,27 @@ export class WorldScene extends Phaser.Scene {
           this.player.updateProfile({ name, avatarId, role });
         }
 
+        // Tự động khôi phục trang phục từ Database nếu có
+        if (user.wardrobe_config) {
+          TextureGenerator.generateCustomAvatar(this, user.wardrobe_config, 'char_custom_wardrobe');
+          if (this.player) {
+            this.player.setCustomWardrobe('custom_wardrobe', user.wardrobe_config);
+          }
+        }
+
+        const equippedItem = localStorage.getItem('dever_equipped_item');
+        if (equippedItem && this.player && this.player.setEquippedItem) {
+          this.player.setEquippedItem(equippedItem);
+        }
+
         this.updateHeaderProfile(user);
+
+        if (this.inputController) {
+          this.inputController.enableInput();
+        }
+        if (this.game && this.game.canvas) {
+          this.game.canvas.focus();
+        }
 
         if (this.socketManager) {
           this.socketManager.reconnectWithAuth();
