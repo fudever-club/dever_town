@@ -514,17 +514,20 @@ export class SportsArcade {
     const bb = this.bb;
     if (bb.state !== 'playing') return;
 
-    // Cập nhật vật lý bóng
+    // Lưu vị trí trước đó để kiểm tra điểm cắt lọt rổ
+    const prevY = bb.ball.y;
+
+    // Cập nhật vật lý bóng tự do
     bb.ball.vy += bb.gravity;
     bb.ball.y += bb.ball.vy;
     bb.ball.x += (bb.ball.vx || 0);
 
-    // Giảm dần vận tốc ngang về 0
+    // Lực ma sát không khí rất nhẹ
     if (bb.ball.vx) {
-      bb.ball.vx *= 0.92;
-      if (Math.abs(bb.ball.vx) < 0.05) bb.ball.vx = 0;
+      bb.ball.vx *= 0.985;
+      if (Math.abs(bb.ball.vx) < 0.02) bb.ball.vx = 0;
     }
-    bb.ball.rotation += 0.08;
+    bb.ball.rotation += 0.08 + (bb.ball.vx || 0) * 0.02;
 
     // Rơi chạm sàn -> Game Over
     if (bb.ball.y > this.height - 25) {
@@ -535,7 +538,7 @@ export class SportsArcade {
     // Chạm trần
     if (bb.ball.y < 15) {
       bb.ball.y = 15;
-      bb.ball.vy = 0;
+      bb.ball.vy = Math.abs(bb.ball.vy) * 0.5;
     }
 
     // Di chuyển và kiểm tra va chạm các rổ bóng rổ
@@ -544,53 +547,63 @@ export class SportsArcade {
       const h = bb.hoops[i];
       h.x -= speed;
 
-      const rimLeftX = h.x + 4;
-      const rimRightX = h.x + h.width - 4;
-      const rimY = h.y;
+      // 1. CÁC THỰC THỂ CỨNG CỦA VÀNH RỔ (RIGID CIRCLE PEGS)
+      const pegs = [
+        { x: h.x + 4, y: h.y, r: 4 },           // Chốt vành trái
+        { x: h.x + h.width - 4, y: h.y, r: 4 } // Chốt vành phải
+      ];
 
-      // 1. LOGIC VÀNH TRÁI: Má ngoài (trái) -> ra ngoài; Má trong (phải) -> vào rổ
-      const distLeft = Math.hypot(bb.ball.x - rimLeftX, bb.ball.y - rimY);
-      if (distLeft < bb.ball.radius + 3 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitLeftRim && !h.scored) {
-        h.hitLeftRim = true;
-        if (bb.ball.x < rimLeftX) {
-          // Đập má ngoài vành trái -> Nảy lệch ra phía ngoài bên trái
-          bb.ball.vx = -3.4;
-          bb.ball.vy = -3.8;
-          bb.ball.x = rimLeftX - bb.ball.radius - 2;
-          h.hitOut = true;
-        } else {
-          // Đập má trong vành trái -> Nảy vào lòng rổ
-          bb.ball.vx = 1.4;
-          bb.ball.vy = -2.8;
+      for (const peg of pegs) {
+        const dx = bb.ball.x - peg.x;
+        const dy = bb.ball.y - peg.y;
+        const dist = Math.hypot(dx, dy);
+        const minDist = bb.ball.radius + peg.r;
+
+        if (dist < minDist && dist > 0.0001) {
+          // Vector pháp tuyến tiếp xúc đơn vị n
+          const nx = dx / dist;
+          const ny = dy / dist;
+
+          // Positional separation (chống dính / lún vào vành)
+          const overlap = minDist - dist;
+          bb.ball.x += nx * overlap;
+          bb.ball.y += ny * overlap;
+
+          // Tính vận tốc dọc theo vector pháp tuyến: v · n
+          const vDotN = (bb.ball.vx || 0) * nx + bb.ball.vy * ny;
+
+          // Chỉ phản xạ khi bóng đang bay hướng về phía chốt vành
+          if (vDotN < 0) {
+            const restitution = 0.72; // Hệ số đàn hồi kim loại
+            bb.ball.vx = (bb.ball.vx || 0) - (1 + restitution) * vDotN * nx;
+            bb.ball.vy = bb.ball.vy - (1 + restitution) * vDotN * ny;
+
+            audioManager.playClick();
+            this.spawnConfetti(peg.x, peg.y, 6);
+          }
         }
-        audioManager.playClick();
-        this.spawnConfetti(rimLeftX, rimY, 8);
       }
 
-      // 2. LOGIC VÀNH PHẢI: Má trong (trái) -> vào rổ; Má ngoài (phải) -> ra ngoài
-      const distRight = Math.hypot(bb.ball.x - rimRightX, bb.ball.y - rimY);
-      if (distRight < bb.ball.radius + 3 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitRightRim && !h.scored) {
-        h.hitRightRim = true;
-        if (bb.ball.x <= rimRightX) {
-          // Đập má trong vành phải -> Nảy vào lòng rổ
-          bb.ball.vx = -1.4;
-          bb.ball.vy = -2.8;
-        } else {
-          // Đập má ngoài vành phải -> Nảy văng ra ngoài bên phải
-          bb.ball.vx = 3.6;
-          bb.ball.vy = -3.8;
-          bb.ball.x = rimRightX + bb.ball.radius + 2;
-          h.hitOut = true;
+      // 2. VA CHẠM BẢNG RỔ (BACKBOARD RIGID BODY)
+      const boardX = h.x + h.width;
+      const boardTop = h.y - 28;
+      const boardBottom = h.y + 8;
+      if (bb.ball.x + bb.ball.radius >= boardX && bb.ball.x - bb.ball.radius <= boardX + 6) {
+        if (bb.ball.y >= boardTop && bb.ball.y <= boardBottom) {
+          if ((bb.ball.vx || 0) > 0) {
+            bb.ball.x = boardX - bb.ball.radius;
+            bb.ball.vx = -(bb.ball.vx || 0) * 0.65;
+            audioManager.playClick();
+            this.spawnConfetti(boardX, bb.ball.y, 6);
+          }
         }
-        audioManager.playClick();
-        this.spawnConfetti(rimRightX, rimY, 8);
       }
 
-      // 3. KIỂM TRA BÓNG RƠI LỌT VÀO TRONG RỔ
-      const inX = bb.ball.x >= h.x + 8 && bb.ball.x <= h.x + h.width - 6;
-      const inY = Math.abs(bb.ball.y - h.y) < 14;
+      // 3. KIỂM TRA BÓNG RƠI LỌT VÀO TRONG LÒNG RỔ (NET SENSOR)
+      const isInsideHoopX = bb.ball.x >= h.x + 8 && bb.ball.x <= h.x + h.width - 8;
+      const crossedRimPlane = prevY <= h.y && bb.ball.y >= h.y;
 
-      if (!h.scored && !h.hitOut && inX && inY && bb.ball.vy > 0) {
+      if (!h.scored && isInsideHoopX && (crossedRimPlane || Math.abs(bb.ball.y - h.y) < 10) && bb.ball.vy > 0) {
         h.scored = true;
         bb.combo += 1;
         const pts = bb.combo > 1 ? 2 : 1;
@@ -600,8 +613,10 @@ export class SportsArcade {
           this.scores.basketballHigh = bb.score;
           localStorage.setItem('dever_basketball_high', bb.score.toString());
         }
+
+        questManager.incrementProgress('basketball_shoot', 1);
         audioManager.playVictory();
-        this.spawnConfetti(h.x + h.width / 2, h.y, 20);
+        this.spawnConfetti(h.x + h.width / 2, h.y + 10, 20);
         this.updateHUD();
       }
 
@@ -1100,9 +1115,13 @@ export class SportsArcade {
 
   triggerBaristaBrew() {
     const p = this.barista.power;
-    if (p >= 40 && p <= 75) {
-      this.scores.baristaScore += 100;
-      this.barista.resultText = 'Pha Chế Hoàn Hảo! Đồ Uống Chuẩn Vị Barista!';
+    if (p >= 35 && p <= 80) {
+      this.scores.baristaScore = (this.scores.baristaScore || 0) + 100;
+      localStorage.setItem('dever_barista_score', this.scores.baristaScore.toString());
+      this.barista.resultText = 'Pha Chế Hoàn Hảo! +100 Điểm Thưởng!';
+      
+      // Kích hoạt thưởng điểm nhiệm vụ hàng ngày Barista
+      questManager.incrementProgress('barista_coffee', 1);
       audioManager.playVictory();
       this.spawnConfetti(320, 180, 30);
     } else {
