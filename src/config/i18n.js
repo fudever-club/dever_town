@@ -29,7 +29,8 @@ export const TRANSLATIONS = {
       web_room: 'Không Gian Web',
       media_hub: 'Media & MXH',
       sports_complex: 'Khu Thể Thao',
-      canteen_cafe: 'Căn Tin & Cafe'
+      canteen_cafe: 'Căn Tin & Cafe',
+      game_arcade: 'Tòa Gamma Plus - Arcade Gaming & Robot Studio'
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -41,7 +42,8 @@ export const TRANSLATIONS = {
       web_room: 'Sang Không Gian Web',
       media_hub: 'Sang Media Hub',
       sports_complex: 'Sang Khu Thể Thao',
-      canteen_cafe: 'Sang Căn Tin & Cafe'
+      canteen_cafe: 'Sang Căn Tin & Cafe',
+      game_arcade: 'Sang Arcade & Robot'
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -100,6 +102,13 @@ export const TRANSLATIONS = {
       zone_cafe_barista: 'Pha Chế Cà Phê Muối & Trà Sữa',
       zone_cafe_acoustic: 'Góc Nhạc Acoustic Cafe',
       zone_cafe_meeting: 'Bàn Tròn Thảo Luận Căn Tin',
+
+      // Arcade Gaming (Game Arcade)
+      zone_arcade_snake: 'Máy Game: Rắn Săn Mồi Cyber Snake',
+      zone_arcade_sokoban: 'Máy Game: Buggy Đẩy Hộp (Sokoban)',
+      zone_arcade_goldminer: 'Máy Game: Cóc Vàng Đào Kho Báu',
+      zone_arcade_robot_hub: 'Trạm Trưng Bày & Tải Game Robot',
+      zone_arcade_meeting: 'Bàn Đấu Game & Livestream',
 
       // Fallback Generic Zones
       zone_whiteboard: 'Màn Chiếu Slide',
@@ -205,7 +214,8 @@ export const TRANSLATIONS = {
       web_room: 'Web Showroom',
       media_hub: 'Media & Social',
       sports_complex: 'Sports Complex',
-      canteen_cafe: 'Canteen & Cafe'
+      canteen_cafe: 'Canteen & Cafe',
+      game_arcade: 'Arcade Gaming & Robot Studio'
     },
 
     // Portals (Ground portals)
@@ -217,7 +227,8 @@ export const TRANSLATIONS = {
       web_room: 'To Web Showroom',
       media_hub: 'To Media Hub',
       sports_complex: 'To Sports Complex',
-      canteen_cafe: 'To Canteen & Cafe'
+      canteen_cafe: 'To Canteen & Cafe',
+      game_arcade: 'To Arcade & Robot'
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)
@@ -276,6 +287,13 @@ export const TRANSLATIONS = {
       zone_cafe_barista: 'Salt Coffee & Milk Tea Barista',
       zone_cafe_acoustic: 'Acoustic Chill & Lofi',
       zone_cafe_meeting: 'Canteen Group Discussion',
+
+      // Arcade Gaming (Game Arcade)
+      zone_arcade_snake: 'Arcade: Cyber Snake',
+      zone_arcade_sokoban: 'Arcade: Buggy Sokoban',
+      zone_arcade_goldminer: 'Arcade: FPTU Gold Miner',
+      zone_arcade_robot_hub: 'Club Robot Games Download',
+      zone_arcade_meeting: 'Game Match & Livestream Desk',
 
       // Fallback Generic Zones
       zone_whiteboard: 'Slide Presentation',
@@ -427,7 +445,7 @@ class I18nManager {
     if (roomSelect) {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
-        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe'
+        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade'
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);

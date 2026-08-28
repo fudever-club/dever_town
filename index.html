@@ -211,6 +211,7 @@
           <option id="opt-media_hub" value="media_hub">Media & MXH (0)</option>
           <option id="opt-sports_complex" value="sports_complex">Khu Thể Thao (0)</option>
           <option id="opt-canteen_cafe" value="canteen_cafe">Căn Tin & Cafe (0)</option>
+          <option id="opt-game_arcade" value="game_arcade">Arcade & Robot Studio (0)</option>
         </select>
       </div>
 
@@ -834,6 +835,39 @@
               </div>
               <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE)</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Arcade: Retro Arcade & Minigames -->
+      <div id="pane-arcade-games" class="interactive-pane hidden">
+        <div class="arcade-workspace">
+          <div class="arcade-header">
+            <h3>Retro Arcade</h3>
+            <div class="arcade-tabs" id="arcade-nav-tabs">
+              <button type="button" class="arcade-tab active" data-game="snake">Cyber Snake</button>
+              <button type="button" class="arcade-tab" data-game="sokoban">Buggy Sokoban</button>
+              <button type="button" class="arcade-tab" data-game="goldminer">FPTU Gold Miner</button>
+            </div>
+          </div>
+          <div class="arcade-arena">
+            <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
+            <div id="arcade-touch-controls" class="arcade-touch-controls hidden">
+               <!-- To be populated if needed -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Robot Showcase -->
+      <div id="pane-robot-showcase" class="interactive-pane hidden">
+        <div class="robot-workspace">
+          <div class="robot-header">
+            <h2>Robot & AI Showcase</h2>
+            <p>Khám phá các dự án Robot của DEVER</p>
+          </div>
+          <div id="robot-games-grid" class="robot-grid">
+            <!-- Will be populated by JS -->
           </div>
         </div>
       </div>

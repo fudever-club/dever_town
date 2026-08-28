@@ -63,8 +63,8 @@ export const MAPS_CONFIG = {
     spawnPoint: { x: 400, y: 350 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9,  8,  8, 13, 15 ],
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8,  9, 15 ],
+      [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9, 10,  8, 13, 15 ],
+      [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  9, 15 ],
       [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
@@ -84,13 +84,53 @@ export const MAPS_CONFIG = {
     ],
     portals: [
       { tileX: 12, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' }
+      { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' }
     ],
     zones: [
       { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
       { id: 'zone_lab_code_a', type: 'code_editor', tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Mở Code Sandbox' },
       { id: 'zone_lab_meeting', type: 'meeting_stage', tileX: 12, tileY: 8, name: 'Bàn Thảo Luận Lab', label: 'Họp Kỹ Thuật' },
       { id: 'zone_lab_code_b', type: 'code_editor', tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Mở Code Sandbox' }
+    ]
+  },
+
+  game_arcade: {
+    id: 'game_arcade',
+    name: 'Tòa Gamma Plus - Arcade Gaming & Robot Studio',
+    description: 'Không gian máy game arcade cổ điển, đấu robot và thử tài các mini-game của CLB DEVER.',
+    spawnPoint: { x: 400, y: 350 },
+    layout: [
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18,  9, 15 ],
+      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
+    ],
+    portals: [
+      { tileX: 12, tileY: 17, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Về Tech Lab' },
+      { tileX: 13, tileY: 17, targetRoomId: 'main_hall', targetSpawn: { x: 400, y: 350 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      { id: 'zone_arcade_snake', type: 'arcade_games', defaultGame: 'snake', tileX: 4, tileY: 4, name: 'Máy Game: Rắn Săn Mồi Cyber Snake', label: 'Chơi Rắn Săn Mồi' },
+      { id: 'zone_arcade_sokoban', type: 'arcade_games', defaultGame: 'sokoban', tileX: 10, tileY: 4, name: 'Máy Game: Buggy Đẩy Hộp (Sokoban)', label: 'Chơi Đẩy Hộp' },
+      { id: 'zone_arcade_goldminer', type: 'arcade_games', defaultGame: 'goldminer', tileX: 16, tileY: 4, name: 'Máy Game: Cóc Vàng Đào Kho Báu', label: 'Chơi Đào Vàng' },
+      { id: 'zone_arcade_robot_hub', type: 'robot_showcase', tileX: 21, tileY: 4, name: 'Trạm Trưng Bày & Tải Game Robot CLB', label: 'Tải Game Robot' },
+      { id: 'zone_arcade_meeting', type: 'meeting_stage', tileX: 12, tileY: 10, name: 'Bàn Đấu Game & Livestream', label: 'Livestream Game' }
     ]
   },
 

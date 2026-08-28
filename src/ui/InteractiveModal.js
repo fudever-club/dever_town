@@ -4,6 +4,8 @@ import { PomodoroTimer } from './PomodoroTimer.js';
 import { questManager } from '../managers/QuestManager.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { SportsArcade } from './SportsArcade.js';
+import { RetroArcade } from './RetroArcade.js';
+import { ROBOT_GAMES } from '../config/robotGames.js';
 
 export class InteractiveModal {
   /**
@@ -202,6 +204,12 @@ export class InteractiveModal {
       case 'swe201c_guide':
         this.setupCharterGuideView(zoneData);
         break;
+      case 'arcade_games':
+        this.setupArcadeGamesView(zoneData);
+        break;
+      case 'robot_showcase':
+        this.setupRobotShowcaseView(zoneData);
+        break;
       default:
         break;
     }
@@ -218,6 +226,9 @@ export class InteractiveModal {
     this.stopPowerLoop();
     if (this.sportsArcade) {
       this.sportsArcade.stop();
+    }
+    if (this.retroArcade) {
+      this.retroArcade.stop();
     }
     this.modalEl.classList.add('hidden');
 
@@ -1146,6 +1157,67 @@ export class InteractiveModal {
       renderSWE();
     } else {
       renderCharter();
+    }
+  }
+
+  setupArcadeGamesView(zoneData) {
+    const pane = document.getElementById('pane-arcade-games');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const canvas = document.getElementById('retro-arcade-canvas');
+    if (canvas && !this.retroArcade) {
+      this.retroArcade = new RetroArcade(canvas);
+    }
+
+    if (this.retroArcade) {
+      this.retroArcade.setGame('snake');
+      this.retroArcade.start();
+    }
+
+    const navTabs = document.getElementById('arcade-nav-tabs');
+    if (navTabs && !navTabs.dataset.initialized) {
+      navTabs.dataset.initialized = 'true';
+      navTabs.querySelectorAll('.arcade-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          navTabs.querySelectorAll('.arcade-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const game = tab.dataset.game;
+          if (this.retroArcade) {
+            this.retroArcade.setGame(game);
+          }
+          audioManager.playClick();
+        });
+      });
+    }
+  }
+
+  setupRobotShowcaseView(zoneData) {
+    const pane = document.getElementById('pane-robot-showcase');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const grid = document.getElementById('robot-games-grid');
+    if (!grid) return;
+    
+    if (!grid.dataset.initialized) {
+      grid.dataset.initialized = 'true';
+      grid.innerHTML = '';
+      ROBOT_GAMES.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'robot-card';
+        card.innerHTML = `
+          <div class="robot-card-img" style="display:flex;align-items:center;justify-content:center;font-size:48px;">${game.icon}</div>
+          <h3 class="robot-card-title">${game.name}</h3>
+          <p class="robot-card-desc">${game.desc}</p>
+          <div style="font-size: 11px; color: #64748b; margin-top: auto;">
+            <div>Controls: ${game.controls}</div>
+            <div>Req: ${game.req}</div>
+          </div>
+          <button class="robot-card-btn" onclick="window.open('${game.link}', '_blank')">Tải Game / Chơi Ngay</button>
+        `;
+        grid.appendChild(card);
+      });
     }
   }
 }
