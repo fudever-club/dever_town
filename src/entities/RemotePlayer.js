@@ -16,7 +16,9 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
    */
   constructor(scene, x, y, options = {}) {
     const avatarId = options.avatarId || 'dev_hoodie';
-    const textureKey = `char_${avatarId}`;
+    const candidateKey = `char_${avatarId}`;
+    // Fallback an toàn nếu texture chưa được generate
+    const textureKey = (scene && scene.textures.exists(candidateKey)) ? candidateKey : 'char_dev_hoodie';
 
     super(scene, x, y, textureKey, 0);
 

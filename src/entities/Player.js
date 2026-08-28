@@ -20,18 +20,30 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (!wardrobeConfig && typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem('dever_wardrobe_config');
       if (saved) {
-        try { wardrobeConfig = JSON.parse(saved); } catch (e) {}
+        try {
+          const parsed = JSON.parse(saved);
+          // Đảm bảo không dùng null (JSON.stringify(null) => "null")
+          if (parsed && typeof parsed === 'object') wardrobeConfig = parsed;
+        } catch (e) {}
       }
     }
 
     let avatarId = options.avatarId || (wardrobeConfig ? 'custom_wardrobe' : 'dev_hoodie');
-    if (wardrobeConfig && scene && !scene.textures.exists('char_custom_wardrobe')) {
+    let resolvedTextureKey = `char_${avatarId}`;
+
+    if (wardrobeConfig && scene) {
+      if (!scene.textures.exists('char_custom_wardrobe')) {
+        // Tạo texture mới, nhận actual key (có thể là versioned)
+        const actualKey = TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
+        if (actualKey) resolvedTextureKey = actualKey;
+      } else {
+        // Texture đã có (từ BootScene), dùng actual key từ registry
+        resolvedTextureKey = TextureGenerator.getActualKey('char_custom_wardrobe');
+      }
       avatarId = 'custom_wardrobe';
-      TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
     }
 
-    const candidateKey = `char_${avatarId}`;
-    const safeTextureKey = (scene && scene.textures.exists(candidateKey)) ? candidateKey : 'char_dev_hoodie';
+    const safeTextureKey = (scene && scene.textures.exists(resolvedTextureKey)) ? resolvedTextureKey : 'char_dev_hoodie';
     super(scene, x, y, safeTextureKey, 0);
 
     this.name = options.name || 'Dever Member';
@@ -127,16 +139,32 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (wardrobeConfig) {
       this.wardrobeConfig = wardrobeConfig;
     }
-    const textureKey = `char_${avatarId}`;
+    const logicalKey = `char_${avatarId}`;
     if (this.scene) {
-      if (wardrobeConfig || !this.scene.textures.exists(textureKey)) {
-        const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null') : null);
-        if (cfgToUse) {
-          TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, textureKey);
+      const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? (() => {
+        try {
+          const p = JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null');
+          return (p && typeof p === 'object') ? p : null;
+        } catch (e) { return null; }
+      })() : null);
+
+      if (cfgToUse) {
+        // Ghi nhớ key cũ đang được Sprite sử dụng
+        const oldActualKey = this.texture ? this.texture.key : null;
+
+        // Tạo texture mới với versioned key an toàn (KHÔNG xóa key cũ ở bước này)
+        const newActualKey = TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, logicalKey);
+        const keyToUse = newActualKey || logicalKey;
+
+        if (this.scene.textures.exists(keyToUse)) {
+          // Gán texture mới cho Sprite TRƯỚC
+          this.setTexture(keyToUse, 0);
+          this.stopMovement();
+          // Sau khi Sprite đã dùng texture mới, xóa texture cũ nếu là versioned
+          TextureGenerator.cleanupOldKey(this.scene, logicalKey, oldActualKey);
         }
-      }
-      if (this.scene.textures.exists(textureKey)) {
-        this.setTexture(textureKey, 0);
+      } else if (this.scene.textures.exists(logicalKey)) {
+        this.setTexture(logicalKey, 0);
         this.stopMovement();
       }
     }

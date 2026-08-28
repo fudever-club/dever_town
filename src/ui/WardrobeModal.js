@@ -273,9 +273,8 @@ export class WardrobeModal {
     const customKey = 'custom_wardrobe';
 
     if (this.scene) {
-      TextureGenerator.generateCustomAvatar(this.scene, this.currentConfig, `char_${customKey}`);
-
       if (this.scene.player) {
+        // setCustomWardrobe tự xử lý generate texture + swap an toàn (không crash WebGL)
         this.scene.player.setCustomWardrobe(customKey, this.currentConfig);
       }
 

@@ -720,6 +720,9 @@ export class TextureGenerator {
    * Sinh Spritesheet tùy chỉnh động cho Wardrobe Customizer
    */
   static generateCustomAvatar(scene, wardrobeConfig, textureKey) {
+    // --- Bảo vệ null/undefined config ---
+    if (!wardrobeConfig || typeof wardrobeConfig !== 'object') return null;
+
     const frameW = 32;
     const frameH = 32;
     const cols = 3;
@@ -743,27 +746,54 @@ export class TextureGenerator {
     };
 
     const directions = ['down', 'left', 'right', 'up'];
-
     for (let r = 0; r < rows; r++) {
       const dir = directions[r];
       for (let c = 0; c < cols; c++) {
-        const frameX = c * frameW;
-        const frameY = r * frameH;
-        this.drawCharacterFrame(ctx, frameX, frameY, dir, c, config);
+        this.drawCharacterFrame(ctx, c * frameW, r * frameH, dir, c, config);
       }
     }
 
-    if (scene.textures.exists(textureKey)) {
-      scene.textures.remove(textureKey);
-    }
+    // --- PHASER 3 SAFETY: Không bao giờ remove texture đang được Sprite sử dụng ---
+    // Dùng versioned key để tránh xung đột WebGL.
+    // Caller nhận về key thực tế để gán cho Sprite TRƯỚC KHI key cũ bị xóa.
+    const actualKey = scene.textures.exists(textureKey)
+      ? `${textureKey}_v${Date.now()}`
+      : textureKey;
 
-    scene.textures.addSpriteSheet(textureKey, canvas, {
+    scene.textures.addSpriteSheet(actualKey, canvas, {
       frameWidth: frameW,
       frameHeight: frameH
     });
 
-    this.createCharacterAnimations(scene, textureKey.replace('char_', ''));
-    return canvas;
+    // Tạo animation cho key mới
+    this.createCharacterAnimations(scene, actualKey.replace('char_', ''));
+
+    // Lưu key thực tế vào một registry nội bộ để caller có thể truy xuất
+    if (!TextureGenerator._keyRegistry) TextureGenerator._keyRegistry = {};
+    TextureGenerator._keyRegistry[textureKey] = actualKey;
+
+    return actualKey;
+  }
+
+  /**
+   * Lấy key thực tế đang hoạt động cho một logical key.
+   * Dùng để Player/RemotePlayer tìm đúng texture key sau khi generate.
+   */
+  static getActualKey(logicalKey) {
+    if (TextureGenerator._keyRegistry && TextureGenerator._keyRegistry[logicalKey]) {
+      return TextureGenerator._keyRegistry[logicalKey];
+    }
+    return logicalKey;
+  }
+
+  /**
+   * Dọn dẹp versioned texture key cũ SAU KHI Sprite đã chuyển sang key mới.
+   * Gọi hàm này sau setTexture() trên Sprite.
+   */
+  static cleanupOldKey(scene, logicalKey, oldKey) {
+    if (oldKey && oldKey !== logicalKey && scene.textures.exists(oldKey)) {
+      scene.textures.remove(oldKey);
+    }
   }
 
   static drawCharacterFrame(ctx, x, y, direction, frameIndex, config) {

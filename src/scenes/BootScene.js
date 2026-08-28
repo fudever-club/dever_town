@@ -27,7 +27,10 @@ export class BootScene extends Phaser.Scene {
     if (savedWardrobeRaw) {
       try {
         const wardrobeConfig = JSON.parse(savedWardrobeRaw);
-        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+        // Bảo vệ null (JSON.stringify(null) = "null" là truthy string nhưng parse ra null)
+        if (wardrobeConfig && typeof wardrobeConfig === 'object') {
+          TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+        }
       } catch (e) {}
     }
   }

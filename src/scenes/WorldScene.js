@@ -379,9 +379,9 @@ export class WorldScene extends Phaser.Scene {
         }
 
         // Tự động khôi phục trang phục từ Database nếu có
-        if (user.wardrobe_config) {
-          TextureGenerator.generateCustomAvatar(this, user.wardrobe_config, 'char_custom_wardrobe');
+        if (user.wardrobe_config && typeof user.wardrobe_config === 'object') {
           if (this.player) {
+            // setCustomWardrobe tự xử lý generate + swap an toàn
             this.player.setCustomWardrobe('custom_wardrobe', user.wardrobe_config);
           }
         }
@@ -605,8 +605,17 @@ export class WorldScene extends Phaser.Scene {
   handlePlayerUpdated({ id, name, avatarId, role, equippedItemId, wardrobeConfig }) {
     const remote = this.remotePlayers.get(id);
     if (remote) {
-      if (wardrobeConfig) {
-        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, `char_${id}`);
+      if (wardrobeConfig && typeof wardrobeConfig === 'object') {
+        const logicalKey = `char_${id}`;
+        const oldActualKey = remote.texture ? remote.texture.key : null;
+        // Tạo texture mới an toàn (versioned key)
+        const newActualKey = TextureGenerator.generateCustomAvatar(this, wardrobeConfig, logicalKey);
+        const keyToUse = newActualKey || logicalKey;
+        if (this.textures.exists(keyToUse)) {
+          remote.setTexture(keyToUse, 0);
+          // Cleanup old versioned key sau khi Sprite đã swap
+          TextureGenerator.cleanupOldKey(this, logicalKey, oldActualKey);
+        }
         avatarId = id;
       }
       remote.updateProfile({ name, avatarId, role, equippedItemId });
