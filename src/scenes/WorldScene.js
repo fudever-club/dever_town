@@ -59,6 +59,16 @@ export class WorldScene extends Phaser.Scene {
       isCurrentPlayer: true
     });
 
+    // Tự động khôi phục trang phục tùy chỉnh từ Database / LocalStorage nếu có
+    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+    if (savedWardrobeRaw) {
+      try {
+        const wardrobeConfig = JSON.parse(savedWardrobeRaw);
+        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+        this.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
+      } catch (e) {}
+    }
+
     // 2. Khởi tạo Controllers & Managers
     this.inputController = new InputController(this);
 

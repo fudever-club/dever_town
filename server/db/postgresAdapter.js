@@ -25,9 +25,23 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
           avatar_id VARCHAR(50) NOT NULL DEFAULT 'dev_hoodie',
           role VARCHAR(20) NOT NULL DEFAULT 'dev',
           wardrobe_config JSONB DEFAULT '{}',
+          inventory_items JSONB DEFAULT '{}',
           equipped_item_id VARCHAR(50) DEFAULT NULL,
+          dever_points INTEGER DEFAULT 0,
+          quests_state JSONB DEFAULT '{}',
+          quest_date VARCHAR(50) DEFAULT NULL,
+          quest_milestone BOOLEAN DEFAULT FALSE,
+          game_records JSONB DEFAULT '{}',
           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
+
+        -- Thêm các cột nếu đã tồn tại bảng cũ
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS inventory_items JSONB DEFAULT '{}';
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS dever_points INTEGER DEFAULT 0;
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS quests_state JSONB DEFAULT '{}';
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS quest_date VARCHAR(50) DEFAULT NULL;
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS quest_milestone BOOLEAN DEFAULT FALSE;
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS game_records JSONB DEFAULT '{}';
 
         CREATE TABLE IF NOT EXISTS game_scores (
           id VARCHAR(50) PRIMARY KEY,
@@ -96,6 +110,43 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
       wardrobeConfig ? JSON.stringify(wardrobeConfig) : null,
       equippedItemId,
       deverPoints !== undefined ? deverPoints : null
+    ]);
+    return res.rows[0] || null;
+  }
+
+  async syncFullUserProfile(id, {
+    wardrobeConfig,
+    inventoryItems,
+    equippedItemId,
+    deverPoints,
+    questsState,
+    questDate,
+    questMilestone,
+    gameRecords
+  }) {
+    const query = `
+      UPDATE users
+      SET wardrobe_config = COALESCE($2, wardrobe_config),
+          inventory_items = COALESCE($3, inventory_items),
+          equipped_item_id = COALESCE($4, equipped_item_id),
+          dever_points = COALESCE($5, dever_points),
+          quests_state = COALESCE($6, quests_state),
+          quest_date = COALESCE($7, quest_date),
+          quest_milestone = COALESCE($8, quest_milestone),
+          game_records = COALESCE($9, game_records)
+      WHERE id = $1
+      RETURNING *;
+    `;
+    const res = await this.pool.query(query, [
+      id,
+      wardrobeConfig ? JSON.stringify(wardrobeConfig) : null,
+      inventoryItems ? JSON.stringify(inventoryItems) : null,
+      equippedItemId,
+      deverPoints !== undefined ? deverPoints : null,
+      questsState ? JSON.stringify(questsState) : null,
+      questDate,
+      questMilestone !== undefined ? questMilestone : null,
+      gameRecords ? JSON.stringify(gameRecords) : null
     ]);
     return res.rows[0] || null;
   }

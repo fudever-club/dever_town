@@ -1,5 +1,6 @@
 import { WARDROBE_CONFIG } from '../config/wardrobe.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { authService } from '../services/AuthService.js';
 
 export class WardrobeModal {
   /**
@@ -289,22 +290,13 @@ export class WardrobeModal {
 
   async syncToServer() {
     try {
-      const token = localStorage.getItem('dever_token');
-      if (!token) return;
-
-      const equippedItemId = localStorage.getItem('dever_equipped_item') || null;
-
-      await fetch('/api/auth/customization', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
+      if (authService && authService.isLoggedIn()) {
+        const equippedItemId = localStorage.getItem('dever_equipped_item') || null;
+        await authService.syncFullProfile({
           wardrobeConfig: this.currentConfig,
           equippedItemId
-        })
-      });
+        });
+      }
     } catch (e) {
       // Local storage fallback
     }

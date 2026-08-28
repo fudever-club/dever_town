@@ -1,4 +1,5 @@
 import { audioManager } from '../utils/AudioManager.js';
+import { authService } from '../services/AuthService.js';
 
 export const DAILY_QUESTS_DEF = [
   {
@@ -149,6 +150,16 @@ export class QuestManager {
       localStorage.setItem('dever_points', this.points.toString());
       localStorage.setItem('dever_quests_state', JSON.stringify(this.quests));
       localStorage.setItem('dever_quest_milestone', this.milestoneClaimed.toString());
+
+      // Tự động đồng bộ lên Database máy chủ khi đăng nhập
+      if (authService && authService.isLoggedIn()) {
+        authService.syncFullProfile({
+          deverPoints: this.points,
+          questsState: this.quests,
+          questDate: localStorage.getItem('dever_quest_date') || new Date().toDateString(),
+          questMilestone: this.milestoneClaimed
+        });
+      }
     } catch (e) {}
     this.notifyListeners();
   }

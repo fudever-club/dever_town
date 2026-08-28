@@ -160,6 +160,47 @@ router.put('/profile', authenticateToken, sanitizeInput, async (req, res) => {
 });
 
 /**
+ * PUT /api/auth/sync-profile - Đồng bộ toàn diện dữ liệu nhân vật, trang phục, túi đồ, nhiệm vụ & kỷ lục vào DB
+ */
+router.put('/sync-profile', authenticateToken, async (req, res) => {
+  try {
+    const {
+      wardrobeConfig,
+      inventoryItems,
+      equippedItemId,
+      deverPoints,
+      questsState,
+      questDate,
+      questMilestone,
+      gameRecords
+    } = req.body;
+    const db = getDB();
+
+    const updated = await db.syncFullUserProfile(req.user.id, {
+      wardrobeConfig,
+      inventoryItems,
+      equippedItemId,
+      deverPoints,
+      questsState,
+      questDate,
+      questMilestone,
+      gameRecords
+    });
+
+    const safeUser = sanitizeUser(updated);
+
+    return res.json({
+      success: true,
+      message: 'Đồng bộ hồ sơ, trang phục, vật phẩm và kỷ lục thành công!',
+      user: safeUser
+    });
+  } catch (err) {
+    console.error('❌ [Auth Sync Profile Error]:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
+  }
+});
+
+/**
  * PUT /api/auth/customization - Lưu cấu hình Wardrobe & Equipped Item vào DB gắn với User ID (Mục 1.3 Add-on v3)
  */
 router.put('/customization', authenticateToken, async (req, res) => {

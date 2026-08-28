@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE, PICKUP_SPOTS } from '../config/items.js';
 import { audioManager } from '../utils/AudioManager.js';
+import { authService } from '../services/AuthService.js';
 
 export class InventoryManager {
   /**
@@ -66,6 +67,7 @@ export class InventoryManager {
     if (!ITEMS_DATABASE[itemId]) return;
     this.items[itemId] = (this.items[itemId] || 0) + amount;
     this.saveToStorage();
+    this.syncToServer();
 
     if (this.onInventoryChange) {
       this.onInventoryChange(this.items);
@@ -119,25 +121,14 @@ export class InventoryManager {
     return true;
   }
 
-  async syncToServer(equippedItemId) {
+  async syncToServer(equippedItemId = this.equippedItemId) {
     try {
-      const token = localStorage.getItem('dever_token');
-      if (!token) return;
-
-      const wardrobeRaw = localStorage.getItem('dever_wardrobe_config');
-      const wardrobeConfig = wardrobeRaw ? JSON.parse(wardrobeRaw) : undefined;
-
-      await fetch('/api/auth/customization', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          wardrobeConfig,
-          equippedItemId
-        })
-      });
+      if (authService && authService.isLoggedIn()) {
+        await authService.syncFullProfile({
+          inventoryItems: this.items,
+          equippedItemId: equippedItemId
+        });
+      }
     } catch (e) {
       // LocalStorage fallback
     }

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
 import { WorldScene } from './scenes/WorldScene.js';
 import { WelcomeGate } from './ui/WelcomeGate.js';
+import { TextureGenerator } from './utils/TextureGenerator.js';
 
 const config = {
   type: Phaser.AUTO,
@@ -56,6 +57,22 @@ window.addEventListener('DOMContentLoaded', () => {
           avatarId: user.avatar_id || user.avatarId || 'dev_hoodie',
           role: user.role || (isGuest ? 'guest' : 'dev')
         });
+
+        // Áp dụng trang phục và vật phẩm từ cơ sở dữ liệu nếu có
+        const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+        if (savedWardrobeRaw) {
+          try {
+            const wardrobeConfig = JSON.parse(savedWardrobeRaw);
+            TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
+            scene.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
+          } catch (e) {}
+        }
+
+        const equippedItem = localStorage.getItem('dever_equipped_item');
+        if (equippedItem && scene.player.setEquippedItem) {
+          scene.player.setEquippedItem(equippedItem);
+        }
+
         scene.updateHeaderProfile(user);
         if (scene.socketManager) {
           scene.socketManager.reconnectWithAuth();

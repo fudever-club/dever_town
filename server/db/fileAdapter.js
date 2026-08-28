@@ -133,6 +133,37 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
     return user;
   }
 
+  async syncFullUserProfile(id, {
+    wardrobeConfig,
+    inventoryItems,
+    equippedItemId,
+    deverPoints,
+    questsState,
+    questDate,
+    questMilestone,
+    gameRecords
+  }) {
+    const user = this.users.get(id);
+    if (!user) return null;
+
+    if (wardrobeConfig !== undefined) user.wardrobe_config = wardrobeConfig;
+    if (inventoryItems !== undefined) user.inventory_items = inventoryItems;
+    if (equippedItemId !== undefined) user.equipped_item_id = equippedItemId;
+    if (deverPoints !== undefined) user.dever_points = deverPoints;
+    if (questsState !== undefined) user.quests_state = questsState;
+    if (questDate !== undefined) user.quest_date = questDate;
+    if (questMilestone !== undefined) user.quest_milestone = questMilestone;
+    if (gameRecords !== undefined) {
+      user.game_records = {
+        ...(user.game_records || {}),
+        ...gameRecords
+      };
+    }
+
+    await this.saveToFile();
+    return user;
+  }
+
   getGameScoresFilePath() {
     return path.resolve('server/data/game_scores.json');
   }

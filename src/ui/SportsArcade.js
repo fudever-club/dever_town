@@ -8,6 +8,7 @@
  */
 import { audioManager } from '../utils/AudioManager.js';
 import { questManager } from '../managers/QuestManager.js';
+import { authService } from '../services/AuthService.js';
 
 export class SportsArcade {
   constructor(canvasEl, options = {}) {
@@ -146,6 +147,19 @@ export class SportsArcade {
       this.options.onScoreUpdate({
         game: this.currentGame,
         scores: this.scores
+      });
+    }
+
+    // Tự động đồng bộ kỷ lục thể thao lên Database máy chủ khi đăng nhập
+    if (authService && authService.isLoggedIn()) {
+      authService.syncFullProfile({
+        gameRecords: {
+          footballStreak: this.scores.footballStreak || 0,
+          footballHigh: this.scores.footballHigh || 0,
+          basketballHigh: this.scores.basketballHigh || 0,
+          volleyballHigh: this.scores.volleyballHigh || 0,
+          baristaScore: this.scores.baristaScore || 0
+        }
       });
     }
   }
