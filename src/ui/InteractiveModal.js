@@ -6,6 +6,7 @@ import { audioManager } from '../utils/AudioManager.js';
 import { SportsArcade } from './SportsArcade.js';
 import { RetroArcade } from './RetroArcade.js';
 import { ROBOT_GAMES } from '../config/robotGames.js';
+import { authService } from '../services/AuthService.js';
 
 export class InteractiveModal {
   /**
@@ -94,23 +95,34 @@ export class InteractiveModal {
     if (pomoPauseBtn) pomoPauseBtn.addEventListener('click', () => this.pomodoro.pause());
     if (pomoResetBtn) pomoResetBtn.addEventListener('click', () => this.pomodoro.reset('work'));
 
-    // 4. Lofi Music Loader & Presets
+    // 4. Lofi Music Loader & Presets (Personal Client Scope)
     const lofiLoadBtn = document.getElementById('lofi-load-btn');
     if (lofiLoadBtn) {
       lofiLoadBtn.addEventListener('click', () => {
         const input = document.getElementById('lofi-url-input');
         if (input && input.value.trim()) {
-          const videoId = extractYouTubeVideoId(input.value.trim());
-          this.loadLofiVideo(videoId);
-          questManager.incrementProgress('focus_lofi_pomo', 1);
+          const rawUrl = input.value.trim();
+          const videoId = extractYouTubeVideoId(rawUrl);
+          if (videoId) {
+            // Lưu link cá nhân riêng của người chơi hiện tại, không can thiệp người khác
+            try {
+              localStorage.setItem('dever_personal_lofi_url', rawUrl);
+            } catch (e) {}
+            this.loadLofiVideo(videoId);
+            questManager.incrementProgress('focus_lofi_pomo', 1);
+          }
         }
       });
     }
 
-    // 5. Slides
+    // 5. Slides (Bảo mật: Chỉ Admin mới có quyền đổi URL ngoài bài giảng)
     const loadSlideBtn = document.getElementById('slide-load-btn');
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
+        if (!authService.isAdmin()) {
+          alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
+          return;
+        }
         const input = document.getElementById('slide-url-input');
         if (input && input.value.trim()) {
           this.currentSlideSet = null;
@@ -253,6 +265,16 @@ export class InteractiveModal {
     const pane = document.getElementById('pane-slides');
     if (!pane) return;
     pane.classList.remove('hidden');
+
+    // Bảo mật: Chỉ Admin mới thấy thanh chỉnh sửa URL slide bên ngoài
+    const addressBar = pane.querySelector('.slide-address-bar');
+    if (addressBar) {
+      if (authService.isAdmin()) {
+        addressBar.style.display = 'flex';
+      } else {
+        addressBar.style.display = 'none';
+      }
+    }
 
     this.renderSlidePresets(zoneData);
 
@@ -588,6 +610,19 @@ export class InteractiveModal {
     this.activeMusicGenre = this.activeMusicGenre || 'all';
     this.renderMusicGenreTabs();
     this.renderLofiPresets();
+
+    // Khôi phục bài hát cá nhân của riêng người chơi nếu có lưu trước đó
+    const personalLofi = localStorage.getItem('dever_personal_lofi_url');
+    if (personalLofi) {
+      const input = document.getElementById('lofi-url-input');
+      if (input) input.value = personalLofi;
+      const videoId = extractYouTubeVideoId(personalLofi);
+      if (videoId) {
+        this.loadLofiVideo(videoId);
+        return;
+      }
+    }
+
     const firstPreset = LOFI_PRESETS[0];
     const initialId = firstPreset ? firstPreset.videoId : 'm7Wya6Z-QdM';
     this.loadLofiVideo(initialId);
@@ -1200,6 +1235,8 @@ export class InteractiveModal {
     const grid = document.getElementById('robot-games-grid');
     if (!grid) return;
 
+    const isAdmin = authService.isAdmin();
+
     grid.innerHTML = '';
     ROBOT_GAMES.forEach(game => {
       const savedLink = localStorage.getItem(`dever_robot_link_${game.id}`) || game.link;
@@ -1221,9 +1258,11 @@ export class InteractiveModal {
           <button type="button" class="robot-card-btn" style="flex:1;background:linear-gradient(135deg,#f26f21,#ea580c);color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;" data-game-id="${game.id}">
             <span>⬇️ Tải Game (.exe)</span>
           </button>
-          <button type="button" class="robot-edit-link-btn" title="Cập nhật link tải của bạn" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;border-radius:8px;padding:0 10px;cursor:pointer;font-size:12px;" data-game-id="${game.id}">
-            ✏️
-          </button>
+          ${isAdmin ? `
+            <button type="button" class="robot-edit-link-btn" title="[Admin] Cập nhật link tải của CLB" style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);color:#f26f21;border-radius:8px;padding:0 10px;cursor:pointer;font-size:12px;font-weight:700;" data-game-id="${game.id}">
+              ✏️ Admin
+            </button>
+          ` : ''}
         </div>
       `;
 
@@ -1239,11 +1278,15 @@ export class InteractiveModal {
       const editBtn = card.querySelector('.robot-edit-link-btn');
       if (editBtn) {
         editBtn.addEventListener('click', () => {
+          if (!authService.isAdmin()) {
+            alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
+            return;
+          }
           const currentUrl = localStorage.getItem(`dever_robot_link_${game.id}`) || game.link;
-          const newUrl = prompt(`Nhập link tải Google Drive / Mediafire / GitHub cho game "${game.name}":`, currentUrl);
+          const newUrl = prompt(`[Admin] Nhập link tải Google Drive / GitHub / Mediafire cho game "${game.name}":`, currentUrl);
           if (newUrl !== null && newUrl.trim()) {
             localStorage.setItem(`dever_robot_link_${game.id}`, newUrl.trim());
-            alert(`✅ Đã lưu link tải mới cho "${game.name}"!`);
+            alert(`✅ [Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
           }
         });
       }

@@ -30,6 +30,13 @@ class AuthService {
     return this.user;
   }
 
+  isAdmin() {
+    if (!this.user) return false;
+    const role = (this.user.role || '').toLowerCase();
+    const email = (this.user.email || '').toLowerCase();
+    return role === 'admin' || role === 'leader' || email === 'hungnguyen.190206@gmail.com' || email === 'admin@devertown.com';
+  }
+
   async register({ email, password, displayName, avatarId }) {
     const res = await fetch(`${this.getBaseUrl()}/api/auth/register`, {
       method: 'POST',
