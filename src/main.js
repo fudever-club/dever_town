@@ -26,7 +26,10 @@ const config = {
   }
 };
 
-window.addEventListener('DOMContentLoaded', () => {
+function initGame() {
+  if (window.__DEVER_INITIALIZED__) return;
+  window.__DEVER_INITIALIZED__ = true;
+
   // 1. Khởi động Game Phaser ngay lập tức
   const game = new Phaser.Game(config);
   window.__DEVER_GAME__ = game;
@@ -54,7 +57,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         if (wardrobeConfig) {
-          TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
           scene.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
         }
 
@@ -72,4 +74,10 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.__WELCOME_GATE__ = welcomeGate;
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGame);
+} else {
+  initGame();
+}
