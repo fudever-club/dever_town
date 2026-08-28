@@ -1258,6 +1258,7 @@ export class TextureGenerator {
   }
 
   static createCharacterAnimations(scene, avatarId) {
+    if (!scene || !scene.anims) return;
     const key = `char_${avatarId}`;
     const dirs = [
       { name: 'down', row: 0 },
@@ -1270,25 +1271,27 @@ export class TextureGenerator {
       const baseFrame = row * 3;
 
       const walkKey = `walk_${name}_${avatarId}`;
-      if (!scene.anims.exists(walkKey)) {
-        scene.anims.create({
-          key: walkKey,
-          frames: scene.anims.generateFrameNumbers(key, {
-            frames: [baseFrame, baseFrame + 1, baseFrame + 2, baseFrame + 1]
-          }),
-          frameRate: 8,
-          repeat: -1
-        });
+      if (scene.anims.exists(walkKey)) {
+        scene.anims.remove(walkKey);
       }
+      scene.anims.create({
+        key: walkKey,
+        frames: scene.anims.generateFrameNumbers(key, {
+          frames: [baseFrame, baseFrame + 1, baseFrame + 2, baseFrame + 1]
+        }),
+        frameRate: 8,
+        repeat: -1
+      });
 
       const idleKey = `idle_${name}_${avatarId}`;
-      if (!scene.anims.exists(idleKey)) {
-        scene.anims.create({
-          key: idleKey,
-          frames: [{ key, frame: baseFrame + 1 }],
-          frameRate: 1
-        });
+      if (scene.anims.exists(idleKey)) {
+        scene.anims.remove(idleKey);
       }
+      scene.anims.create({
+        key: idleKey,
+        frames: [{ key, frame: baseFrame + 1 }],
+        frameRate: 1
+      });
     });
   }
 }

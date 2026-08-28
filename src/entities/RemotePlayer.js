@@ -225,9 +225,11 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const animPrefix = isVisiblyMoving ? 'walk' : 'idle';
     const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
 
-    if (this.scene.anims.exists(animKey)) {
-      this.anims.play(animKey, true);
-    }
+    try {
+      if (this.scene?.anims?.exists(animKey)) {
+        this.anims.play(animKey, true);
+      }
+    } catch (e) {}
 
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
