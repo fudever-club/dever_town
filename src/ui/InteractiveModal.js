@@ -303,37 +303,167 @@ export class InteractiveModal {
     pane.classList.remove('hidden');
 
     const codeArea = document.getElementById('code-textarea');
-    if (codeArea && !codeArea.value) {
-      codeArea.value = INTERACTION_PRESETS.code_editor.defaultCode;
+    const langSelect = document.getElementById('code-lang-select');
+    const templateBtn = document.getElementById('code-template-btn');
+    const notesArea = document.getElementById('notes-textarea');
+
+    const languages = INTERACTION_PRESETS.code_editor.languages;
+    let savedLang = 'javascript';
+    try {
+      savedLang = localStorage.getItem('dever_code_lang') || 'javascript';
+    } catch (e) {}
+
+    if (langSelect) {
+      langSelect.value = savedLang;
+      if (!langSelect.dataset.initialized) {
+        langSelect.dataset.initialized = 'true';
+        langSelect.addEventListener('change', () => {
+          const newLang = langSelect.value;
+          try {
+            localStorage.setItem('dever_code_lang', newLang);
+          } catch (e) {}
+          this.loadCodeForLanguage(newLang);
+        });
+      }
     }
 
-    const notesArea = document.getElementById('notes-textarea');
+    if (templateBtn && !templateBtn.dataset.initialized) {
+      templateBtn.dataset.initialized = 'true';
+      templateBtn.addEventListener('click', () => {
+        const curLang = langSelect ? langSelect.value : 'javascript';
+        const langDef = languages.find(l => l.id === curLang) || languages[0];
+        if (codeArea && langDef) {
+          codeArea.value = langDef.sample;
+          try {
+            localStorage.setItem(`dever_code_sandbox_${curLang}`, langDef.sample);
+          } catch (e) {}
+        }
+      });
+    }
+
+    if (codeArea && !codeArea.dataset.initialized) {
+      codeArea.dataset.initialized = 'true';
+      codeArea.addEventListener('input', () => {
+        const curLang = langSelect ? langSelect.value : 'javascript';
+        try {
+          localStorage.setItem(`dever_code_sandbox_${curLang}`, codeArea.value);
+        } catch (e) {}
+      });
+    }
+
+    this.loadCodeForLanguage(savedLang);
+
     if (notesArea && !notesArea.value) {
-      notesArea.value = INTERACTION_PRESETS.code_editor.defaultNotes;
+      const savedNotes = localStorage.getItem('dever_club_notes');
+      notesArea.value = savedNotes || INTERACTION_PRESETS.code_editor.defaultNotes;
     }
   }
 
-  executeCode() {
+  loadCodeForLanguage(langId) {
+    const codeArea = document.getElementById('code-textarea');
+    if (!codeArea) return;
+
+    const languages = INTERACTION_PRESETS.code_editor.languages;
+    const langDef = languages.find(l => l.id === langId) || languages[0];
+
+    let savedCode = null;
+    try {
+      savedCode = localStorage.getItem(`dever_code_sandbox_${langId}`);
+    } catch (e) {}
+
+    codeArea.value = savedCode !== null ? savedCode : (langDef ? langDef.sample : '');
+  }
+
+  async executeCode() {
     const codeArea = document.getElementById('code-textarea');
     const outputEl = document.getElementById('code-output');
+    const runBtn = document.getElementById('code-run-btn');
+    const langSelect = document.getElementById('code-lang-select');
     if (!codeArea || !outputEl) return;
 
-    const code = codeArea.value;
-    outputEl.textContent = 'Đang chạy mã nguồn...\n';
+    const code = codeArea.value.trim();
+    if (!code) {
+      outputEl.textContent = '⚠️ Vui lòng nhập mã nguồn trước khi thực thi.';
+      return;
+    }
 
-    const logs = [];
-    const customConsole = {
-      log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-      error: (...args) => logs.push('Lỗi: ' + args.join(' ')),
-      warn: (...args) => logs.push('Cảnh báo: ' + args.join(' '))
-    };
+    const selectedLang = langSelect ? langSelect.value : 'javascript';
+    const languages = INTERACTION_PRESETS.code_editor.languages;
+    const langDef = languages.find(l => l.id === selectedLang) || languages[0];
 
+    if (runBtn) {
+      runBtn.disabled = true;
+      runBtn.innerHTML = '⏳ Đang chạy...';
+    }
+
+    outputEl.textContent = `[${langDef.name}] Đang biên dịch & thực thi mã nguồn...\n`;
+
+    // 1. JavaScript Engine (Chạy an toàn ngay trong browser)
+    if (selectedLang === 'javascript') {
+      const logs = [];
+      const customConsole = {
+        log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+        error: (...args) => logs.push('❌ Error: ' + args.join(' ')),
+        warn: (...args) => logs.push('⚠️ Warning: ' + args.join(' ')),
+        info: (...args) => logs.push('ℹ️ Info: ' + args.join(' '))
+      };
+
+      try {
+        const startTime = performance.now();
+        const runFn = new Function('console', code);
+        runFn(customConsole);
+        const elapsed = (performance.now() - startTime).toFixed(1);
+        const outText = logs.length > 0 ? logs.join('\n') : 'Chương trình thực thi thành công (Không có console output).';
+        outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Engine • ${elapsed}ms) ===\n${outText}`;
+      } catch (err) {
+        outputEl.textContent = `❌ Lỗi thực thi JavaScript: ${err.message}`;
+      } finally {
+        if (runBtn) {
+          runBtn.disabled = false;
+          runBtn.innerHTML = 'Chạy Code &rtrif;';
+        }
+      }
+      return;
+    }
+
+    // 2. Các ngôn ngữ khác (C, C++, Java, Pascal, Python, Go, Rust, C#, PHP) qua Piston Compiler API
     try {
-      const runFn = new Function('console', code);
-      runFn(customConsole);
-      outputEl.textContent = logs.length > 0 ? logs.join('\n') : 'Mã chạy thành công (Không có console output).';
+      const startTime = performance.now();
+      const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: langDef.pistonLang,
+          version: '*',
+          files: [{ content: code }]
+        })
+      });
+
+      const elapsed = (performance.now() - startTime).toFixed(0);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      const runData = result.run || {};
+      const stdout = runData.stdout || '';
+      const stderr = runData.stderr || '';
+      const exitCode = runData.code !== undefined ? runData.code : 0;
+
+      let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Exit Code: ${exitCode}) ===\n`;
+      if (stdout) displayText += stdout;
+      if (stderr) displayText += (stdout ? '\n\n' : '') + `⚠️ STDERR / Warning:\n${stderr}`;
+      if (!stdout && !stderr) displayText += 'Chương trình chạy xong (Exit Code 0, không có output).';
+
+      outputEl.textContent = displayText;
     } catch (err) {
-      outputEl.textContent = `Lỗi thực thi: ${err.message}`;
+      outputEl.textContent = `⚠️ Lỗi kết nối máy chủ biên dịch (${langDef.name}): ${err.message}\n💡 Mẹo: Vui lòng kiểm tra kết nối mạng Internet. Đối với JavaScript, bạn có thể chạy Offline 100%.`;
+    } finally {
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.innerHTML = 'Chạy Code &rtrif;';
+      }
     }
   }
 

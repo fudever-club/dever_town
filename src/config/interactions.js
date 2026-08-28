@@ -18,11 +18,181 @@ export const INTERACTION_PRESETS = {
     getJitsiUrl: (roomName) => `https://meet.jit.si/FU_DEVER_${encodeURIComponent(roomName || 'Alpha')}`
   },
 
-  // 3. Bàn Lập Trình & Sổ tay Markdown
+  // 3. Bàn Lập Trình Multi-Language & Sổ tay Markdown
   code_editor: {
-    title: 'Bàn Lập Trình Live Code & Sổ Tay Sinh Viên FUDA',
-    description: 'Thực thi mã nguồn JavaScript trực tiếp và lưu trữ ghi chú cá nhân.',
-    defaultCode: `// 🚀 Chào mừng bạn đến với FU-DEVER Code Sandbox!\n// Slogan: WORK HARD - PLAY HARD\n\nconst club = {\n  name: 'FU-DEVER',\n  campus: 'FUDA',\n  pillars: ['2D Game', 'Web App', 'Mobile App', 'Model AI'],\n  members: '50+ Members',\n  years: '9+ Years of Passion'\n};\n\nconsole.log("=== THÔNG TIN CLB FU-DEVER ===");\nconsole.log("Tên CLB:", club.name);\nconsole.log("Cơ sở:", club.campus);\nconsole.log("Các mảng chuyên môn:", club.pillars.join(", "));\nconsole.log("Đam mê kiến tạo tương lai!");`,
+    title: 'Bàn Lập Trình Live Code Multi-Language & Sổ Tay Sinh Viên FUDA',
+    description: 'Biên dịch và thực thi trực tiếp đa ngôn ngữ: C, C++, Java, Pascal, Python, JavaScript, Go, Rust, C#, PHP.',
+    languages: [
+      {
+        id: 'javascript',
+        name: 'JavaScript (Node.js)',
+        badge: 'JS',
+        pistonLang: 'javascript',
+        sample: `// 🚀 FU-DEVER Code Sandbox - JavaScript
+const club = {
+  name: 'FU-DEVER',
+  campus: 'FPT University Da Nang (FUDA)',
+  pillars: ['2D Game', 'Web App', 'Mobile App', 'Model AI'],
+  members: '50+ Members',
+  slogan: 'WORK HARD - PLAY HARD'
+};
+
+console.log("=== THÔNG TIN CLB FU-DEVER ===");
+console.log("CLB:", club.name);
+console.log("Cơ sở:", club.campus);
+console.log("Chuyên môn:", club.pillars.join(", "));
+console.log("Slogan:", club.slogan);`
+      },
+      {
+        id: 'python',
+        name: 'Python 3',
+        badge: 'Python',
+        pistonLang: 'python',
+        sample: `# 🐍 FU-DEVER Code Sandbox - Python 3
+club = {
+    "name": "FU-DEVER",
+    "campus": "FPT University Da Nang",
+    "pillars": ["AI & Machine Learning", "2D Game Dev", "Fullstack Web", "Mobile App"],
+    "slogan": "WORK HARD - PLAY HARD"
+}
+
+print("=== CLB FU-DEVER PYTHON RUNNER ===")
+print(f"Chào mừng bạn đến với {club['name']} @ {club['campus']}!")
+print("Các trụ cột công nghệ:")
+for i, pillar in enumerate(club["pillars"], 1):
+    print(f"  {i}. {pillar}")
+print(f"Tôn chỉ hoạt động: {club['slogan']}")`
+      },
+      {
+        id: 'c',
+        name: 'C (GCC)',
+        badge: 'C',
+        pistonLang: 'c',
+        sample: `// 🇨 FU-DEVER Code Sandbox - Ngôn ngữ C
+#include <stdio.h>
+
+int main() {
+    printf("=========================================\\n");
+    printf("  FU-DEVER - FPT UNIVERSITY DA NANG      \\n");
+    printf("  Chao mung tan sinh vien den voi CLB!   \\n");
+    printf("=========================================\\n");
+    printf("Slogan: WORK HARD - PLAY HARD\\n");
+    printf("Ngon ngu lap trinh C co ban & cau truc du lieu\\n");
+    return 0;
+}`
+      },
+      {
+        id: 'cpp',
+        name: 'C++ (G++)',
+        badge: 'C++',
+        pistonLang: 'cpp',
+        sample: `// ⚡ FU-DEVER Code Sandbox - C++ (ICPC & Competitive Programming)
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main() {
+    cout << "=== CLB FU-DEVER C++ RUNNER ===" << endl;
+    vector<string> tracks = {"2D Game Development", "AI/ML Engineering", "Competitive Programming"};
+    
+    cout << "Cac mang hoat dong noi bat:" << endl;
+    for (size_t i = 0; i < tracks.size(); ++i) {
+        cout << " [" << i + 1 << "] " << tracks[i] << endl;
+    }
+    cout << "Slogan: WORK HARD - PLAY HARD!" << endl;
+    return 0;
+}`
+      },
+      {
+        id: 'java',
+        name: 'Java (OpenJDK)',
+        badge: 'Java',
+        pistonLang: 'java',
+        sample: `// ☕ FU-DEVER Code Sandbox - Java (SWE201c & OOP)
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== FU-DEVER JAVA SANDBOX ===");
+        System.out.println("Chao mung ban den voi bo mon SWE201c & Lap trinh huong doi tuong (OOP)!");
+        System.out.println("CLB FU-DEVER • FPT University Da Nang");
+        System.out.println("Slogan: WORK HARD - PLAY HARD");
+    }
+}`
+      },
+      {
+        id: 'pascal',
+        name: 'Pascal (Free Pascal)',
+        badge: 'Pascal',
+        pistonLang: 'pascal',
+        sample: `// 📜 FU-DEVER Code Sandbox - Pascal (Free Pascal Compiler)
+program FUDeverPascal;
+
+begin
+    writeln('=============================================');
+    writeln('  FU-DEVER PASCAL SANDBOX - FPT UNIVERSITY   ');
+    writeln('=============================================');
+    writeln('Chao mung ban den voi ngon ngu lap trinh Pascal!');
+    writeln('CLB FU-DEVER: WORK HARD - PLAY HARD');
+end.`
+      },
+      {
+        id: 'go',
+        name: 'Go (Golang)',
+        badge: 'Go',
+        pistonLang: 'go',
+        sample: `// 🔷 FU-DEVER Code Sandbox - Go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("=== FU-DEVER GO RUNNER ===")
+    fmt.Println("Cloud Computing, Microservices & High-Performance Backends")
+    fmt.Println("CLB FU-DEVER • WORK HARD - PLAY HARD")
+}`
+      },
+      {
+        id: 'rust',
+        name: 'Rust',
+        badge: 'Rust',
+        pistonLang: 'rust',
+        sample: `// 🦀 FU-DEVER Code Sandbox - Rust
+fn main() {
+    println!("=== FU-DEVER RUST SANDBOX ===");
+    println!("Safe, Concurrent & Ultra-fast Systems Programming");
+    println!("CLB FU-DEVER • WORK HARD - PLAY HARD 🚀");
+}`
+      },
+      {
+        id: 'csharp',
+        name: 'C# (.NET / Mono)',
+        badge: 'C#',
+        pistonLang: 'csharp',
+        sample: `// 🟣 FU-DEVER Code Sandbox - C#
+using System;
+
+class Program {
+    static void Main() {
+        Console.WriteLine("=== FU-DEVER C# RUNNER ===");
+        Console.WriteLine(".NET Game Dev & Enterprise Software");
+        Console.WriteLine("CLB FU-DEVER • WORK HARD - PLAY HARD");
+    }
+}`
+      },
+      {
+        id: 'php',
+        name: 'PHP',
+        badge: 'PHP',
+        pistonLang: 'php',
+        sample: `<?php
+// 🐘 FU-DEVER Code Sandbox - PHP
+echo "=== FU-DEVER PHP RUNNER ===\\n";
+echo "Web Development & Backend Services\\n";
+echo "Slogan: WORK HARD - PLAY HARD\\n";
+?>`
+      }
+    ],
     defaultNotes: `# 📝 SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FUDA\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
   },
 

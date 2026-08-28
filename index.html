@@ -683,8 +683,23 @@
       <div id="pane-code" class="interactive-pane hidden">
         <div class="code-workspace-grid">
           <div class="code-editor-panel">
-            <div class="panel-header">
-              <span>JavaScript Live Runner</span>
+            <div class="panel-header code-topbar-controls">
+              <div class="code-lang-selector-box">
+                <label for="code-lang-select" class="code-lang-label">Ngôn ngữ:</label>
+                <select id="code-lang-select" class="code-lang-select">
+                  <option value="javascript">⚡ JavaScript (Node.js)</option>
+                  <option value="python">🐍 Python 3</option>
+                  <option value="c">🇨 C (GCC)</option>
+                  <option value="cpp">⚡ C++ (G++)</option>
+                  <option value="java">☕ Java (OpenJDK)</option>
+                  <option value="pascal">📜 Pascal (Free Pascal)</option>
+                  <option value="go">🔷 Go (Golang)</option>
+                  <option value="rust">🦀 Rust</option>
+                  <option value="csharp">🟣 C# (.NET)</option>
+                  <option value="php">🐘 PHP</option>
+                </select>
+                <button type="button" id="code-template-btn" class="btn-sm-action" title="Nạp mã mẫu cho ngôn ngữ này">Mẫu Code</button>
+              </div>
               <button type="button" id="code-run-btn" class="btn-sm-action run">Chạy Code &rtrif;</button>
             </div>
             <textarea id="code-textarea" class="code-box" spellcheck="false"></textarea>

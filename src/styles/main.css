@@ -889,6 +889,49 @@ body {
   gap: 10px;
 }
 
+.code-topbar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.code-lang-selector-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-lang-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.code-lang-select {
+  background: #090d16;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.code-lang-select:hover, .code-lang-select:focus {
+  border-color: #f26f21;
+  box-shadow: 0 0 8px rgba(242, 111, 33, 0.35);
+}
+
+.code-lang-select option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
 .code-box-header {
   display: flex;
   justify-content: space-between;
