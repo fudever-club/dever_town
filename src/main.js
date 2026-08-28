@@ -42,8 +42,11 @@ function initGame() {
         let wardrobeConfig = user?.wardrobe_config || null;
         const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
         if (!wardrobeConfig && savedWardrobeRaw) {
-          try { wardrobeConfig = JSON.parse(savedWardrobeRaw); } catch (e) {}
-        } else if (wardrobeConfig) {
+          try {
+            const parsed = JSON.parse(savedWardrobeRaw);
+            if (parsed && typeof parsed === 'object') wardrobeConfig = parsed;
+          } catch (e) {}
+        } else if (wardrobeConfig && typeof wardrobeConfig === 'object') {
           try { localStorage.setItem('dever_wardrobe_config', JSON.stringify(wardrobeConfig)); } catch (e) {}
         }
 

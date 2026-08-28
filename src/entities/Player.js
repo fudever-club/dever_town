@@ -47,7 +47,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     super(scene, x, y, safeTextureKey, 0);
 
     this.name = options.name || 'Dever Member';
-    this.avatarId = (safeTextureKey === candidateKey) ? avatarId : 'dev_hoodie';
+    // Đồng bộ avatarId với actual texture key để animation key luôn khớp
+    this.avatarId = (scene && scene.textures.exists(resolvedTextureKey))
+      ? resolvedTextureKey.replace(/^char_/, '')
+      : 'dev_hoodie';
     this.wardrobeConfig = wardrobeConfig;
     this.role = options.role || 'guest';
     this.isCurrentPlayer = options.isCurrentPlayer || false;
@@ -135,7 +138,6 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   setCustomWardrobe(avatarId = 'custom_wardrobe', wardrobeConfig = null) {
-    this.avatarId = avatarId;
     if (wardrobeConfig) {
       this.wardrobeConfig = wardrobeConfig;
     }
@@ -159,12 +161,16 @@ export class Player extends Phaser.GameObjects.Sprite {
         if (this.scene.textures.exists(keyToUse)) {
           // Gán texture mới cho Sprite TRƯỚC
           this.setTexture(keyToUse, 0);
+          // Cập nhật avatarId để khớp với actual key (bỏ prefix 'char_')
+          // Vì animation được tạo với avatarId = actual key minus 'char_'
+          this.avatarId = keyToUse.replace(/^char_/, '');
           this.stopMovement();
           // Sau khi Sprite đã dùng texture mới, xóa texture cũ nếu là versioned
           TextureGenerator.cleanupOldKey(this.scene, logicalKey, oldActualKey);
         }
       } else if (this.scene.textures.exists(logicalKey)) {
         this.setTexture(logicalKey, 0);
+        this.avatarId = avatarId;
         this.stopMovement();
       }
     }
