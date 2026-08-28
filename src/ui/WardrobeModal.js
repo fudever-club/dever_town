@@ -251,7 +251,7 @@ export class WardrobeModal {
       outfitType: this.currentConfig.outfitType || 'hoodie',
       shirt: this.currentConfig.hoodieColor || '#f26f21',
       collarColor: this.currentConfig.collarColor || '#002147',
-      pants: this.currentConfig.outfitType === 'dress' ? '#38bdf8' : '#1e293b',
+      pants: (this.currentConfig.outfitType === 'aodai') ? '#ffffff' : ((this.currentConfig.outfitType === 'dress' || this.currentConfig.outfitType === 'sailor') ? '#38bdf8' : '#1e293b'),
       accessory: this.currentConfig.accessory || 'none'
     };
 

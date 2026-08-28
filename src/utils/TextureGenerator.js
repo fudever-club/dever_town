@@ -738,7 +738,7 @@ export class TextureGenerator {
       outfitType: wardrobeConfig.outfitType || 'hoodie',
       shirt: wardrobeConfig.hoodieColor || wardrobeConfig.outfitColor || '#f26f21',
       collarColor: wardrobeConfig.collarColor || '#002147',
-      pants: wardrobeConfig.pantsColor || (wardrobeConfig.outfitType === 'dress' ? '#38bdf8' : '#1e293b'),
+      pants: wardrobeConfig.pantsColor || (wardrobeConfig.outfitType === 'aodai' ? '#ffffff' : (wardrobeConfig.outfitType === 'dress' || wardrobeConfig.outfitType === 'sailor' ? '#38bdf8' : '#1e293b')),
       accessory: wardrobeConfig.accessory || 'none'
     };
 
@@ -789,20 +789,85 @@ export class TextureGenerator {
 
     const legOffset = frameIndex === 0 ? -2 : (frameIndex === 2 ? 2 : 0);
 
-    // 1. Chân & Quần / Váy
-    if (outfitType === 'dress') {
-      // Váy nữ sinh
+    // -------------------------------------------------------------
+    // 1. PHÂN TẦNG THÂN DƯỚI: CHÂN, QUẦN, VÁY & TÀ ÁO DÀI
+    // -------------------------------------------------------------
+    if (outfitType === 'aodai') {
+      // Quần lụa trắng Áo Dài truyền thống
+      ctx.fillStyle = '#ffffff';
+      if (direction === 'left' || direction === 'right') {
+        ctx.fillRect(x + 13 + legOffset, y + 22, 6, 8);
+      } else {
+        ctx.fillRect(x + 11, y + 22, 4, 7);
+        ctx.fillRect(x + 17, y + 22, 4, 7);
+      }
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(x + 10, y + 28, 5, 3);
+      ctx.fillRect(x + 17, y + 28, 5, 3);
+
+      // Tà Áo Dài mềm mại bay phấp phới
       ctx.fillStyle = shirt;
-      ctx.fillRect(x + 9, y + 20, 14, 4);
+      if (direction === 'down' || direction === 'up') {
+        ctx.fillRect(x + 9, y + 18, 14, 9);
+        // Xẻ tà bên hông
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fillRect(x + 15, y + 19, 2, 8);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 18, 11, 9);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 11, y + 18, 11, 9);
+      }
+    } else if (outfitType === 'dress' || outfitType === 'sailor' || outfitType === 'yukata') {
+      // Váy nữ sinh / Đầm / Kimono
+      ctx.fillStyle = shirt;
+      ctx.fillRect(x + 9, y + 19, 14, 6);
+      if (outfitType === 'sailor') {
+        // Viền sọc trắng chân váy
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + 9, y + 23, 14, 1);
+      } else if (outfitType === 'yukata') {
+        // Đai thắt lưng Obi
+        ctx.fillStyle = collarColor;
+        ctx.fillRect(x + 9, y + 18, 14, 3);
+      }
       // Chân
       ctx.fillStyle = skin;
-      ctx.fillRect(x + 11, y + 24, 3, 4);
-      ctx.fillRect(x + 18, y + 24, 3, 4);
+      ctx.fillRect(x + 11, y + 25, 3, 3);
+      ctx.fillRect(x + 18, y + 25, 3, 3);
       // Giày
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(x + 10, y + 28, 4, 3);
       ctx.fillRect(x + 18, y + 28, 4, 3);
+    } else if (outfitType === 'croptop') {
+      // Hở eo & Quần đùi ngắn thể thao / gym / bikini
+      ctx.fillStyle = skin;
+      ctx.fillRect(x + 11, y + 18, 10, 3);
+      ctx.fillStyle = pants;
+      ctx.fillRect(x + 10, y + 21, 12, 4);
+      // Chân trần & Giày
+      ctx.fillStyle = skin;
+      ctx.fillRect(x + 11, y + 25, 3, 3);
+      ctx.fillRect(x + 18, y + 25, 3, 3);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(x + 10, y + 28, 4, 3);
+      ctx.fillRect(x + 18, y + 28, 4, 3);
+    } else if (outfitType === 'wizard' || outfitType === 'cardigan' || outfitType === 'martial') {
+      // Áo choàng dài / Võ phục Vovinam
+      ctx.fillStyle = pants;
+      ctx.fillRect(x + 11, y + 22, 4, 7);
+      ctx.fillRect(x + 17, y + 22, 4, 7);
+      ctx.fillStyle = shirt;
+      ctx.fillRect(x + 9, y + 18, 14, 7);
+      if (outfitType === 'martial') {
+        // Đai vàng Vovinam
+        ctx.fillStyle = collarColor;
+        ctx.fillRect(x + 9, y + 19, 14, 2);
+      }
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + 10, y + 28, 5, 3);
+      ctx.fillRect(x + 17, y + 28, 5, 3);
     } else {
+      // Quần dài tiêu chuẩn
       ctx.fillStyle = pants;
       if (direction === 'left' || direction === 'right') {
         ctx.fillRect(x + 13 + legOffset, y + 22, 6, 8);
@@ -817,31 +882,66 @@ export class TextureGenerator {
       }
     }
 
-    // 2. Thân Áo (Áo Hoodie / Polo / Tee / Bomber / Jersey)
+    // -------------------------------------------------------------
+    // 2. THÂN ÁO & CHI TIẾT ĐỒ HỌA THEO PHONG CÁCH
+    // -------------------------------------------------------------
     ctx.fillStyle = shirt;
     ctx.fillRect(x + 10, y + 14, 12, 8);
 
     if (outfitType === 'polo') {
-      // Cổ áo Polo khác màu
+      // Cổ áo Polo chính khóa
       ctx.fillStyle = collarColor;
       ctx.fillRect(x + 13, y + 14, 6, 2);
       ctx.fillRect(x + 15, y + 16, 2, 3);
-    } else if (outfitType === 'jersey') {
-      // Số 10 thể thao
+    } else if (outfitType === 'sailor') {
+      // Nơ cổ áo thủy thủ Sailor Anime
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(x + 14, y + 16, 4, 4);
-    } else if (outfitType === 'bomber') {
-      // Đường khóa kéo Cyber
-      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(x + 11, y + 14, 10, 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x + 15, y + 15, 2, 3);
+    } else if (outfitType === 'suit') {
+      // Áo sơ mi trắng + Cà vạt / Ve áo Blazer
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 14, y + 14, 4, 4);
+      ctx.fillStyle = collarColor;
+      ctx.fillRect(x + 15, y + 15, 2, 5);
+    } else if (outfitType === 'jersey') {
+      // Sọc áo số thể thao
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 14, y + 15, 4, 4);
+      ctx.fillStyle = shirt;
+      ctx.fillRect(x + 15, y + 16, 2, 2);
+    } else if (outfitType === 'bomber' || outfitType === 'biker') {
+      // Đường khóa kéo kim loại Cyber Bomber / Biker
+      ctx.fillStyle = collarColor;
       ctx.fillRect(x + 15, y + 14, 2, 8);
+    } else if (outfitType === 'barista') {
+      // Tạp dề nâu Barista chuyên nghiệp
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x + 11, y + 15, 10, 7);
+      ctx.fillStyle = collarColor;
+      ctx.fillRect(x + 14, y + 17, 4, 3);
+    } else if (outfitType === 'mecha') {
+      // Lõi năng lượng phát sáng Mecha Suit
+      ctx.fillStyle = collarColor;
+      ctx.fillRect(x + 14, y + 16, 4, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 15, y + 17, 2, 1);
+    } else if (outfitType === 'frog') {
+      // Yếm bụng tròn Cóc Vàng Mascot
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(x + 12, y + 15, 8, 6);
     } else {
-      // Viền áo
+      // Viền gấu áo
       ctx.fillStyle = 'rgba(0,0,0,0.15)';
       ctx.fillRect(x + 10, y + 21, 12, 1);
     }
 
-    // 3. Tay
-    ctx.fillStyle = (outfitType === 'tee' || outfitType === 'dress') ? skin : shirt;
+    // -------------------------------------------------------------
+    // 3. TAY ÁO & TAY NGƯỜI
+    // -------------------------------------------------------------
+    const isShortSleeve = outfitType === 'tee' || outfitType === 'dress' || outfitType === 'croptop' || outfitType === 'polo';
+    ctx.fillStyle = isShortSleeve ? skin : shirt;
     if (direction === 'down') {
       ctx.fillRect(x + 8, y + 15 - legOffset, 2, 6);
       ctx.fillRect(x + 22, y + 15 + legOffset, 2, 6);
@@ -854,11 +954,12 @@ export class TextureGenerator {
       ctx.fillRect(x + 14 + legOffset, y + 16, 4, 5);
     }
 
-    // 4. Đầu & Mặt
+    // -------------------------------------------------------------
+    // 4. KHUÔN MẶT & ĐÔI MẮT
+    // -------------------------------------------------------------
     ctx.fillStyle = skin;
     ctx.fillRect(x + 11, y + 6, 10, 8);
 
-    // 5. Mắt
     ctx.fillStyle = '#0f172a';
     if (direction === 'down') {
       ctx.fillRect(x + 13, y + 10, 2, 2);
@@ -867,7 +968,6 @@ export class TextureGenerator {
       ctx.fillRect(x + 13, y + 10, 1, 1);
       ctx.fillRect(x + 17, y + 10, 1, 1);
       if (gender === 'female') {
-        // Mi mắt nữ xinh xắn
         ctx.fillStyle = '#f472b6';
         ctx.fillRect(x + 12, y + 12, 2, 1);
         ctx.fillRect(x + 18, y + 12, 2, 1);
@@ -882,42 +982,62 @@ export class TextureGenerator {
       ctx.fillRect(x + 20, y + 10, 1, 1);
     }
 
-    // 6. Kiểu Tóc & Màu Tóc (Hairstyle & Hair Color)
+    // -------------------------------------------------------------
+    // 5. BỘ SƯU TẬP 20 KIỂU TÓC THỜI THƯỢNG (20 HAIRSTYLES)
+    // -------------------------------------------------------------
     ctx.fillStyle = hair;
-    if (hairstyle === 'long' || (gender === 'female' && hairstyle !== 'short' && hairstyle !== 'bob')) {
-      // Tóc dài xõa bồng bềnh
+
+    if (hairstyle === 'long') {
+      // 1. Tóc Dài Suôn Mượt Nữ Sinh
       if (direction === 'down') {
         ctx.fillRect(x + 10, y + 3, 12, 4);
-        ctx.fillRect(x + 9, y + 6, 3, 11);
-        ctx.fillRect(x + 20, y + 6, 3, 11);
+        ctx.fillRect(x + 9, y + 6, 3, 12);
+        ctx.fillRect(x + 20, y + 6, 3, 12);
       } else if (direction === 'up') {
-        ctx.fillRect(x + 9, y + 3, 14, 14);
+        ctx.fillRect(x + 9, y + 3, 14, 15);
       } else if (direction === 'left') {
         ctx.fillRect(x + 10, y + 3, 12, 4);
-        ctx.fillRect(x + 17, y + 5, 5, 12);
+        ctx.fillRect(x + 17, y + 5, 5, 13);
       } else if (direction === 'right') {
         ctx.fillRect(x + 10, y + 3, 12, 4);
-        ctx.fillRect(x + 10, y + 5, 5, 12);
+        ctx.fillRect(x + 10, y + 5, 5, 13);
       }
     } else if (hairstyle === 'ponytail') {
-      // Tóc đuôi ngựa
+      // 2. Tóc Đuôi Ngựa Năng Động
       if (direction === 'down') {
         ctx.fillRect(x + 10, y + 4, 12, 4);
         ctx.fillRect(x + 10, y + 6, 2, 4);
         ctx.fillRect(x + 20, y + 6, 2, 4);
-        ctx.fillRect(x + 22, y + 3, 3, 6);
+        ctx.fillRect(x + 22, y + 3, 3, 7);
       } else if (direction === 'up') {
         ctx.fillRect(x + 10, y + 3, 12, 9);
-        ctx.fillRect(x + 15, y + 1, 3, 6);
+        ctx.fillRect(x + 15, y + 1, 3, 7);
       } else if (direction === 'left') {
         ctx.fillRect(x + 10, y + 4, 12, 4);
-        ctx.fillRect(x + 21, y + 5, 4, 5);
+        ctx.fillRect(x + 21, y + 4, 4, 6);
       } else if (direction === 'right') {
         ctx.fillRect(x + 10, y + 4, 12, 4);
-        ctx.fillRect(x + 7, y + 5, 4, 5);
+        ctx.fillRect(x + 7, y + 4, 4, 6);
+      }
+    } else if (hairstyle === 'twintails') {
+      // 3. Tóc Hai Chùm Twintails Anime
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 7, y + 4, 3, 9);
+        ctx.fillRect(x + 22, y + 4, 3, 9);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 9, y + 3, 14, 9);
+        ctx.fillRect(x + 7, y + 4, 3, 9);
+        ctx.fillRect(x + 22, y + 4, 3, 9);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 19, y + 4, 4, 9);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 9, y + 4, 4, 9);
       }
     } else if (hairstyle === 'bob') {
-      // Tóc Bob ngang vai
+      // 4. Tóc Bob Ngắn Ngang Cằm
       if (direction === 'down') {
         ctx.fillRect(x + 10, y + 4, 12, 4);
         ctx.fillRect(x + 9, y + 6, 3, 7);
@@ -931,39 +1051,166 @@ export class TextureGenerator {
         ctx.fillRect(x + 10, y + 4, 12, 4);
         ctx.fillRect(x + 11, y + 6, 5, 7);
       }
+    } else if (hairstyle === 'wavy_long') {
+      // 5. Tóc Uốn Sóng Nước Bồng Bềnh
+      if (direction === 'down') {
+        ctx.fillRect(x + 9, y + 3, 14, 4);
+        ctx.fillRect(x + 8, y + 6, 4, 12);
+        ctx.fillRect(x + 20, y + 6, 4, 12);
+        ctx.fillRect(x + 7, y + 12, 2, 5);
+        ctx.fillRect(x + 23, y + 12, 2, 5);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 8, y + 3, 16, 15);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 9, y + 3, 14, 4);
+        ctx.fillRect(x + 16, y + 5, 6, 14);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 9, y + 3, 14, 4);
+        ctx.fillRect(x + 10, y + 5, 6, 14);
+      }
+    } else if (hairstyle === 'space_buns') {
+      // 6. Tóc Búi Hai Bên Na Tra / Pucca
+      if (direction === 'down' || direction === 'up') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 8, y + 1, 4, 4);
+        ctx.fillRect(x + 20, y + 1, 4, 4);
+      } else if (direction === 'left') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 18, y + 1, 4, 4);
+      } else if (direction === 'right') {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 10, y + 1, 4, 4);
+      }
+    } else if (hairstyle === 'hime_cut') {
+      // 7. Tóc Hime Mái Bằng Công Chúa
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 6);
+        ctx.fillRect(x + 9, y + 7, 3, 5);
+        ctx.fillRect(x + 20, y + 7, 3, 5);
+        ctx.fillRect(x + 8, y + 12, 2, 6);
+        ctx.fillRect(x + 22, y + 12, 2, 6);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 8, y + 3, 16, 15);
+      } else {
+        ctx.fillRect(x + 10, y + 3, 12, 5);
+        ctx.fillRect(x + 16, y + 6, 5, 12);
+      }
+    } else if (hairstyle === 'braids') {
+      // 8. Tóc Tết Bím Hai Bên
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 9, y + 7, 2, 3);
+        ctx.fillRect(x + 21, y + 7, 2, 3);
+        ctx.fillRect(x + 10, y + 10, 2, 4);
+        ctx.fillRect(x + 20, y + 10, 2, 4);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 9, y + 3, 14, 9);
+        ctx.fillRect(x + 10, y + 11, 3, 5);
+        ctx.fillRect(x + 19, y + 11, 3, 5);
+      } else {
+        ctx.fillRect(x + 10, y + 3, 12, 4);
+        ctx.fillRect(x + 16, y + 6, 4, 9);
+      }
+    } else if (hairstyle === 'pixie_cut') {
+      // 9. Tóc Pixie Nữ Ngắn Cá Tính
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 4, 12, 3);
+        ctx.fillRect(x + 10, y + 6, 3, 3);
+        ctx.fillRect(x + 20, y + 6, 2, 2);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 10, y + 4, 12, 7);
+      } else {
+        ctx.fillRect(x + 10, y + 4, 12, 4);
+        ctx.fillRect(x + 17, y + 6, 4, 4);
+      }
+    } else if (hairstyle === 'afro_curly') {
+      // 10. Tóc Xoăn Xù Hippie Bồng Bềnh
+      ctx.fillRect(x + 8, y + 1, 16, 8);
+      ctx.fillRect(x + 7, y + 4, 18, 6);
     } else if (hairstyle === 'parted') {
-      // Tóc mái rẽ ngôi nam lãng tử
+      // 11. Tóc Mái 7/3 Lãng Tử Nam
       if (direction === 'down') {
         ctx.fillRect(x + 10, y + 3, 12, 4);
         ctx.fillRect(x + 10, y + 5, 3, 4);
         ctx.fillRect(x + 19, y + 5, 3, 3);
       } else if (direction === 'up') {
         ctx.fillRect(x + 10, y + 3, 12, 9);
-      } else if (direction === 'left') {
+      } else {
         ctx.fillRect(x + 10, y + 3, 12, 4);
-        ctx.fillRect(x + 18, y + 5, 3, 5);
-      } else if (direction === 'right') {
-        ctx.fillRect(x + 10, y + 3, 12, 4);
-        ctx.fillRect(x + 11, y + 5, 3, 5);
+        ctx.fillRect(x + 17, y + 5, 4, 5);
       }
+    } else if (hairstyle === 'undercut') {
+      // 12. Tóc Undercut Vuốt Ngược
+      if (direction === 'down') {
+        ctx.fillRect(x + 11, y + 2, 10, 4);
+        ctx.fillRect(x + 12, y + 6, 8, 2);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 11, y + 2, 10, 7);
+      } else {
+        ctx.fillRect(x + 11, y + 2, 10, 4);
+        ctx.fillRect(x + 15, y + 5, 4, 3);
+      }
+    } else if (hairstyle === 'curly_perm') {
+      // 13. Tóc Xoăn Xù Mì Hàn Quốc
+      ctx.fillRect(x + 9, y + 2, 14, 5);
+      ctx.fillRect(x + 9, y + 6, 3, 4);
+      ctx.fillRect(x + 20, y + 6, 3, 4);
+    } else if (hairstyle === 'bowl_cut') {
+      // 14. Tóc Đầu Nấm Dễ Thương (Bowl Cut)
+      if (direction === 'down') {
+        ctx.fillRect(x + 10, y + 3, 12, 6);
+      } else if (direction === 'up') {
+        ctx.fillRect(x + 9, y + 3, 14, 9);
+      } else {
+        ctx.fillRect(x + 10, y + 3, 12, 6);
+      }
+    } else if (hairstyle === 'man_bun') {
+      // 15. Tóc Búi Củ Tỏi Samurai
+      if (direction === 'down' || direction === 'up') {
+        ctx.fillRect(x + 10, y + 4, 12, 5);
+        ctx.fillRect(x + 14, y + 1, 4, 3);
+      } else {
+        ctx.fillRect(x + 10, y + 4, 12, 5);
+        ctx.fillRect(x + 18, y + 2, 3, 3);
+      }
+    } else if (hairstyle === 'spiky_anime') {
+      // 16. Tóc Dựng Anime Gai Nhọn Shonen
+      ctx.fillRect(x + 10, y + 4, 12, 4);
+      ctx.fillRect(x + 11, y + 1, 3, 3);
+      ctx.fillRect(x + 15, y + 0, 3, 4);
+      ctx.fillRect(x + 19, y + 1, 3, 3);
+    } else if (hairstyle === 'dreadlocks') {
+      // 17. Tóc Dreadlocks Hip-Hop
+      ctx.fillRect(x + 9, y + 3, 14, 4);
+      ctx.fillRect(x + 8, y + 6, 3, 8);
+      ctx.fillRect(x + 21, y + 6, 3, 8);
+    } else if (hairstyle === 'wolf_cut') {
+      // 18. Tóc Wolf Cut Layered Bụi Bặm
+      ctx.fillRect(x + 9, y + 3, 14, 4);
+      ctx.fillRect(x + 9, y + 6, 3, 6);
+      ctx.fillRect(x + 20, y + 6, 3, 6);
+      ctx.fillRect(x + 8, y + 10, 2, 4);
+      ctx.fillRect(x + 22, y + 10, 2, 4);
+    } else if (hairstyle === 'buzz_cut') {
+      // 19. Tóc Đầu Đinh Huấn Luyện (Buzz Cut)
+      ctx.fillRect(x + 11, y + 5, 10, 2);
     } else {
-      // Tóc ngắn nam thể thao mặc định
+      // 20. Tóc Ngắn Thể Thao Mặc Định (Short Crop)
       if (direction === 'down') {
         ctx.fillRect(x + 10, y + 4, 12, 4);
         ctx.fillRect(x + 10, y + 6, 2, 3);
         ctx.fillRect(x + 20, y + 6, 2, 3);
       } else if (direction === 'up') {
         ctx.fillRect(x + 10, y + 4, 12, 9);
-      } else if (direction === 'left') {
+      } else {
         ctx.fillRect(x + 10, y + 4, 12, 4);
-        ctx.fillRect(x + 18, y + 6, 4, 6);
-      } else if (direction === 'right') {
-        ctx.fillRect(x + 10, y + 4, 12, 4);
-        ctx.fillRect(x + 10, y + 6, 4, 6);
+        ctx.fillRect(x + 17, y + 6, 4, 5);
       }
     }
 
-    // 7. Phụ kiện (Accessories Layer)
+    // -------------------------------------------------------------
+    // 6. PHỤ KIỆN ĐẶC SẮC (ACCESSORIES LAYER)
+    // -------------------------------------------------------------
     if (accessory === 'glasses_smart' && direction !== 'up') {
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 1;
@@ -987,6 +1234,13 @@ export class TextureGenerator {
       ctx.fillRect(x + 19, y + 2, 4, 3);
       ctx.fillRect(x + 18, y + 3, 2, 2);
       ctx.fillRect(x + 22, y + 3, 2, 2);
+    } else if (accessory === 'cat_ears') {
+      ctx.fillStyle = '#f472b6';
+      ctx.fillRect(x + 10, y + 1, 3, 3);
+      ctx.fillRect(x + 19, y + 1, 3, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + 11, y + 2, 1, 1);
+      ctx.fillRect(x + 20, y + 2, 1, 1);
     } else if (accessory === 'frog_crown') {
       ctx.fillStyle = '#fbbf24';
       ctx.fillRect(x + 12, y + 1, 8, 3);
