@@ -426,19 +426,23 @@ export class InteractiveModal {
       return;
     }
 
-    // 2. Các ngôn ngữ khác (C, C++, Java, Pascal, Python, Go, Rust, C#, PHP) qua Piston Compiler API
+    // 2. Các ngôn ngữ khác (C, C++, Java, Pascal, Python, Go, Rust, C#, PHP) qua Wandbox Compiler Engine
     try {
       const startTime = performance.now();
-      const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+      const response = await fetch('https://wandbox.org/api/compile.json', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          language: langDef.pistonLang,
-          version: '*',
-          files: [{ content: code }]
-        })
+          compiler: langDef.wandboxCompiler || 'cpython-3.12.7',
+          code: code
+        }),
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
       const elapsed = (performance.now() - startTime).toFixed(0);
 
       if (!response.ok) {
@@ -446,19 +450,37 @@ export class InteractiveModal {
       }
 
       const result = await response.json();
-      const runData = result.run || {};
-      const stdout = runData.stdout || '';
-      const stderr = runData.stderr || '';
-      const exitCode = runData.code !== undefined ? runData.code : 0;
+      const status = result.status; // "0" is success
+      const stdout = result.program_output || '';
+      const stderr = result.program_error || '';
+      const compilerError = result.compiler_error || '';
+      const compilerMsg = result.compiler_message || '';
 
-      let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Exit Code: ${exitCode}) ===\n`;
-      if (stdout) displayText += stdout;
-      if (stderr) displayText += (stdout ? '\n\n' : '') + `⚠️ STDERR / Warning:\n${stderr}`;
-      if (!stdout && !stderr) displayText += 'Chương trình chạy xong (Exit Code 0, không có output).';
+      let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Status: ${status === '0' ? 'Thành công (0)' : 'Lỗi (' + status + ')'}) ===\n`;
+
+      if (compilerError) {
+        displayText += `❌ LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
+      } else if (compilerMsg && compilerMsg.includes('warning')) {
+        displayText += `⚠️ CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
+      }
+
+      if (stdout) {
+        displayText += stdout;
+      }
+      if (stderr) {
+        displayText += (stdout ? '\n\n' : '') + `⚠️ RUNTIME STDERR:\n${stderr}`;
+      }
+      if (!stdout && !stderr && !compilerError) {
+        displayText += 'Chương trình thực thi hoàn tất không có output.';
+      }
 
       outputEl.textContent = displayText;
     } catch (err) {
-      outputEl.textContent = `⚠️ Lỗi kết nối máy chủ biên dịch (${langDef.name}): ${err.message}\n💡 Mẹo: Vui lòng kiểm tra kết nối mạng Internet. Đối với JavaScript, bạn có thể chạy Offline 100%.`;
+      if (err.name === 'AbortError') {
+        outputEl.textContent = `⏱️ Quá thời gian chờ (Timeout 25s): Trình biên dịch ${langDef.name} mất quá nhiều thời gian để phản hồi.`;
+      } else {
+        outputEl.textContent = `⚠️ Lỗi kết nối máy chủ biên dịch (${langDef.name}): ${err.message}\n💡 Mẹo: Vui lòng kiểm tra kết nối mạng Internet. Đối với JavaScript, bạn có thể chạy Offline 100%.`;
+      }
     } finally {
       if (runBtn) {
         runBtn.disabled = false;

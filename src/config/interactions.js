@@ -27,7 +27,7 @@ export const INTERACTION_PRESETS = {
         id: 'javascript',
         name: 'JavaScript (Node.js)',
         badge: 'JS',
-        pistonLang: 'javascript',
+        wandboxCompiler: 'nodejs-20.17.0',
         sample: `// 🚀 FU-DEVER Code Sandbox - JavaScript
 const club = {
   name: 'FU-DEVER',
@@ -47,7 +47,7 @@ console.log("Slogan:", club.slogan);`
         id: 'python',
         name: 'Python 3',
         badge: 'Python',
-        pistonLang: 'python',
+        wandboxCompiler: 'cpython-3.12.7',
         sample: `# 🐍 FU-DEVER Code Sandbox - Python 3
 club = {
     "name": "FU-DEVER",
@@ -67,7 +67,7 @@ print(f"Tôn chỉ hoạt động: {club['slogan']}")`
         id: 'c',
         name: 'C (GCC)',
         badge: 'C',
-        pistonLang: 'c',
+        wandboxCompiler: 'gcc-13.2.0-c',
         sample: `// 🇨 FU-DEVER Code Sandbox - Ngôn ngữ C
 #include <stdio.h>
 
@@ -85,7 +85,7 @@ int main() {
         id: 'cpp',
         name: 'C++ (G++)',
         badge: 'C++',
-        pistonLang: 'cpp',
+        wandboxCompiler: 'gcc-13.2.0',
         sample: `// ⚡ FU-DEVER Code Sandbox - C++ (ICPC & Competitive Programming)
 #include <iostream>
 #include <vector>
@@ -109,9 +109,9 @@ int main() {
         id: 'java',
         name: 'Java (OpenJDK)',
         badge: 'Java',
-        pistonLang: 'java',
+        wandboxCompiler: 'openjdk-jdk-22+36',
         sample: `// ☕ FU-DEVER Code Sandbox - Java (SWE201c & OOP)
-public class Main {
+class Main {
     public static void main(String[] args) {
         System.out.println("=== FU-DEVER JAVA SANDBOX ===");
         System.out.println("Chao mung ban den voi bo mon SWE201c & Lap trinh huong doi tuong (OOP)!");
@@ -124,7 +124,7 @@ public class Main {
         id: 'pascal',
         name: 'Pascal (Free Pascal)',
         badge: 'Pascal',
-        pistonLang: 'pascal',
+        wandboxCompiler: 'fpc-3.2.2',
         sample: `// 📜 FU-DEVER Code Sandbox - Pascal (Free Pascal Compiler)
 program FUDeverPascal;
 
@@ -140,7 +140,7 @@ end.`
         id: 'go',
         name: 'Go (Golang)',
         badge: 'Go',
-        pistonLang: 'go',
+        wandboxCompiler: 'go-1.23.2',
         sample: `// 🔷 FU-DEVER Code Sandbox - Go
 package main
 
@@ -156,7 +156,7 @@ func main() {
         id: 'rust',
         name: 'Rust',
         badge: 'Rust',
-        pistonLang: 'rust',
+        wandboxCompiler: 'rust-1.82.0',
         sample: `// 🦀 FU-DEVER Code Sandbox - Rust
 fn main() {
     println!("=== FU-DEVER RUST SANDBOX ===");
@@ -168,7 +168,7 @@ fn main() {
         id: 'csharp',
         name: 'C# (.NET / Mono)',
         badge: 'C#',
-        pistonLang: 'csharp',
+        wandboxCompiler: 'mono-6.12.0.199',
         sample: `// 🟣 FU-DEVER Code Sandbox - C#
 using System;
 
@@ -184,7 +184,7 @@ class Program {
         id: 'php',
         name: 'PHP',
         badge: 'PHP',
-        pistonLang: 'php',
+        wandboxCompiler: 'php-8.3.12',
         sample: `<?php
 // 🐘 FU-DEVER Code Sandbox - PHP
 echo "=== FU-DEVER PHP RUNNER ===\\n";
