@@ -15,14 +15,17 @@ class PlayerManager {
   }
 
   addPlayer(socketId, data = {}, authUser = null) {
+    const wardrobeConfig = data.wardrobeConfig || (authUser ? authUser.wardrobeConfig : null);
+    const equippedItemId = data.equippedItemId || (authUser ? authUser.equippedItemId : null);
+
     const player = {
       id: socketId,
       userId: authUser ? authUser.id : (data.userId || null),
       name: (authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`)).normalize('NFC'),
-      avatarId: authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie'),
+      avatarId: wardrobeConfig ? socketId : (authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie')),
       role: authUser ? authUser.role : (data.role || 'guest'),
-      equippedItemId: data.equippedItemId || null,
-      wardrobeConfig: data.wardrobeConfig || null,
+      equippedItemId: equippedItemId,
+      wardrobeConfig: wardrobeConfig,
       x: data.x || 400,
       y: data.y || 350,
       direction: data.direction || 'down',

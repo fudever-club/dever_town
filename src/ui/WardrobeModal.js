@@ -30,6 +30,11 @@ export class WardrobeModal {
 
   loadFromStorage() {
     try {
+      const user = authService?.getUser();
+      if (user && user.wardrobe_config) {
+        this.currentConfig = { ...this.currentConfig, ...user.wardrobe_config };
+        return;
+      }
       const saved = localStorage.getItem('dever_wardrobe_config');
       if (saved) {
         this.currentConfig = { ...this.currentConfig, ...JSON.parse(saved) };
@@ -83,6 +88,7 @@ export class WardrobeModal {
 
   show() {
     if (!this.modalEl) return;
+    this.loadFromStorage();
     this.modalEl.classList.remove('hidden');
     this.render();
   }

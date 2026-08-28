@@ -107,11 +107,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.createEquippedItemDisplay();
   }
 
-  setCustomWardrobe(avatarId) {
+  setCustomWardrobe(avatarId = 'custom_wardrobe', wardrobeConfig = null) {
     this.avatarId = avatarId;
+    if (wardrobeConfig) {
+      this.wardrobeConfig = wardrobeConfig;
+    }
     const textureKey = `char_${avatarId}`;
-    if (this.scene.textures.exists(textureKey)) {
+    if (this.scene && this.scene.textures.exists(textureKey)) {
       this.setTexture(textureKey, 0);
+      this.stopMovement();
     }
   }
 
@@ -187,18 +191,26 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
   }
 
-  updateProfile({ name, avatarId, role, equippedItemId }) {
+  updateProfile({ name, avatarId, role, equippedItemId, wardrobeConfig }) {
     if (name) this.name = name;
-    if (avatarId && avatarId !== this.avatarId) {
-      this.avatarId = avatarId;
-      const textureKey = `char_${avatarId}`;
-      if (this.scene.textures.exists(textureKey)) {
-        this.setTexture(textureKey, 0);
-      }
-    }
     if (role) this.role = role;
     if (equippedItemId !== undefined) {
       this.setEquippedItem(equippedItemId);
+    }
+
+    if (wardrobeConfig) {
+      this.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
+    } else if (avatarId && avatarId !== this.avatarId) {
+      const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+      if (savedWardrobeRaw && this.avatarId === 'custom_wardrobe') {
+        // Đang sử dụng custom wardrobe, giữ nguyên avatarId
+      } else {
+        this.avatarId = avatarId;
+        const textureKey = `char_${avatarId}`;
+        if (this.scene && this.scene.textures.exists(textureKey)) {
+          this.setTexture(textureKey, 0);
+        }
+      }
     }
     this.createNameTag();
   }
@@ -207,9 +219,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (this.body) {
       this.body.setVelocity(0, 0);
       const idleAnim = `idle_${this.currentDirection}_${this.avatarId}`;
-      if (this.scene.anims.exists(idleAnim)) {
-        this.anims.play(idleAnim, true);
-      }
+      try {
+        if (this.scene?.anims?.exists(idleAnim)) {
+          this.anims.play(idleAnim, true);
+        }
+      } catch (e) {}
     }
   }
 

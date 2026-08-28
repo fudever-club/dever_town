@@ -11,7 +11,9 @@ export function setupSocketHandler(io) {
           id: user.id,
           displayName: user.display_name,
           avatarId: user.avatar_id,
-          role: user.role
+          role: user.role,
+          wardrobeConfig: user.wardrobe_config,
+          equippedItemId: user.equipped_item_id
         };
       } else {
         socket.authUser = null;

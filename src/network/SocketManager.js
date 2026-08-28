@@ -56,10 +56,18 @@ export class SocketManager {
       }
 
       if (this.scene.player) {
+        const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+        let wardrobeConfig = null;
+        if (savedWardrobeRaw) {
+          try { wardrobeConfig = JSON.parse(savedWardrobeRaw); } catch (e) {}
+        }
+
         this.join({
           name: this.scene.player.name,
           avatarId: this.scene.player.avatarId,
           role: this.scene.player.role,
+          equippedItemId: this.scene.player.equippedItemId,
+          wardrobeConfig: wardrobeConfig,
           roomId: this.scene.currentRoomId || 'main_hall',
           x: this.scene.player.x,
           y: this.scene.player.y
@@ -115,6 +123,8 @@ export class SocketManager {
       name: options.name || 'Dever Member',
       avatarId: options.avatarId || 'dev_hoodie',
       role: options.role || 'guest',
+      equippedItemId: options.equippedItemId || null,
+      wardrobeConfig: options.wardrobeConfig || null,
       roomId: options.roomId || 'main_hall',
       x: Math.round(options.x || 320),
       y: Math.round(options.y || 280),

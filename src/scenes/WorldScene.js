@@ -46,10 +46,22 @@ export class WorldScene extends Phaser.Scene {
     const spawnX = mapData.spawnPoint.x;
     const spawnY = mapData.spawnPoint.y;
 
+    let wardrobeConfig = user?.wardrobe_config || null;
+    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+    if (!wardrobeConfig && savedWardrobeRaw) {
+      try { wardrobeConfig = JSON.parse(savedWardrobeRaw); } catch (e) {}
+    } else if (wardrobeConfig) {
+      try { localStorage.setItem('dever_wardrobe_config', JSON.stringify(wardrobeConfig)); } catch (e) {}
+    }
+
     const initialName = user ? (user.display_name || user.displayName) : (localStorage.getItem('dever_nickname') || 'Dever Member');
-    const initialAvatar = user ? (user.avatar_id || user.avatarId) : 'dev_hoodie';
     const initialRole = user ? user.role : (authService.isLoggedIn() ? 'dev' : 'guest');
-    const initialEquipped = localStorage.getItem('dever_equipped_item') || null;
+    const initialEquipped = (user && user.equipped_item_id) || localStorage.getItem('dever_equipped_item') || null;
+    const initialAvatar = wardrobeConfig ? 'custom_wardrobe' : (user ? (user.avatar_id || user.avatarId) : 'dev_hoodie');
+
+    if (wardrobeConfig) {
+      TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+    }
 
     this.player = new Player(this, spawnX, spawnY, {
       name: initialName,
@@ -59,14 +71,8 @@ export class WorldScene extends Phaser.Scene {
       isCurrentPlayer: true
     });
 
-    // Tự động khôi phục trang phục tùy chỉnh từ Database / LocalStorage nếu có
-    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
-    if (savedWardrobeRaw) {
-      try {
-        const wardrobeConfig = JSON.parse(savedWardrobeRaw);
-        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
-        this.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
-      } catch (e) {}
+    if (wardrobeConfig) {
+      this.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
     }
 
     // 2. Khởi tạo Controllers & Managers
