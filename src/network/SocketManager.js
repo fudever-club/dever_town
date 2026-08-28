@@ -148,11 +148,46 @@ export class SocketManager {
     });
 
     // 10. REAL-TIME DEVICE APPROVAL: Nhận yêu cầu xác nhận khi thiết bị mới muốn đăng nhập
-    this.socket.on('deviceLoginPrompt', (data) => {
-      console.log('🛡️ [Device Approval Prompt]:', data);
+    this.socket.on('deviceTransferPrompt', (data) => {
+      console.log('🛡️ [Device Transfer Prompt]:', data);
       if (this.approvalModal) {
         this.approvalModal.show(data);
       }
+    });
+
+    // 11. THIẾT BỊ MỚI: Hiển thị màn hình chờ khi đang đợi máy cũ phê duyệt
+    this.socket.on('waitingForApproval', (data) => {
+      console.log('⏳ [Waiting For Approval]:', data);
+      if (this.approvalModal) {
+        this.approvalModal.showWaitingNotice(data.message);
+      }
+    });
+
+    // 12. THIẾT BỊ MỚI: Đã được phê duyệt vào game thành công
+    this.socket.on('deviceTransferApproved', () => {
+      console.log('🎉 [Device Transfer Approved]');
+      if (this.approvalModal) {
+        this.approvalModal.hideWaitingNotice();
+      }
+    });
+
+    // 13. THIẾT BỊ MỚI: Bị từ chối bởi máy cũ
+    this.socket.on('deviceTransferDenied', (data) => {
+      console.warn('🚫 [Device Transfer Denied]:', data);
+      if (this.approvalModal) {
+        this.approvalModal.hideWaitingNotice();
+      }
+      alert(data.message || 'Yêu cầu chuyển phiên chơi đã bị từ chối!');
+      authService.logout();
+      window.location.reload();
+    });
+
+    // 14. THIẾT BỊ CŨ: Đã chuyển giao phiên chơi thành công sang máy mới
+    this.socket.on('sessionHandoffSuccess', (data) => {
+      console.info('🚪 [Session Handoff Success]:', data);
+      alert(data.message || 'Phiên chơi của bạn đã được chuyển thành công sang thiết bị mới!');
+      authService.logout();
+      window.location.reload();
     });
   }
 
