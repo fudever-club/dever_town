@@ -440,80 +440,567 @@ export const ROOM_SLIDE_PRESETS = [
     id: 'main_intro',
     room: 'main_hall',
     roomName: 'Tòa Alpha',
-    title: '🌟 Giới Thiệu Tổng Quan FU-DEVER & FUDA',
-    desc: 'Lịch sử 2017, Sứ mệnh "Code your dream", 4 Trụ cột chuyên môn & Cơ cấu 4 ban',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Giới Thiệu Tổng Quan FU-DEVER',
+    desc: 'Lịch sử, Sứ mệnh, 4 Trụ cột và Cơ cấu CLB',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)',
+        content: `
+          <div style="text-align:center;padding:20px 0">
+            <div style="font-size:56px;margin-bottom:12px">🦊</div>
+            <h1 style="font-size:2rem;font-weight:900;color:#f26f21;margin:0 0 8px">FU-DEVER</h1>
+            <p style="font-size:1.1rem;color:#38bdf8;font-weight:700;margin:0 0 16px">CLB Lập trình FPT University Đà Nẵng</p>
+            <div style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);border-radius:12px;padding:16px 24px;display:inline-block">
+              <p style="color:#fbbf24;font-size:0.95rem;font-weight:700;margin:0">&ldquo;WORK HARD — PLAY HARD&rdquo;</p>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#38bdf8;font-size:1.4rem;font-weight:800;margin:0 0 16px">📅 Lịch Sử Hình Thành</h2>
+          <div style="display:grid;gap:10px">
+            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #38bdf8;padding:12px 16px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">2017</strong> <span style="color:#e2e8f0">&#8212; Thành lập tại FPT University Hà Nội, tiền thân là &ldquo;Dev Club&rdquo;</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #f26f21;padding:12px 16px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">2020</strong> <span style="color:#e2e8f0">&#8212; Mở rộng ra FPT Đà Nẵng (FUDA) với tên chính thức FU-DEVER</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #10b981;padding:12px 16px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">2024+</strong> <span style="color:#e2e8f0">&#8212; 50+ thành viên, 20+ giải thưởng quốc gia và quốc tế</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
+        content: `
+          <h2 style="color:#c084fc;font-size:1.4rem;font-weight:800;margin:0 0 16px">🎯 4 Trụ Cột Chuyên Môn</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:rgba(242,111,33,0.12);border:1px solid rgba(242,111,33,0.3);border-radius:10px;padding:14px;text-align:center">
+              <div style="font-size:28px">🎮</div>
+              <strong style="color:#f26f21;font-size:0.9rem">2D Game Dev</strong>
+              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Phaser 3, Unity, Godot</p>
+            </div>
+            <div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:14px;text-align:center">
+              <div style="font-size:28px">🌐</div>
+              <strong style="color:#38bdf8;font-size:0.9rem">Web App</strong>
+              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">React, Next.js, Node.js</p>
+            </div>
+            <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:14px;text-align:center">
+              <div style="font-size:28px">📱</div>
+              <strong style="color:#10b981;font-size:0.9rem">Mobile App</strong>
+              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Flutter, React Native</p>
+            </div>
+            <div style="background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);border-radius:10px;padding:14px;text-align:center">
+              <div style="font-size:28px">🤖</div>
+              <strong style="color:#c084fc;font-size:0.9rem">Model AI</strong>
+              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Python, TensorFlow, ML</p>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.4rem;font-weight:800;margin:0 0 16px">🏢 Cơ Cấu Tổ Chức</h2>
+          <div style="display:grid;gap:10px">
+            ${['Ban Khọng Số (Content & Creative)', 'Ban Kỹ Thuật (Dev & Engineer)', 'Ban Truyền Thông (Media & PR)', 'Ban Hành Chính (Admin & HR)'].map((b,i) => `
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 14px">
+                <span style="font-size:20px">${['\ud83e\udde0','\ud83d\udcbb','\ud83d\udce3','\ud83d\udcc1'][i]}</span>
+                <span style="color:#e2e8f0;font-size:0.9rem;font-weight:600">${b}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'main_handbook',
     room: 'main_hall',
     roomName: 'Tòa Alpha',
-    title: '📖 Sổ Tay Sinh Viên & Cẩm Nang Tân Binh FUDA',
-    desc: 'Bí kíp sinh tồn đồ án OJT, bản đồ Campus Alpha và các câu lạc bộ học thuật',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Cẩm Nang Tân Binh FUDA',
+    desc: 'Bí kíp sống sót đồ án, OJT và lịch học FPTU',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)',
+        content: `
+          <div style="text-align:center;padding:16px 0">
+            <div style="font-size:52px">📖</div>
+            <h1 style="color:#38bdf8;font-size:1.7rem;font-weight:900;margin:12px 0 8px">CẨM NANG TÂN BINH</h1>
+            <p style="color:#94a3b8">FPT University Đà Nẵng • FUDA</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a2744 100%)',
+        content: `
+          <h2 style="color:#f26f21;font-size:1.3rem;font-weight:800;margin:0 0 14px">🎢 Thời Khóa Biểu FPTU</h2>
+          <div style="display:grid;gap:8px;font-size:0.88rem">
+            <div style="background:rgba(56,189,248,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
+              <span style="font-size:22px">⏰</span><div><strong style="color:#38bdf8">Ca 1:</strong> <span style="color:#e2e8f0">07:30 – 09:00 | 09:15 – 10:45 | 11:00 – 12:30</span></div>
+            </div>
+            <div style="background:rgba(242,111,33,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
+              <span style="font-size:22px">☀️</span><div><strong style="color:#f26f21">Ca 2:</strong> <span style="color:#e2e8f0">13:00 – 14:30 | 14:45 – 16:15 | 16:30 – 18:00</span></div>
+            </div>
+            <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
+              <span style="font-size:22px">🌙</span><div><strong style="color:#10b981">Ca 3:</strong> <span style="color:#e2e8f0">18:15 – 19:45 | 20:00 – 21:30</span></div>
+            </div>
+            <div style="background:rgba(251,191,36,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
+              <span style="font-size:22px">📌</span><div><strong style="color:#fbbf24">Lưu ý:</strong> <span style="color:#e2e8f0">Thi PE: Online + Offline tại cơ sở. Thi FE: Offline bắt buộc</span></div>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#c084fc;font-size:1.3rem;font-weight:800;margin:0 0 14px">🛡️ Bí Kíp Sống Sót Đồ Án</h2>
+          <div style="display:grid;gap:9px;font-size:0.87rem">
+            ${[
+              ['\ud83d\udc40', 'Bắt đầu từ Tuần 1', 'Không chờ deadline mới làm. Plan ngay từ ngày 1.'],
+              ['\ud83e\udd1d', 'Phân công rõ ràng', 'Dùng Trello/Notion. Mỗi người 1 task cụ thể.'],
+              ['\ud83d\udd17', 'Git Flow chuẩn', 'main > develop > feature/... Commit tiếng Anh.'],
+              ['\ud83d\udcac', 'Học từ Mentor', 'CLB có mentor free. Hỏi sớm, hỏi đúng, ghi lại.']
+            ].map(([icon, title, desc]) => `
+              <div style="display:flex;gap:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 14px">
+                <span style="font-size:22px;flex-shrink:0">${icon}</span>
+                <div><strong style="color:#c084fc">${title}</strong><br><span style="color:#94a3b8">${desc}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'lab_roadmap',
     room: 'dever_lab',
     roomName: 'Tòa Gamma',
-    title: '💻 Tech Roadmap 2026: Game 2D, Web App & AI Models',
-    desc: 'Lộ trình đào tạo lập trình viên: Frontend, Backend, Phaser 3, Next.js và Machine Learning',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Tech Roadmap 2026',
+    desc: 'Lộ trình đào tạo lập trình viên FU-DEVER',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a2e 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:52px">🚀</div>
+            <h1 style="color:#38bdf8;font-size:1.6rem;font-weight:900;margin:12px 0 6px">TECH ROADMAP 2026</h1>
+            <p style="color:#94a3b8">FU-DEVER • FUDA</p>
+            <div style="display:inline-flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center">
+              ${['Game 2D','Web App','AI/ML','Mobile'].map(t => `<span style="background:rgba(242,111,33,0.2);border:1px solid rgba(242,111,33,0.4);color:#f26f21;padding:4px 12px;border-radius:20px;font-size:0.82rem;font-weight:700">${t}</span>`).join('')}
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0c1a2e 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🌐 Lộ Trình Web Fullstack</h2>
+          <div style="display:grid;gap:6px;font-size:0.82rem">
+            ${[
+              {phase:'Tháng 1-2', items:['HTML/CSS/JS cơ bản','Git & GitHub','Responsive Design'], color:'#38bdf8'},
+              {phase:'Tháng 3-4', items:['React.js & Hooks','REST API','Node.js + Express'], color:'#f26f21'},
+              {phase:'Tháng 5-6', items:['Next.js (SSR/SSG)','PostgreSQL/MongoDB','Deploy Vercel/Railway'], color:'#10b981'}
+            ].map(p => `
+              <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${p.color};border-radius:0 8px 8px 0;padding:8px 12px">
+                <strong style="color:${p.color}">${p.phase}</strong> &#8212; 
+                <span style="color:#94a3b8">${p.items.join(' &bull; ')}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a0f2e 100%)',
+        content: `
+          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">🎮 Lộ Trình 2D Game Dev</h2>
+          <div style="display:grid;gap:6px;font-size:0.82rem">
+            ${[
+              {phase:'Cơ bản', items:['JavaScript ES6+', 'Canvas 2D API', 'Vật lý tưới'], color:'#fbbf24'},
+              {phase:'Phaser 3', items:['Scene System','Tilemap & Collider','Sprite Animation'], color:'#f26f21'},
+              {phase:'Multiplayer', items:['Socket.io Real-time','Server Node.js','DB SQLite/Supabase'], color:'#c084fc'}
+            ].map(p => `
+              <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${p.color};border-radius:0 8px 8px 0;padding:8px 12px">
+                <strong style="color:${p.color}">${p.phase}</strong> &#8212; 
+                <span style="color:#94a3b8">${p.items.join(' &bull; ')}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'lab_git_hackathon',
     room: 'dever_lab',
     roomName: 'Tòa Gamma',
-    title: '🚀 Cẩm Nang Thi Đấu Hackathon & Chuẩn Git Flow',
-    desc: 'Quy trình chạy deadline 24h, phân chia vai trò nhóm, Pitching và bảo mật mã nguồn',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Cẩm Nang Hackathon & Git Flow',
+    desc: 'Quy trình chạy deadline, phân chia vai trò và Pitching',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1f1a09 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:52px">🔥</div>
+            <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">HACKATHON GUIDE</h1>
+            <p style="color:#94a3b8">Quy trình 24h • Từ Ý Tưởng → Sản Phẩm</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1f1a09 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">&#9201; Dòng Thời Gian 24h</h2>
+          <div style="display:grid;gap:7px;font-size:0.83rem">
+            ${[
+              ['00:00–03:00', 'Brainstorm + Chọn đề tài + Lập plan', '#fbbf24'],
+              ['03:00–09:00', 'Dev sprint cật lực — mỗi người 1 module', '#f26f21'],
+              ['09:00–15:00', 'Integrate + Test + Fix bug', '#10b981'],
+              ['15:00–21:00', 'Slide + Demo + Chuẩn bị Pitch 3 phút', '#38bdf8'],
+              ['21:00–24:00', 'Submit + Pitch + Q&A + Celebrate', '#c084fc']
+            ].map(([time,task,c]) => `
+              <div style="display:grid;grid-template-columns:100px 1fr;gap:10px;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;align-items:center">
+                <span style="color:${c};font-weight:700;font-size:0.78rem">${time}</span>
+                <span style="color:#e2e8f0">${task}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a0a 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🔗 Git Flow Chuẩn CLB</h2>
+          <div style="background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:0.82rem;line-height:1.8;color:#e2e8f0;border:1px solid rgba(255,255,255,0.08)">
+            <span style="color:#fbbf24"># Khởi tạo dự án</span><br>
+            git checkout -b <span style="color:#10b981">develop</span><br>
+            git checkout -b <span style="color:#38bdf8">feature/ten-tinh-nang</span><br><br>
+            <span style="color:#fbbf24"># Commit theo format</span><br>
+            git commit -m <span style="color:#f26f21">&quot;feat(ui): add login page&quot;</span><br>
+            git commit -m <span style="color:#f26f21">&quot;fix(api): null check for user&quot;</span><br><br>
+            <span style="color:#fbbf24"># Merge về develop, không push thẳng main!</span><br>
+            git checkout develop && git merge feature/...
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'lib_pe_fe',
     room: 'library_lounge',
     roomName: 'Tòa Beta',
-    title: '📚 Tài Liệu Ôn Thi PE & FE: PRF192, PRO192, CSD201',
-    desc: 'Bộ đề thi thực hành mẫu môn C/Java/Cấu trúc dữ liệu & giải thuật có đáp án chi tiết',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Tài Liệu Ôn Thi PE & FE',
+    desc: 'Bộ đề mẫu + cấu trúc thi thực hành FPTU',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a2744 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:48px">📚</div>
+            <h1 style="color:#38bdf8;font-size:1.6rem;font-weight:900;margin:12px 0 6px">ÔN THI PE & FE</h1>
+            <p style="color:#94a3b8">PRF192 • PRO192 • CSD201 • SWE201c</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1a2744 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">📝 Cấu Trúc Thi</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            ${[
+              {mon:'PRF192 (C cơ bản)',pe:'15 MCQ (30p)',fe:'Code thực hành 90p',c:'#38bdf8'},
+              {mon:'PRO192 (C OOP)',pe:'20 MCQ (30p)',fe:'OOP Problem 90p',c:'#f26f21'},
+              {mon:'CSD201 (CTDL)',pe:'20 MCQ + Trace',fe:'Implement DSA 90p',c:'#10b981'},
+              {mon:'SWE201c',pe:'25 MCQ (45p)',fe:'Case study 90p',c:'#c084fc'}
+            ].map(r => `
+              <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${r.c};border-radius:0 8px 8px 0;padding:8px 12px">
+                <strong style="color:${r.c}">${r.mon}</strong><br>
+                <span style="color:#94a3b8;font-size:0.78rem">PE: ${r.pe} &bull; FE: ${r.fe}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
+        content: `
+          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">💡 Tips Ôn Thi Hiệu Quả</h2>
+          <div style="display:grid;gap:9px;font-size:0.85rem">
+            ${[
+              ['\ud83d\udcdd','Làm lại đề cu lầu x3','Không xem đáp án làm lại từ đầu'],
+              ['\u23f0','Pomodoro 25-5','25p code, 5p nghỉ. Não hấp thụ tốt hơn'],
+              ['\ud83e\udd1d','Học nhóm','Giải thích cho người khác = hiểu sâu nhất'],
+              ['\ud83d\udcda','CLB DEVER','Mentor trực tiếp + tài liệu cu mỗi kỳ']
+            ].map(([i,t,d]) => `
+              <div style="display:flex;gap:10px;background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 12px">
+                <span style="font-size:20px;flex-shrink:0">${i}</span>
+                <div><strong style="color:#e2e8f0">${t}</strong><br><span style="color:#64748b">${d}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'lib_icpc',
     room: 'library_lounge',
     roomName: 'Tòa Beta',
-    title: '🧠 100 Thuật Toán Tuyển Chọn Luyện Thi ICPC Quốc Tế',
-    desc: 'Dynamic Programming, Graph Theory, Segment Tree và giải thuật tối ưu hóa',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: '100 Thuật Toán Luyện Thi ICPC',
+    desc: 'DP, Graph, Sorting, Segment Tree — tự đánh tay',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:48px">🧠</div>
+            <h1 style="color:#c084fc;font-size:1.6rem;font-weight:900;margin:12px 0 6px">100 BÀI CODE</h1>
+            <p style="color:#94a3b8">Thuật toán luyện thi ICPC & Competitive Programming</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">📈 Lộ Trình 100 Bài</h2>
+          <div style="display:grid;gap:8px;font-size:0.83rem">
+            ${[
+              {cat:'Bài 1–20: Nền Tảng', items:['Array/String','Sorting cơ bản','Two Pointers','Binary Search'], c:'#38bdf8'},
+              {cat:'Bài 21–50: Tư Duy', items:['Recursion & Backtrack','DP cơ bản (knapsack, LCS)','Greedy'], c:'#f26f21'},
+              {cat:'Bài 51–80: Đồ Thị', items:['BFS/DFS','Dijkstra/Bellman-Ford','Union Find (DSU)'], c:'#10b981'},
+              {cat:'Bài 81–100: Nâng Cao', items:['Segment Tree','Convex Hull','Game Theory'], c:'#c084fc'}
+            ].map(g => `
+              <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${g.c};border-radius:0 8px 8px 0;padding:8px 12px">
+                <strong style="color:${g.c}">${g.cat}</strong><br>
+                <span style="color:#94a3b8">${g.items.join(' &bull; ')}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a0a 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 10px">💻 Mẫu Code: Binary Search</h2>
+          <div style="background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:0.8rem;line-height:1.8;color:#e2e8f0;border:1px solid rgba(255,255,255,0.08);overflow:auto">
+            <span style="color:#c084fc">function</span> <span style="color:#38bdf8">binarySearch</span>(arr, target) {<br>
+            &nbsp;&nbsp;<span style="color:#c084fc">let</span> lo = <span style="color:#fbbf24">0</span>, hi = arr.length - <span style="color:#fbbf24">1</span>;<br>
+            &nbsp;&nbsp;<span style="color:#c084fc">while</span> (lo &lt;= hi) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">const</span> mid = (lo + hi) &gt;&gt; <span style="color:#fbbf24">1</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">if</span> (arr[mid] === target) <span style="color:#c084fc">return</span> mid;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">else if</span> (arr[mid] &lt; target) lo = mid + <span style="color:#fbbf24">1</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">else</span> hi = mid - <span style="color:#fbbf24">1</span>;<br>
+            &nbsp;&nbsp;}<br>
+            &nbsp;&nbsp;<span style="color:#c084fc">return</span> <span style="color:#fbbf24">-1</span>;<br>
+            }
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'canteen_menu',
     room: 'canteen_cafe',
     roomName: 'Căn Tin FUDA',
-    title: '🍱 Thực Đơn Căn Tin Sinh Viên & Công Thức Cà Phê Muối',
-    desc: 'Menu cơm gà 25k, mì tôm đêm Hackathon và bí kíp pha chế Cà phê muối Đà Nẵng béo ngậy',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Thực Đơn Căn Tin & Cà Phê Muối',
+    desc: 'Menu cơm gà, mì tôm đêm Hackathon & công thức cà phê',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#1a0c04 0%,#2d1a08 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:48px">🍱</div>
+            <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">CĂN TIN FUDA</h1>
+            <p style="color:#94a3b8">Cơm sinh viên tờ mỏ • Cà phê giữ tiểu tinh</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#2d1a08 0%,#1a0c04 100%)',
+        content: `
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">🍽️ Menu Hôm Nay</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            ${[
+              {name:'Cơm Gà Rán sạch',price:'25.000đ',note:'Best seller • Được cả CLB yêu',e:'\ud83c\udf57'},
+              {name:'Bánh mì pa tê trứng',price:'15.000đ',note:'Sore khủng cho buổi sáng',e:'\ud83e\udd56'},
+              {name:'Mì tôm trứng (Hackathon)',price:'8.000đ',note:'Staple đêm deploy',e:'\ud83c\udf5c'},
+              {name:'Cà phê muối Đà Nẵng',price:'20.000đ',note:'Bí quyết giữ tiỉnh thâu đêm',e:'\u2615'}
+            ].map(m => `
+              <div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.05);border-radius:8px;padding:9px 12px;align-items:center">
+                <div><span style="font-size:18px">${m.e}</span> <strong style="color:#e2e8f0">${m.name}</strong><br><span style="color:#64748b;font-size:0.76rem">${m.note}</span></div>
+                <strong style="color:#fbbf24;font-size:1rem;flex-shrink:0;margin-left:10px">${m.price}</strong>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1a0c04 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">☕ Công Thức Cà Phê Muối</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            <div style="background:#0d1117;border-radius:10px;padding:14px;border:1px solid rgba(242,111,33,0.2)">
+              <p style="color:#94a3b8;font-size:0.8rem;margin:0 0 10px">📌 Nguyên liệu cho 1 ly:</p>
+              ${['Cà phê đầu 15ml (espresso mạnh)','Muối biển 1/4 muỗng cà phê','Whipped cream (kem tươi đánh bông)','Condensed milk 2 muỗng + đá viên'].map(i => `
+                <div style="display:flex;gap:8px;align-items:center;margin:6px 0">
+                  <span style="color:#f26f21">•</span><span style="color:#e2e8f0">${i}</span>
+                </div>
+              `).join('')}
+              <p style="color:#64748b;font-size:0.78rem;margin:12px 0 0">💡 <em>Muối triệt tiêu vị đắng → hương cà phê nổi rõ và trộn hơn!</em></p>
+            </div>
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'canteen_nutrition',
     room: 'canteen_cafe',
     roomName: 'Căn Tin FUDA',
-    title: '☕ Dinh Dưỡng Giữ Tỉnh Táo & Healthy Coding Life',
-    desc: 'Chế độ ăn uống khoa học cho Lập trình viên tránh kiệt sức khi chạy deadline dự án',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Dinh Dưỡng & Healthy Coding Life',
+    desc: 'Chế độ dinh dưỡng giữ tỉnh táo và chống burnout',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0a1f0a 0%,#112211 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:48px">🌿</div>
+            <h1 style="color:#10b981;font-size:1.5rem;font-weight:900;margin:12px 0 6px">HEALTHY CODING LIFE</h1>
+            <p style="color:#94a3b8">Dinh dưỡng khoa học cho Developer FUDA</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#112211 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🍚 Thực Phẩm Giữ Tỉnh</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem">
+            ${[
+              {e:'\ud83e\uddd0',name:'Quả óc chó',desc:'Tăng tập trung, tốt cho não',c:'#fbbf24'},
+              {e:'\ud83e\ude78',name:'Trứng luộc',desc:'Protein cao, no lâu 4-5h',c:'#38bdf8'},
+              {e:'\ud83c\udf4c',name:'Chuối vàng',desc:'Potassium + đường nhanh',c:'#f26f21'},
+              {e:'\ud83e\udd6c',name:'Rau cần tây',desc:'Hydrate, giảm stress',c:'#10b981'},
+              {e:'\ud83d\udc1f',name:'Cá hồi',desc:'Omega-3, bảo vệ mắt khi code',c:'#c084fc'},
+              {e:'\ud83c\udf2d',name:'Yến mạch',desc:'Năng lượng ổn định suốt buổi',c:'#f26f21'}
+            ].map(f => `
+              <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${f.c};border-radius:0 8px 8px 0;padding:8px 10px">
+                <span style="font-size:20px">${f.e}</span> <strong style="color:${f.c}">${f.name}</strong><br>
+                <span style="color:#64748b;font-size:0.75rem">${f.desc}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f172a 0%,#112211 100%)',
+        content: `
+          <h2 style="color:#38bdf8;font-size:1.2rem;font-weight:800;margin:0 0 12px">🧘 Bài Tập Giãn Cơ Cho Dev</h2>
+          <p style="color:#64748b;font-size:0.8rem;margin:0 0 10px">▶️ Thực hiện mỗi 2 tiếng ngồi code (5 phút)</p>
+          <div style="display:grid;gap:7px;font-size:0.83rem">
+            ${[
+              ['\ud83d\udc40','Mắt','Nhìn xa 6m trong 20 giây. Lặp 3 lần (Quy tắc 20-20-20)'],
+              ['\ud83d\udc46','Cổ tay','Xoay cổ tay 10 vòng mỗi hướng. Chống CTS.'],
+              ['\ud83e\uddd1\u200d\ud83d\udcbb','Cổ gáy','Ngưới xuống chạm ngực 10 giây, lần lượt trái/phải'],
+              ['\ud83d\ude4a','Lưng','Nghiêng người sang 2 bên, giữ 15 giây mỗi bên'],
+              ['\ud83d\udc63','Chân','Cầm ghế tại chỗ, gô đạp gót 20 cái, khởi động máu']
+            ].map(([i,p,d]) => `
+              <div style="display:flex;gap:10px;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px">
+                <span style="font-size:18px;flex-shrink:0">${i}</span>
+                <div><strong style="color:#38bdf8">${p}:</strong> <span style="color:#94a3b8">${d}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'memory_awards',
     room: 'memory_room',
     roomName: 'Phòng Kỷ Niệm',
-    title: '🏆 Bảng Vàng Vinh Danh 20+ Giải Thưởng ICPC & Hackathon',
-    desc: 'Các thế hệ thành viên xuất sắc ghi danh tại ResFes, ICPC Vietnam và FPT Edu Hackathon',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Bảng Vàng Vinh Danh',
+    desc: '20+ giải thưởng ICPC & Hackathon qua các thế hệ',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#1a1000 0%,#2a1a00 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:52px">🏆</div>
+            <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">BẢNG VÀNG VINH DANH</h1>
+            <p style="color:#94a3b8">FU-DEVER • Thành Tích Thi Đấu 2017–2026</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#2a1a00 0%,#1a1000 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">🥇 Các Cuộc Thi Nổi Bật</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            ${[
+              {award:'🥇 ICPC Vietnam','year':'2022 & 2024','detail':'Lọc 2 khu vực, ĐN Đứng đầu'},
+              {award:'🥈 FPT Edu Hackathon','year':'2023','detail':'Top 3 Hà Nội & Đà Nẵng'},
+              {award:'🏅 ResFes FPTU','year':'2022–2024','detail':'Giải nhất khối Kỹ Thuật mọi năm'},
+              {award:'⭐ NIC Hackathon','year':'2024','detail':'Top 10 toàn quốc - AI Track'}
+            ].map(r => `
+              <div style="display:flex;justify-content:space-between;background:rgba(251,191,36,0.07);border-radius:8px;padding:9px 14px;align-items:center">
+                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#64748b;font-size:0.78rem">${r.detail}</span></div>
+                <span style="color:#fbbf24;font-weight:700;font-size:0.82rem">${r.year}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   },
   {
     id: 'sports_ergonomics',
     room: 'sports_complex',
     roomName: 'Khu Thể Thao',
-    title: '⚽ Điều Lệ DEVER Cup & Bài Tập Chống Đau Cổ Vai Gáy',
-    desc: 'Hướng dẫn giãn cơ 5 phút mỗi 2 tiếng ngồi code và giải bóng đá giao hữu sinh viên',
-    url: 'https://docs.google.com/presentation/d/e/2PACX-1vRe10Qn1JbT0t1U5jXw7qYm8K4Zz2/embed?start=false&loop=false&delayms=3000'
+    title: 'Điều Lệ DEVER Cup & Giãn Cơ',
+    desc: 'Hướng dẫn thi đấu thể thao và bài tập chống đau',
+    url: '',
+    slides: [
+      {
+        bg: 'linear-gradient(135deg,#0a1f0a 0%,#112211 100%)',
+        content: `
+          <div style="text-align:center">
+            <div style="font-size:48px">⚽</div>
+            <h1 style="color:#10b981;font-size:1.6rem;font-weight:900;margin:12px 0 6px">DEVER CUP 2026</h1>
+            <p style="color:#94a3b8">Điều lệ giải bóng đá giao hữu sinh viên FUDA</p>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#112211 0%,#0f172a 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">📜 Điều Lệ Thi Đấu</h2>
+          <div style="display:grid;gap:8px;font-size:0.84rem">
+            ${[
+              ['\ud83d\udc65','Thành Phần','5 người/đội. Tối đa 8 đội/giải. Mỗi người chỉ đăng ký 1 đội.'],
+              ['\u23f1️','Thời Gian','2 hiập x 15 phút. Nghỉ 5 phút giữia hiập.'],
+              ['\ud83c','Tính Điểm','Thắng 3 điểm, hòa 1, thua 0. Top 2 vào chung kết.'],
+              ['\ud83d','Quy Tắc','Không cóm trền bạo lực. Tranh luận lịch sự. Tinh thần fair play.']
+            ].map(([i,t,d]) => `
+              <div style="display:flex;gap:10px;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px">
+                <span style="font-size:20px;flex-shrink:0">${i}</span>
+                <div><strong style="color:#10b981">${t}:</strong> <span style="color:#94a3b8">${d}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        `
+      }
+    ]
   }
 ];

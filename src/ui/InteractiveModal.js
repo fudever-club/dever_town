@@ -17,6 +17,8 @@ export class InteractiveModal {
     this.modalEl = document.getElementById('interactive-modal');
     this.currentZone = null;
     this.currentMemoryIndex = 0;
+    this.currentSlideSet = null;
+    this.currentSlideIndex = 0;
 
     this.initPomodoro();
     this.initSportsEngine();
@@ -152,6 +154,7 @@ export class InteractiveModal {
   show(zoneData) {
     if (!this.modalEl) return;
     this.currentZone = zoneData;
+    this.currentRoomId = zoneData.roomId || zoneData.room || 'main_hall';
 
     const titleEl = document.getElementById('interactive-modal-title');
     const descEl = document.getElementById('interactive-modal-desc');
@@ -240,12 +243,12 @@ export class InteractiveModal {
 
     this.renderSlidePresets(zoneData);
 
-    // Tự động chọn slide đầu tiên phù hợp với phòng hoặc mặc định
-    const roomSlide = ROOM_SLIDE_PRESETS.find(s => s.room === this.currentRoomId) || ROOM_SLIDE_PRESETS[0];
-    const initialUrl = roomSlide ? roomSlide.url : INTERACTION_PRESETS.whiteboard_slides.defaultUrl;
-    const input = document.getElementById('slide-url-input');
-    if (input) input.value = initialUrl;
-    this.loadSlideIframe(initialUrl);
+    // Chọn slide phù hợp với phòng hiện tại
+    const roomSlide = ROOM_SLIDE_PRESETS.find(s => s.room === this.currentRoomId)
+      || ROOM_SLIDE_PRESETS.find(s => s.id === zoneData.id)
+      || ROOM_SLIDE_PRESETS[0];
+
+    this.loadSlideEntry(roomSlide);
   }
 
   renderSlidePresets(zoneData) {
@@ -264,15 +267,84 @@ export class InteractiveModal {
         pillsContainer.querySelectorAll('.slide-pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        const input = document.getElementById('slide-url-input');
-        if (input) input.value = item.url;
-
-        this.loadSlideIframe(item.url);
+        this.loadSlideEntry(item);
         audioManager.playClick();
       });
 
       pillsContainer.appendChild(btn);
     });
+  }
+
+  loadSlideEntry(item) {
+    if (!item) return;
+    const input = document.getElementById('slide-url-input');
+    if (input) input.value = item.url || '';
+
+    if (item.slides && item.slides.length > 0) {
+      // Mode: HTML Slide nội bộ
+      this.currentSlideSet = item.slides;
+      this.currentSlideIndex = 0;
+      this.renderInlineSlide();
+    } else if (item.url) {
+      // Mode: Iframe
+      this.currentSlideSet = null;
+      this.loadSlideIframe(item.url);
+      this.showSlideIframe();
+    }
+  }
+
+  renderInlineSlide() {
+    const slideSet = this.currentSlideSet;
+    if (!slideSet || slideSet.length === 0) return;
+
+    const iframe = document.getElementById('slide-iframe');
+    if (iframe) iframe.classList.add('hidden');
+
+    // Tìm hoặc tạo container inline
+    let inlineView = document.getElementById('slide-inline-view');
+    if (!inlineView) {
+      const pane = document.getElementById('pane-slides');
+      inlineView = document.createElement('div');
+      inlineView.id = 'slide-inline-view';
+      inlineView.style.cssText = 'position:relative;width:100%;height:420px;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;';
+      if (iframe) iframe.parentNode.insertBefore(inlineView, iframe);
+      else pane.appendChild(inlineView);
+    }
+    inlineView.style.display = 'flex';
+
+    const slide = slideSet[this.currentSlideIndex];
+    const total = slideSet.length;
+    const idx = this.currentSlideIndex;
+
+    inlineView.innerHTML = `
+      <div style="flex:1;background:${slide.bg || '#0f172a'};padding:24px 28px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;">
+        <div style="color:#e2e8f0;font-family:'Outfit',sans-serif;line-height:1.6;">${slide.content}</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.7);padding:10px 18px;flex-shrink:0;">
+        <button id="slide-prev-btn" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;" ${idx === 0 ? 'disabled style="opacity:0.4;cursor:default;background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 14px;border-radius:8px;"' : ''}>&#8592; Trước</button>
+        <div style="display:flex;gap:6px;align-items:center;">
+          ${slideSet.map((_,i) => `<span style="width:8px;height:8px;border-radius:50%;background:${i===idx?'#f26f21':'rgba(255,255,255,0.3)'};display:inline-block;"></span>`).join('')}
+          <span style="color:#64748b;font-size:0.78rem;margin-left:6px;">${idx+1}/${total}</span>
+        </div>
+        <button id="slide-next-btn" style="background:rgba(242,111,33,0.8);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;" ${idx === total-1 ? 'disabled style="opacity:0.4;cursor:default;background:rgba(242,111,33,0.4);border:none;color:#fff;padding:6px 14px;border-radius:8px;"' : ''}>Tiếp &#8594;</button>
+      </div>
+    `;
+
+    const prevBtn = document.getElementById('slide-prev-btn');
+    const nextBtn = document.getElementById('slide-next-btn');
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+      if (this.currentSlideIndex > 0) { this.currentSlideIndex--; this.renderInlineSlide(); audioManager.playClick(); }
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      if (this.currentSlideIndex < slideSet.length - 1) { this.currentSlideIndex++; this.renderInlineSlide(); audioManager.playClick(); }
+    });
+  }
+
+  showSlideIframe() {
+    const iframe = document.getElementById('slide-iframe');
+    if (iframe) iframe.classList.remove('hidden');
+    const inlineView = document.getElementById('slide-inline-view');
+    if (inlineView) inlineView.style.display = 'none';
   }
 
   loadSlideIframe(rawUrl) {
