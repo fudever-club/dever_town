@@ -4224,10 +4224,39 @@ body {
   background: #0f172a;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  padding: 8px 10px 10px 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
   z-index: 100;
-  width: 240px;
+  width: 252px;
+}
+
+.sticker-tabs-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.sticker-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.sticker-tab-btn.active {
+  background: linear-gradient(135deg, #f26f21, #ea580c);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(242, 111, 33, 0.45);
 }
 
 .sticker-popover-header {
@@ -4242,8 +4271,23 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
+  padding-right: 2px;
+}
+
+.sticker-popover-grid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sticker-popover-grid::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 3px;
+}
+
+.sticker-popover-grid::-webkit-scrollbar-thumb {
+  background: rgba(242, 111, 33, 0.4);
+  border-radius: 3px;
 }
 
 .sticker-select-item {
@@ -4265,14 +4309,14 @@ body {
 }
 
 .sticker-select-item img {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 
 .chat-sticker-img {
-  max-width: 80px;
-  max-height: 80px;
+  max-width: 88px;
+  max-height: 88px;
   object-fit: contain;
   display: block;
   margin-top: 4px;

@@ -62,29 +62,61 @@ export class ChatBox {
   initStickers() {
     if (!this.stickerBtn || !this.stickerPopover) return;
 
-    // Render 11 stickers
-    this.stickerPopover.innerHTML = '';
-    const header = document.createElement('div');
-    header.className = 'sticker-popover-header';
-    header.textContent = 'Bộ Sticker FU-DEVER';
-    this.stickerPopover.appendChild(header);
+    this.activeStickerCategory = 'dever'; // 'dever' | 'buggy'
 
-    const grid = document.createElement('div');
-    grid.className = 'sticker-popover-grid';
+    const renderPopoverContent = () => {
+      this.stickerPopover.innerHTML = '';
 
-    for (let i = 1; i <= 11; i++) {
-      const item = document.createElement('button');
-      item.type = 'button';
-      item.className = 'sticker-select-item';
-      item.title = `Sticker #${i}`;
-      item.innerHTML = `<img src="/assets/stickers/${i}.png" alt="Sticker ${i}" loading="lazy" />`;
-      item.addEventListener('click', (e) => {
+      // Tabs Header
+      const tabsNav = document.createElement('div');
+      tabsNav.className = 'sticker-tabs-nav';
+
+      const deverTab = document.createElement('button');
+      deverTab.type = 'button';
+      deverTab.className = `sticker-tab-btn ${this.activeStickerCategory === 'dever' ? 'active' : ''}`;
+      deverTab.textContent = '🦊 DEVER (11)';
+      deverTab.addEventListener('click', (e) => {
         e.stopPropagation();
-        this.sendSticker(i);
+        this.activeStickerCategory = 'dever';
+        renderPopoverContent();
       });
-      grid.appendChild(item);
-    }
-    this.stickerPopover.appendChild(grid);
+
+      const buggyTab = document.createElement('button');
+      buggyTab.type = 'button';
+      buggyTab.className = `sticker-tab-btn ${this.activeStickerCategory === 'buggy' ? 'active' : ''}`;
+      buggyTab.textContent = '🐞 Buggy (20)';
+      buggyTab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.activeStickerCategory = 'buggy';
+        renderPopoverContent();
+      });
+
+      tabsNav.appendChild(deverTab);
+      tabsNav.appendChild(buggyTab);
+      this.stickerPopover.appendChild(tabsNav);
+
+      const grid = document.createElement('div');
+      grid.className = 'sticker-popover-grid';
+
+      const count = this.activeStickerCategory === 'dever' ? 11 : 20;
+      const cat = this.activeStickerCategory;
+
+      for (let i = 1; i <= count; i++) {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'sticker-select-item';
+        item.title = `${cat === 'dever' ? 'DEVER Sticker' : 'Buggy Sticker'} #${i}`;
+        item.innerHTML = `<img src="/assets/stickers/${cat}/${i}.png" alt="Sticker ${cat} ${i}" loading="lazy" />`;
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.sendSticker(cat, i);
+        });
+        grid.appendChild(item);
+      }
+      this.stickerPopover.appendChild(grid);
+    };
+
+    renderPopoverContent();
 
     // Toggle popover
     this.stickerBtn.addEventListener('click', (e) => {
@@ -100,12 +132,12 @@ export class ChatBox {
     });
   }
 
-  sendSticker(stickerId) {
+  sendSticker(category, stickerId) {
     if (this.stickerPopover) {
       this.stickerPopover.classList.add('hidden');
     }
     if (this.onSendMessage) {
-      this.onSendMessage(`[sticker:${stickerId}]`);
+      this.onSendMessage(`[sticker:${category}:${stickerId}]`);
     }
   }
 
@@ -119,43 +151,37 @@ export class ChatBox {
         this.onSendMessage(text);
       }
       this.chatInput.value = '';
-      this.chatInput.blur();
     }
   }
 
   /**
    * Thêm tin nhắn mới vào danh sách chat
    */
-  addMessage({ name, role, avatarId, message, isSelf = false, timestamp = Date.now() }) {
+  addMessage({ senderName, message, role = 'guest', timestamp = null, isSelf = false }) {
     if (!this.chatMessages) return;
 
-    const timeStr = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const normalizedName = (name || 'Thành viên').normalize('NFC');
     const normalizedMsg = (message || '').normalize('NFC');
+    const timeStr = timestamp
+      ? new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const itemDiv = document.createElement('div');
-    itemDiv.className = `chat-item ${isSelf ? 'self' : 'other'}`;
+    itemDiv.className = `chat-message-item ${isSelf ? 'self' : 'other'}`;
 
-    const roleClass = role || 'guest';
-    const roleLabel = role === 'admin' ? 'Admin' :
-                      role === 'leader' ? 'Leader' :
-                      role === 'dev' ? 'Dev' : 'Khách';
-
-    // Xây dựng DOM an toàn chống XSS
     const metaDiv = document.createElement('div');
     metaDiv.className = 'chat-meta';
 
-    const roleBadge = document.createElement('span');
-    roleBadge.className = `role-tag ${roleClass}`;
-    roleBadge.textContent = roleLabel;
-
     const authorSpan = document.createElement('span');
     authorSpan.className = 'chat-author';
-    authorSpan.textContent = normalizedName;
+    authorSpan.textContent = (senderName || 'Anonymous').normalize('NFC');
 
     const timeSpan = document.createElement('span');
     timeSpan.className = 'chat-time';
     timeSpan.textContent = timeStr;
+
+    const roleBadge = document.createElement('span');
+    roleBadge.className = `chat-role-badge ${role}`;
+    roleBadge.textContent = role === 'admin' ? 'BQT' : role === 'member' ? 'CLB' : 'GUEST';
 
     if (isSelf) {
       metaDiv.appendChild(timeSpan);
@@ -170,15 +196,30 @@ export class ChatBox {
     const bodyDiv = document.createElement('div');
     bodyDiv.className = 'chat-body';
 
-    // Kiểm tra tin nhắn Sticker
-    const stickerMatch = normalizedMsg.match(/^\[sticker:(\d+)\]$/);
-    if (stickerMatch) {
-      const stickerNum = parseInt(stickerMatch[1], 10);
+    // Kiểm tra tin nhắn Sticker (hỗ trợ cả [sticker:dever:x], [sticker:buggy:x] và format cũ [sticker:x])
+    const catStickerMatch = normalizedMsg.match(/^\[sticker:(dever|buggy):(\d+)\]$/);
+    const legacyStickerMatch = normalizedMsg.match(/^\[sticker:(\d+)\]$/);
+
+    if (catStickerMatch) {
+      const cat = catStickerMatch[1];
+      const stickerNum = parseInt(catStickerMatch[2], 10);
+      const maxCount = cat === 'dever' ? 11 : 20;
+      if (stickerNum >= 1 && stickerNum <= maxCount) {
+        const stickerImg = document.createElement('img');
+        stickerImg.src = `/assets/stickers/${cat}/${stickerNum}.png`;
+        stickerImg.className = 'chat-sticker-img';
+        stickerImg.alt = `${cat === 'dever' ? 'DEVER' : 'Buggy'} Sticker ${stickerNum}`;
+        bodyDiv.appendChild(stickerImg);
+      } else {
+        bodyDiv.textContent = normalizedMsg;
+      }
+    } else if (legacyStickerMatch) {
+      const stickerNum = parseInt(legacyStickerMatch[1], 10);
       if (stickerNum >= 1 && stickerNum <= 11) {
         const stickerImg = document.createElement('img');
-        stickerImg.src = `/assets/stickers/${stickerNum}.png`;
+        stickerImg.src = `/assets/stickers/dever/${stickerNum}.png`;
         stickerImg.className = 'chat-sticker-img';
-        stickerImg.alt = `Sticker ${stickerNum}`;
+        stickerImg.alt = `DEVER Sticker ${stickerNum}`;
         bodyDiv.appendChild(stickerImg);
       } else {
         bodyDiv.textContent = normalizedMsg;

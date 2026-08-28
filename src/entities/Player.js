@@ -133,9 +133,20 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.speechTimer.remove();
       this.speechTimer = null;
     }
+    let rawMessage = message || '';
+    const catStickerMatch = rawMessage.match(/^\[sticker:(dever|buggy):(\d+)\]$/);
+    const legacyStickerMatch = rawMessage.match(/^\[sticker:(\d+)\]$/);
+
+    if (catStickerMatch) {
+      rawMessage = catStickerMatch[1] === 'dever'
+        ? `🦊 [Sticker DEVER #${catStickerMatch[2]}]`
+        : `🐞 [Sticker Buggy #${catStickerMatch[2]}]`;
+    } else if (legacyStickerMatch) {
+      rawMessage = `🦊 [Sticker DEVER #${legacyStickerMatch[1]}]`;
+    }
 
     const maxChars = 50;
-    const safeText = safeUnicodeTruncate(message, maxChars);
+    const safeText = safeUnicodeTruncate(rawMessage, maxChars);
 
     const bubbleContainer = this.scene.add.container(this.x, this.y - 52);
     bubbleContainer.setDepth(1000002);
