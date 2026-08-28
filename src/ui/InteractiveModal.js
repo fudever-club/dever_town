@@ -111,7 +111,9 @@ export class InteractiveModal {
       loadSlideBtn.addEventListener('click', () => {
         const input = document.getElementById('slide-url-input');
         if (input && input.value.trim()) {
+          this.currentSlideSet = null;
           this.loadSlideIframe(input.value.trim());
+          this.showSlideIframe();
         }
       });
     }
