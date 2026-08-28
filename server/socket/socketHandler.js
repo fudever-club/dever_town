@@ -1,8 +1,20 @@
 import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 
+// Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
+const ipConnectionCounts = new Map();
+const MAX_SOCKETS_PER_IP = 12;
+
 export function setupSocketHandler(io) {
   io.use(async (socket, next) => {
+    const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
+    const currentCount = ipConnectionCounts.get(clientIp) || 0;
+    if (currentCount >= MAX_SOCKETS_PER_IP) {
+      console.warn(`🛑 [Socket Block] IP ${clientIp} vượt quá giới hạn ${MAX_SOCKETS_PER_IP} kết nối đồng thời.`);
+      return next(new Error('Quá nhiều kết nối đồng thời từ IP của bạn!'));
+    }
+    ipConnectionCounts.set(clientIp, currentCount + 1);
+
     const token = socket.handshake.auth?.token;
     if (token) {
       const user = await verifySocketToken(token);
@@ -25,12 +37,31 @@ export function setupSocketHandler(io) {
   });
 
   io.on('connection', (socket) => {
-    console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'})`);
+    const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
+    console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
 
     /**
-     * 1. Tham gia thế giới (Join Game) theo Room
+     * 1. Tham gia thế giới (Join Game) theo Room (Có cơ chế Đá Phiên Cũ nếu cùng tài khoản)
      */
     socket.on('joinGame', (clientData = {}) => {
+      // BẢO VỆ ĐĂNG NHẬP 1 TÀI KHOẢN: Nếu tài khoản đang online ở máy khác, đá phiên cũ ngay lập tức
+      if (socket.authUser && socket.authUser.id) {
+        const existingPlayer = playerManager.findPlayerByUserId(socket.authUser.id);
+        if (existingPlayer && existingPlayer.id !== socket.id) {
+          console.log(`⚠️ [Multi-Device Kick] Đá phiên cũ (${existingPlayer.id}) của user [${socket.authUser.displayName}]`);
+          io.to(existingPlayer.id).emit('sessionTerminated', {
+            reason: 'concurrent_login',
+            message: 'Tài khoản của bạn vừa đăng nhập từ một thiết bị hoặc tab khác! Phiên kết nối này đã được ngắt để bảo vệ tài khoản.'
+          });
+          const oldSocket = io.sockets.sockets.get(existingPlayer.id);
+          if (oldSocket) {
+            oldSocket.disconnect(true);
+          }
+          playerManager.removePlayer(existingPlayer.id);
+          socket.to(existingPlayer.roomId).emit('playerDisconnected', existingPlayer.id);
+        }
+      }
+
       const player = playerManager.addPlayer(socket.id, clientData, socket.authUser);
       const roomId = player.roomId || 'main_hall';
 
@@ -65,9 +96,15 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 3. Đồng bộ di chuyển Realtime (Tối ưu volatile chống tích luỹ lag)
+     * 3. Đồng bộ di chuyển Realtime (Có Rate Throttling chống move spam)
      */
     socket.on('playerMovement', (movementData) => {
+      const now = Date.now();
+      if (!socket._movePackets) socket._movePackets = [];
+      socket._movePackets = socket._movePackets.filter(ts => now - ts < 1000);
+      if (socket._movePackets.length > 35) return; // Tối đa 35 gói tin di chuyển / giây
+      socket._movePackets.push(now);
+
       const updated = playerManager.updateMovement(socket.id, movementData);
       if (updated) {
         socket.volatile.to(updated.roomId).emit('playerMoved', {
@@ -166,6 +203,11 @@ export function setupSocketHandler(io) {
      * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {
+      // Giảm bộ đếm kết nối IP khi client ngắt kết nối
+      const current = ipConnectionCounts.get(clientIp) || 1;
+      if (current <= 1) ipConnectionCounts.delete(clientIp);
+      else ipConnectionCounts.set(clientIp, current - 1);
+
       const removed = playerManager.removePlayer(socket.id);
       if (removed) {
         console.log(`❌ [Disconnect] ${removed.name} (${socket.id}) đã rời khỏi [${removed.roomId}].`);

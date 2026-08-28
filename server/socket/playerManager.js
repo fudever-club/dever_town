@@ -42,6 +42,16 @@ class PlayerManager {
     return this.players.get(socketId);
   }
 
+  findPlayerByUserId(userId) {
+    if (!userId) return null;
+    for (const player of this.players.values()) {
+      if (player.userId && player.userId === userId) {
+        return player;
+      }
+    }
+    return null;
+  }
+
   updateMovement(socketId, { x, y, direction, isMoving }) {
     const player = this.players.get(socketId);
     if (!player) return null;

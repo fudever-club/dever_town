@@ -7,25 +7,38 @@ import authRoutes from './routes/authRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
 import gameRoutes from './routes/gameRoutes.js';
 import { initDatabase, getDB } from './db/index.js';
+import { createRateLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3001;
 
-// 1. Cấu hình CORS & Middlewares
+// 1. Cấu hình CORS & Middlewares Bảo Vệ
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
-app.use(express.json());
+// Giới hạn kích thước payload JSON tối đa 100KB (Chống payload overflow / DoS)
+app.use(express.json({ limit: '100kb' }));
 
-// Đảm bảo UTF-8 charset cho tất cả API responses
+// Security Headers (Chống MIME-type sniffing, Clickjacking, XSS)
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   next();
+});
+
+// Global API Rate Limiter (Tối đa 120 requests / 1 phút / IP)
+const globalApiLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 120,
+  message: 'Quá nhiều yêu cầu từ IP của bạn. Vui lòng thử lại sau 1 phút!'
 });
 
 // 2. Health check route
@@ -38,17 +51,18 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 3. REST API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/rooms', roomRoutes);
-app.use('/api/game', gameRoutes);
+// 3. REST API Routes (Được bảo vệ bởi Global Limiter)
+app.use('/api/auth', globalApiLimiter, authRoutes);
+app.use('/api/rooms', globalApiLimiter, roomRoutes);
+app.use('/api/game', globalApiLimiter, gameRoutes);
 
-// 4. Cấu hình Socket.io
+// 4. Cấu hình Socket.io với Giới hạn Buffer & Timeout chống DDoS
 const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST']
   },
+  maxHttpBufferSize: 1e5, // 100KB max payload
   pingTimeout: 10000,
   pingInterval: 5000
 });

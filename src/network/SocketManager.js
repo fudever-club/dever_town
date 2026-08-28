@@ -115,6 +115,14 @@ export class SocketManager {
     this.socket.on('roomCounts', (counts) => {
       this.updateRoomCountsUI(counts);
     });
+
+    // 8. BẢO VỆ PHIÊN ĐĂNG NHẬP: Bị ngắt kết nối do thiết bị khác đăng nhập cùng tài khoản
+    this.socket.on('sessionTerminated', (data) => {
+      console.warn('⚠️ [Session] Phiên kết nối bị ngắt do phát hiện đăng nhập mới:', data);
+      alert(data.message || 'Tài khoản của bạn vừa được đăng nhập trên một thiết bị khác! Phiên kết nối này đã bị ngắt để bảo vệ tài khoản.');
+      authService.logout();
+      window.location.reload();
+    });
   }
 
   join(options = {}) {
