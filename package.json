@@ -41,6 +41,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server/server.js",
+    "test:load": "node scripts/stress-test.js",
     "app:desktop": "electron electron/main.cjs"
   },
   "dependencies": {
