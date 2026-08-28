@@ -243,21 +243,21 @@ export class SportsArcade {
         if (shotX < goalLeft || shotX > goalRight) {
           // Bắn ra ngoài
           f.state = 'missed';
-          f.resultText = '⚡ BÓNG BAY RA NGOÀI CỘT DỌC!';
+          f.resultText = 'Bóng bay ra ngoài cột dọc!';
           this.scores.footballStreak = 0;
           localStorage.setItem('dever_penalty_streak', '0');
           audioManager.playClick();
         } else if (gkDist < 42) {
           // Thủ môn cản phá
           f.state = 'saved';
-          f.resultText = '🧤 THỦ MÔN CẢN PHÁ XUẤT THẦN!';
+          f.resultText = 'Thủ môn cản phá thành công!';
           this.scores.footballStreak = 0;
           localStorage.setItem('dever_penalty_streak', '0');
           audioManager.playClick();
         } else {
           // VÀOOO
           f.state = 'celebrating';
-          f.resultText = '🎉 VÀOOOO! BÀN THẮNG TUYỆT ĐẸP! ⚽';
+          f.resultText = 'VÀO! Bàn thắng tuyệt đẹp!';
           f.netRipple = 1.0;
           this.scores.footballStreak += 1;
           if (this.scores.footballStreak > this.scores.footballHigh) {
@@ -432,7 +432,7 @@ export class SportsArcade {
       ctx.fillStyle = '#f8fafc';
       ctx.font = 'bold 13px Outfit, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('⚡ BẤM PHÍM SPACE HOẶC CLICK ĐỂ SÚT VÀO GÓC NGẮM!', 320, 40);
+      ctx.fillText('Bấm phím Space hoặc Click để sút vào góc ngắm', 320, 40);
     } else if (f.resultText) {
       ctx.fillStyle = f.state === 'celebrating' ? '#4ade80' : '#f87171';
       ctx.font = '800 18px Outfit, sans-serif';
@@ -458,9 +458,7 @@ export class SportsArcade {
       score: 0,
       highScore: this.scores.basketballHigh,
       spawnTimer: 0,
-      combo: 0,
-      rimFeedbackText: '',
-      rimFeedbackTimer: 0
+      combo: 0
     };
   }
 
@@ -475,8 +473,6 @@ export class SportsArcade {
     this.bb.score = 0;
     this.bb.combo = 0;
     this.bb.spawnTimer = 0;
-    this.bb.rimFeedbackText = '';
-    this.bb.rimFeedbackTimer = 0;
     this.spawnHoop(380);
     this.spawnHoop(560);
   }
@@ -493,7 +489,8 @@ export class SportsArcade {
       passed: false,
       scored: false,
       hitLeftRim: false,
-      hitRightRim: false
+      hitRightRim: false,
+      hitOut: false
     });
   }
 
@@ -517,16 +514,12 @@ export class SportsArcade {
     const bb = this.bb;
     if (bb.state !== 'playing') return;
 
-    if (bb.rimFeedbackTimer > 0) {
-      bb.rimFeedbackTimer -= dt;
-      if (bb.rimFeedbackTimer <= 0) bb.rimFeedbackText = '';
-    }
-
     // Cập nhật vật lý bóng
     bb.ball.vy += bb.gravity;
     bb.ball.y += bb.ball.vy;
     bb.ball.x += (bb.ball.vx || 0);
-    // Hồi phục dần x về vị trí chuẩn 120
+
+    // Giảm dần vận tốc ngang về 0
     if (bb.ball.vx) {
       bb.ball.vx *= 0.92;
       if (Math.abs(bb.ball.vx) < 0.05) bb.ball.vx = 0;
@@ -552,51 +545,55 @@ export class SportsArcade {
       h.x -= speed;
 
       const rimLeftX = h.x + 4;
-      const rimRightX = h.x + h.width - 2;
+      const rimRightX = h.x + h.width - 4;
       const rimY = h.y;
 
-      // 1. LOGIC VÀNH CỨNG MÁ TRÁI (LEFT RIM): Nảy nhẹ và có khả năng rơi vào trong rổ
+      // 1. LOGIC VÀNH TRÁI: Má ngoài (trái) -> ra ngoài; Má trong (phải) -> vào rổ
       const distLeft = Math.hypot(bb.ball.x - rimLeftX, bb.ball.y - rimY);
-      if (distLeft < bb.ball.radius + 4 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitLeftRim && !h.scored) {
+      if (distLeft < bb.ball.radius + 3 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitLeftRim && !h.scored) {
         h.hitLeftRim = true;
-        bb.ball.vx = 1.4; // Đẩy nảy nhẹ sang phải (vào tâm rổ)
-        bb.ball.vy = -3.2; // Nảy nẩy nhẹ lên
-        bb.rimFeedbackText = '💥 ĐẬP VÀNH TRÁI! BÓNG NẢY VÀO RỔ!';
-        bb.rimFeedbackTimer = 1.2;
+        if (bb.ball.x < rimLeftX) {
+          // Đập má ngoài vành trái -> Nảy lệch ra phía ngoài bên trái
+          bb.ball.vx = -3.4;
+          bb.ball.vy = -3.8;
+          bb.ball.x = rimLeftX - bb.ball.radius - 2;
+          h.hitOut = true;
+        } else {
+          // Đập má trong vành trái -> Nảy vào lòng rổ
+          bb.ball.vx = 1.4;
+          bb.ball.vy = -2.8;
+        }
         audioManager.playClick();
-        this.spawnConfetti(rimLeftX, rimY, 12);
+        this.spawnConfetti(rimLeftX, rimY, 8);
       }
 
-      // 2. LOGIC VÀNH CỨNG MÁ PHẢI / BẢNG RỔ (RIGHT RIM): Nảy văng ra ngoài rổ
+      // 2. LOGIC VÀNH PHẢI: Má trong (trái) -> vào rổ; Má ngoài (phải) -> ra ngoài
       const distRight = Math.hypot(bb.ball.x - rimRightX, bb.ball.y - rimY);
-      if (distRight < bb.ball.radius + 4 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitRightRim && !h.scored) {
+      if (distRight < bb.ball.radius + 3 && bb.ball.y <= rimY + 8 && bb.ball.vy > -1 && !h.hitRightRim && !h.scored) {
         h.hitRightRim = true;
-        bb.ball.vx = 3.6; // Đẩy văng mạnh sang phải (trượt khỏi rổ)
-        bb.ball.vy = -4.0; // Nảy ngược lên và văng ra ngoài
-        bb.ball.x = rimRightX + bb.ball.radius + 2;
-        bb.rimFeedbackText = '⚠️ ĐẬP VÀNH PHẢI! BÓNG BẬT RA NGOÀI!';
-        bb.rimFeedbackTimer = 1.2;
+        if (bb.ball.x <= rimRightX) {
+          // Đập má trong vành phải -> Nảy vào lòng rổ
+          bb.ball.vx = -1.4;
+          bb.ball.vy = -2.8;
+        } else {
+          // Đập má ngoài vành phải -> Nảy văng ra ngoài bên phải
+          bb.ball.vx = 3.6;
+          bb.ball.vy = -3.8;
+          bb.ball.x = rimRightX + bb.ball.radius + 2;
+          h.hitOut = true;
+        }
         audioManager.playClick();
-        this.spawnConfetti(rimRightX, rimY, 14);
+        this.spawnConfetti(rimRightX, rimY, 8);
       }
 
       // 3. KIỂM TRA BÓNG RƠI LỌT VÀO TRONG RỔ
       const inX = bb.ball.x >= h.x + 8 && bb.ball.x <= h.x + h.width - 6;
       const inY = Math.abs(bb.ball.y - h.y) < 14;
 
-      if (!h.scored && !h.hitRightRim && inX && inY && bb.ball.vy > 0) {
+      if (!h.scored && !h.hitOut && inX && inY && bb.ball.vy > 0) {
         h.scored = true;
         bb.combo += 1;
-        
-        let pts = 1;
-        if (h.hitLeftRim) {
-          pts = 1;
-          bb.rimFeedbackText = '🎯 BÀN THẮNG ĐẬP VÀNH TRÁI (+1Đ)!';
-        } else {
-          pts = bb.combo > 1 ? 3 : 2;
-          bb.rimFeedbackText = '✨ SWISH! LỌT RỔ HOÀN HẢO (+2Đ)!';
-        }
-        bb.rimFeedbackTimer = 1.2;
+        const pts = bb.combo > 1 ? 2 : 1;
         bb.score += pts;
 
         if (bb.score > this.scores.basketballHigh) {
@@ -660,27 +657,27 @@ export class SportsArcade {
       // Má trái vành rổ (Left Rim Point)
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
-      ctx.arc(h.x + 3, h.y, 4, 0, Math.PI * 2);
+      ctx.arc(h.x + 4, h.y, 3.5, 0, Math.PI * 2);
       ctx.fill();
 
       // Vành rổ sắt (Steel Rim)
       ctx.fillStyle = '#ea580c';
-      ctx.fillRect(h.x + 3, h.y - 3, h.width - 4, 6);
+      ctx.fillRect(h.x + 4, h.y - 3, h.width - 8, 6);
 
       // Má phải vành rổ (Right Rim Point)
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
-      ctx.arc(h.x + h.width - 2, h.y, 4, 0, Math.PI * 2);
+      ctx.arc(h.x + h.width - 4, h.y, 3.5, 0, Math.PI * 2);
       ctx.fill();
 
       // Lưới rổ (Net)
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.moveTo(h.x + 3, h.y + 3);
+      ctx.moveTo(h.x + 4, h.y + 3);
       ctx.lineTo(h.x + 10, h.y + 24);
       ctx.lineTo(h.x + h.width - 10, h.y + 24);
-      ctx.lineTo(h.x + h.width - 2, h.y + 3);
+      ctx.lineTo(h.x + h.width - 4, h.y + 3);
       ctx.stroke();
     });
 
@@ -707,32 +704,23 @@ export class SportsArcade {
     ctx.stroke();
     ctx.restore();
 
-    // 4. UI Điểm số & Trạng thái & Phản hồi Vành Rổ
+    // 4. UI Điểm số & Trạng thái
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 24px Outfit, sans-serif';
+    ctx.font = '800 22px Outfit, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`🏀 ${bb.score} ĐIỂM`, 320, 42);
-
-    if (bb.rimFeedbackText) {
-      ctx.font = '800 15px Outfit, sans-serif';
-      ctx.fillStyle = bb.rimFeedbackText.includes('TRÁI') || bb.rimFeedbackText.includes('SWISH') ? '#4ade80' : '#f87171';
-      ctx.fillText(bb.rimFeedbackText, 320, 68);
-    }
+    ctx.fillText(`Điểm: ${bb.score}`, 320, 42);
 
     if (bb.state === 'ready') {
       ctx.font = 'bold 13px Outfit, sans-serif';
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText('⚡ BẤM PHÍM SPACE HOẶC CLICK ĐỂ NHẢY BÓNG RỔ LỌT VÀO CÁC RỔ!', 320, 95);
-      ctx.font = '11px Outfit, sans-serif';
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('💡 Mẹo: Đập má trái vành rổ dễ nảy vào trong • Đập má phải dễ bật ra ngoài', 320, 115);
+      ctx.fillText('Bấm phím Space hoặc Click để nhảy bóng lọt vào các rổ', 320, 80);
     } else if (bb.state === 'gameover') {
       ctx.fillStyle = '#ef4444';
       ctx.font = '800 20px Outfit, sans-serif';
-      ctx.fillText('💥 HIỆP ĐẤU KẾT THÚC!', 320, 95);
+      ctx.fillText('Hiệp Đấu Kết Thúc!', 320, 80);
       ctx.font = '13px Outfit, sans-serif';
       ctx.fillStyle = '#cbd5e1';
-      ctx.fillText(`Kỷ lục: ${this.scores.basketballHigh}đ • Nhấn Space hoặc Click để chơi lại`, 320, 118);
+      ctx.fillText(`Kỷ lục: ${this.scores.basketballHigh} điểm • Nhấn Space hoặc Click để chơi lại`, 320, 106);
     }
   }
 
@@ -924,10 +912,23 @@ export class SportsArcade {
       vb.ball.vx = -Math.abs(vb.ball.vx) * 0.9;
     }
 
-    // Va chạm Lưới bóng chuyền ở giữa
-    if (vb.ball.x > vb.net.x - 12 && vb.ball.x < vb.net.x + vb.net.w + 12 && vb.ball.y > vb.net.y) {
-      vb.ball.vx *= -0.85;
-      vb.ball.x += vb.ball.vx > 0 ? 5 : -5;
+    // Va chạm Lưới bóng chuyền ở giữa (Elastic Mesh Recoil & Bounce Upward)
+    const netL = vb.net.x - 12;
+    const netR = vb.net.x + vb.net.w + 12;
+    if (vb.ball.x >= netL && vb.ball.x <= netR && vb.ball.y >= vb.net.y - 6) {
+      if (vb.ball.x < vb.net.x + vb.net.w / 2) {
+        // Chạm lưới từ sân trái (người chơi) -> Bật nảy bổng ngược về sân trái để kịp cứu bóng
+        vb.ball.vx = -3.6;
+        vb.ball.vy = -4.8;
+        vb.ball.x = netL - 4;
+      } else {
+        // Chạm lưới từ sân phải (bot) -> Bật nảy bổng ngược về sân phải
+        vb.ball.vx = 3.6;
+        vb.ball.vy = -4.8;
+        vb.ball.x = netR + 4;
+      }
+      audioManager.playClick();
+      this.spawnConfetti(vb.ball.x, vb.ball.y, 6);
     }
 
     // Va chạm Người chơi (Player hit)
@@ -958,14 +959,14 @@ export class SportsArcade {
         vb.scoredSide = 'bot';
         vb.scores.bot += 1;
         vb.servingSide = 'bot'; // Máy phát bóng lượt sau
-        vb.statusMsg = '⚡ ĐỐI THỦ ĐẬP BÓNG GHI ĐIỂM!';
+        vb.statusMsg = 'Đối thủ ghi điểm!';
         audioManager.playClick();
       } else {
         // Rơi sân đối thủ -> Người chơi ghi điểm!
         vb.scoredSide = 'player';
         vb.scores.player += 1;
         vb.servingSide = 'player'; // Người chơi tiếp tục phát bóng
-        vb.statusMsg = '🎉 CÚ ĐẬP BÓNG CHÁY SÂN! ĐIỂM CHO BẠN! 🏐';
+        vb.statusMsg = 'Điểm cho bạn!';
         if (vb.rally > this.scores.volleyballHigh) {
           this.scores.volleyballHigh = vb.rally;
           localStorage.setItem('dever_volleyball_high', vb.rally.toString());
@@ -1049,7 +1050,7 @@ export class SportsArcade {
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 20px Outfit, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`🏐 BẠN: ${vb.scores.player}  -  ${vb.scores.bot} :FUDA BOT`, 320, 38);
+    ctx.fillText(`BẠN: ${vb.scores.player}  -  ${vb.scores.bot} :BOT`, 320, 38);
 
     ctx.font = 'bold 13px Outfit, sans-serif';
     ctx.fillStyle = '#38bdf8';
@@ -1059,11 +1060,11 @@ export class SportsArcade {
     if (vb.state === 'serving_player') {
       ctx.font = '800 14px Outfit, sans-serif';
       ctx.fillStyle = '#4ade80';
-      ctx.fillText('⚡ LƯỢT CỦA BẠN: BẤM PHÍM SPACE HOẶC CLICK ĐỂ PHÁT BÓNG QUA LƯỚI!', 320, 90);
+      ctx.fillText('Lượt của bạn: Bấm phím Space hoặc Click để phát bóng qua lưới', 320, 90);
     } else if (vb.state === 'serving_bot') {
       ctx.font = '800 14px Outfit, sans-serif';
       ctx.fillStyle = '#fbbf24';
-      ctx.fillText('🤖 ĐỐI THỦ ĐANG CHUẨN BỊ PHÁT BÓNG... (SẴN SÀNG ĐÓN BÓNG)', 320, 90);
+      ctx.fillText('Đối thủ đang chuẩn bị phát bóng... (Sẵn sàng đón bóng)', 320, 90);
     } else if (vb.state === 'scored') {
       ctx.font = '800 16px Outfit, sans-serif';
       ctx.fillStyle = vb.scoredSide === 'player' ? '#4ade80' : '#f87171';
@@ -1074,7 +1075,7 @@ export class SportsArcade {
     } else {
       ctx.font = '12px Outfit, sans-serif';
       ctx.fillStyle = '#cbd5e1';
-      ctx.fillText('⬅️ ➡️ Di chuyển • SPACE / ⬆️ Nhảy & Đập bóng', 320, 85);
+      ctx.fillText('Di chuyển: Phím Mũi Tên / A D • Nhảy & Đập: Space / Phím Lên', 320, 85);
     }
   }
 
@@ -1101,11 +1102,11 @@ export class SportsArcade {
     const p = this.barista.power;
     if (p >= 40 && p <= 75) {
       this.scores.baristaScore += 100;
-      this.barista.resultText = '🌟 PHA CHẾ HOÀN HẢO! ĐỒ UỐNG CHUẨN VỊ BARISTA! ☕';
+      this.barista.resultText = 'Pha Chế Hoàn Hảo! Đồ Uống Chuẩn Vị Barista!';
       audioManager.playVictory();
       this.spawnConfetti(320, 180, 30);
     } else {
-      this.barista.resultText = '⚡ TỈ LỆ CHƯA CHUẨN! HÃY THỬ LẠI NÀO!';
+      this.barista.resultText = 'Tỉ Lệ Chưa Chuẩn! Hãy Thử Lại!';
       audioManager.playClick();
     }
     this.updateHUD();
