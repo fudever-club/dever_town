@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
 import { GAME_CONFIG } from '../config/gameConfig.js';
 import { authService } from '../services/AuthService.js';
+import { DeviceApprovalModal } from '../ui/DeviceApprovalModal.js';
 
 export class SocketManager {
   /**
@@ -12,6 +13,15 @@ export class SocketManager {
     this.isConnected = false;
     this.lastSentTime = 0;
     this.lastPosition = { x: 0, y: 0, direction: 'down', isMoving: false };
+
+    // Khởi tạo Modal Xác nhận Thiết Bị Mới
+    this.approvalModal = new DeviceApprovalModal({
+      onDecision: ({ requestId, approved }) => {
+        if (this.socket && this.isConnected) {
+          this.socket.emit('respondDeviceApproval', { requestId, approved });
+        }
+      }
+    });
   }
 
   connect() {
@@ -134,6 +144,14 @@ export class SocketManager {
           role: 'admin',
           timestamp: Date.now()
         });
+      }
+    });
+
+    // 10. REAL-TIME DEVICE APPROVAL: Nhận yêu cầu xác nhận khi thiết bị mới muốn đăng nhập
+    this.socket.on('deviceLoginPrompt', (data) => {
+      console.log('🛡️ [Device Approval Prompt]:', data);
+      if (this.approvalModal) {
+        this.approvalModal.show(data);
       }
     });
   }

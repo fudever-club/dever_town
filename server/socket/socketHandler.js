@@ -1,9 +1,13 @@
 import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
+import { mailService } from '../services/mailService.js';
 
 // Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
 const ipConnectionCounts = new Map();
 const MAX_SOCKETS_PER_IP = 12;
+
+// Danh sách các yêu cầu xác thực thiết bị mới đang chờ duyệt
+const pendingApprovals = new Map();
 
 export function setupSocketHandler(io) {
   io.use(async (socket, next) => {
@@ -21,6 +25,7 @@ export function setupSocketHandler(io) {
       if (user) {
         socket.authUser = {
           id: user.id,
+          email: user.email,
           displayName: user.display_name,
           avatarId: user.avatar_id,
           role: user.role,
@@ -38,12 +43,13 @@ export function setupSocketHandler(io) {
 
   io.on('connection', (socket) => {
     const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
+    const userAgent = socket.handshake.headers['user-agent'] || 'Web Browser';
     console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
 
     /**
-     * 1. Tham gia thế giới (Join Game) theo Room (Giới hạn tối đa 4 thiết bị / tài khoản)
+     * 1. Tham gia thế giới (Join Game) theo Room (Giới hạn tối đa 4 thiết bị + Cảnh báo Email & Xác thực Realtime)
      */
-    socket.on('joinGame', (clientData = {}) => {
+    socket.on('joinGame', async (clientData = {}) => {
       // BẢO MẬT: Giới hạn tối đa 4 thiết bị đăng nhập đồng thời trên cùng 1 tài khoản
       if (socket.authUser && socket.authUser.id) {
         const MAX_CONCURRENT_DEVICES = 4;
@@ -70,12 +76,39 @@ export function setupSocketHandler(io) {
           return; // Chặn không cho phép tham gia
         }
 
-        // Nếu thiết bị mới được phép vào và đã có các máy khác đang online, gửi thông báo bảo mật cho các máy cũ biết
+        // Nếu có thiết bị khác đang online: Gửi Email bảo mật + Hiện Modal xác nhận Realtime trên máy cũ
         if (activeSessions.length > 0 && !activeSessions.some(p => p.id === socket.id)) {
+          const reqId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+          const timeStr = new Date().toLocaleTimeString('vi-VN');
+
+          // Lưu thông tin request chờ phê duyệt
+          pendingApprovals.set(reqId, {
+            requestId: reqId,
+            targetSocketId: socket.id,
+            userId: socket.authUser.id,
+            userEmail: socket.authUser.email,
+            ip: clientIp,
+            createdAt: Date.now()
+          });
+
+          // 1. Gửi Email thông báo bảo mật
+          if (socket.authUser.email) {
+            mailService.sendNewDeviceAlert(socket.authUser.email, {
+              displayName: socket.authUser.displayName,
+              ip: clientIp,
+              userAgent,
+              time: timeStr,
+              activeDevicesCount: activeSessions.length + 1
+            });
+          }
+
+          // 2. Hiện Modal Cảnh Báo Phê Duyệt trên tất cả các thiết bị đang online
           activeSessions.forEach(p => {
-            io.to(p.id).emit('securityAlert', {
-              title: 'Thiết Bị Mới Đăng Nhập',
-              message: `🔔 [Thông Báo] Tài khoản của bạn vừa đăng nhập thêm trên một thiết bị mới (Hiện có ${activeSessions.length + 1}/${MAX_CONCURRENT_DEVICES} thiết bị đang hoạt động).`
+            io.to(p.id).emit('deviceLoginPrompt', {
+              requestId: reqId,
+              ip: clientIp,
+              time: timeStr,
+              userAgent: userAgent.includes('Mobile') ? 'Điện Thoại / Mobile' : 'Máy Tính / PC'
             });
           });
         }
