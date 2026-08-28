@@ -503,7 +503,9 @@ export class InteractiveModal {
     this.activeMusicGenre = this.activeMusicGenre || 'all';
     this.renderMusicGenreTabs();
     this.renderLofiPresets();
-    this.loadLofiVideo('jfKfPfyJRdk');
+    const firstPreset = LOFI_PRESETS[0];
+    const initialId = firstPreset ? firstPreset.videoId : 'm7Wya6Z-QdM';
+    this.loadLofiVideo(initialId);
   }
 
   renderMusicGenreTabs() {

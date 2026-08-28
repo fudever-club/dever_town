@@ -2,26 +2,26 @@
  * Bộ Phân Giải URL YouTube Thông Minh & Danh Sách 5 Preset Lofi Tuyển Chọn
  */
 export function extractYouTubeVideoId(rawUrl) {
-  if (!rawUrl || typeof rawUrl !== 'string') return 'jfKfPfyJRdk';
+  if (!rawUrl || typeof rawUrl !== 'string') return 'm7Wya6Z-QdM';
 
   const clean = rawUrl.trim();
 
   // 1. Dạng Embed
   if (clean.includes('youtube.com/embed/')) {
     const id = clean.split('youtube.com/embed/')[1].split(/[?&]/)[0];
-    return id || 'jfKfPfyJRdk';
+    return id || 'm7Wya6Z-QdM';
   }
 
   // 2. Dạng Shorts: youtube.com/shorts/VIDEO_ID
   if (clean.includes('youtube.com/shorts/')) {
     const id = clean.split('youtube.com/shorts/')[1].split(/[?&]/)[0];
-    return id || 'jfKfPfyJRdk';
+    return id || 'm7Wya6Z-QdM';
   }
 
   // 3. Dạng rút gọn: youtu.be/VIDEO_ID
   if (clean.includes('youtu.be/')) {
     const id = clean.split('youtu.be/')[1].split(/[?&]/)[0];
-    return id || 'jfKfPfyJRdk';
+    return id || 'm7Wya6Z-QdM';
   }
 
   // 4. Dạng chuẩn: youtube.com/watch?v=VIDEO_ID
@@ -35,14 +35,14 @@ export function extractYouTubeVideoId(rawUrl) {
     return clean;
   }
 
-  return 'jfKfPfyJRdk';
+  return 'm7Wya6Z-QdM';
 }
 
 export const MUSIC_GENRES = [
   { id: 'all', name: '🔥 Tất Cả' },
   { id: 'vietnam', name: '🇻🇳 V-Pop & Acoustic Chill' },
   { id: 'motivation', name: '⚡ Cày Deadline & Động Lực' },
-  { id: 'lofi', name: '☕ Lofi & Học Tập 24/7' },
+  { id: 'lofi', name: '☕ Lofi & Học Tập' },
   { id: 'classical', name: '🎼 Cổ Điển & Piano Trí Não' },
   { id: 'gaming', name: '🌃 Synthwave Cyberpunk' }
 ];
@@ -87,13 +87,6 @@ export const LOFI_PRESETS = [
     name: '🐶 Tiếng Chó Sủa Lofi 12H - Chill & Ấm Áp Độc Lạ',
     videoId: 'IsezUTX-Yog',
     desc: 'Giai điệu Lofi độc đáo kết hợp tiếng cún cưng sủa nhẹ nhàng, tạo cảm giác thân thuộc, vui vẻ và ấm cúng.'
-  },
-  {
-    id: 'lofi_girl_live',
-    genre: 'lofi',
-    name: '☕ Lofi Girl 24/7 - Beats to Relax/Study',
-    videoId: 'jfKfPfyJRdk',
-    desc: 'Livestream Lofi 24/7 huyền thoại thế giới giúp tăng tối đa khả năng tập trung lập trình & học tập.'
   },
   {
     id: 'morning_coffee_lofi',

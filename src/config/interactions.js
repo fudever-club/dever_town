@@ -200,7 +200,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
   coffee_lofi: {
     title: 'Quầy Cà Phê Chill Radio & Pomodoro FU-DEVER',
     description: 'Không gian âm nhạc lofi thư giãn và bộ đếm thời gian tập trung 25/5 phút.',
-    getEmbedUrl: (videoId) => `https://www.youtube.com/embed/${videoId || 'jfKfPfyJRdk'}?autoplay=1&mute=0&controls=1`
+    getEmbedUrl: (videoId) => `https://www.youtube.com/embed/${videoId || 'm7Wya6Z-QdM'}?autoplay=1&mute=0&controls=1`
   },
 
   // 5. Phòng Triển Lãm Kỷ Niệm (Gallery)
