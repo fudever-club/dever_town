@@ -21,6 +21,15 @@ export class BootScene extends Phaser.Scene {
 
     // 2. Sinh toàn bộ 4 bộ Spritesheet Avatar Pixel Art
     TextureGenerator.generateAllCharacterSpritesheets(this);
+
+    // 3. Tự động sinh sẵn bộ Spritesheet tùy chỉnh custom_wardrobe ngay tại BootScene nếu có lưu trong storage
+    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+    if (savedWardrobeRaw) {
+      try {
+        const wardrobeConfig = JSON.parse(savedWardrobeRaw);
+        TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+      } catch (e) {}
+    }
   }
 
   create() {

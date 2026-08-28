@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { TextureGenerator } from '../utils/TextureGenerator.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
   if (!str) return '';
@@ -15,13 +16,26 @@ export class Player extends Phaser.GameObjects.Sprite {
    * @param {Object} options
    */
   constructor(scene, x, y, options = {}) {
-    const avatarId = options.avatarId || 'dev_hoodie';
-    const textureKey = `char_${avatarId}`;
+    let wardrobeConfig = options.wardrobeConfig || null;
+    if (!wardrobeConfig) {
+      const saved = localStorage.getItem('dever_wardrobe_config');
+      if (saved) {
+        try { wardrobeConfig = JSON.parse(saved); } catch (e) {}
+      }
+    }
 
+    let avatarId = options.avatarId || 'dev_hoodie';
+    if (wardrobeConfig && scene) {
+      avatarId = 'custom_wardrobe';
+      TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
+    }
+
+    const textureKey = `char_${avatarId}`;
     super(scene, x, y, textureKey, 0);
 
     this.name = options.name || 'Dever Member';
     this.avatarId = avatarId;
+    this.wardrobeConfig = wardrobeConfig;
     this.role = options.role || 'guest';
     this.isCurrentPlayer = options.isCurrentPlayer || false;
     this.equippedItemId = options.equippedItemId || null;
@@ -113,9 +127,15 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.wardrobeConfig = wardrobeConfig;
     }
     const textureKey = `char_${avatarId}`;
-    if (this.scene && this.scene.textures.exists(textureKey)) {
-      this.setTexture(textureKey, 0);
-      this.stopMovement();
+    if (this.scene) {
+      const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null') : null);
+      if (cfgToUse) {
+        TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, textureKey);
+      }
+      if (this.scene.textures.exists(textureKey)) {
+        this.setTexture(textureKey, 0);
+        this.stopMovement();
+      }
     }
   }
 

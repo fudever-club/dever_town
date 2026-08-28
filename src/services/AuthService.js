@@ -167,6 +167,17 @@ class AuthService {
     localStorage.setItem('dever_token', token);
     localStorage.setItem('dever_user', JSON.stringify(user));
     localStorage.setItem('dever_nickname', user.display_name);
+
+    // Tự động kiểm tra và đồng bộ trang phục cũ từ máy nếu trên server chưa có
+    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+    if (!user.wardrobe_config && savedWardrobeRaw) {
+      try {
+        const cfg = JSON.parse(savedWardrobeRaw);
+        user.wardrobe_config = cfg;
+        this.syncFullProfile({ wardrobeConfig: cfg });
+      } catch (e) {}
+    }
+
     this.applyUserServerData(user);
   }
 
