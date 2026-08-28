@@ -42,14 +42,20 @@ class PlayerManager {
     return this.players.get(socketId);
   }
 
-  findPlayerByUserId(userId) {
-    if (!userId) return null;
+  getPlayersByUserId(userId) {
+    if (!userId) return [];
+    const list = [];
     for (const player of this.players.values()) {
       if (player.userId && player.userId === userId) {
-        return player;
+        list.push(player);
       }
     }
-    return null;
+    return list;
+  }
+
+  findPlayerByUserId(userId) {
+    const list = this.getPlayersByUserId(userId);
+    return list.length > 0 ? list[0] : null;
   }
 
   updateMovement(socketId, { x, y, direction, isMoving }) {

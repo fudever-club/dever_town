@@ -116,12 +116,25 @@ export class SocketManager {
       this.updateRoomCountsUI(counts);
     });
 
-    // 8. BẢO VỆ PHIÊN ĐĂNG NHẬP: Bị ngắt kết nối do thiết bị khác đăng nhập cùng tài khoản
-    this.socket.on('sessionTerminated', (data) => {
-      console.warn('⚠️ [Session] Phiên kết nối bị ngắt do phát hiện đăng nhập mới:', data);
-      alert(data.message || 'Tài khoản của bạn vừa được đăng nhập trên một thiết bị khác! Phiên kết nối này đã bị ngắt để bảo vệ tài khoản.');
+    // 8. BẢO VỆ PHIÊN ĐĂNG NHẬP: Bị chặn do vượt quá 4 thiết bị đồng thời
+    this.socket.on('sessionLimitExceeded', (data) => {
+      console.warn('⚠️ [Device Limit] Vượt quá giới hạn 4 thiết bị:', data);
+      alert(data.message || 'Tài khoản của bạn đã đạt giới hạn tối đa 4 thiết bị đang hoạt động cùng lúc. Vui lòng đăng xuất ở một trong các thiết bị trước đó!');
       authService.logout();
       window.location.reload();
+    });
+
+    // 9. CẢNH BÁO BẢO MẬT: Nhận thông báo khi có thiết bị mới đăng nhập hoặc bị chặn
+    this.socket.on('securityAlert', (data) => {
+      console.info('🛡️ [Security Alert]:', data.message);
+      if (this.scene && this.scene.chatBox) {
+        this.scene.chatBox.addMessage({
+          senderName: 'Hệ Thống Bảo Mật',
+          message: data.message,
+          role: 'admin',
+          timestamp: Date.now()
+        });
+      }
     });
   }
 

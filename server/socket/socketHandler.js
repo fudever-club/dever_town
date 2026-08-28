@@ -41,24 +41,43 @@ export function setupSocketHandler(io) {
     console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
 
     /**
-     * 1. Tham gia thế giới (Join Game) theo Room (Có cơ chế Đá Phiên Cũ nếu cùng tài khoản)
+     * 1. Tham gia thế giới (Join Game) theo Room (Giới hạn tối đa 4 thiết bị / tài khoản)
      */
     socket.on('joinGame', (clientData = {}) => {
-      // BẢO VỆ ĐĂNG NHẬP 1 TÀI KHOẢN: Nếu tài khoản đang online ở máy khác, đá phiên cũ ngay lập tức
+      // BẢO MẬT: Giới hạn tối đa 4 thiết bị đăng nhập đồng thời trên cùng 1 tài khoản
       if (socket.authUser && socket.authUser.id) {
-        const existingPlayer = playerManager.findPlayerByUserId(socket.authUser.id);
-        if (existingPlayer && existingPlayer.id !== socket.id) {
-          console.log(`⚠️ [Multi-Device Kick] Đá phiên cũ (${existingPlayer.id}) của user [${socket.authUser.displayName}]`);
-          io.to(existingPlayer.id).emit('sessionTerminated', {
-            reason: 'concurrent_login',
-            message: 'Tài khoản của bạn vừa đăng nhập từ một thiết bị hoặc tab khác! Phiên kết nối này đã được ngắt để bảo vệ tài khoản.'
+        const MAX_CONCURRENT_DEVICES = 4;
+        const activeSessions = playerManager.getPlayersByUserId(socket.authUser.id);
+
+        // Nếu đã có 4 thiết bị đang hoạt động và thiết bị hiện tại là thiết bị thứ 5 mới
+        if (activeSessions.length >= MAX_CONCURRENT_DEVICES && !activeSessions.some(p => p.id === socket.id)) {
+          console.warn(`🛑 [Device Limit Block] User ${socket.authUser.displayName} (${socket.authUser.id}) vượt quá giới hạn ${MAX_CONCURRENT_DEVICES} thiết bị.`);
+          
+          socket.emit('sessionLimitExceeded', {
+            maxDevices: MAX_CONCURRENT_DEVICES,
+            activeCount: activeSessions.length,
+            message: `⚠️ Tài khoản của bạn đã đạt giới hạn tối đa ${MAX_CONCURRENT_DEVICES} thiết bị đang đăng nhập cùng lúc. Vui lòng đăng xuất ở một trong các thiết bị trước đó để vào game trên thiết bị mới này!`
           });
-          const oldSocket = io.sockets.sockets.get(existingPlayer.id);
-          if (oldSocket) {
-            oldSocket.disconnect(true);
-          }
-          playerManager.removePlayer(existingPlayer.id);
-          socket.to(existingPlayer.roomId).emit('playerDisconnected', existingPlayer.id);
+
+          // Gửi cảnh báo bảo mật tới tất cả các thiết bị đang online
+          activeSessions.forEach(p => {
+            io.to(p.id).emit('securityAlert', {
+              title: 'Cảnh Báo Đăng Nhập',
+              message: `🛡️ [Bảo Mật] Phát hiện một thiết bị mới vừa cố gắng đăng nhập vào tài khoản của bạn (Đã bị chặn do đạt giới hạn ${MAX_CONCURRENT_DEVICES} thiết bị).`
+            });
+          });
+
+          return; // Chặn không cho phép tham gia
+        }
+
+        // Nếu thiết bị mới được phép vào và đã có các máy khác đang online, gửi thông báo bảo mật cho các máy cũ biết
+        if (activeSessions.length > 0 && !activeSessions.some(p => p.id === socket.id)) {
+          activeSessions.forEach(p => {
+            io.to(p.id).emit('securityAlert', {
+              title: 'Thiết Bị Mới Đăng Nhập',
+              message: `🔔 [Thông Báo] Tài khoản của bạn vừa đăng nhập thêm trên một thiết bị mới (Hiện có ${activeSessions.length + 1}/${MAX_CONCURRENT_DEVICES} thiết bị đang hoạt động).`
+            });
+          });
         }
       }
 
