@@ -44,26 +44,70 @@ export const TRANSLATIONS = {
       canteen_cafe: 'Sang Căn Tin & Cafe'
     },
 
-    // Interactive Zones Tooltips
+    // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
     zones: {
+      // Sảnh Alpha (Main Hall)
+      zone_main_frog: 'Linh Vật Cóc Vàng FUDA',
+      zone_main_campus_map: 'Sơ Đồ Bản Đồ FPTU',
+      zone_main_slides: 'Màn Chiếu Sảnh Đón Tiếp',
+      zone_main_meeting: 'Sân Khấu Họp Toàn Thể',
+      zone_main_coffee: 'Vườn Trà FUDA & Thư Giãn',
+
+      // Tech & AI Lab (Dever Lab)
+      zone_lab_whiteboard: 'Bảng Sơ Đồ Kiến Trúc',
+      zone_lab_code_a: 'Bàn Hackathon Đội Alpha',
+      zone_lab_meeting: 'Bàn Thảo Luận Lab',
+      zone_lab_code_b: 'Bàn Hackathon Đội Beta',
+
+      // Thư Viện (Library Lounge)
+      zone_lib_swe: 'Cẩm Nang Ôn Thi SWE201c',
+      zone_lib_charter: 'Quy Chế Hoạt Động CLB',
+      zone_lib_coffee: 'Quầy Cà Phê & Pomodoro',
+      zone_lib_slides: 'Khu Đọc Tài Liệu Ôn Thi',
+      zone_lib_code: 'Bàn Tự Học & Sổ Tay',
+
+      // Phòng Kỷ Niệm (Memory Room)
+      zone_mem_founding: 'Hành Trình 9+ Năm FU-DEVER',
+      zone_mem_hackathon: '20+ Cúp ICPC & Hackathon',
+      zone_mem_teambuilding: 'Album Teambuilding & Gắn Kết',
+      zone_mem_workshop: 'Chuỗi Workshop Tech Talk',
+
+      // Không Gian Web & IT Helpdesk (Web Room)
+      zone_web_fptu_portal: 'IT Helpdesk & Phần Mềm Thi',
+      zone_web_main: 'Landing Page Chính Thức',
+      zone_web_member_portal: 'Member Portal Thành Viên',
+      zone_web_projects: 'Kho Dự Án Game, AI & Web',
+      zone_web_recruitment: 'Đăng Ký Thành Viên FU-DEVER',
+
+      // Media Hub & Mạng Xã Hội (Media Hub)
+      zone_media_portal: 'Cổng Tiện Ích & Phần Mềm Thi',
+      zone_media_facebook: 'Fanpage Facebook FU-DEVER',
+      zone_media_tiktok: 'Kênh TikTok & Media FUDA',
+      zone_media_github: 'Kho GitHub Organization',
+      zone_media_recruitment: 'Cổng Tuyển Quân FU-DEVER',
+
+      // Khu Thể Thao (Sports Complex)
+      zone_sports_football: 'Sút Phạt Đền Mini',
+      zone_sports_basketball: 'Ném Bóng Rổ 3 Điểm',
+      zone_sports_volleyball: 'Sân Bóng Chuyền & Cầu Lông',
+      zone_sports_pool: 'Hồ Bơi Sinh Viên FUDA',
+      zone_soccer: 'Sút Phạt Đền Mini',
+      zone_basketball: 'Ném Bóng Rổ 3 Điểm',
+      zone_swimming: 'Hồ Bơi Sinh Viên FUDA',
+
+      // Căn Tin & Cafe (Canteen & Cafe Lounge)
+      zone_canteen_food: 'Thực Đơn Căn Tin FUDA',
+      zone_cafe_barista: 'Pha Chế Cà Phê Muối & Trà Sữa',
+      zone_cafe_acoustic: 'Góc Nhạc Acoustic Cafe',
+      zone_cafe_meeting: 'Bàn Tròn Thảo Luận Căn Tin',
+
+      // Fallback Generic Zones
       zone_whiteboard: 'Màn Chiếu Slide',
       zone_meeting: 'Phòng Họp Nhóm',
       zone_code: 'Bàn Live Code',
       zone_coffee: 'Quầy Cà Phê Lofi',
       zone_memory: 'Khung Ảnh Kỷ Niệm',
-      zone_website: 'Showroom Web CLB',
-      zone_main_campus_map: 'Sơ Đồ Bản Đồ FPTU',
-      zone_lib_swe: 'Cẩm Nang Ôn Thi SWE201c',
-      zone_lib_charter: 'Quy Chế Hoạt Động CLB',
-      zone_media_portal: 'Cổng Tiện Ích & Phần Mềm Thi',
-      zone_web_fptu_portal: 'IT Helpdesk & Tải Phần Mềm Thi',
-      zone_soccer: 'Sút Phạt Đền 11m',
-      zone_basketball: 'Ném Bóng Rổ 3 Điểm',
-      zone_swimming: 'Hồ Bơi Sinh Viên',
-      zone_canteen_food: 'Thực Đơn 3 Căn Tin FUDA',
-      zone_cafe_barista: 'Pha Chế Cà Phê',
-      zone_cafe_acoustic: 'Acoustic Chill',
-      zone_cafe_meeting: 'Bàn Họp Nhóm'
+      zone_website: 'Showroom Web CLB'
     },
 
     // Welcome Gate
@@ -176,26 +220,70 @@ export const TRANSLATIONS = {
       canteen_cafe: 'To Canteen & Cafe'
     },
 
-    // Interactive Zones Tooltips
+    // Interactive Zones Tooltips (Full zones mapped per room)
     zones: {
+      // Alpha Hall
+      zone_main_frog: 'FUDA Golden Frog Motto',
+      zone_main_campus_map: 'FPTU Da Nang Campus Map',
+      zone_main_slides: 'Welcome Hall Presentation',
+      zone_main_meeting: 'General Meeting Stage',
+      zone_main_coffee: 'FUDA Tea Garden & Chill',
+
+      // Tech & AI Lab
+      zone_lab_whiteboard: 'AI Architecture Board',
+      zone_lab_code_a: 'Alpha Hackathon Sandbox',
+      zone_lab_meeting: 'Lab Tech Discussion',
+      zone_lab_code_b: 'Beta Hackathon Sandbox',
+
+      // Library Lounge
+      zone_lib_swe: 'SWE201c Exam Guide',
+      zone_lib_charter: 'DEVER Club Regulations',
+      zone_lib_coffee: 'Coffee & Pomodoro Station',
+      zone_lib_slides: 'Exam Study Materials',
+      zone_lib_code: 'Study Desk & Notebook',
+
+      // Memory Room
+      zone_mem_founding: '9+ Years of FU-DEVER',
+      zone_mem_hackathon: '20+ ICPC & Hackathon Trophies',
+      zone_mem_teambuilding: 'Teambuilding & Family Album',
+      zone_mem_workshop: 'Tech Talk Workshops Series',
+
+      // Web Showroom & IT Helpdesk
+      zone_web_fptu_portal: 'IT Helpdesk & Exam Software',
+      zone_web_main: 'Official Landing Page',
+      zone_web_member_portal: 'Club Member Portal',
+      zone_web_projects: 'Game, AI & Web Showcase',
+      zone_web_recruitment: 'Join FU-DEVER Registration',
+
+      // Media Hub
+      zone_media_portal: 'Student & Exam Portal',
+      zone_media_facebook: 'Official Facebook Fanpage',
+      zone_media_tiktok: 'FUDA TikTok & Media',
+      zone_media_github: 'GitHub Organization',
+      zone_media_recruitment: 'Recruitment Registration',
+
+      // Sports Complex
+      zone_sports_football: 'Penalty Shootout Mini',
+      zone_sports_basketball: 'Basketball 3-Point Shootout',
+      zone_sports_volleyball: 'Volleyball & Badminton Court',
+      zone_sports_pool: 'FUDA Student Swimming Pool',
+      zone_soccer: 'Penalty Shootout Mini',
+      zone_basketball: 'Basketball 3-Point Shootout',
+      zone_swimming: 'FUDA Student Swimming Pool',
+
+      // Canteen & Cafe Lounge
+      zone_canteen_food: 'FUDA Canteen Menus',
+      zone_cafe_barista: 'Salt Coffee & Milk Tea Barista',
+      zone_cafe_acoustic: 'Acoustic Chill & Lofi',
+      zone_cafe_meeting: 'Canteen Group Discussion',
+
+      // Fallback Generic Zones
       zone_whiteboard: 'Slide Presentation',
       zone_meeting: 'Meeting Stage',
       zone_code: 'Live Code Sandbox',
       zone_coffee: 'Lofi Chill Station',
       zone_memory: 'Memory Frames',
-      zone_website: 'Club Website Showroom',
-      zone_main_campus_map: 'FPTU Campus Map',
-      zone_lib_swe: 'SWE201c Exam Guide',
-      zone_lib_charter: 'Club Regulations',
-      zone_media_portal: 'Student & Exam Portal',
-      zone_web_fptu_portal: 'IT Helpdesk & Exam Apps',
-      zone_soccer: '11m Penalty Shootout',
-      zone_basketball: '3-Point Shootout',
-      zone_swimming: 'Student Pool Lounge',
-      zone_canteen_food: '3 Canteen Food Menus',
-      zone_cafe_barista: 'Barista Coffee Brew',
-      zone_cafe_acoustic: 'Acoustic Chill',
-      zone_cafe_meeting: 'Meeting & Boardgames'
+      zone_website: 'Club Website Showroom'
     },
 
     // Welcome Gate
@@ -299,17 +387,18 @@ class I18nManager {
     this.listeners.forEach(fn => fn(lang));
   }
 
-  get(key) {
+  get(key, fallback = null) {
+    if (!key || typeof key !== 'string') return fallback;
     const keys = key.split('.');
     let obj = TRANSLATIONS[this.currentLang];
     for (const k of keys) {
       if (obj && obj[k] !== undefined) {
         obj = obj[k];
       } else {
-        return key;
+        return fallback;
       }
     }
-    return obj;
+    return obj !== undefined && obj !== null ? obj : fallback;
   }
 
   subscribe(fn) {
