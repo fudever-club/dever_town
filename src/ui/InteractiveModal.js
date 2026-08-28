@@ -144,6 +144,10 @@ export class InteractiveModal {
     return this.modalEl && !this.modalEl.classList.contains('hidden');
   }
 
+  openForZone(zoneData) {
+    this.show(zoneData);
+  }
+
   show(zoneData) {
     if (!this.modalEl) return;
     this.currentZone = zoneData;
