@@ -389,6 +389,9 @@ body {
   overflow: hidden;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(242, 111, 33, 0.25);
   background-color: #070a12;
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout style paint;
 }
 
 #game-container canvas {
@@ -397,6 +400,7 @@ body {
   display: block;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  transform: translateZ(0);
 }
 
 /* --- CHAT BOX --- */

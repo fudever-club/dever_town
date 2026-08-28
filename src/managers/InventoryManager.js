@@ -208,12 +208,23 @@ export class InventoryManager {
   update(player) {
     if (!player || !this.pickupSprites.length) return;
 
-    // Kiểm tra nhặt đồ khi người chơi bước lại gần (bán kính 26px)
-    this.pickupSprites.forEach(pickup => {
-      if (pickup.isCollected) return;
+    // Throttling: Kiểm tra nhặt đồ mỗi 75ms để tiết kiệm CPU
+    const now = performance.now();
+    if (now - (this.lastCheckTime || 0) < 75) return;
+    this.lastCheckTime = now;
 
-      const dist = Phaser.Math.Distance.Between(player.x, player.y, pickup.posX, pickup.posY);
-      if (dist <= 26) {
+    const thresholdSq = 26 * 26; // 676
+
+    // Kiểm tra nhặt đồ khi người chơi bước lại gần (bán kính 26px)
+    for (let i = 0; i < this.pickupSprites.length; i++) {
+      const pickup = this.pickupSprites[i];
+      if (pickup.isCollected) continue;
+
+      const dx = player.x - pickup.posX;
+      const dy = player.y - pickup.posY;
+      const distSq = dx * dx + dy * dy;
+
+      if (distSq <= thresholdSq) {
         pickup.isCollected = true;
         this.addItem(pickup.spot.itemId, 1);
 
@@ -230,7 +241,7 @@ export class InventoryManager {
           }
         });
       }
-    });
+    }
   }
 
   showToast(message) {

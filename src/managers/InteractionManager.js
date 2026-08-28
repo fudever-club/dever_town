@@ -189,33 +189,48 @@ export class InteractionManager {
       return;
     }
 
+    // Throttling: Kiểm tra khoảng cách mỗi 60ms để tối ưu hóa CPU
+    const now = performance.now();
+    if (now - (this.lastCheckTime || 0) < 60) {
+      if (this.currentActiveZone) {
+        this.updateHUDPosition(this.currentActiveZone);
+      }
+      return;
+    }
+    this.lastCheckTime = now;
+
     const tileSize = 32;
     let closestZone = null;
-    let minDistance = Infinity;
+    let minDistanceSq = Infinity;
 
-    // Tìm zone gần nhất
+    // Tìm zone gần nhất bằng square distance
     for (const zone of this.zones) {
       const zoneWorldX = zone.tileX * tileSize + tileSize / 2;
       const zoneWorldY = zone.tileY * tileSize + tileSize / 2;
 
-      const dist = Phaser.Math.Distance.Between(player.x, player.y, zoneWorldX, zoneWorldY);
+      const dx = player.x - zoneWorldX;
+      const dy = player.y - zoneWorldY;
+      const distSq = dx * dx + dy * dy;
 
-      if (dist < minDistance) {
-        minDistance = dist;
-        closestZone = { ...zone, worldX: zoneWorldX, worldY: zoneWorldY, distance: dist };
+      if (distSq < minDistanceSq) {
+        minDistanceSq = distSq;
+        closestZone = { ...zone, worldX: zoneWorldX, worldY: zoneWorldY, distanceSq: distSq };
       }
     }
 
+    const radiusInSq = this.RADIUS_IN * this.RADIUS_IN;
+    const radiusOutSq = this.RADIUS_OUT * this.RADIUS_OUT;
+
     // Áp dụng thuật toán Proximity Hysteresis
     if (this.currentActiveZone) {
-      if (minDistance > this.RADIUS_OUT) {
+      if (minDistanceSq > radiusOutSq) {
         this.currentActiveZone = null;
         this.hideHUD();
       } else {
         this.updateHUDPosition(this.currentActiveZone);
       }
     } else {
-      if (closestZone && closestZone.distance <= this.RADIUS_IN) {
+      if (closestZone && minDistanceSq <= radiusInSq) {
         this.currentActiveZone = closestZone;
         this.showHUD(closestZone);
       }

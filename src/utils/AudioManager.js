@@ -126,6 +126,13 @@ class AudioManager {
       osc.connect(gain);
       gain.connect(ctx.destination);
 
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch (err) {}
+      };
+
       osc.start();
       osc.stop(ctx.currentTime + 0.06);
     } catch (e) {
@@ -156,6 +163,13 @@ class AudioManager {
       osc.connect(gain);
       gain.connect(ctx.destination);
 
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch (err) {}
+      };
+
       osc.start();
       osc.stop(ctx.currentTime + 0.05);
     } catch (e) {}
@@ -185,6 +199,13 @@ class AudioManager {
 
       osc.connect(gain);
       gain.connect(ctx.destination);
+
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch (err) {}
+      };
 
       osc.start(now);
       osc.stop(now + 0.3);
@@ -217,6 +238,13 @@ class AudioManager {
         osc.connect(gain);
         gain.connect(ctx.destination);
 
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            gain.disconnect();
+          } catch (err) {}
+        };
+
         osc.start(now + i * 0.06);
         osc.stop(now + i * 0.06 + 0.12);
       });
@@ -248,6 +276,13 @@ class AudioManager {
 
         osc.connect(gain);
         gain.connect(ctx.destination);
+
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            gain.disconnect();
+          } catch (err) {}
+        };
 
         osc.start(now + i * 0.08);
         osc.stop(now + i * 0.08 + 0.2);

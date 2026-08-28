@@ -238,18 +238,22 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.anims.play(animKey, true);
     }
 
-    this.setDepth(this.y);
+    if (this.lastX !== this.x || this.lastY !== this.y) {
+      this.lastX = this.x;
+      this.lastY = this.y;
+      this.setDepth(this.y);
 
-    if (this.nameTagContainer) {
-      this.nameTagContainer.setPosition(this.x, this.y - 28);
-    }
+      if (this.nameTagContainer) {
+        this.nameTagContainer.setPosition(this.x, this.y - 28);
+      }
 
-    if (this.speechBubble) {
-      this.speechBubble.setPosition(this.x, this.y - 52);
-    }
+      if (this.speechBubble) {
+        this.speechBubble.setPosition(this.x, this.y - 52);
+      }
 
-    if (this.equippedContainer) {
-      this.equippedContainer.setPosition(this.x + 14, this.y - 8);
+      if (this.equippedContainer) {
+        this.equippedContainer.setPosition(this.x + 14, this.y - 8);
+      }
     }
   }
 
