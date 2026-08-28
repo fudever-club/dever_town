@@ -40,82 +40,112 @@ export function extractYouTubeVideoId(rawUrl) {
 
 export const MUSIC_GENRES = [
   { id: 'all', name: '🔥 Tất Cả' },
-  { id: 'lofi', name: '☕ Lofi & Code' },
-  { id: 'vietnam', name: '🇻🇳 Việt Nam Chill' },
-  { id: 'gaming', name: '🎮 Gaming & Synth' },
-  { id: 'piano', name: '🎹 Piano & Ghibli' },
-  { id: 'jazz', name: '🌧️ Mưa & Jazz Cafe' }
+  { id: 'vietnam', name: '🇻🇳 V-Pop & Acoustic Chill' },
+  { id: 'motivation', name: '⚡ Cày Deadline & Động Lực' },
+  { id: 'lofi', name: '☕ Lofi & Học Tập 24/7' },
+  { id: 'classical', name: '🎼 Cổ Điển & Piano Trí Não' },
+  { id: 'gaming', name: '🌃 Synthwave Cyberpunk' }
 ];
 
 export const LOFI_PRESETS = [
+  // 1. V-Pop & Acoustic Chill (Tuyển chọn từ yêu cầu của bạn)
   {
-    id: 'lofi_girl',
+    id: 'vpop_hits_chill',
+    genre: 'vietnam',
+    name: '🇻🇳 V-Pop Chill - Từng Là, Thu Cuối, Có Em Chờ',
+    videoId: 'm7Wya6Z-QdM',
+    desc: 'Tuyển tập những bản hit nhạc trẻ Việt Nam nhẹ nhàng cực chill cho những buổi học tập và làm việc thảnh thơi.'
+  },
+  {
+    id: 'trieu_view_acoustic',
+    genre: 'vietnam',
+    name: '🇻🇳 Chill Triệu View - Không Buông, Tìm Em (HNGLE x Bảo Anh)',
+    videoId: 'wVLhvXB2flE',
+    desc: 'Những giai điệu acoustic ballad triệu view cực chill giúp thả lỏng tâm trí và giảm căng thẳng.'
+  },
+
+  // 2. Cày Deadline & Động Lực Học Tập (Tuyển chọn từ yêu cầu của bạn)
+  {
+    id: 'fake_love_mashup_remix',
+    genre: 'motivation',
+    name: '🔥 Mashup Fake Love Remix - Nhạc Động Lực Ôn Thi & Chạy Dự Án',
+    videoId: 'mM8bNIndTbw',
+    desc: 'Giai điệu remix năng lượng cao cực truyền động lực, xua tan cơn buồn ngủ khi chạy đua với deadline đồ án.'
+  },
+  {
+    id: 'deadline_motivation_x2',
+    genre: 'motivation',
+    name: '⚡ Deadline Music X2 Động Lực - Nhạc Dí Deadline Bốc Lửa',
+    videoId: '0nO6OwUUF2k',
+    desc: 'Playlist remix tăng tốc độ tập trung, đánh thức năng lượng hoàn thành kịp tiến độ mọi bài tập và dự án.'
+  },
+
+  // 3. Lofi & Học Tập Thư Giãn (Kèm link tiếng chó sủa lofi độc đáo bạn gửi)
+  {
+    id: 'lofi_dog_warm',
     genre: 'lofi',
-    name: '☕ Lofi Girl - Beats to Relax/Study',
+    name: '🐶 Tiếng Chó Sủa Lofi 12H - Chill & Ấm Áp Độc Lạ',
+    videoId: 'IsezUTX-Yog',
+    desc: 'Giai điệu Lofi độc đáo kết hợp tiếng cún cưng sủa nhẹ nhàng, tạo cảm giác thân thuộc, vui vẻ và ấm cúng.'
+  },
+  {
+    id: 'lofi_girl_live',
+    genre: 'lofi',
+    name: '☕ Lofi Girl 24/7 - Beats to Relax/Study',
     videoId: 'jfKfPfyJRdk',
-    desc: 'Livestream Lofi 24/7 huyền thoại giúp tăng 200% khả năng tập trung lập trình & học tập.'
+    desc: 'Livestream Lofi 24/7 huyền thoại thế giới giúp tăng tối đa khả năng tập trung lập trình & học tập.'
   },
   {
-    id: 'fptu_focus',
+    id: 'morning_coffee_lofi',
     genre: 'lofi',
-    name: '🌿 Deep Focus Coding - Sóng Não Alpha',
-    videoId: 'WPni755-Krg',
-    desc: 'Giai điệu Lofi êm dịu, loại bỏ tiếng ồn xung quanh để hoàn thành đồ án & bài tập.'
-  },
-  {
-    id: 'vietnam_lofi_1',
-    genre: 'vietnam',
-    name: '🍵 Nhạc Lofi Việt Nam Nhẹ Nhàng Cực Chill',
-    videoId: '5qap5aO4i9A',
-    desc: 'Tuyển tập các bản ballad & acoustic Việt Nam êm ái phong cách Lofi Quán Quen.'
-  },
-  {
-    id: 'vietnam_acoustic',
-    genre: 'vietnam',
-    name: '🎸 Acoustic Guitar Việt Nam - Chill Trà Chiều',
-    videoId: 'DWcJFNfaw9c',
-    desc: 'Giai điệu guitar mộc mạc và giọng hát nhẹ nhàng cho những buổi chiều thảnh thơi.'
-  },
-  {
-    id: 'synthwave_radio',
-    genre: 'gaming',
-    name: '🌃 Synthwave Cyberpunk - Code Đêm',
-    videoId: '4xDzrJKXOOY',
-    desc: 'Âm hưởng Retro 80s & Cyberpunk sôi động cho các lập trình viên cú đêm.'
-  },
-  {
-    id: 'ncs_gaming',
-    genre: 'gaming',
-    name: '⚡ NCS 24/7 Gaming & High Energy',
-    videoId: 'N3oCS85HvpY',
-    desc: 'Nhạc điện tử EDM/Gaming năng lượng cao giúp đẩy nhanh tiến độ làm dự án.'
-  },
-  {
-    id: 'ghibli_piano',
-    genre: 'piano',
-    name: '🎹 Ghibli Relaxing Piano Collection',
-    videoId: '4Tr0otuiQuU',
-    desc: 'Những khúc dương cầm kinh điển từ Studio Ghibli, êm dịu và chữa lành tâm hồn.'
-  },
-  {
-    id: 'peaceful_piano',
-    genre: 'piano',
-    name: '🌸 Peaceful Piano - Thư Giãn Tinh Thần',
+    name: '☕ Morning Coffee Lofi Hip Hop',
     videoId: '1fueZCTYkpA',
-    desc: 'Tiếng piano trong trẻo giúp xua tan áp lực thi cử và các deadline căng thẳng.'
+    desc: 'Giai điệu cà phê sáng êm dịu, khởi đầu ngày mới ngập tràn cảm hứng sáng tạo.'
   },
   {
-    id: 'danang_rain',
-    genre: 'jazz',
-    name: '🌧️ Mưa Đà Nẵng & Tiếng Mưa Rơi Bờ Biển',
+    id: 'night_study_session',
+    genre: 'lofi',
+    name: '🌙 1 A.M Night Study Session Lofi',
     videoId: 'lTRiuFIWV54',
-    desc: 'Tiếng mưa rơi rả rích hòa cùng tiếng đàn êm dịu thư thái tuyệt đối.'
+    desc: 'Không gian học đêm yên tĩnh, hỗ trợ lập trình viên và sinh viên thức khuya làm bài.'
+  },
+
+  // 4. Cổ Điển & Piano Trí Não (Kèm 2 link mới: Piano mưa thu & Giao hưởng não bộ)
+  {
+    id: 'classical_brain_power',
+    genre: 'classical',
+    name: '🎼 Nhạc Cổ Điển Kích Hoạt Não Bộ - Mozart, Beethoven, Vivaldi',
+    videoId: '0UN_HbOTTcI',
+    desc: 'Tuyển tập kiệt tác giao hưởng cổ điển giúp kích thích sóng não Alpha, tăng cường trí nhớ và tư duy logic.'
   },
   {
-    id: 'jazz_cafe',
-    genre: 'jazz',
-    name: '☕ Warm Bossa Nova Cafe Ambience',
-    videoId: 'e3L1VGfz1u0',
-    desc: 'Không gian quán cà phê ấm cúng với tiếng nhạc Jazz Bossa Nova du dương.'
+    id: 'autumn_rain_piano',
+    genre: 'classical',
+    name: '🌧️ Autumn Rain - 1 Giờ Piano Mưa Thu Êm Đềm',
+    videoId: 'D_twEhvSwHY',
+    desc: 'Tiếng dương cầm nhẹ nhàng kết hợp tiếng mưa rơi rả rích, giúp thư giãn sâu và tăng khả năng đọc sách.'
+  },
+  {
+    id: 'moonlight_sonata',
+    genre: 'classical',
+    name: '🎹 Beethoven - Moonlight Sonata (Ánh Trăng Tuyệt Phẩm)',
+    videoId: '4Tr0otuiQuU',
+    desc: 'Bản sonata ánh trăng kinh điển của Beethoven với giai điệu sâu lắng, thanh lọc tâm hồn.'
+  },
+  {
+    id: 'alpha_waves_focus',
+    genre: 'classical',
+    name: '🌿 Sóng Não Alpha Tăng Cường Tập Trung Sâu',
+    videoId: 'WPni755-Krg',
+    desc: 'Tần số sóng não Alpha chuyên biệt giúp loại bỏ tạp âm và duy trì độ tập trung kéo dài.'
+  },
+
+  // 5. Gaming & Synthwave
+  {
+    id: 'synthwave_cyberpunk',
+    genre: 'gaming',
+    name: '🌌 Synthwave Cyberpunk Radio - Beats to Chill & Game',
+    videoId: '4xDzrJKXOOY',
+    desc: 'Âm hưởng Retro 80s & Cyberpunk sôi động đồng hành cùng các lập trình viên cú đêm.'
   }
 ];
