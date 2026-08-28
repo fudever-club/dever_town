@@ -1,8 +1,9 @@
 import { INTERACTION_PRESETS, ROOM_SLIDE_PRESETS } from '../config/interactions.js';
-import { LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
+import { MUSIC_GENRES, LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
 import { PomodoroTimer } from './PomodoroTimer.js';
 import { questManager } from '../managers/QuestManager.js';
 import { audioManager } from '../utils/AudioManager.js';
+import { SportsArcade } from './SportsArcade.js';
 
 export class InteractiveModal {
   /**
@@ -210,6 +211,9 @@ export class InteractiveModal {
   hide() {
     if (!this.modalEl) return;
     this.stopPowerLoop();
+    if (this.sportsArcade) {
+      this.sportsArcade.stop();
+    }
     this.modalEl.classList.add('hidden');
 
     const slideIframe = document.getElementById('slide-iframe');
@@ -496,8 +500,29 @@ export class InteractiveModal {
 
     questManager.incrementProgress('focus_lofi_pomo', 1);
 
+    this.activeMusicGenre = this.activeMusicGenre || 'all';
+    this.renderMusicGenreTabs();
     this.renderLofiPresets();
     this.loadLofiVideo('jfKfPfyJRdk');
+  }
+
+  renderMusicGenreTabs() {
+    const nav = document.getElementById('lofi-genres-nav');
+    if (!nav) return;
+
+    nav.innerHTML = '';
+    MUSIC_GENRES.forEach(g => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `lofi-genre-pill ${this.activeMusicGenre === g.id ? 'active' : ''}`;
+      btn.textContent = g.name;
+      btn.addEventListener('click', () => {
+        this.activeMusicGenre = g.id;
+        this.renderMusicGenreTabs();
+        this.renderLofiPresets();
+      });
+      nav.appendChild(btn);
+    });
   }
 
   renderLofiPresets() {
@@ -505,7 +530,11 @@ export class InteractiveModal {
     if (!listEl) return;
 
     listEl.innerHTML = '';
-    LOFI_PRESETS.forEach(preset => {
+    const filtered = this.activeMusicGenre === 'all'
+      ? LOFI_PRESETS
+      : LOFI_PRESETS.filter(p => p.genre === this.activeMusicGenre);
+
+    filtered.forEach(preset => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'lofi-preset-btn';
@@ -513,6 +542,8 @@ export class InteractiveModal {
       btn.title = preset.desc;
 
       btn.addEventListener('click', () => {
+        listEl.querySelectorAll('.lofi-preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         const input = document.getElementById('lofi-url-input');
         if (input) input.value = `https://youtu.be/${preset.videoId}`;
         this.loadLofiVideo(preset.videoId);
@@ -657,272 +688,148 @@ export class InteractiveModal {
     });
   }
 
-  startPowerLoop() {
-    if (this.sportsAnimId) return;
-
-    const cursorEl = document.getElementById('sports-power-cursor');
-    const valEl = document.getElementById('sports-power-val');
-
-    const tick = () => {
-      this.sportsPower += this.sportsPowerDir * 1.5;
-      if (this.sportsPower >= 100) {
-        this.sportsPower = 100;
-        this.sportsPowerDir = -1;
-      } else if (this.sportsPower <= 0) {
-        this.sportsPower = 0;
-        this.sportsPowerDir = 1;
-      }
-
-      if (cursorEl) {
-        cursorEl.style.left = `${this.sportsPower}%`;
-      }
-      if (valEl) {
-        valEl.textContent = `${Math.round(this.sportsPower)}%`;
-      }
-
-      this.sportsAnimId = requestAnimationFrame(tick);
-    };
-
-    this.sportsAnimId = requestAnimationFrame(tick);
-  }
-
-  stopPowerLoop() {
-    if (this.sportsAnimId) {
-      cancelAnimationFrame(this.sportsAnimId);
-      this.sportsAnimId = null;
-    }
-  }
-
   setupSportsView(zoneData) {
     const pane = document.getElementById('pane-sports');
     if (!pane) return;
     pane.classList.remove('hidden');
 
     const meta = zoneData.metadata || {};
-    this.sportsGameType = meta.sport || 'football';
+    const initialSport = meta.sport || 'football';
+
+    const canvas = document.getElementById('sports-arcade-canvas');
+    if (canvas && !this.sportsArcade) {
+      this.sportsArcade = new SportsArcade(canvas, {
+        onScoreUpdate: ({ game, scores }) => {
+          this.updateSportsBadges(game, scores);
+        }
+      });
+    }
+
+    if (this.sportsArcade) {
+      this.sportsArcade.setGame(initialSport);
+      this.sportsArcade.start();
+    }
+
+    // Tabs navigation
+    const navTabs = document.getElementById('sports-nav-tabs');
+    if (navTabs && !navTabs.dataset.initialized) {
+      navTabs.dataset.initialized = 'true';
+      navTabs.querySelectorAll('.sports-nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          navTabs.querySelectorAll('.sports-nav-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const sport = tab.dataset.sport;
+          if (this.sportsArcade) {
+            this.sportsArcade.setGame(sport);
+          }
+          this.syncSportsTabUI(sport);
+        });
+      });
+    }
+
+    // Action button
+    const actionBtn = document.getElementById('sports-action-btn');
+    if (actionBtn && !actionBtn.dataset.initialized) {
+      actionBtn.dataset.initialized = 'true';
+      actionBtn.addEventListener('click', () => {
+        if (this.sportsArcade) this.sportsArcade.onActionTrigger();
+      });
+    }
+
+    // Touch controls for mobile / directional
+    const btnLeft = document.getElementById('sports-btn-left');
+    const btnRight = document.getElementById('sports-btn-right');
+    const btnJump = document.getElementById('sports-btn-jump');
+
+    if (btnLeft && !btnLeft.dataset.initialized) {
+      btnLeft.dataset.initialized = 'true';
+      btnLeft.addEventListener('pointerdown', () => { if (this.sportsArcade) this.sportsArcade.keys.left = true; });
+      btnLeft.addEventListener('pointerup', () => { if (this.sportsArcade) this.sportsArcade.keys.left = false; });
+    }
+    if (btnRight && !btnRight.dataset.initialized) {
+      btnRight.dataset.initialized = 'true';
+      btnRight.addEventListener('pointerdown', () => { if (this.sportsArcade) this.sportsArcade.keys.right = true; });
+      btnRight.addEventListener('pointerup', () => { if (this.sportsArcade) this.sportsArcade.keys.right = false; });
+    }
+    if (btnJump && !btnJump.dataset.initialized) {
+      btnJump.dataset.initialized = 'true';
+      btnJump.addEventListener('click', () => { if (this.sportsArcade) this.sportsArcade.onActionTrigger(); });
+    }
+
+    this.syncSportsTabUI(initialSport);
+  }
+
+  syncSportsTabUI(sport) {
+    const navTabs = document.getElementById('sports-nav-tabs');
+    if (navTabs) {
+      navTabs.querySelectorAll('.sports-nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.sport === sport);
+      });
+    }
 
     const typeBadge = document.getElementById('sports-type-badge');
-    const streakBadge = document.getElementById('sports-streak-badge');
-    const highBadge = document.getElementById('sports-high-badge');
-    const titleEl = document.getElementById('sports-game-title');
     const descEl = document.getElementById('sports-game-desc');
     const actionBtn = document.getElementById('sports-action-btn');
-    const scoreEl = document.getElementById('sports-score-display');
-    const dirBar = document.getElementById('sports-direction-bar');
-    const roundTracker = document.getElementById('sports-round-tracker');
+    const touchControls = document.getElementById('sports-touch-controls');
 
-    if (this.sportsGameType === 'football') {
-      if (typeBadge) typeBadge.textContent = '⚽ SÚT PHẠT ĐỀN MINI';
-      if (streakBadge) {
-        streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Chuỗi: ${this.penaltyStreak}`;
-      }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.penaltyHighScore}`;
-      if (titleEl) titleEl.textContent = 'SÚT PHẠT ĐỀN 11M FUDA';
-      if (descEl) descEl.textContent = 'Chọn góc sút (Trái/Giữa/Phải) và canh lực sút vào Vùng Xanh để đánh bại thủ môn!';
-      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG VÀO LƯỚI ⚽';
-      if (dirBar) {
-        dirBar.classList.remove('hidden');
-        dirBar.innerHTML = `
-          <button type="button" class="sports-dir-btn" data-dir="left">Góc Trái ↖</button>
-          <button type="button" class="sports-dir-btn active" data-dir="center">Chính Diện ⬆</button>
-          <button type="button" class="sports-dir-btn" data-dir="right">Góc Phải ↗</button>
-        `;
-        dirBar.querySelectorAll('.sports-dir-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            dirBar.querySelectorAll('.sports-dir-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            this.sportsDirection = btn.dataset.dir;
-            audioManager.playClick();
-          });
-        });
-      }
-      if (roundTracker) roundTracker.classList.add('hidden');
-    } else if (this.sportsGameType === 'barista') {
-      if (typeBadge) typeBadge.textContent = '☕ PHA CHẾ CÀ PHÊ MUỐI & TRÀ SỮA';
-      if (streakBadge) streakBadge.classList.add('hidden');
-      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${this.baristaScore || 0}đ`;
-      if (titleEl) titleEl.textContent = 'QUẦY BARISTA CÀ PHÊ MUỐI & TRÀ SỮA DEVER';
-      if (descEl) descEl.textContent = 'Chọn loại đồ uống và canh chuẩn tỉ lệ vào Vùng Xanh (40%-75%) để pha chế chuẩn vị Barista!';
+    if (touchControls) {
+      touchControls.classList.toggle('hidden', sport !== 'volleyball');
+    }
+
+    if (sport === 'football') {
+      if (typeBadge) typeBadge.textContent = '⚽ SÚT PHẠT ĐỀN 11M';
+      if (descEl) descEl.textContent = 'Canh thanh ngắm qua lại và nhấn nút (hoặc phím SPACE) để sút bóng vào lưới đánh bại thủ môn!';
+      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE) ⚽';
+    } else if (sport === 'basketball') {
+      if (typeBadge) typeBadge.textContent = '🏀 BÓNG RỔ FLAPPY DUNK';
+      if (descEl) descEl.textContent = 'Bấm phím SPACE hoặc Click để nhấp bóng nảy lên, căn lực rơi lọt qua từng chiếc rổ để ghi điểm!';
+      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE) 🏀';
+    } else if (sport === 'volleyball') {
+      if (typeBadge) typeBadge.textContent = '🏐 BÓNG CHUYỀN SPIKE RALLY';
+      if (descEl) descEl.textContent = 'Dùng phím A/D (hoặc nút bấm) di chuyển, SPACE để nhảy đập bóng đối đầu với Bot FUDA!';
+      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE) 🏐';
+    } else if (sport === 'barista') {
+      if (typeBadge) typeBadge.textContent = '☕ QUẦY BARISTA DEVER';
+      if (descEl) descEl.textContent = 'Canh con trỏ vào Vùng Xanh và bấm nút để pha chế ly Cà Phê Muối / Trà Sữa béo ngậy!';
       if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG ☕';
-      if (dirBar) {
-        dirBar.classList.remove('hidden');
-        dirBar.innerHTML = `
-          <button type="button" class="sports-dir-btn active" data-dir="cafe_muoi">☕ Cà Phê Muối</button>
-          <button type="button" class="sports-dir-btn" data-dir="bac_xiu">🥛 Bạc Xỉu FPT</button>
-          <button type="button" class="sports-dir-btn" data-dir="tra_sua">🧋 Trà Sữa DEVER</button>
-        `;
-        dirBar.querySelectorAll('.sports-dir-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            dirBar.querySelectorAll('.sports-dir-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            this.sportsDirection = btn.dataset.dir;
-            audioManager.playClick();
-          });
-        });
-      }
-      if (roundTracker) roundTracker.classList.add('hidden');
-    } else {
-      if (typeBadge) typeBadge.textContent = '🏀 NÉM BÓNG RỔ 3 ĐIỂM';
-      if (streakBadge) streakBadge.classList.add('hidden');
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.basketballHighScore}đ`;
-      if (titleEl) titleEl.textContent = 'THỬ THÁCH NÉM BÓNG RỔ 3 ĐIỂM';
-      if (descEl) descEl.textContent = 'Phiên thi đấu 10 quả: Canh cự ly rơi hoàn hảo để thực hiện chuỗi ném 3 điểm vào rổ!';
-      if (actionBtn) actionBtn.textContent = 'NÉM BÓNG VÀO RỔ 🏀';
-      if (dirBar) dirBar.classList.add('hidden');
-      if (roundTracker) {
-        roundTracker.classList.remove('hidden');
-        this.renderBasketballBalls();
-      }
     }
 
-    if (scoreEl) scoreEl.textContent = 'Canh thanh lực và nhấn nút để thực hiện!';
-    this.startPowerLoop();
-  }
-
-  renderBasketballBalls() {
-    const ballsRow = document.getElementById('sports-balls-row');
-    if (!ballsRow) return;
-    ballsRow.innerHTML = '';
-
-    for (let i = 0; i < 10; i++) {
-      const dot = document.createElement('span');
-      dot.className = 'ball-dot';
-      if (i < this.basketballShots.length) {
-        dot.classList.add(this.basketballShots[i] ? 'hit' : 'miss');
-      }
-      ballsRow.appendChild(dot);
+    if (this.sportsArcade) {
+      this.updateSportsBadges(sport, this.sportsArcade.scores);
     }
   }
 
-  playSportMiniGame() {
-    const scoreEl = document.getElementById('sports-score-display');
+  updateSportsBadges(sport, scores) {
     const streakBadge = document.getElementById('sports-streak-badge');
     const highBadge = document.getElementById('sports-high-badge');
-    const power = this.sportsPower;
 
-    if (this.sportsGameType === 'football') {
-      // 1. Minigame Sút Phạt Đền (Penalty Shootout)
-      const directions = ['left', 'center', 'right'];
-      // Thủ môn AI chọn hướng đổ người ngẫu nhiên
-      const gkDive = directions[Math.floor(Math.random() * directions.length)];
-      const playerDir = this.sportsDirection;
-
-      const isPerfectPower = power >= 35 && power <= 80;
-      const isOverPower = power > 85;
-      const isWeakPower = power < 30;
-
-      let isGoal = false;
-      let reasonText = '';
-
-      if (isOverPower) {
-        reasonText = '⚡ Bóng bay vọt xà ngang ra ngoài khung thành!';
-      } else if (isWeakPower) {
-        reasonText = '🧤 Lực sút quá nhẹ, thủ môn đã ôm gọn trái bóng!';
-      } else if (isPerfectPower) {
-        if (gkDive !== playerDir || Math.random() > 0.35) {
-          isGoal = true;
-          reasonText = `🎉 VÀO RỒI! Cú sút căng như kẻ chỉ găm thẳng vào góc ${playerDir === 'left' ? 'trái' : playerDir === 'right' ? 'phải' : 'chính diện'}!`;
-        } else {
-          reasonText = '🧤 Thủ môn đã bay người cản phá xuất thần!';
-        }
-      } else {
-        if (Math.random() > 0.6) {
-          isGoal = true;
-          reasonText = '🎉 BÓNG ĐẬP CỘT DỌC BAY VÀO LƯỚI! Bàn thắng may mắn!';
-        } else {
-          reasonText = '⚡ Bóng trúng mép ngoài cột dọc bật ra!';
-        }
+    if (sport === 'football') {
+      if (streakBadge) {
+        streakBadge.classList.remove('hidden');
+        streakBadge.textContent = `🔥 Chuỗi: ${scores.footballStreak || 0}`;
       }
-
-      if (isGoal) {
-        this.penaltyStreak += 1;
-        if (this.penaltyStreak > this.penaltyHighScore) {
-          this.penaltyHighScore = this.penaltyStreak;
-          localStorage.setItem('dever_penalty_high', this.penaltyHighScore.toString());
-        }
-        localStorage.setItem('dever_penalty_streak', this.penaltyStreak.toString());
-
-        audioManager.playVictory();
-        scoreEl.textContent = `${reasonText} (Chuỗi thắng: 🔥 ${this.penaltyStreak})`;
-        scoreEl.className = 'sports-score-text success';
-
-        questManager.incrementProgress('penalty_goal', 1);
-        this.syncScoreToServer('penalty', this.penaltyStreak * 10, this.penaltyStreak);
-      } else {
-        this.penaltyStreak = 0;
-        localStorage.setItem('dever_penalty_streak', '0');
-
-        audioManager.playClick();
-        scoreEl.textContent = `${reasonText} (Chuỗi thắng bị ngắt!)`;
-        scoreEl.className = 'sports-score-text fail';
+      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.footballHigh || 0}`;
+    } else if (sport === 'basketball') {
+      if (streakBadge) {
+        streakBadge.classList.remove('hidden');
+        streakBadge.textContent = `🏀 Điểm: ${scores.basketballScore || 0}`;
       }
-
-      if (streakBadge) streakBadge.textContent = `🔥 Chuỗi: ${this.penaltyStreak}`;
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.penaltyHighScore}`;
-    } else if (this.sportsGameType === 'barista') {
-      // 2. Minigame Barista Cà Phê Muối & Trà Sữa DEVER
-      const isPerfect = power >= 35 && power <= 80;
-      const drinkNames = {
-        cafe_muoi: 'Cà Phê Muối Đà Nẵng',
-        bac_xiu: 'Bạc Xỉu Sữa Tươi 3 Tầng FPT',
-        tra_sua: 'Trà Sữa Trân Châu DEVER'
-      };
-      const drinkName = drinkNames[this.sportsDirection] || 'Cà Phê Muối Đà Nẵng';
-
-      // Luôn ghi nhận hoàn thành nhiệm vụ hằng ngày khi thực hiện pha chế
-      questManager.incrementProgress('barista_coffee', 1);
-      questManager.incrementProgress('focus_lofi_pomo', 1);
-
-      if (isPerfect) {
-        this.baristaScore = (this.baristaScore || 0) + 30;
-        audioManager.playVictory();
-        scoreEl.textContent = `🎉 THÀNH CÔNG XUẤT SẮC! Ly ${drinkName} chuẩn vị béo ngậy (+30đ Barista & +20 Dever Points)!`;
-        scoreEl.className = 'sports-score-text success';
-        questManager.addPoints(20, 'Pha chế thành công ' + drinkName);
-      } else {
-        audioManager.playClick();
-        scoreEl.textContent = `☕ Ly ${drinkName} đã pha xong! (Canh vào Vùng Xanh để nhận thêm điểm Barista hoàn hảo nhé!)`;
-        scoreEl.className = 'sports-score-text success';
+      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.basketballHigh || 0}đ`;
+    } else if (sport === 'volleyball') {
+      if (streakBadge) {
+        streakBadge.classList.remove('hidden');
+        streakBadge.textContent = `🔥 Rally: ${scores.volleyballRally || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${this.baristaScore || 0}đ`;
-    } else {
-      // 3. Minigame Ném Bóng Rổ 3 Điểm (Basketball 3-Point Shootout)
-      const isHit = power >= 42 && power <= 78;
-      this.basketballShots.push(isHit);
+      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.volleyballHigh || 0}`;
+    } else if (sport === 'barista') {
+      if (streakBadge) streakBadge.classList.add('hidden');
+      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${scores.baristaScore || 0}đ`;
+    }
+  }
 
-      if (isHit) {
-        audioManager.playVictory();
-        scoreEl.textContent = `🏀 SWISH! Cú ném 3 điểm hoàn hảo (+3 Điểm)! [Quả ${this.basketballShots.length}/10]`;
-        scoreEl.className = 'sports-score-text success';
-      } else {
-        audioManager.playClick();
-        scoreEl.textContent = `⚡ Bóng nảy vành rổ ra ngoài! [Quả ${this.basketballShots.length}/10]`;
-        scoreEl.className = 'sports-score-text fail';
-      }
-
-      this.renderBasketballBalls();
-
-      if (this.basketballShots.length >= 10) {
-        const hits = this.basketballShots.filter(Boolean).length;
-        const totalPts = hits * 3;
-        const rate = Math.round((hits / 10) * 100);
-
-        if (totalPts > this.basketballHighScore) {
-          this.basketballHighScore = totalPts;
-          localStorage.setItem('dever_bball_high', this.basketballHighScore.toString());
-        }
-
-        questManager.incrementProgress('basketball_shoot', 1);
-
-        setTimeout(() => {
-          scoreEl.textContent = `🏆 HOÀN THÀNH PHIÊN NÉM: ${hits}/10 Trúng (${rate}%) - Tổng: ${totalPts} Điểm! ${rate >= 70 ? '⭐ Danh hiệu: Tay Ném Vàng FUDA!' : 'Hãy tiếp tục rèn luyện nhé!'}`;
-          scoreEl.className = 'sports-score-text success';
-          if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${this.basketballHighScore}đ`;
-          this.syncScoreToServer('basketball', totalPts, hits);
-          this.basketballShots = [];
-        }, 1200);
-      }
+  stopPowerLoop() {
+    if (this.sportsArcade) {
+      this.sportsArcade.stop();
     }
   }
 

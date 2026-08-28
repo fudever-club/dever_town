@@ -38,35 +38,84 @@ export function extractYouTubeVideoId(rawUrl) {
   return 'jfKfPfyJRdk';
 }
 
+export const MUSIC_GENRES = [
+  { id: 'all', name: '🔥 Tất Cả' },
+  { id: 'lofi', name: '☕ Lofi & Code' },
+  { id: 'vietnam', name: '🇻🇳 Việt Nam Chill' },
+  { id: 'gaming', name: '🎮 Gaming & Synth' },
+  { id: 'piano', name: '🎹 Piano & Ghibli' },
+  { id: 'jazz', name: '🌧️ Mưa & Jazz Cafe' }
+];
+
 export const LOFI_PRESETS = [
   {
     id: 'lofi_girl',
+    genre: 'lofi',
     name: '☕ Lofi Girl - Beats to Relax/Study',
     videoId: 'jfKfPfyJRdk',
-    desc: 'Livestream Lofi huyền thoại giúp thư giãn và tập trung cao độ.'
-  },
-  {
-    id: 'synthwave_radio',
-    name: '🌃 Synthwave Cyberpunk - Code Đêm',
-    videoId: '4xDzrJKXOOY',
-    desc: 'Âm hưởng Retro Synthwave sôi động cho các buổi lập trình đêm khuya.'
+    desc: 'Livestream Lofi 24/7 huyền thoại giúp tăng 200% khả năng tập trung lập trình & học tập.'
   },
   {
     id: 'fptu_focus',
-    name: '🌿 FPTU Coding Chill - Sóng Não Alpha',
+    genre: 'lofi',
+    name: '🌿 Deep Focus Coding - Sóng Não Alpha',
     videoId: 'WPni755-Krg',
-    desc: 'Giai điệu nhẹ nhàng tăng 200% khả năng tập trung làm bài tập & dự án.'
+    desc: 'Giai điệu Lofi êm dịu, loại bỏ tiếng ồn xung quanh để hoàn thành đồ án & bài tập.'
+  },
+  {
+    id: 'vietnam_lofi_1',
+    genre: 'vietnam',
+    name: '🍵 Nhạc Lofi Việt Nam Nhẹ Nhàng Cực Chill',
+    videoId: '5qap5aO4i9A',
+    desc: 'Tuyển tập các bản ballad & acoustic Việt Nam êm ái phong cách Lofi Quán Quen.'
+  },
+  {
+    id: 'vietnam_acoustic',
+    genre: 'vietnam',
+    name: '🎸 Acoustic Guitar Việt Nam - Chill Trà Chiều',
+    videoId: 'DWcJFNfaw9c',
+    desc: 'Giai điệu guitar mộc mạc và giọng hát nhẹ nhàng cho những buổi chiều thảnh thơi.'
+  },
+  {
+    id: 'synthwave_radio',
+    genre: 'gaming',
+    name: '🌃 Synthwave Cyberpunk - Code Đêm',
+    videoId: '4xDzrJKXOOY',
+    desc: 'Âm hưởng Retro 80s & Cyberpunk sôi động cho các lập trình viên cú đêm.'
+  },
+  {
+    id: 'ncs_gaming',
+    genre: 'gaming',
+    name: '⚡ NCS 24/7 Gaming & High Energy',
+    videoId: 'N3oCS85HvpY',
+    desc: 'Nhạc điện tử EDM/Gaming năng lượng cao giúp đẩy nhanh tiến độ làm dự án.'
+  },
+  {
+    id: 'ghibli_piano',
+    genre: 'piano',
+    name: '🎹 Ghibli Relaxing Piano Collection',
+    videoId: '4Tr0otuiQuU',
+    desc: 'Những khúc dương cầm kinh điển từ Studio Ghibli, êm dịu và chữa lành tâm hồn.'
+  },
+  {
+    id: 'peaceful_piano',
+    genre: 'piano',
+    name: '🌸 Peaceful Piano - Thư Giãn Tinh Thần',
+    videoId: '1fueZCTYkpA',
+    desc: 'Tiếng piano trong trẻo giúp xua tan áp lực thi cử và các deadline căng thẳng.'
   },
   {
     id: 'danang_rain',
-    name: '🌧️ Mưa Bán Đảo Sơn Trà Đà Nẵng Lofi',
+    genre: 'jazz',
+    name: '🌧️ Mưa Đà Nẵng & Tiếng Mưa Rơi Bờ Biển',
     videoId: 'lTRiuFIWV54',
-    desc: 'Tiếng mưa rơi êm dịu hòa cùng tiếng đàn guitar mộc mạc.'
+    desc: 'Tiếng mưa rơi rả rích hòa cùng tiếng đàn êm dịu thư thái tuyệt đối.'
   },
   {
-    id: 'acoustic_vietnam',
-    name: '🍵 Vietnamese Lofi Chillhop Quán Quen',
-    videoId: '5qap5aO4i9A',
-    desc: 'Tuyển tập các bản tình ca acoustic Việt Nam phối phong cách Lofi nhẹ nhàng.'
+    id: 'jazz_cafe',
+    genre: 'jazz',
+    name: '☕ Warm Bossa Nova Cafe Ambience',
+    videoId: 'e3L1VGfz1u0',
+    desc: 'Không gian quán cà phê ấm cúng với tiếng nhạc Jazz Bossa Nova du dương.'
   }
 ];

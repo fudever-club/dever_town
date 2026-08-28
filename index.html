@@ -723,8 +723,8 @@
             <input type="text" id="lofi-url-input" class="modal-input-sm" placeholder="Dán link YouTube (thường, rút gọn youtu.be, Shorts)..." />
             <button type="button" id="lofi-load-btn" class="btn-sm-action">Phát Nhạc</button>
           </div>
+          <div class="lofi-genres-nav" id="lofi-genres-nav"></div>
           <div class="lofi-presets-bar">
-            <span class="lofi-preset-label">Preset có sẵn:</span>
             <div id="lofi-presets-list" class="lofi-presets-list"></div>
           </div>
         </div>
@@ -743,10 +743,8 @@
           </div>
 
           <div class="pomodoro-box">
-            <div class="pomo-header">
-              <span id="pomo-mode-badge" class="pomo-badge work">Tập trung (25p)</span>
-            </div>
-            <div id="pomo-timer-display" class="pomo-display">25:00</div>
+            <span id="pomo-badge" class="pomo-badge work">Tập Trung (Work)</span>
+            <div id="pomo-timer" class="pomo-display">25:00</div>
             <div class="pomo-controls">
               <button type="button" id="pomo-start-btn" class="pomo-btn start">Bắt Đầu</button>
               <button type="button" id="pomo-pause-btn" class="pomo-btn pause">Tạm Dừng</button>
@@ -760,17 +758,17 @@
       <div id="pane-gallery" class="interactive-pane hidden">
         <div class="gallery-workspace">
           <div class="gallery-canvas-wrapper">
-            <canvas id="memory-art-canvas" width="460" height="240"></canvas>
+            <canvas id="gallery-canvas" width="600" height="380"></canvas>
             <div class="gallery-nav-bar">
-              <button type="button" id="memory-prev-btn" class="gallery-nav-btn">&larr; Kỷ niệm trước</button>
-              <span id="memory-slide-counter" class="gallery-counter">1 / 4</span>
-              <button type="button" id="memory-next-btn" class="gallery-nav-btn">Kỷ niệm tiếp theo &rarr;</button>
+              <button type="button" id="gallery-prev-btn" class="gallery-nav-btn">&larr; Kỷ niệm trước</button>
+              <span id="gallery-counter" class="gallery-counter">1 / 5</span>
+              <button type="button" id="gallery-next-btn" class="gallery-nav-btn">Kỷ niệm tiếp &rarr;</button>
             </div>
           </div>
-          <div class="gallery-info-panel">
-            <div class="gallery-meta-row">
-              <span id="memory-slide-tag" class="gallery-tag">Cột mốc</span>
-              <span id="memory-slide-date" class="gallery-date">2024</span>
+          <div class="gallery-info-box">
+            <div class="gallery-tags-row">
+              <span id="memory-tag" class="gallery-tag">Cột Mốc</span>
+              <span id="memory-date" class="gallery-date">2017</span>
             </div>
             <h3 id="memory-slide-title" class="gallery-title">Tiêu đề sự kiện</h3>
             <p id="memory-slide-story" class="gallery-story">Nội dung chi tiết kỷ niệm...</p>
@@ -805,7 +803,7 @@
         </div>
       </div>
 
-      <!-- View 7: Sports Mini-Game View (Add-on v3 Timing Arcade) -->
+      <!-- View 7: Sports Mini-Game View (HTML5 Canvas Arcade Engine) -->
       <div id="pane-sports" class="interactive-pane hidden">
         <div class="sports-mini-workspace">
           <div class="sports-header-box">
@@ -814,40 +812,28 @@
               <span id="sports-streak-badge" class="sports-badge streak">🔥 Chuỗi: 0</span>
               <span id="sports-high-badge" class="sports-badge high">🏆 Kỷ lục: 0</span>
             </div>
-            <h3 id="sports-game-title" class="sports-title">SÚT PHẠT ĐỀN MINI FUDA</h3>
-            <p id="sports-game-desc" class="sports-desc">Chọn hướng sút và canh thanh lực vào vùng xanh để ghi bàn thắng vàng!</p>
+            <div class="sports-nav-tabs" id="sports-nav-tabs">
+              <button type="button" class="sports-nav-tab active" data-sport="football">⚽ Sút Phạt Đền 11M</button>
+              <button type="button" class="sports-nav-tab" data-sport="basketball">🏀 Bóng Rổ Flappy Dunk</button>
+              <button type="button" class="sports-nav-tab" data-sport="volleyball">🏐 Bóng Chuyền Spike</button>
+              <button type="button" class="sports-nav-tab" data-sport="barista">☕ Quầy Barista</button>
+            </div>
+            <p id="sports-game-desc" class="sports-desc">Canh hướng sút qua lại và bấm nút (hoặc phím SPACE) để đánh bại thủ môn!</p>
           </div>
 
           <div class="sports-arena">
-            <!-- Direction Selector (Penalty) / Round tracker (Basketball) -->
-            <div id="sports-direction-bar" class="sports-direction-bar">
-              <button type="button" class="sports-dir-btn" data-dir="left">⬅️ Góc Trái</button>
-              <button type="button" class="sports-dir-btn active" data-dir="center">⬆️ Chính Diện</button>
-              <button type="button" class="sports-dir-btn" data-dir="right">➡️ Góc Phải</button>
+            <div class="sports-canvas-wrapper">
+              <canvas id="sports-arcade-canvas" width="640" height="360"></canvas>
             </div>
 
-            <!-- Basketball Shot Rounds Tracker -->
-            <div id="sports-round-tracker" class="sports-round-tracker hidden">
-              <span class="round-label">Lượt ném:</span>
-              <div id="sports-balls-row" class="sports-balls-row"></div>
-            </div>
-
-            <!-- Timing Power Bar -->
-            <div class="sports-power-wrapper">
-              <div class="sports-power-label">
-                <span>Lực / Điểm Rơi:</span>
-                <span id="sports-power-val" class="power-val">50%</span>
+            <div class="sports-controls-row">
+              <div id="sports-touch-controls" class="sports-touch-controls hidden">
+                <button type="button" id="sports-btn-left" class="sports-touch-btn">⬅️ Trái (A)</button>
+                <button type="button" id="sports-btn-jump" class="sports-touch-btn accent">⬆️ Nhảy & Đập (Space)</button>
+                <button type="button" id="sports-btn-right" class="sports-touch-btn">➡️ Phải (D)</button>
               </div>
-              <div class="sports-power-track">
-                <div class="power-zone-weak"></div>
-                <div class="power-zone-perfect"></div>
-                <div class="power-zone-over"></div>
-                <div id="sports-power-cursor" class="sports-power-cursor"></div>
-              </div>
+              <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE) ⚽</button>
             </div>
-
-            <div id="sports-score-display" class="sports-score-text">Canh thanh lực và nhấn nút để thực hiện!</div>
-            <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG NGAY ⚽</button>
           </div>
         </div>
       </div>
