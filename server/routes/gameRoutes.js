@@ -1,28 +1,69 @@
 import express from 'express';
 import { getDB } from '../db/index.js';
-import { authenticateToken } from '../middleware/authMiddleware.js';
+import { createRateLimiter, sanitizeInput } from '../middleware/rateLimiter.js';
+import { sanitizeUser } from '../middleware/authMiddleware.js';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'dever_town_super_secret_jwt_key_2026';
+
+// Rate limiter chống spam gửi điểm (tối đa 30 lần / phút)
+const scoreLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 30,
+  message: 'Bạn đang gửi điểm số quá nhanh. Vui lòng chậm lại một chút!'
+});
+
+// Danh sách gameType hợp lệ
+const VALID_GAME_TYPES = new Set([
+  'football', 'basketball', 'volleyball', 'barista',
+  'snake', 'sokoban', 'goldminer'
+]);
 
 /**
- * POST /api/game/score - Lưu điểm số và streak minigame
+ * POST /api/game/score - Lưu điểm số và streak minigame (Có Rate Limit & Kiểm tra hợp lệ)
  */
-router.post('/score', async (req, res) => {
+router.post('/score', scoreLimiter, sanitizeInput, async (req, res) => {
   try {
     const { gameType, score, streak, playerName, userId } = req.body;
 
-    if (!gameType || (!score && score !== 0)) {
-      return res.status(400).json({ success: false, message: 'Dữ liệu minigame không hợp lệ!' });
+    if (!gameType || !VALID_GAME_TYPES.has(gameType)) {
+      return res.status(400).json({ success: false, message: 'Loại trò chơi không hợp lệ!' });
     }
 
-    const effectiveUserId = userId || (req.user ? req.user.id : `guest_${Date.now()}`);
-    const effectiveName = playerName || (req.user ? req.user.display_name : 'Khách FUDA');
+    const numScore = Number(score);
+    if (isNaN(numScore) || numScore < 0 || numScore > 500000) {
+      return res.status(400).json({ success: false, message: 'Điểm số không hợp lệ (Phải từ 0 đến 500,000)!' });
+    }
+
+    const numStreak = Number(streak || 0);
+    if (isNaN(numStreak) || numStreak < 0 || numStreak > 1000) {
+      return res.status(400).json({ success: false, message: 'Chuỗi thành tích không hợp lệ!' });
+    }
+
+    // Tự động kiểm tra Token xác thực nếu có gửi kèm Header
+    let authenticatedUser = null;
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const db = getDB();
+        const found = await db.getUserById(decoded.id);
+        if (found) authenticatedUser = sanitizeUser(found);
+      } catch (e) {}
+    }
+
+    const effectiveUserId = authenticatedUser ? authenticatedUser.id : (userId || `guest_${Date.now()}`);
+    const effectiveName = authenticatedUser
+      ? authenticatedUser.display_name
+      : Array.from(String(playerName || 'Khách FUDA').normalize('NFC').trim()).slice(0, 40).join('');
 
     const db = getDB();
     const result = await db.saveGameScore(effectiveUserId, {
       gameType,
-      score: Number(score),
-      streak: Number(streak || 0),
+      score: numScore,
+      streak: numStreak,
       playerName: effectiveName
     });
 

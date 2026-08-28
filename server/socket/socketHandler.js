@@ -88,11 +88,18 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 4. Xử lý Chat Realtime
+     * 4. Xử lý Chat Realtime (Có Anti-Spam Throttle)
      */
     socket.on('sendChatMessage', (data) => {
       const player = playerManager.getPlayer(socket.id);
       if (!player) return;
+
+      // Anti-spam cooldown (tối thiểu 400ms giữa 2 tin nhắn liên tiếp)
+      const now = Date.now();
+      if (socket._lastChatTime && (now - socket._lastChatTime < 400)) {
+        return;
+      }
+      socket._lastChatTime = now;
 
       const rawMsg = data?.message || '';
       const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
