@@ -59,21 +59,14 @@ export class WorldScene extends Phaser.Scene {
     const initialEquipped = (user && user.equipped_item_id) || localStorage.getItem('dever_equipped_item') || null;
     const initialAvatar = wardrobeConfig ? 'custom_wardrobe' : (user ? (user.avatar_id || user.avatarId) : 'dev_hoodie');
 
-    if (wardrobeConfig) {
-      TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
-    }
-
     this.player = new Player(this, spawnX, spawnY, {
       name: initialName,
       avatarId: initialAvatar,
       role: initialRole,
       equippedItemId: initialEquipped,
+      wardrobeConfig: wardrobeConfig,
       isCurrentPlayer: true
     });
-
-    if (wardrobeConfig) {
-      this.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
-    }
 
     // 2. Khởi tạo Controllers & Managers
     this.inputController = new InputController(this);

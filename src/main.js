@@ -12,27 +12,11 @@ const config = {
   pixelArt: true,
   roundPixels: true,
   backgroundColor: '#070a12',
-  fps: {
-    target: 60,
-    min: 30,
-    smoothStep: true,
-    forceSetTimeOut: false
-  },
-  render: {
-    antialias: false,
-    pixelArt: true,
-    roundPixels: true,
-    powerPreference: 'high-performance',
-    batchSize: 4096,
-    desynchronized: true
-  },
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },
-      debug: false,
-      fps: 60,
-      fixedStep: true
+      debug: false
     }
   },
   scene: [BootScene, WorldScene],

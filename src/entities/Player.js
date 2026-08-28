@@ -17,24 +17,25 @@ export class Player extends Phaser.GameObjects.Sprite {
    */
   constructor(scene, x, y, options = {}) {
     let wardrobeConfig = options.wardrobeConfig || null;
-    if (!wardrobeConfig) {
+    if (!wardrobeConfig && typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem('dever_wardrobe_config');
       if (saved) {
         try { wardrobeConfig = JSON.parse(saved); } catch (e) {}
       }
     }
 
-    let avatarId = options.avatarId || 'dev_hoodie';
-    if (wardrobeConfig && scene) {
+    let avatarId = options.avatarId || (wardrobeConfig ? 'custom_wardrobe' : 'dev_hoodie');
+    if (wardrobeConfig && scene && !scene.textures.exists('char_custom_wardrobe')) {
       avatarId = 'custom_wardrobe';
       TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
     }
 
-    const textureKey = `char_${avatarId}`;
-    super(scene, x, y, textureKey, 0);
+    const candidateKey = `char_${avatarId}`;
+    const safeTextureKey = (scene && scene.textures.exists(candidateKey)) ? candidateKey : 'char_dev_hoodie';
+    super(scene, x, y, safeTextureKey, 0);
 
     this.name = options.name || 'Dever Member';
-    this.avatarId = avatarId;
+    this.avatarId = (safeTextureKey === candidateKey) ? avatarId : 'dev_hoodie';
     this.wardrobeConfig = wardrobeConfig;
     this.role = options.role || 'guest';
     this.isCurrentPlayer = options.isCurrentPlayer || false;
@@ -128,9 +129,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
     const textureKey = `char_${avatarId}`;
     if (this.scene) {
-      const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null') : null);
-      if (cfgToUse) {
-        TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, textureKey);
+      if (wardrobeConfig || !this.scene.textures.exists(textureKey)) {
+        const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null') : null);
+        if (cfgToUse) {
+          TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, textureKey);
+        }
       }
       if (this.scene.textures.exists(textureKey)) {
         this.setTexture(textureKey, 0);
