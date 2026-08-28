@@ -53,12 +53,21 @@ export class NicknameModal {
     }
   }
 
-  submit() {
+  async submit() {
     let name = this.inputEl.value.trim();
     if (!name) {
       name = `Dev #${Math.floor(1000 + Math.random() * 9000)}`;
     } else {
       name = name.substring(0, 18);
+      // Kiểm tra xem tên có bị trùng với tài khoản đã đăng ký không
+      try {
+        const { authService } = await import('../services/AuthService.js');
+        const check = await authService.checkNameAvailability(name);
+        if (!check.available) {
+          alert(check.message || '⚠️ Biệt danh này đã thuộc về thành viên đã đăng ký. Vui lòng chọn tên khác!');
+          return;
+        }
+      } catch (e) {}
     }
 
     localStorage.setItem('dever_nickname', name);

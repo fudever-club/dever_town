@@ -103,16 +103,30 @@ export class WelcomeGate {
     this.clearError();
 
     const input = document.getElementById('gate-guest-name');
-    const nickname = input ? input.value.trim() : 'Dever Member';
+    const nickname = input ? input.value.trim() : '';
 
     if (!nickname) {
       this.showError('Vui lòng nhập biệt danh để vào game.');
       return;
     }
 
-    localStorage.setItem('dever_nickname', nickname);
+    if (nickname.length < 2 || nickname.length > 25) {
+      this.showError('Biệt danh phải từ 2 đến 25 ký tự.');
+      return;
+    }
+
+    // 1. Kiểm tra chống trùng tên với thành viên / Admin đã đăng ký trong Database
+    const checkResult = await authService.checkNameAvailability(nickname);
+    if (!checkResult.available) {
+      this.showError(checkResult.message || 'Biệt danh này đã thuộc về thành viên đã đăng ký. Vui lòng đăng nhập hoặc chọn tên khác!');
+      return;
+    }
+
+    // 2. Thiết lập phiên Khách sạch (Hủy bỏ mọi quyền / Token của tài khoản cũ)
+    authService.setGuestSession(nickname);
+
     this.startLoadingAndEnter({
-      user: { display_name: nickname, avatar_id: 'dev_hoodie', role: 'guest' },
+      user: authService.getUser(),
       isGuest: true
     });
   }

@@ -93,6 +93,17 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
     return null;
   }
 
+  async getUserByDisplayName(displayName) {
+    const cleanName = (displayName || '').toLowerCase().trim();
+    if (!cleanName) return null;
+    for (const u of this.users.values()) {
+      if ((u.display_name || '').toLowerCase().trim() === cleanName) {
+        return u;
+      }
+    }
+    return null;
+  }
+
   async createUser({ email, passwordHash, displayName, avatarId, role = 'dev' }) {
     const id = `usr_${crypto.randomUUID().substring(0, 8)}`;
     const newUser = {

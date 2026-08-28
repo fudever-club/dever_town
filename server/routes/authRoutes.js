@@ -43,6 +43,15 @@ router.post('/register', authLimiter, sanitizeInput, async (req, res) => {
       });
     }
 
+    const cleanDisplayName = displayName.trim();
+    const existingName = await db.getUserByDisplayName(cleanDisplayName);
+    if (existingName) {
+      return res.status(409).json({
+        success: false,
+        message: 'Tên hiển thị này đã được sử dụng! Vui lòng chọn tên khác.'
+      });
+    }
+
     // Băm mật khẩu bất đồng bộ
     const passwordHash = await bcrypt.hash(password, 10);
     const validAvatars = ['dev_hoodie', 'cyberpunk_pink', 'red_gamer', 'green_coder'];
@@ -228,15 +237,47 @@ router.put('/customization', authenticateToken, async (req, res) => {
 });
 
 /**
- * GET /api/auth/users - Danh sách thành viên CLB
+ * GET /api/auth/check-name - Kiểm tra tên hiển thị / biệt danh có bị trùng hoặc cấm không
  */
-router.get('/users', async (req, res) => {
+router.get('/check-name', async (req, res) => {
   try {
+    const rawName = String(req.query.name || '').trim();
+    if (!rawName) {
+      return res.status(400).json({ success: false, available: false, message: 'Tên không được để trống!' });
+    }
+
+    const cleanLower = rawName.toLowerCase();
+
+    // 1. Kiểm tra các từ khóa hệ thống / ban quản trị cấm khách sử dụng
+    const RESERVED_PREFIXES = ['admin', 'bqt', 'leader', 'moderator', 'system', 'root', 'bot', 'fu-dever', 'dever_admin'];
+    const isReserved = RESERVED_PREFIXES.some(r => cleanLower === r || cleanLower.startsWith(`${r} `) || cleanLower.startsWith(`[${r}]`));
+
+    if (isReserved) {
+      return res.json({
+        success: true,
+        available: false,
+        message: `Biệt danh "${rawName}" chứa từ khóa bảo vệ hệ thống. Vui lòng chọn biệt danh khác!`
+      });
+    }
+
+    // 2. Kiểm tra xem tên có trùng với thành viên / Admin đã đăng ký trong cơ sở dữ liệu không
     const db = getDB();
-    const users = await db.getAllUsers();
-    return res.json({ success: true, users });
+    const existing = await db.getUserByDisplayName(rawName);
+    if (existing) {
+      return res.json({
+        success: true,
+        available: false,
+        message: `Biệt danh "${rawName}" đã thuộc về tài khoản đã đăng ký. Vui lòng đăng nhập hoặc chọn tên khác!`
+      });
+    }
+
+    return res.json({
+      success: true,
+      available: true,
+      message: 'Biệt danh hợp lệ!'
+    });
   } catch (err) {
-    return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
+    return res.status(500).json({ success: false, available: false, message: 'Lỗi kiểm tra tên!' });
   }
 });
 

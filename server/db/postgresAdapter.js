@@ -72,6 +72,11 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
     return res.rows[0] || null;
   }
 
+  async getUserByDisplayName(displayName) {
+    const res = await this.pool.query('SELECT * FROM users WHERE LOWER(TRIM(display_name)) = LOWER(TRIM($1)) LIMIT 1', [displayName.trim()]);
+    return res.rows[0] || null;
+  }
+
   async createUser({ email, passwordHash, displayName, avatarId, role = 'dev' }) {
     const id = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const query = `

@@ -14,6 +14,10 @@ export class BaseDatabaseAdapter {
     throw new Error('Method getUserByEmail() must be implemented');
   }
 
+  async getUserByDisplayName(displayName) {
+    throw new Error('Method getUserByDisplayName() must be implemented');
+  }
+
   async createUser({ email, passwordHash, displayName, avatarId, role }) {
     throw new Error('Method createUser() must be implemented');
   }

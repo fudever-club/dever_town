@@ -31,10 +31,42 @@ class AuthService {
   }
 
   isAdmin() {
-    if (!this.user) return false;
+    // BẢO MẬT: Bắt buộc phải ĐÃ ĐĂNG NHẬP (isLoggedIn() === true, có Bearer token) VÀ role là admin/leader
+    if (!this.isLoggedIn() || !this.user) return false;
     const role = (this.user.role || '').toLowerCase();
-    const email = (this.user.email || '').toLowerCase();
-    return role === 'admin' || role === 'leader' || email === 'hungnguyen.190206@gmail.com' || email === 'admin@devertown.com';
+    return role === 'admin' || role === 'leader';
+  }
+
+  setGuestSession(nickname) {
+    this.token = null;
+    this.user = {
+      id: `guest_${Date.now()}`,
+      display_name: nickname,
+      displayName: nickname,
+      role: 'guest',
+      avatar_id: 'dev_hoodie'
+    };
+    // Thu hồi toàn bộ token và quyền từ phiên đăng nhập cũ
+    localStorage.removeItem('dever_token');
+    localStorage.setItem('dever_user', JSON.stringify(this.user));
+    localStorage.setItem('dever_nickname', nickname);
+  }
+
+  async checkNameAvailability(name) {
+    if (!name || !name.trim()) return { success: false, available: false, message: 'Tên không hợp lệ!' };
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/check-name?name=${encodeURIComponent(name.trim())}`);
+      const data = await res.json();
+      return data;
+    } catch (e) {
+      // Fallback nếu server offline
+      const cleanLower = name.trim().toLowerCase();
+      const RESERVED = ['admin', 'bqt', 'leader', 'moderator', 'system', 'root', 'bot', 'fu-dever'];
+      if (RESERVED.some(r => cleanLower === r || cleanLower.startsWith(`${r} `))) {
+        return { success: true, available: false, message: 'Biệt danh này chứa từ khóa bảo vệ hệ thống!' };
+      }
+      return { success: true, available: true };
+    }
   }
 
   async register({ email, password, displayName, avatarId }) {
