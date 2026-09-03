@@ -174,8 +174,23 @@ export class SpeedCodeDuel {
       this.submitBtn.addEventListener('click', () => this.submitScore());
     }
 
-    // Keyboard controls: 1, 2, 3, 4 and Escape
+    // Keyboard controls: Z to toggle, 1-4 for answers and Escape to exit
     window.addEventListener('keydown', (e) => {
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        return;
+      }
+
+      if (e.code === 'KeyZ') {
+        e.preventDefault();
+        if (this.isOpen) {
+          this.hide();
+        } else {
+          this.show();
+        }
+        return;
+      }
+
       if (!this.isOpen) return;
 
       if (e.code === 'Escape') {

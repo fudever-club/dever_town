@@ -6,12 +6,12 @@ export const TRANSLATIONS = {
     // Header & Navigation
     brandTag: 'FUDA',
     roomSelect: 'Chọn phòng nhanh',
-    inventoryBtn: 'Túi Đồ [I]',
+    inventoryBtn: 'Túi Đồ',
     wardrobeBtn: 'Tủ Đồ',
-    fptuPortalBtn: 'Cổng FPTU & Thi',
+    fptuPortalBtn: 'Cổng FPTU',
     questsBtn: 'Nhiệm Vụ',
-    emoteBtn: 'Biểu Cảm [G]',
-    speedDuelBtn: 'Đấu Trí ⚡',
+    emoteBtn: 'Biểu Cảm',
+    speedDuelBtn: 'Đấu Trí',
     bgmBtn: 'Nhạc Nền 8-Bit',
     profileBtn: 'Hồ Sơ',
     settingsBtn: 'Cài Đặt',
@@ -102,16 +102,16 @@ export const TRANSLATIONS = {
 
       // Căn Tin & Cafe (Canteen & Cafe Lounge)
       zone_canteen_food: 'Thực Đơn Căn Tin FUDA',
-      zone_cafe_barista: 'Pha Chế Cà Phê Muối & Trà Sữa',
-      zone_cafe_acoustic: 'Góc Nhạc Acoustic Cafe',
-      zone_cafe_meeting: 'Bàn Tròn Thảo Luận Căn Tin',
+      zone_cafe_barista: 'Pha Chế Cà Phê Muối',
+      zone_cafe_acoustic: 'Góc Acoustic Cafe',
+      zone_cafe_meeting: 'Bàn Tròn Thảo Luận',
 
       // Arcade Gaming (Game Arcade)
-      zone_arcade_snake: 'Máy Game: Rắn Săn Mồi Cyber Snake',
-      zone_arcade_sokoban: 'Máy Game: Buggy Đẩy Hộp (Sokoban)',
-      zone_arcade_goldminer: 'Máy Game: Cóc Vàng Đào Kho Báu',
-      zone_arcade_robot_hub: 'Trạm Trưng Bày & Tải Game Robot',
-      zone_arcade_meeting: 'Bàn Đấu Game & Livestream',
+      zone_arcade_snake: 'Rắn Săn Mồi Cyber Snake',
+      zone_arcade_sokoban: 'Buggy Đẩy Hộp Sokoban',
+      zone_arcade_goldminer: 'Cóc Vàng Đào Kho Báu',
+      zone_arcade_robot_hub: 'Trạm Tải Game Robot',
+      zone_arcade_meeting: 'Bàn Game & Livestream',
 
       // Fallback Generic Zones
       zone_whiteboard: 'Màn Chiếu Slide',
@@ -158,7 +158,7 @@ export const TRANSLATIONS = {
     onboardingStep2Desc: 'Tiến gần Màn chiếu, Bàn code, Minigame và bấm [E].',
     onboardingStep3Title: 'Túi đồ phím [I]',
     onboardingStep3Desc: 'Nhặt vật phẩm rơi trên sàn, trang bị và cầm trên tay.',
-    onboardingStep4Title: 'Khám phá 8 Phòng',
+    onboardingStep4Title: 'Khám phá 9 Phân Khu',
     onboardingStep4Desc: 'Bước qua các cổng dịch chuyển màu tím để sang phòng khác.',
     onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay 🚀',
 
@@ -194,12 +194,12 @@ export const TRANSLATIONS = {
     // Header & Navigation
     brandTag: 'FUDA',
     roomSelect: 'Quick Room Switcher',
-    inventoryBtn: 'Inventory [I]',
+    inventoryBtn: 'Inventory',
     wardrobeBtn: 'Wardrobe',
-    fptuPortalBtn: 'FPTU & Exams',
+    fptuPortalBtn: 'FPTU Portal',
     questsBtn: 'Quests',
-    emoteBtn: 'Emotes [G]',
-    speedDuelBtn: 'Speed Duel ⚡',
+    emoteBtn: 'Emotes',
+    speedDuelBtn: 'Speed Duel',
     bgmBtn: '8-Bit BGM',
     profileBtn: 'Profile',
     settingsBtn: 'Settings',
@@ -346,7 +346,7 @@ export const TRANSLATIONS = {
     onboardingStep2Desc: 'Approach Slides, Code Desk, Minigames and press [E].',
     onboardingStep3Title: 'Inventory with [I]',
     onboardingStep3Desc: 'Pick up items on the floor, equip and hold in hand.',
-    onboardingStep4Title: 'Explore 8 Rooms',
+    onboardingStep4Title: 'Explore 9 Zones',
     onboardingStep4Desc: 'Walk through purple portals to teleport to other rooms.',
     onboardingDismissBtn: 'Got it, Let\'s Play Now 🚀',
 

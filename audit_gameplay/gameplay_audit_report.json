@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-09-03T17:45:02.370Z",
+  "phases": [
+    {
+      "phase": "Main Hall Spawn",
+      "state": {
+        "loaded": true,
+        "currentRoom": "main_hall",
+        "playerPos": {
+          "x": 400,
+          "y": 350
+        },
+        "particlesActive": false,
+        "achievementsCount": 1,
+        "hasJuice": true,
+        "hasTicker": true
+      }
+    }
+  ],
+  "flawsFound": [
+    {
+      "phase": "Interaction",
+      "severity": "Major",
+      "desc": "Bấm E tại tượng Cóc Vàng không mở modal tương tác"
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

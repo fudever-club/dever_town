@@ -185,18 +185,9 @@ export class InteractionManager {
 
       this.beacons.push({ graphics: beaconGfx, tween: beaconTween });
 
-      // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể, có kẹp biên an toàn)
-      const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (posY - 24);
-      const badgeX = Phaser.Math.Clamp(posX, 56, 800 - 56);
-      const badgeContainer = this.scene.add.container(badgeX, baseBadgeY);
-      badgeContainer.setDepth(9999);
-
-      const badgeBg = this.scene.add.graphics();
-      badgeBg.fillStyle(0x0f172a, 0.88);
-      badgeBg.fillRoundedRect(-36, -10, 72, 20, 6);
-      badgeBg.lineStyle(1.5, color, 0.9);
-      badgeBg.strokeRoundedRect(-36, -10, 72, 20, 6);
-
+      // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể, so le Y thông minh chống đè chữ)
+      const isStaggered = (zone.tileX + zone.tileY) % 2 === 1;
+      const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
       const badgeText = this.scene.add.text(0, 0, `${icon} ${zoneName}`, {
         fontFamily: "'Outfit', sans-serif",
@@ -204,6 +195,21 @@ export class InteractionManager {
         fontWeight: '700',
         color: '#ffffff'
       }).setOrigin(0.5, 0.5);
+
+      const fullText = `${icon} ${zoneName}`;
+      const estTextWidth = Math.max(badgeText.width || 0, fullText.length * 8 + 14);
+      const badgeWidth = Math.max(72, Math.round(estTextWidth + 16));
+      const halfW = badgeWidth / 2;
+      const safeX = Phaser.Math.Clamp(posX, halfW + 12, 800 - halfW - 12);
+
+      const badgeContainer = this.scene.add.container(safeX, baseBadgeY);
+      badgeContainer.setDepth(9999);
+
+      const badgeBg = this.scene.add.graphics();
+      badgeBg.fillStyle(0x0f172a, 0.88);
+      badgeBg.fillRoundedRect(-halfW, -10, badgeWidth, 20, 6);
+      badgeBg.lineStyle(1.5, color, 0.9);
+      badgeBg.strokeRoundedRect(-halfW, -10, badgeWidth, 20, 6);
 
       badgeContainer.add([badgeBg, badgeText]);
 

@@ -295,11 +295,12 @@ export class WorldScene extends Phaser.Scene {
         const avgY = group.reduce((sum, item) => sum + item.tileY * tileSize + tileSize / 2, 0) / group.length;
         const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
 
-        // Kẹp tọa độ an toàn trong khung nhìn 800x608, không bao giờ bị cắt chữ
-        const clampedX = Phaser.Math.Clamp(avgX, 68, cols * tileSize - 68);
-        const clampedY = Phaser.Math.Clamp(avgY - 18, 18, rows * tileSize - 18);
+        // So le nhẹ vị trí Y cho các nhóm cổng liền kề để chống chồng đè chữ lẫn nhau
+        const isStaggeredPortal = idx % 2 === 1;
+        const targetY = isStaggeredPortal ? (avgY - 26) : (avgY - 14);
+        const clampedY = Phaser.Math.Clamp(targetY, 18, rows * tileSize - 18);
 
-        const label = this.add.text(clampedX, clampedY, portalText, {
+        const label = this.add.text(avgX, clampedY, portalText, {
           fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '10px',
           fontWeight: '700',
@@ -307,6 +308,11 @@ export class WorldScene extends Phaser.Scene {
           backgroundColor: 'rgba(15, 23, 42, 0.88)',
           padding: { x: 6, y: 2 }
         }).setOrigin(0.5, 0.5).setDepth(99999);
+
+        // Kẹp tọa độ X động theo bề rộng thực tế + fallback độ dài ký tự (phòng khi webfont chưa tải xong)
+        const estWidth = Math.max(label.width || 0, portalText.length * 8 + 16);
+        const halfW = estWidth / 2;
+        label.x = Phaser.Math.Clamp(avgX, halfW + 12, cols * tileSize - halfW - 12);
         this.portalLabels.push(label);
       });
     }

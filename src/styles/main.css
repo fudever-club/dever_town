@@ -5611,8 +5611,8 @@ body {
 /* 2. Minimap / Radar HUD */
 .minimap-container {
   position: fixed;
-  bottom: 24px;
-  left: 24px;
+  bottom: 96px;
+  left: 20px;
   z-index: 100;
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(56, 189, 248, 0.3);
@@ -5723,7 +5723,7 @@ body {
 .room-banner-container {
   position: fixed;
   top: 72px;
-  left: 50%;
+  left: calc((100vw - 1160px) / 2 + 400px);
   transform: translateX(-50%) translateY(-30px);
   z-index: 99998;
   opacity: 0;
@@ -5800,7 +5800,7 @@ body {
 .emote-bar-container {
   position: fixed;
   bottom: 84px;
-  left: 50%;
+  left: calc((100vw - 1160px) / 2 + 400px);
   transform: translateX(-50%) translateY(20px) scale(0.95);
   z-index: 99995;
   opacity: 0;
@@ -6276,6 +6276,16 @@ body {
   }
 }
 
+@media (max-width: 1160px) {
+  .room-banner-container,
+  .emote-bar-container {
+    left: 50% !important;
+  }
+  .achievement-toast-container {
+    right: 16px !important;
+  }
+}
+
 /* ==========================================================================
    6. GOLDEN FROG DAILY FORTUNE (CÓC VÀNG TÂM LINH & BÓI QUẺ CODER)
    ========================================================================== */
@@ -6409,8 +6419,8 @@ body {
 
 .achievement-toast-container {
   position: fixed;
-  top: 56px;
-  right: 16px;
+  top: 64px;
+  right: calc((100vw - 1160px) / 2 + 360px);
   z-index: 100000;
   display: flex;
   flex-direction: column;
