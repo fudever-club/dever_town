@@ -285,7 +285,7 @@ Mọi đóng góp từ cộng đồng đều được hoan nghênh! Vui lòng tu
 Dự án được phát hành dưới giấy phép **[MIT License](./LICENSE)**.
 
 © 2026 **FU-DEVER Club · FPT University Đà Nẵng (FUDA)**  
-Tác giả: [RaH11 (Nguyễn Thái Hùng)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
+Tác giả: [RaH11 (Nguyen Thai Hung)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
 
 <div align="center">
 
