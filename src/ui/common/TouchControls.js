@@ -67,7 +67,10 @@ export class TouchControls {
         e.preventDefault();
         e.stopPropagation();
         btnE.classList.add('active');
-        if (this.inputController.touchInput) {
+        if (this.scene && this.scene.interactionManager) {
+          this.scene.interactionManager.interactCurrentZone();
+        }
+        if (this.inputController && this.inputController.touchInput) {
           this.inputController.touchInput.interactE = true;
         }
         audioManager.playClick();

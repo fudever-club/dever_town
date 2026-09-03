@@ -105,6 +105,12 @@ export class WorldScene extends Phaser.Scene {
     camera.setBounds(-PADDING_X, -PADDING_Y, GAME_CONFIG.MAP_WIDTH + PADDING_X * 2, GAME_CONFIG.MAP_HEIGHT + PADDING_Y * 2);
     camera.startFollow(this.player, true, 0.1, 0.1);
     camera.setRoundPixels(true);
+    this.updateCameraZoom();
+
+    window.addEventListener('resize', () => this.updateCameraZoom());
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => this.updateCameraZoom(), 150);
+    });
 
     // 5. HUD & Network
     this.createHUD();
@@ -119,6 +125,27 @@ export class WorldScene extends Phaser.Scene {
     // 8. Subscribe Language Changes
     if (this.i18n) {
       this.i18n.subscribe(() => this.refreshSceneLanguage());
+    }
+  }
+
+  updateCameraZoom() {
+    if (!this.cameras || !this.cameras.main) return;
+    const camera = this.cameras.main;
+    const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    if (isMobile) {
+      const isPortrait = window.innerHeight > window.innerWidth;
+      if (isPortrait) {
+        // Màn hình dọc: Tối ưu nhân vật và map to rõ, vừa tầm mắt
+        const zoom = Math.max(1.15, Math.min(1.35, window.innerWidth / 340));
+        camera.setZoom(zoom);
+      } else {
+        // Màn hình ngang (Landscape): Tầm nhìn rộng rãi bao quát căn phòng
+        const zoom = Math.max(1.1, Math.min(1.3, window.innerHeight / 360));
+        camera.setZoom(zoom);
+      }
+    } else {
+      camera.setZoom(1.0);
     }
   }
 

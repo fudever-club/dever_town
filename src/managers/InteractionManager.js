@@ -45,12 +45,46 @@ export class InteractionManager {
   }
 
   bindEvents() {
-    // Lắng nghe phím E
+    // Lắng nghe phím E bàn phím
     this.scene.input.keyboard.on('keydown-E', () => {
-      if (this.currentActiveZone && this.canInteract()) {
-        this.triggerInteraction(this.currentActiveZone);
-      }
+      this.interactCurrentZone();
     });
+  }
+
+  interactCurrentZone() {
+    if (!this.canInteract()) return false;
+
+    // 1. Nếu đã có active zone trong tầm
+    if (this.currentActiveZone) {
+      this.triggerInteraction(this.currentActiveZone);
+      return true;
+    }
+
+    // 2. Tìm zone gần nhất trong phạm vi tương tác (tối đa 72px)
+    const player = this.scene?.player;
+    if (!player) return false;
+
+    const tileSize = 32;
+    let closest = null;
+    let minDistSq = 72 * 72;
+
+    for (const zone of this.zones) {
+      const zx = zone.tileX * tileSize + tileSize / 2;
+      const zy = zone.tileY * tileSize + tileSize / 2;
+      const dx = player.x - zx;
+      const dy = player.y - zy;
+      const distSq = dx * dx + dy * dy;
+      if (distSq < minDistSq) {
+        minDistSq = distSq;
+        closest = { ...zone, worldX: zx, worldY: zy };
+      }
+    }
+
+    if (closest) {
+      this.triggerInteraction(closest);
+      return true;
+    }
+    return false;
   }
 
   canInteract() {
