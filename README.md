@@ -15,7 +15,7 @@
 > **WORK HARD - PLAY HARD** · Không gian sinh hoạt kỹ thuật số Gather.town style dành riêng cho cộng đồng lập trình viên FUDA.  
 > Gặp gỡ, học tập chuyên sâu, giải trí arcade, thi đấu thể thao ảo và khám phá 8 phân khu chức năng sống động!
 
-🌐 [Landing Page](https://fu-dever-landingpage-v2.vercel.app) &nbsp;·&nbsp; 📘 [Fanpage FU-DEVER](https://www.facebook.com/FPTUDever) &nbsp;·&nbsp; 📝 [Đăng Ký Thành Viên](https://forms.gle/2us1yB5Qp2HYejj28) &nbsp;·&nbsp; 🐙 [GitHub Org](https://github.com/fudever-club)
+🌐 [Landing Page](https://www.fudever.com/) &nbsp;·&nbsp; 📘 [Fanpage FU-DEVER](https://www.facebook.com/FPTUDever) &nbsp;·&nbsp; 📝 [Đăng Ký Thành Viên](https://forms.gle/2us1yB5Qp2HYejj28) &nbsp;·&nbsp; 🐙 [GitHub Org](https://github.com/fudever-club)
 
 </div>
 
@@ -291,7 +291,7 @@ Tác giả: [RaH11 (Nguyễn Thái Hùng)](https://github.com/huanight19RaH) · 
 
 **Made with ❤️ by FU-DEVER · WORK HARD - PLAY HARD**
 
-[🌐 Landing Page](https://fu-dever-landingpage-v2.vercel.app) &nbsp;·&nbsp;
+[🌐 Landing Page](https://www.fudever.com/) &nbsp;·&nbsp;
 [📘 Fanpage FU-DEVER](https://www.facebook.com/FPTUDever) &nbsp;·&nbsp;
 [🏛️ Fanpage FUDA](https://www.facebook.com/daihocfptdanang) &nbsp;·&nbsp;
 [🎵 TikTok FUDA](https://www.tiktok.com/@daihocfptdanang) &nbsp;·&nbsp;

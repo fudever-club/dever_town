@@ -42,7 +42,7 @@ phím [I] mở túi đồ, cách đổi phòng qua Quick Room Selector.
 ### 1.5. Deploy production
 ```
 Deploy server game chính (hiện đang chạy localhost:3000 + 3001) lên Railway/Render/VPS,
-tách biệt với landing page đã deploy (fu-dever-landingpage-v2.vercel.app).
+tách biệt với landing page đã deploy (https://www.fudever.com/).
 Đảm bảo CORS được cấu hình đúng giữa domain landing page và domain game nếu chúng liên kết nhau.
 ```
 

@@ -247,9 +247,9 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
   club_website: {
     title: 'Showroom Cổng Thông Tin & Website Chính Thức FU-DEVER',
     description: 'Khám phá Landing Page, Member Portal, Admin Portal và Kho dự án của CLB.',
-    defaultUrl: 'https://fu-dever-landingpage-v2.vercel.app/',
+    defaultUrl: 'https://www.fudever.com/',
     portals: [
-      { name: '🌐 Landing Page Chính Thức', url: 'https://fu-dever-landingpage-v2.vercel.app/' },
+      { name: '🌐 Landing Page Chính Thức', url: 'https://www.fudever.com/' },
       { name: '📝 Đơn Đăng Ký Thành Viên', url: 'https://forms.gle/2us1yB5Qp2HYejj28' },
       { name: '📘 Fanpage FU-DEVER', url: 'https://www.facebook.com/FPTUDever' },
       { name: '🏛️ Fanpage FUDA', url: 'https://www.facebook.com/daihocfptdanang' },

@@ -308,7 +308,7 @@ export const MAPS_CONFIG = {
         name: 'Landing Page Chính Thức FU-DEVER',
         label: 'Mở Landing Page',
         metadata: {
-          url: 'https://fu-dever-landingpage-v2.vercel.app/',
+          url: 'https://www.fudever.com/',
           title: 'FU-DEVER LANDING PAGE - WORK HARD PLAY HARD'
         }
       },

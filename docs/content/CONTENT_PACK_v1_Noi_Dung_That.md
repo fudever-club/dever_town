@@ -123,6 +123,6 @@ Danh sách link:
 - [ ] Xác nhận file `2021-FPTU-Eng_Duong_ban-01.png` có đúng ý muốn không (hiện hiển thị gần trống)
 - [ ] Quyết định: Tòa Alpha hay Gamma làm Sảnh chính
 - [ ] Ảnh/thông tin thật cho Phòng Triển lãm Kỷ niệm (giải thưởng, năm, tên đội) — vẫn chưa có
-- [ ] Link website CLB thật (đã có landing page `fu-dever-landingpage-v2.vercel.app`, `dever-client-sigma.vercel.app`, `dever-admin-three.vercel.app`, GitHub `github.com/fudever-club` từ báo cáo trước — xác nhận các link này vẫn đúng/còn hoạt động)
+- [ ] Link website CLB thật (Landing page chính thức `https://www.fudever.com/`, `dever-client-sigma.vercel.app`, `dever-admin-three.vercel.app`, GitHub `github.com/fudever-club` từ báo cáo trước — xác nhận các link này vẫn đúng/còn hoạt động)
 - [ ] Chọn hướng xử lý Menu Căn tin (mục 5)
 - [ ] Ảnh tham chiếu thật (nếu có) cho nội thất phòng CLB thật, để mô phỏng pixel art chi tiết hơn

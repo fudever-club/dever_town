@@ -70,7 +70,7 @@
 ---
 
 ### ✅ TÍCH HỢP HỆ SINH THÁI LANDING PAGE FU-DEVER (Hoàn thành)
-- **Nhúng trực tiếp Landing Page chính thức:** `https://fu-dever-landingpage-v2.vercel.app/`
+- **Nhúng trực tiếp Landing Page chính thức:** `https://www.fudever.com/`
 - **Thanh Quick Portals Bar:** Member Portal, Admin Portal, GitHub, Facebook, Đơn Đăng Ký Thành Viên.
 - **Git Commit:** `b7e3044`
 
