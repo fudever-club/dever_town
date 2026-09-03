@@ -1,6 +1,6 @@
 {
   "name": "dever-town",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "private": false,
   "description": "DEVER TOWN — Thế giới Pixel 2D Multiplayer (Gather.town style) dành cho CLB FU-DEVER · FPT University Đà Nẵng. Built with Phaser 3, Node.js & Socket.io.",
   "author": {
