@@ -80,18 +80,31 @@ export class TextureGenerator {
   }
 
   static drawWoodFloor(ctx, x, y, size) {
-    ctx.fillStyle = '#d97706';
+    // 1. Gỗ sồi tự nhiên ấm áp (không còn màu cam cháy nhức mắt)
+    ctx.fillStyle = '#6b4423';
     ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#b45309';
-    for (let i = 0; i < size; i += 8) {
-      ctx.fillRect(x, y + i, size, 1);
+
+    // 2. Từng thanh ván sàn với vân gỗ mộc mạc
+    const plankH = 8;
+    for (let i = 0; i < size; i += plankH) {
+      ctx.fillStyle = (i % 16 === 0) ? '#784d28' : '#714825';
+      ctx.fillRect(x, y + i, size, plankH - 1);
+
+      // Rãnh giữa các thanh ván sàn
+      ctx.fillStyle = '#4a2e16';
+      ctx.fillRect(x, y + i + plankH - 1, size, 1);
     }
-    ctx.fillRect(x + 12, y, 1, 8);
+
+    // Mối ghép so le giữa các thanh gỗ
+    ctx.fillStyle = '#4a2e16';
+    ctx.fillRect(x + 10, y, 1, 8);
     ctx.fillRect(x + 24, y + 8, 1, 8);
-    ctx.fillRect(x + 8, y + 16, 1, 8);
+    ctx.fillRect(x + 6, y + 16, 1, 8);
     ctx.fillRect(x + 20, y + 24, 1, 8);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(x + 2, y + 2, size - 4, 1);
+
+    // Ánh bóng bề mặt nhẹ tự nhiên
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.fillRect(x + 2, y + 1, size - 4, 1);
   }
 
   static drawWall(ctx, x, y, size) {
@@ -225,17 +238,24 @@ export class TextureGenerator {
   }
 
   static drawCyberFloor(ctx, x, y, size) {
-    ctx.fillStyle = '#0284c7';
+    // Tấm kim loại slate đen mờ hiện đại
+    ctx.fillStyle = '#0b1120';
     ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#0f172a';
+
+    ctx.fillStyle = '#111827';
     ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
-    ctx.fillStyle = '#0369a1';
-    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 8, y + 8, 2, 2);
-    ctx.fillRect(x + 22, y + 8, 2, 2);
-    ctx.fillRect(x + 8, y + 22, 2, 2);
-    ctx.fillRect(x + 22, y + 22, 2, 2);
+
+    // Rãnh viền kỹ thuật mỏng tinh tế
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 1.5, y + 1.5, size - 3, size - 3);
+
+    // Điểm tiếp xúc vi mạch xanh neon nhẹ 4 góc
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 4, y + 4, 2, 2);
+    ctx.fillRect(x + size - 6, y + 4, 2, 2);
+    ctx.fillRect(x + 4, y + size - 6, 2, 2);
+    ctx.fillRect(x + size - 6, y + size - 6, 2, 2);
   }
 
   static drawPortalTile(ctx, x, y, size) {
@@ -323,18 +343,27 @@ export class TextureGenerator {
   }
 
   static drawGlassWall(ctx, x, y, size) {
-    ctx.fillStyle = '#0f172a';
+    // 1. Nền tối sâu thẳm
+    ctx.fillStyle = '#0a0f1d';
     ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+
+    // 2. Kính mờ phản quang công nghệ cao (frosted glass)
+    ctx.fillStyle = 'rgba(30, 58, 138, 0.45)';
     ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
-    ctx.strokeStyle = '#38bdf8';
+
+    // 3. Lõi phát quang nhẹ xanh neon
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+    ctx.fillRect(x + 4, y + 4, size - 8, size - 8);
+
+    // 4. Khung viền kim loại bo tinh xảo (không còn đường gạch chéo thô!)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 2.5, y + 2.5, size - 5, size - 5);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.beginPath();
-    ctx.moveTo(x + 6, y + size - 6);
-    ctx.lineTo(x + size - 6, y + 6);
-    ctx.stroke();
+
+    // 5. Điểm nhấn tán xạ ánh sáng cạnh trên và góc
+    ctx.fillStyle = '#7dd3fc';
+    ctx.fillRect(x + 4, y + 3, size - 8, 1);
+    ctx.fillRect(x + 3, y + 4, 1, 3);
   }
 
   static drawArtFrameGold(ctx, x, y, size) {
@@ -562,26 +591,36 @@ export class TextureGenerator {
     }
   }
 
-  // 28: Mặt nước hồ bơi FPTU (Swimming Pool)
+  // 28: Mặt nước hồ bơi FPTU (Swimming Pool - Crystal Aqua Water)
   static drawSwimmingPool(ctx, x, y, size) {
-    // Nước xanh ngọc
-    ctx.fillStyle = '#06b6d4';
+    // Nền nước xanh biển sâu & ngọc bích
+    ctx.fillStyle = '#0284c7';
     ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#0891b2';
-    ctx.fillRect(x, y + 8, size, 8);
-    ctx.fillRect(x, y + 24, size, 8);
 
-    // Gợn sóng bọt nước
-    ctx.fillStyle = '#a5f3fc';
-    ctx.fillRect(x + 4, y + 4, 8, 2);
-    ctx.fillRect(x + 20, y + 12, 6, 2);
-    ctx.fillRect(x + 8, y + 20, 10, 2);
+    // Lớp nước bề mặt trong trẻo
+    ctx.fillStyle = '#0ea5e9';
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
 
-    // Phao phân làn bơi
-    ctx.fillStyle = '#f26f21'; // Phao cam FPT
-    ctx.fillRect(x, y + 1, 4, 3);
-    ctx.fillRect(x + 14, y + 1, 4, 3);
-    ctx.fillRect(x + 28, y + 1, 4, 3);
+    // Hiệu ứng phản chiếu ánh sáng mặt nước (Caustic Glistening)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y);
+    ctx.lineTo(x + size, y + size - 4);
+    ctx.moveTo(x, y + 8);
+    ctx.lineTo(x + size - 8, y + size);
+    ctx.stroke();
+
+    // Gợn sóng bọt nước trắng lấp lánh (Gentle Shimmer)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.fillRect(x + 5, y + 6, 6, 1.5);
+    ctx.fillRect(x + 18, y + 14, 8, 1.5);
+    ctx.fillRect(x + 8, y + 22, 5, 1.5);
+
+    // Điểm sáng phản quang
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(x + 7, y + 5, 2, 2);
+    ctx.fillRect(x + 22, y + 13, 2, 2);
   }
 
   // 29: Màn hình LED Media Hub (Obstacle)
@@ -670,10 +709,10 @@ export class TextureGenerator {
 
   static generateAllCharacterSpritesheets(scene) {
     const avatarConfigs = [
-      { id: 'dev_hoodie', hair: '#1e293b', skin: '#fcd34d', shirt: '#2563eb', pants: '#1e293b', accessory: 'glasses_smart', name: 'Dev Alpha' },
-      { id: 'cyberpunk_pink', hair: '#ec4899', skin: '#fde047', shirt: '#9333ea', pants: '#06b6d4', accessory: 'sunglasses_cool', name: 'Cyber Neon' },
-      { id: 'red_gamer', hair: '#7f1d1d', skin: '#fbcfe8', shirt: '#ef4444', pants: '#18181b', accessory: 'headphones_rgb', name: 'Gamer Pro' },
-      { id: 'green_coder', hair: '#064e3b', skin: '#fed7aa', shirt: '#10b981', pants: '#334155', accessory: 'frog_crown', name: 'Code Master' }
+      { id: 'dev_hoodie', hair: '#1e293b', skin: '#fbd1a2', shirt: '#2563eb', pants: '#1e293b', accessory: 'glasses_smart', name: 'Dev Alpha' },
+      { id: 'cyberpunk_pink', hair: '#ec4899', skin: '#fcd3b0', shirt: '#9333ea', pants: '#06b6d4', accessory: 'sunglasses_cool', name: 'Cyber Neon' },
+      { id: 'red_gamer', hair: '#7f1d1d', skin: '#fce7d2', shirt: '#ef4444', pants: '#18181b', accessory: 'headphones_rgb', name: 'Gamer Pro' },
+      { id: 'green_coder', hair: '#064e3b', skin: '#fbd1a2', shirt: '#10b981', pants: '#334155', accessory: 'frog_crown', name: 'Code Master' }
     ];
 
     avatarConfigs.forEach(cfg => {
@@ -801,7 +840,7 @@ export class TextureGenerator {
       gender = 'male',
       hairstyle = (gender === 'female' ? 'long' : 'short'),
       hair = '#0f172a',
-      skin = '#fcd34d',
+      skin = '#fbd1a2',
       outfitType = 'hoodie',
       shirt = '#f26f21',
       collarColor = '#002147',

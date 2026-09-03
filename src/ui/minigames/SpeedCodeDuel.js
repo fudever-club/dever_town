@@ -350,6 +350,16 @@ export class SpeedCodeDuel {
 
       audioManager.playCorrectChime(this.streak);
       this.showFeedbackToast(true, `+${gainedScore} ĐIỂM! ${q.hint}`);
+
+      if (this.scene?.juiceManager && this.scene.player) {
+        this.scene.juiceManager.showFloatingText(
+          this.scene.player.x,
+          this.scene.player.y,
+          `+${gainedScore} ĐIỂM!`,
+          { color: '#38bdf8', fontSize: '13px' }
+        );
+        this.scene.juiceManager.pulseDOM('#duel-score-val');
+      }
     } else {
       this.streak = 0;
       audioManager.playWrongBoop();
@@ -420,6 +430,10 @@ export class SpeedCodeDuel {
     questManager.incrementProgress('focus_lofi_pomo', 1);
 
     const accuracy = Math.round((this.correctCount / this.questions.length) * 100);
+
+    if (this.correctCount === this.questions.length && this.scene?.achievementManager) {
+      this.scene.achievementManager.unlock('speed_coder');
+    }
 
     this.finalScoreEl.textContent = this.score.toLocaleString();
     this.finalAccuracyEl.textContent = `${accuracy}% (${this.correctCount}/10)`;

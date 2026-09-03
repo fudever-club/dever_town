@@ -299,6 +299,15 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       }
     } catch (e) {}
 
+    if (isVisiblyMoving) {
+      const bob = Math.sin(performance.now() / 85) * 0.05;
+      this.scaleY = 1.0 + bob;
+      this.scaleX = 1.0 - bob * 0.7;
+    } else {
+      this.scaleY = 1.0;
+      this.scaleX = 1.0;
+    }
+
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;

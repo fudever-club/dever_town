@@ -33,7 +33,7 @@ export const TRANSLATIONS = {
       media_hub: 'Media & MXH',
       sports_complex: 'Khu Thể Thao',
       canteen_cafe: 'Căn Tin & Cafe',
-      game_arcade: 'Tòa Gamma Plus - Arcade Gaming & Robot Studio'
+      game_arcade: 'Arcade & Robot'
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -221,7 +221,7 @@ export const TRANSLATIONS = {
       media_hub: 'Media & Social',
       sports_complex: 'Sports Complex',
       canteen_cafe: 'Canteen & Cafe',
-      game_arcade: 'Arcade Gaming & Robot Studio'
+      game_arcade: 'Arcade & Robot'
     },
 
     // Portals (Ground portals)

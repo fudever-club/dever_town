@@ -225,7 +225,7 @@ export class QuestManager {
     if (q.progress >= def.target && !q.completed) {
       q.completed = true;
       audioManager.playVictory();
-      this.showToast(`🎉 Nhiệm vụ hoàn thành: ${def.title}!`);
+      this.showToast(`Nhiệm vụ hoàn thành: ${def.title}`);
     }
 
     this.saveState();
@@ -248,7 +248,7 @@ export class QuestManager {
     q.claimed = true;
     this.points += def.points;
     audioManager.playVictory();
-    this.showToast(`🪙 +${def.points} Dever Points!`);
+    this.showToast(`+${def.points} Dever Points`);
     this.saveState();
     this.syncPointsToServer();
     return true;
@@ -261,7 +261,7 @@ export class QuestManager {
     this.milestoneClaimed = true;
     this.points += 50;
     audioManager.playVictory();
-    this.showToast('🎁 Chúc mừng! Mở rương thưởng ngày nhận +50 Dever Points!');
+    this.showToast('Mở rương thưởng ngày: +50 Dever Points');
     this.saveState();
     this.syncPointsToServer();
     return true;
@@ -270,7 +270,7 @@ export class QuestManager {
   addPoints(amount, reason = '') {
     this.points += amount;
     if (reason) {
-      this.showToast(`🪙 +${amount} Điểm (${reason})!`);
+      this.showToast(`+${amount} Điểm (${reason})`);
     }
     this.saveState();
     this.syncPointsToServer();
@@ -280,7 +280,7 @@ export class QuestManager {
     if (typeof document === 'undefined') return;
     const toast = document.createElement('div');
     toast.className = 'quest-toast-banner';
-    toast.innerHTML = `<span>⚡</span><span>${message}</span>`;
+    toast.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
     document.body.appendChild(toast);
 
     setTimeout(() => {

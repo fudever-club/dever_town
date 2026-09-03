@@ -102,8 +102,43 @@
 
 ---
 
+### ⚡ EXPANSION v4: RADAR HUD, SPEED CODE DUEL & CHIPTUNE BGM (Hoàn thành)
+- **Radar Minimap HUD (`MinimapOverlay.js`):** Radar quét 2D thời gian thực trên lưới 25x19, hiển thị vị trí người chơi, portal và vùng tương tác, phím tắt `[M]`.
+- **Đấu Trí Lập Trình Siêu Tốc (`SpeedCodeDuel.js`):** Thử thách 10 câu hỏi code & toán nhẩm nhịp độ cao, hệ số nhân chuỗi combo (`x1.5` -> `x3 🔥🔥`), xếp hạng danh hiệu, phím tắt `[Z]`.
+- **Thanh Biểu Cảm & Nhảy Múa (`EmoteBar.js`):** Phím tắt `[G]` mở nhanh 6 biểu cảm tương tác (Vẫy chào, Thả tim, Lửa cháy, Vỗ tay, Nhảy múa kèm nhún nhảy sprite, Dấu hỏi chấm).
+- **Giai Điệu Chiptune 8-Bit Web Audio API:** Tự động tổng hợp nhạc nền retro procedural không cần tải file MP3 ngoài.
+- **Banner Chuyển Phòng Điện Ảnh (`RoomBanner.js`):** Hiệu ứng cinematic hiển thị tên và mô tả phòng mỗi khi bước qua cổng dịch chuyển.
+
+---
+
+### 📱 EXPANSION v5: KIỂM TOÁN THỊ GIÁC & CÔNG THÁI HỌC MOBILE (Hoàn thành)
+- **Triệt tiêu lỗi chồng lấn nhãn:** Hợp nhất nhãn portal liền kề thành 1 nhãn duy nhất căn giữa tại tâm cụm cổng.
+- **Kẹp biên an toàn (Canvas Clamp):** Toàn bộ nhãn được bảo vệ trong giới hạn an toàn 800x608, không bao giờ bị xén chữ.
+- **Cụm phím ngón cái 2 tầng (Thumb Arc Ergonomics):** Bổ sung nút ⚡ Đấu Trí và ✨ Biểu Cảm ngay dưới ngón tay cái bên phải kèm rung phản hồi Haptic.
+- **Chống tràn màn hình tuyệt đối (Zero-Overflow on 375px):** Header tự động co giãn, ẩn chữ thừa và đạt `overflows: false` 100% trên iPhone SE (375px), iPhone 14 (390px), Galaxy S20 (412px), iPad Mini (768px).
+- **Radar HUD Auto-Collapse:** Tự động thu gọn thành pill nhỏ `[RADAR HUD ⌄]` trên mobile để giải phóng 40% tầm nhìn.
+- **Cô lập 1 Pane Modal trên Mobile:** Ngăn chặn tuyệt đối tình trạng 14 pane hiển thị đè lên nhau.
+
+---
+
+### 🌟 EXPANSION v6: HẠT MÔI TRƯỜNG, GAME FEEL JUICE, THÀNH TỰU & SUPABASE (Hoàn thành)
+- **Hệ thống Hạt Khí Quyển (`AmbientEnvironmentManager.js`):** Lá trà rơi ở Vườn Trà, khói cafe ở Căn Tin, hạt dữ liệu neon ở Lab, bụi nắng ở Thư Viện, bọt nước ở Bể bơi, tia lửa ở Arcade, bụi bước chân khi chạy.
+- **Động cơ Phản Hồi Xúc Cảm ("Juice" - `JuiceManager.js`):** Chữ số bay đàn hồi (`+10 ĐIỂM!`, `+100 ĐIỂM!`), rung camera micro-shake 120ms, pháo hoa giấy Confetti ăn mừng.
+- **Hệ thống Danh Hiệu & Thành Tựu (`AchievementManager.js`):** 8 danh hiệu độc bản, Golden Toast Banner slide-in góc trên kèm kèn Fanfare 8-bit hào hùng.
+- **Live Campus Ticker (`CampusTicker.js`):** Thanh chạy tin tức trực tiếp luân phiên các sự kiện và mẹo khám phá ở chân trang.
+- **Cơ Sở Dữ Liệu PostgreSQL Supabase Production:** Kết nối trực tiếp qua Pooler AWS Singapore, tự động tạo schema `users`, `game_scores`, `password_resets`, tự động bật SSL an toàn.
+
+---
+
 ## 🧪 BÁO CÁO NGHIỆM THU KIỂM THỬ (QA REPORT)
-- **Automated Test Suite (`.agent_system/test-expansion-v3.js`):** **6/6 TESTS PASSED (100%)**
-- **Production Build (`npm run build`):** **PASSED 100% (Built in 9.19s, 0 errors)**
-- **Dev Server:** Chạy cổng `3000` (Vite)
-- **Realtime Server:** Chạy cổng `3001` (Node.js/Socket.io)
+- **Playwright E2E Test Suite (`tests/e2e/*.spec.js`):** **58/58 TESTS PASSED (100% PASS RATE)** trên cả Desktop Chromium và Mobile Chrome (FUDA Touch):
+  - `tests/e2e/ambient-and-achievements.spec.js`: 12/12 passed.
+  - `tests/e2e/mobile-ergonomics.spec.js`: 8/8 passed.
+  - `tests/e2e/ux-enhancements.spec.js`: 10/10 passed.
+  - `tests/e2e/vision-inspection.spec.js`: 8/8 passed.
+  - `tests/e2e/develop-visual-hub.spec.js`: 6/6 passed.
+  - `tests/e2e/dever-town.spec.js`: 12/12 passed.
+  - `tests/e2e/session-reload.spec.js`: 2/2 passed.
+- **Production Build (`npm run build`):** **PASSED 100% (Built in 4.38s, 0 errors)**
+- **Dev Server:** Chạy cổng `3030` (Vite)
+- **Realtime Backend Server:** Chạy cổng `3001` (Node.js/Socket.io + Supabase PostgreSQL)

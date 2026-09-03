@@ -55,6 +55,11 @@ export class MinimapOverlay {
     this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
     this.bodyEl = this.container.querySelector('#minimap-body');
     this.toggleBtn = this.container.querySelector('#minimap-toggle-btn');
+
+    // Tự động thu gọn trên Mobile/Tablet để mở rộng không gian nhìn game
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      this.collapse();
+    }
   }
 
   bindEvents() {
@@ -83,6 +88,24 @@ export class MinimapOverlay {
     if (this.container) {
       this.container.classList.toggle('collapsed', this.isCollapsed);
     }
+    if (!this.isCollapsed) {
+      this.render();
+    }
+  }
+
+  collapse() {
+    this.isCollapsed = true;
+    if (this.container) {
+      this.container.classList.add('collapsed');
+    }
+  }
+
+  expand() {
+    this.isCollapsed = false;
+    if (this.container) {
+      this.container.classList.remove('collapsed');
+    }
+    this.render();
   }
 
   setRoom(roomId) {

@@ -107,12 +107,47 @@ export class TouchControls {
       });
     }
 
-    // 4. Action Button [💬] (Toggle Mobile Chat)
+    // 4. Action Button [⚡] (Speed Duel)
+    const btnDuel = document.getElementById('touch-btn-speed-duel');
+    if (btnDuel) {
+      btnDuel.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        btnDuel.classList.add('active');
+        if (this.scene && this.scene.speedCodeDuel) {
+          this.scene.speedCodeDuel.show();
+        }
+        audioManager.playClick();
+        if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+      });
+      btnDuel.addEventListener('pointerup', () => btnDuel.classList.remove('active'));
+      btnDuel.addEventListener('pointerleave', () => btnDuel.classList.remove('active'));
+    }
+
+    // 5. Action Button [✨] (Emote Bar)
+    const btnEmote = document.getElementById('touch-btn-emote');
+    if (btnEmote) {
+      btnEmote.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        btnEmote.classList.add('active');
+        if (this.scene && this.scene.emoteBar) {
+          this.scene.emoteBar.toggle();
+        }
+        audioManager.playClick();
+        if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+      });
+      btnEmote.addEventListener('pointerup', () => btnEmote.classList.remove('active'));
+      btnEmote.addEventListener('pointerleave', () => btnEmote.classList.remove('active'));
+    }
+
+    // 6. Action Button [💬] (Toggle Mobile Chat)
     const btnChat = document.getElementById('touch-btn-chat');
     if (btnChat) {
       btnChat.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        btnChat.classList.add('active');
         if (this.scene && this.scene.chatBox) {
           this.scene.chatBox.toggleMobileChat();
         } else {
@@ -122,7 +157,10 @@ export class TouchControls {
           }
         }
         audioManager.playClick();
+        if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
       });
+      btnChat.addEventListener('pointerup', () => btnChat.classList.remove('active'));
+      btnChat.addEventListener('pointerleave', () => btnChat.classList.remove('active'));
     }
 
     // Tự động kiểm tra hiển thị trên thiết bị di động

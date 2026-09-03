@@ -48,7 +48,7 @@ export const MAPS_CONFIG = {
       { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' }
     ],
     zones: [
-      { id: 'zone_main_frog', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Tôn Chỉ FUDA' },
+      { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
       { id: 'zone_main_campus_map', type: 'campus_map', tileX: 18, tileY: 2, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
       { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
       { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },

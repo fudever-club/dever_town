@@ -12,7 +12,7 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
       const { Pool } = await import('pg');
       this.pool = new Pool({
         connectionString: this.connectionString,
-        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+        ssl: this.connectionString.includes('supabase') || process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
       });
 
       // Tạo bảng users & game_scores theo schema thiết kế
