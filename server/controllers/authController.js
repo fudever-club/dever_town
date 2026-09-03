@@ -431,5 +431,32 @@ export const authController = {
     } catch (err) {
       return res.status(500).json({ success: false, available: false, message: 'Lỗi kiểm tra tên!' });
     }
+  },
+
+  /**
+   * GET /api/auth/test-mail - Kiểm tra trạng thái kết nối Resend và gửi email thử nghiệm
+   */
+  async testMail(req, res) {
+    try {
+      const email = req.query.email || 'hungnguyen.190206@gmail.com';
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const hasApiKey = !!(process.env.RESEND_API_KEY || process.env.RESEND_KEY);
+
+      const result = await mailService.sendPasswordResetOtp(email, {
+        otpCode,
+        displayName: 'Test Resend User',
+        expiresInMinutes: 10
+      });
+
+      return res.json({
+        success: true,
+        message: 'Đã thực thi kiểm thử gửi mail!',
+        hasApiKey,
+        targetEmail: email,
+        result
+      });
+    } catch (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
   }
 };

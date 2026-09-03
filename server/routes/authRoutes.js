@@ -62,4 +62,9 @@ router.put('/customization', authenticateToken, authController.updateCustomizati
  */
 router.get('/check-name', authController.checkName);
 
+/**
+ * GET /api/auth/test-mail - Kiểm tra trạng thái gửi mail Resend
+ */
+router.get('/test-mail', authController.testMail);
+
 export default router;
