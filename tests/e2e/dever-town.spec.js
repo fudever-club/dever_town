@@ -96,10 +96,11 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await page.locator('#gate-guest-name').fill('ChatterPro');
     await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
+    await expect(page.locator('#game-loading-screen')).toHaveClass(/hidden/, { timeout: 15000 });
 
     // Đóng hướng dẫn tân thủ nếu xuất hiện
     const onboardingBtn = page.locator('#onboarding-close-btn');
-    if (await onboardingBtn.isVisible({ timeout: 1500 }).catch(() => false)) {
+    if (await onboardingBtn.isVisible({ timeout: 2500 }).catch(() => false)) {
       await onboardingBtn.click();
     }
 

@@ -30,7 +30,7 @@ export default defineConfig({
   webServer: {
     command: 'npm.cmd run dev',
     url: 'http://localhost:3030',
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 60 * 1000
   }
 });

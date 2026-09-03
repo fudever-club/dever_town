@@ -107,8 +107,16 @@ export class WorldScene extends Phaser.Scene {
     const PADDING_X = 64;
     const PADDING_Y = 96;
     camera.setBounds(-PADDING_X, -PADDING_Y, GAME_CONFIG.MAP_WIDTH + PADDING_X * 2, GAME_CONFIG.MAP_HEIGHT + PADDING_Y * 2);
-    camera.startFollow(this.player, true, 0.1, 0.1);
+    camera.startFollow(this.player, true, 0.08, 0.08);
     camera.setRoundPixels(true);
+
+    // Kích hoạt PostFX Vignette làm sâu sắc góc nhìn (nếu WebGL hỗ trợ)
+    if (camera.postFX) {
+      try {
+        camera.postFX.addVignette(0.5, 0.5, 0.72, 0.3);
+      } catch (e) {}
+    }
+
     this.updateCameraZoom();
 
     window.addEventListener('resize', () => this.updateCameraZoom());
@@ -149,7 +157,8 @@ export class WorldScene extends Phaser.Scene {
         camera.setZoom(zoom);
       }
     } else {
-      camera.setZoom(1.0);
+      // Desktop: Zoom 1.32x bám sát điện ảnh, nhân vật rõ nét, phòng ấm cúng
+      camera.setZoom(1.32);
     }
   }
 
@@ -574,10 +583,10 @@ export class WorldScene extends Phaser.Scene {
         if (targetRoom && targetRoom !== this.currentRoomId) {
           const mapData = MAPS_CONFIG[targetRoom];
           if (mapData) {
-            this.handlePortalOverlap({
-              targetRoomId: targetRoom,
-              targetSpawn: mapData.spawnPoint
-            });
+            this.isTeleporting = false;
+            this.teleportGraceUntil = performance.now() + 1500;
+            this.lastTeleportTime = performance.now();
+            this.loadRoom(targetRoom, mapData.spawnPoint.x, mapData.spawnPoint.y, true);
           }
         }
       });
