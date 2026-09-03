@@ -204,7 +204,7 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
       'UPDATE users SET password_hash = $1 WHERE LOWER(email) = $2 RETURNING *',
       [passwordHash, cleanEmail]
     );
-    return res.rows[0] ? this.mapUser(res.rows[0]) : null;
+    return res.rows[0] || null;
   }
 
   async saveOtp(email, otpCode, expiresAt) {

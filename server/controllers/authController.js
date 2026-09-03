@@ -216,9 +216,6 @@ export const authController = {
         });
       }
 
-      // Xóa OTP sau khi xác thực thành công
-      await otpService.deleteOtp(cleanEmail);
-
       // Mã hóa mật khẩu mới bằng bcrypt
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -228,14 +225,18 @@ export const authController = {
       if (user) {
         await db.updatePasswordByEmail(cleanEmail, hashedPassword);
       } else {
+        const fallbackName = cleanEmail.split('@')[0] || 'Dev Member';
         await db.createUser({
           email: cleanEmail,
           passwordHash: hashedPassword,
-          displayName: 'Thành viên DEVER',
+          displayName: fallbackName,
           avatarId: 'dev_hoodie',
           role: 'dev'
         });
       }
+
+      // Xóa OTP sau khi đổi mật khẩu thành công trong Database
+      await otpService.deleteOtp(cleanEmail);
       
       console.log(`🔑 [Auth] Đổi mật khẩu thành công bằng OTP cho: ${cleanEmail}`);
 
@@ -244,8 +245,8 @@ export const authController = {
         message: 'Đặt lại mật khẩu thành công. Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.'
       });
     } catch (err) {
-      console.error('❌ [Auth Reset Password Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi đặt lại mật khẩu mới.' });
+      console.error('❌ [Auth Reset Password Error]:', err.stack || err.message);
+      return res.status(500).json({ success: false, message: `Lỗi đặt lại mật khẩu: ${err.message || 'Lỗi hệ thống'}` });
     }
   },
 
