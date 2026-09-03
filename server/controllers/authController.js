@@ -135,8 +135,8 @@ export const authController = {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresInMinutes = 10;
 
-      // Lưu mã OTP bền vững vào OtpService
-      otpService.setOtp(cleanEmail, otpCode, expiresInMinutes);
+      // Lưu mã OTP bền vững vào OtpService (3-tier storage)
+      await otpService.setOtp(cleanEmail, otpCode, expiresInMinutes);
 
       // Gửi email chứa mã OTP
       const mailResult = await mailService.sendPasswordResetOtp(cleanEmail, {
@@ -173,7 +173,7 @@ export const authController = {
       }
 
       const cleanEmail = email.toLowerCase().trim();
-      const verifyResult = otpService.verifyOtp(cleanEmail, otpCode);
+      const verifyResult = await otpService.verifyOtp(cleanEmail, otpCode);
 
       if (!verifyResult.valid) {
         return res.status(400).json({
@@ -207,7 +207,7 @@ export const authController = {
       }
 
       const cleanEmail = email.toLowerCase().trim();
-      const verifyResult = otpService.verifyOtp(cleanEmail, otpCode);
+      const verifyResult = await otpService.verifyOtp(cleanEmail, otpCode);
 
       if (!verifyResult.valid) {
         return res.status(400).json({
@@ -217,7 +217,7 @@ export const authController = {
       }
 
       // Xóa OTP sau khi xác thực thành công
-      otpService.deleteOtp(cleanEmail);
+      await otpService.deleteOtp(cleanEmail);
 
       // Mã hóa mật khẩu mới bằng bcrypt
       const salt = await bcrypt.genSalt(10);

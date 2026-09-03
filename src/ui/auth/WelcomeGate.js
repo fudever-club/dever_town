@@ -226,11 +226,13 @@ export class WelcomeGate {
       const sendBtn = document.getElementById('gate-btn-send-otp');
       if (sendBtn) sendBtn.disabled = true;
 
-      const res = await authService.requestPasswordReset(email);
-      this.pendingForgotEmail = email;
+      const cleanEmail = email.toLowerCase().trim();
+      const res = await authService.requestPasswordReset(cleanEmail);
+      this.pendingForgotEmail = cleanEmail;
+      sessionStorage.setItem('dever_pending_forgot_email', cleanEmail);
 
       const targetEmailEl = document.getElementById('gate-otp-target-email');
-      if (targetEmailEl) targetEmailEl.textContent = email;
+      if (targetEmailEl) targetEmailEl.textContent = cleanEmail;
 
       const step1 = document.getElementById('gate-forgot-step1-form');
       const step2 = document.getElementById('gate-forgot-step2-form');
@@ -248,7 +250,7 @@ export class WelcomeGate {
     } catch (err) {
       const sendBtn = document.getElementById('gate-btn-send-otp');
       if (sendBtn) sendBtn.disabled = false;
-      this.showError(err.message || 'Lỗi gửi mã OTP!');
+      this.showError(err.message || 'Lỗi gửi mã OTP.');
     }
   }
 
@@ -256,10 +258,22 @@ export class WelcomeGate {
     e.preventDefault();
     this.clearError();
 
-    const email = (this.pendingForgotEmail || document.getElementById('gate-forgot-email')?.value || '').trim();
+    const email = (
+      this.pendingForgotEmail || 
+      sessionStorage.getItem('dever_pending_forgot_email') || 
+      document.getElementById('gate-otp-target-email')?.textContent || 
+      document.getElementById('gate-forgot-email')?.value || 
+      ''
+    ).toLowerCase().trim();
+
     const otpCode = (document.getElementById('gate-reset-otp-input')?.value || '').replace(/\D/g, '').trim();
     const newPassword = document.getElementById('gate-reset-new-password')?.value;
     const confirmPassword = document.getElementById('gate-reset-confirm-password')?.value;
+
+    if (!email) {
+      this.showError('Không tìm thấy thông tin email. Vui lòng quay lại bước 1 và bấm gửi mã.');
+      return;
+    }
 
     if (!otpCode || otpCode.length !== 6) {
       this.showError('Mã xác thực OTP phải gồm đúng 6 chữ số.');
@@ -285,6 +299,9 @@ export class WelcomeGate {
         otpCode,
         newPassword
       });
+
+      sessionStorage.removeItem('dever_pending_forgot_email');
+      this.pendingForgotEmail = '';
 
       audioManager.playWin();
       alert('Đặt lại mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới.');

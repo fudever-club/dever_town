@@ -53,9 +53,16 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
           last_played TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
           UNIQUE (user_id, game_type)
         );
+
+        CREATE TABLE IF NOT EXISTS password_resets (
+          email VARCHAR(255) PRIMARY KEY,
+          otp_code VARCHAR(20) NOT NULL,
+          expires_at BIGINT NOT NULL,
+          attempts INTEGER DEFAULT 0
+        );
       `);
 
-      console.log(`🐘 [PostgresDB] Đã kết nối thành công và khởi tạo bảng users, game_scores.`);
+      console.log(`🐘 [PostgresDB] Đã kết nối thành công và khởi tạo bảng users, game_scores, password_resets.`);
     } catch (err) {
       console.warn(`⚠️ [PostgresDB] Lỗi khởi tạo PostgreSQL:`, err.message);
       throw err;
@@ -198,5 +205,42 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
       [passwordHash, cleanEmail]
     );
     return res.rows[0] ? this.mapUser(res.rows[0]) : null;
+  }
+
+  async saveOtp(email, otpCode, expiresAt) {
+    if (!this.pool) return;
+    const cleanEmail = email.toLowerCase().trim();
+    await this.pool.query(`
+      INSERT INTO password_resets (email, otp_code, expires_at, attempts)
+      VALUES ($1, $2, $3, 0)
+      ON CONFLICT (email) DO UPDATE
+      SET otp_code = EXCLUDED.otp_code,
+          expires_at = EXCLUDED.expires_at,
+          attempts = 0
+    `, [cleanEmail, String(otpCode).trim(), expiresAt]);
+  }
+
+  async getOtp(email) {
+    if (!this.pool) return null;
+    const cleanEmail = email.toLowerCase().trim();
+    const res = await this.pool.query('SELECT * FROM password_resets WHERE email = $1', [cleanEmail]);
+    if (!res.rows[0]) return null;
+    return {
+      otp: res.rows[0].otp_code,
+      expiresAt: Number(res.rows[0].expires_at),
+      attempts: res.rows[0].attempts || 0
+    };
+  }
+
+  async incrementOtpAttempts(email) {
+    if (!this.pool) return;
+    const cleanEmail = email.toLowerCase().trim();
+    await this.pool.query('UPDATE password_resets SET attempts = attempts + 1 WHERE email = $1', [cleanEmail]);
+  }
+
+  async deleteOtp(email) {
+    if (!this.pool) return;
+    const cleanEmail = email.toLowerCase().trim();
+    await this.pool.query('DELETE FROM password_resets WHERE email = $1', [cleanEmail]);
   }
 }

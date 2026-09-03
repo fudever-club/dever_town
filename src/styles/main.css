@@ -1086,6 +1086,38 @@ body {
   margin-top: 4px;
 }
 
+/* High-Visibility Red Error Alert Box */
+.auth-error-box,
+#gate-error-msg,
+.auth-error {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border: 1px solid rgba(239, 68, 68, 0.6) !important;
+  color: #fca5a5 !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  margin-bottom: 14px !important;
+  text-align: left !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18) !important;
+  animation: shakeAlert 0.35s ease-in-out;
+  display: block;
+}
+
+.auth-error-box.hidden,
+#gate-error-msg.hidden,
+.auth-error.hidden {
+  display: none !important;
+}
+
+@keyframes shakeAlert {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
 .link-back-login {
   background: none;
   border: none;

@@ -252,4 +252,30 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
     await this.saveToFile();
     return user;
   }
+
+  async saveOtp(email, otpCode, expiresAt) {
+    if (!this.otps) this.otps = new Map();
+    this.otps.set(email.toLowerCase().trim(), {
+      otp: String(otpCode).trim(),
+      expiresAt: Number(expiresAt),
+      attempts: 0
+    });
+  }
+
+  async getOtp(email) {
+    if (!this.otps) this.otps = new Map();
+    return this.otps.get(email.toLowerCase().trim()) || null;
+  }
+
+  async incrementOtpAttempts(email) {
+    if (!this.otps) this.otps = new Map();
+    const cleanEmail = email.toLowerCase().trim();
+    const record = this.otps.get(cleanEmail);
+    if (record) record.attempts = (record.attempts || 0) + 1;
+  }
+
+  async deleteOtp(email) {
+    if (!this.otps) this.otps = new Map();
+    this.otps.delete(email.toLowerCase().trim());
+  }
 }

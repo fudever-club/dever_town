@@ -49,4 +49,20 @@ export class BaseDatabaseAdapter {
   async updatePasswordByEmail(email, passwordHash) {
     throw new Error('Method updatePasswordByEmail() must be implemented');
   }
+
+  async saveOtp(email, otpCode, expiresAt) {
+    throw new Error('Method saveOtp() must be implemented');
+  }
+
+  async getOtp(email) {
+    throw new Error('Method getOtp() must be implemented');
+  }
+
+  async incrementOtpAttempts(email) {
+    throw new Error('Method incrementOtpAttempts() must be implemented');
+  }
+
+  async deleteOtp(email) {
+    throw new Error('Method deleteOtp() must be implemented');
+  }
 }
