@@ -88,7 +88,8 @@ export class InteractionManager {
   }
 
   canInteract() {
-    if (this.scene.inputController && this.scene.inputController.isInputBlocked()) {
+    const activeModal = document.querySelector('.modal-backdrop:not(.hidden)');
+    if (activeModal) {
       return false;
     }
     return true;

@@ -4517,12 +4517,143 @@ body {
     padding: 20px !important;
   }
 
-  /* Modals Mobile */
-  .modal-card, .modal-card-lg, .modal-card-xl {
-    width: 95vw !important;
-    max-height: 90vh !important;
+  /* Modals Mobile Scroll & Responsive Layout (Impeccable Touch Experience) */
+  .modal-backdrop {
     overflow-y: auto !important;
-    padding: 16px !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 10px !important;
+    align-items: flex-start !important;
+    touch-action: pan-y !important;
+  }
+
+  .modal-card, .modal-card-lg, .modal-card-xl, .interactive-modal-card {
+    width: 100% !important;
+    max-width: 96vw !important;
+    height: auto !important;
+    max-height: 94vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 16px 14px !important;
+    margin: auto 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    touch-action: pan-y !important;
+  }
+
+  .interactive-pane {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    touch-action: pan-y !important;
+  }
+
+  /* Coffee & Pomodoro Mobile Stack */
+  .coffee-workspace-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .lofi-player-box {
+    height: auto !important;
+    min-height: 0 !important;
+    flex: none !important;
+    padding: 10px !important;
+  }
+
+  .lofi-iframe-wrapper {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .lofi-iframe-wrapper iframe {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .pomodoro-box {
+    height: auto !important;
+    min-height: 200px !important;
+    flex: none !important;
+    padding: 18px 12px !important;
+    gap: 14px !important;
+  }
+
+  .pomo-display {
+    font-size: 44px !important;
+  }
+
+  /* Slide / Web / Meeting / Canteen Mobile Stack */
+  .iframe-container {
+    height: 52vh !important;
+    min-height: 320px !important;
+    flex: none !important;
+  }
+
+  .code-workspace-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .code-editor-panel {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .code-box {
+    min-height: 200px !important;
+    height: 200px !important;
+  }
+
+  .notes-panel {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .notes-box {
+    min-height: 180px !important;
+    height: 180px !important;
+  }
+
+  .gallery-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .gallery-canvas-wrapper canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .inventory-workspace, .wardrobe-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .wardrobe-options-panel {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .inventory-grid {
+    max-height: 220px !important;
   }
 }
 
