@@ -13,7 +13,7 @@
 [![i18n](https://img.shields.io/badge/i18n-VN%20%7C%20EN-purple.svg?style=for-the-badge)](./src/config/i18n.js)
 
 > **WORK HARD - PLAY HARD** · Không gian sinh hoạt kỹ thuật số Gather.town style dành riêng cho cộng đồng lập trình viên FUDA.  
-> Gặp gỡ, học tập chuyên sâu, giải trí arcade, thi đấu thể thao ảo và khám phá 8 phân khu chức năng sống động!
+> Gặp gỡ, học tập chuyên sâu, giải trí arcade, thi đấu thể thao ảo và khám phá 9 phân khu chức năng sống động!
 
 🌐 [Landing Page](https://www.fudever.com/) &nbsp;·&nbsp; 📘 [Fanpage FU-DEVER](https://www.facebook.com/FPTUDever) &nbsp;·&nbsp; 📝 [Đăng Ký Thành Viên](https://forms.gle/2us1yB5Qp2HYejj28) &nbsp;·&nbsp; 🐙 [GitHub Org](https://github.com/fudever-club)
 
