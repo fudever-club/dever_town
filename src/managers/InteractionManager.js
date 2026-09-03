@@ -185,8 +185,10 @@ export class InteractionManager {
 
       this.beacons.push({ graphics: beaconGfx, tween: beaconTween });
 
-      // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể)
-      const badgeContainer = this.scene.add.container(posX, posY - 24);
+      // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể, có kẹp biên an toàn)
+      const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (posY - 24);
+      const badgeX = Phaser.Math.Clamp(posX, 56, 800 - 56);
+      const badgeContainer = this.scene.add.container(badgeX, baseBadgeY);
       badgeContainer.setDepth(9999);
 
       const badgeBg = this.scene.add.graphics();
@@ -207,7 +209,7 @@ export class InteractionManager {
 
       const badgeTween = this.scene.tweens.add({
         targets: badgeContainer,
-        y: posY - 29,
+        y: baseBadgeY - 4,
         duration: 1400,
         yoyo: true,
         repeat: -1,
@@ -288,16 +290,29 @@ export class InteractionManager {
     this.bgGraphics.lineStyle(2, 0xf26f21, 1); // FPT Orange Glow
     this.bgGraphics.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
 
+    // Ẩn badge gốc của zone này để loại bỏ triệt để hiện tượng 2 dòng chữ đè lên nhau
+    const activeBadge = this.badges.find(b => b.zoneId === zone.id);
+    if (activeBadge && activeBadge.container) {
+      activeBadge.container.setVisible(false);
+    }
+
     this.updateHUDPosition(zone);
     this.hudContainer.setVisible(true);
   }
 
   updateHUDPosition(zone) {
-    this.hudContainer.setPosition(zone.worldX, zone.worldY - 38);
+    // Nếu zone nằm ở hàng trên cùng (worldY <= 48), đẩy HUD xuống dưới để không bị kẹp trần canvas
+    const hudY = zone.worldY <= 48 ? (zone.worldY + 36) : Math.max(zone.worldY - 38, 22);
+    const hudX = Phaser.Math.Clamp(zone.worldX, 90, 800 - 90);
+    this.hudContainer.setPosition(hudX, hudY);
   }
 
   hideHUD() {
     this.hudContainer.setVisible(false);
+    // Khôi phục hiển thị toàn bộ badge khi người chơi rời khỏi zone
+    this.badges.forEach(b => {
+      if (b.container) b.container.setVisible(true);
+    });
   }
 
   triggerInteraction(zone) {

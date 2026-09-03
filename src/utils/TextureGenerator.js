@@ -591,26 +591,36 @@ export class TextureGenerator {
     }
   }
 
-  // 28: Mặt nước hồ bơi FPTU (Swimming Pool)
+  // 28: Mặt nước hồ bơi FPTU (Swimming Pool - Crystal Aqua Water)
   static drawSwimmingPool(ctx, x, y, size) {
-    // Nước xanh ngọc
-    ctx.fillStyle = '#06b6d4';
+    // Nền nước xanh biển sâu & ngọc bích
+    ctx.fillStyle = '#0284c7';
     ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#0891b2';
-    ctx.fillRect(x, y + 8, size, 8);
-    ctx.fillRect(x, y + 24, size, 8);
 
-    // Gợn sóng bọt nước
-    ctx.fillStyle = '#a5f3fc';
-    ctx.fillRect(x + 4, y + 4, 8, 2);
-    ctx.fillRect(x + 20, y + 12, 6, 2);
-    ctx.fillRect(x + 8, y + 20, 10, 2);
+    // Lớp nước bề mặt trong trẻo
+    ctx.fillStyle = '#0ea5e9';
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
 
-    // Phao phân làn bơi
-    ctx.fillStyle = '#f26f21'; // Phao cam FPT
-    ctx.fillRect(x, y + 1, 4, 3);
-    ctx.fillRect(x + 14, y + 1, 4, 3);
-    ctx.fillRect(x + 28, y + 1, 4, 3);
+    // Hiệu ứng phản chiếu ánh sáng mặt nước (Caustic Glistening)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y);
+    ctx.lineTo(x + size, y + size - 4);
+    ctx.moveTo(x, y + 8);
+    ctx.lineTo(x + size - 8, y + size);
+    ctx.stroke();
+
+    // Gợn sóng bọt nước trắng lấp lánh (Gentle Shimmer)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.fillRect(x + 5, y + 6, 6, 1.5);
+    ctx.fillRect(x + 18, y + 14, 8, 1.5);
+    ctx.fillRect(x + 8, y + 22, 5, 1.5);
+
+    // Điểm sáng phản quang
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(x + 7, y + 5, 2, 2);
+    ctx.fillRect(x + 22, y + 13, 2, 2);
   }
 
   // 29: Màn hình LED Media Hub (Obstacle)

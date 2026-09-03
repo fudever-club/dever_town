@@ -248,6 +248,7 @@ export class WorldScene extends Phaser.Scene {
 
     // Portals
     if (mapData.portals) {
+      // 1. Tạo physical portal objects cho toàn bộ portals (giữ nguyên physics collision)
       mapData.portals.forEach(p => {
         const posX = p.tileX * tileSize + tileSize / 2;
         const posY = p.tileY * tileSize + tileSize / 2;
@@ -256,15 +257,42 @@ export class WorldScene extends Phaser.Scene {
         portalObj.setSize(tileSize, tileSize);
         portalObj.setVisible(false);
         portalObj.portalData = p;
+      });
 
+      // 2. Nhóm các cổng liền kề có cùng targetRoomId để hiển thị 1 nhãn thống nhất, tránh đè chữ
+      const processed = new Set();
+      mapData.portals.forEach((p, idx) => {
+        if (processed.has(idx)) return;
+        processed.add(idx);
+
+        const group = [p];
+        mapData.portals.forEach((other, oIdx) => {
+          if (processed.has(oIdx)) return;
+          if (other.targetRoomId === p.targetRoomId) {
+            const distTiles = Math.abs(other.tileX - p.tileX) + Math.abs(other.tileY - p.tileY);
+            if (distTiles <= 1.5) {
+              group.push(other);
+              processed.add(oIdx);
+            }
+          }
+        });
+
+        // Tính tọa độ trung bình cho nhóm nhãn
+        const avgX = group.reduce((sum, item) => sum + item.tileX * tileSize + tileSize / 2, 0) / group.length;
+        const avgY = group.reduce((sum, item) => sum + item.tileY * tileSize + tileSize / 2, 0) / group.length;
         const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
-        const label = this.add.text(posX, posY - 18, portalText, {
+
+        // Kẹp tọa độ an toàn trong khung nhìn 800x608, không bao giờ bị cắt chữ
+        const clampedX = Phaser.Math.Clamp(avgX, 68, cols * tileSize - 68);
+        const clampedY = Phaser.Math.Clamp(avgY - 18, 18, rows * tileSize - 18);
+
+        const label = this.add.text(clampedX, clampedY, portalText, {
           fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '10px',
           fontWeight: '700',
           color: '#c084fc',
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          padding: { x: 5, y: 2 }
+          backgroundColor: 'rgba(15, 23, 42, 0.88)',
+          padding: { x: 6, y: 2 }
         }).setOrigin(0.5, 0.5).setDepth(99999);
         this.portalLabels.push(label);
       });
