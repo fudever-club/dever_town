@@ -58,6 +58,48 @@ Trân trọng,
       timestamp: Date.now()
     };
   }
+
+  /**
+   * Gửi mã OTP xác thực đặt lại mật khẩu
+   * @param {string} userEmail - Email nhận mã
+   * @param {Object} data - { otpCode, displayName, expiresInMinutes }
+   */
+  async sendPasswordResetOtp(userEmail, { otpCode, displayName = 'Thành viên DEVER', expiresInMinutes = 10 }) {
+    const emailSubject = `[FU-DEVER TOWN] 🔑 Mã Xác Thực Đặt Lại Mật Khẩu: ${otpCode}`;
+
+    const emailBodyText = `
+Xin chào ${displayName},
+
+Bạn (hoặc ai đó) vừa yêu cầu đặt lại mật khẩu cho tài khoản DEVER TOWN gắn với email (${userEmail}).
+
+🔐 MÃ XÁC THỰC BẢO MẬT (OTP) CỦA BẠN LÀ:
+╔═══════════════════════════════════╗
+║            ${otpCode}            ║
+╚═══════════════════════════════════╝
+
+- Mã OTP này có hiệu lực trong vòng: ${expiresInMinutes} phút.
+- Tuyệt đối KHÔNG chia sẻ mã này cho bất kỳ ai, kể cả Ban Quản Trị.
+
+Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này. Tài khoản của bạn vẫn được bảo mật an toàn.
+
+Trân trọng,
+Đội Ngũ Kỹ Thuật CLB FU-DEVER · FUDA
+    `.trim();
+
+    console.log(`\n================== 📧 [PASSWORD RESET OTP EMAIL] ==================`);
+    console.log(`To: ${userEmail}`);
+    console.log(`Subject: ${emailSubject}`);
+    console.log(`OTP Code: >>> [ ${otpCode} ] <<< (Valid for ${expiresInMinutes} mins)`);
+    console.log(`Content:\n${emailBodyText}`);
+    console.log(`===================================================================\n`);
+
+    return {
+      success: true,
+      deliveredTo: userEmail,
+      otpCode,
+      timestamp: Date.now()
+    };
+  }
 }
 
 export const mailService = new MailService();

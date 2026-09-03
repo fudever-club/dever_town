@@ -11,6 +11,7 @@ export class AuthModal {
     this.modalEl = document.getElementById('auth-modal');
     this.selectedAvatar = 'dev_hoodie';
     this.currentTab = 'login';
+    this.pendingForgotEmail = '';
 
     this.bindEvents();
   }
@@ -67,6 +68,36 @@ export class AuthModal {
     const loginGoogleBtn = document.getElementById('login-google-btn');
     if (loginGoogleBtn) {
       loginGoogleBtn.addEventListener('click', () => this.handleGoogleLogin());
+    }
+
+    // Nút chuyển sang màn hình Quên Mật Khẩu
+    const gotoForgotBtn = document.getElementById('btn-goto-forgot');
+    if (gotoForgotBtn) {
+      gotoForgotBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.switchTab('forgot');
+      });
+    }
+
+    // Nút quay lại Đăng nhập từ màn hình Quên Mật Khẩu
+    const backToLoginBtn = document.getElementById('btn-back-to-login');
+    if (backToLoginBtn) {
+      backToLoginBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.switchTab('login');
+      });
+    }
+
+    // Form Quên Mật Khẩu - Bước 1: Gửi OTP
+    const forgotStep1Form = document.getElementById('forgot-step1-form');
+    if (forgotStep1Form) {
+      forgotStep1Form.addEventListener('submit', (e) => this.handleRequestOtp(e));
+    }
+
+    // Form Quên Mật Khẩu - Bước 2: Nhập OTP & Đổi Mật Khẩu
+    const forgotStep2Form = document.getElementById('forgot-step2-form');
+    if (forgotStep2Form) {
+      forgotStep2Form.addEventListener('submit', (e) => this.handleResetPasswordWithOtp(e));
     }
 
     // Nút Nâng cấp tài khoản (dành cho Khách)
@@ -208,6 +239,11 @@ export class AuthModal {
       if (subEl) subEl.textContent = 'Quản lý thông tin định danh và tài khoản trong DEVER TOWN';
       if (tabsContainer) tabsContainer.classList.add('hidden');
       this.populateProfileData();
+    } else if (tab === 'forgot') {
+      if (titleEl) titleEl.textContent = 'Khôi Phục Mật Khẩu';
+      if (subEl) subEl.textContent = 'Nhận mã OTP 6 số qua email để thiết lập mật khẩu mới';
+      if (tabsContainer) tabsContainer.classList.add('hidden');
+      this.resetForgotSteps();
     } else {
       if (titleEl) titleEl.textContent = 'Tham Gia DEVER TOWN';
       if (subEl) subEl.textContent = 'Đăng nhập hoặc tham gia nhanh để kết nối cộng đồng';
@@ -225,6 +261,18 @@ export class AuthModal {
     });
 
     this.clearError();
+  }
+
+  resetForgotSteps() {
+    const step1 = document.getElementById('forgot-step1-form');
+    const step2 = document.getElementById('forgot-step2-form');
+    if (step1) step1.classList.remove('hidden');
+    if (step2) step2.classList.add('hidden');
+    const emailInput = document.getElementById('forgot-email');
+    const loginEmailInput = document.getElementById('login-email');
+    if (emailInput && loginEmailInput && loginEmailInput.value) {
+      emailInput.value = loginEmailInput.value;
+    }
   }
 
   show(defaultTab = 'login') {
@@ -345,6 +393,95 @@ export class AuthModal {
       }
     } catch (err) {
       this.showError(err.message || 'Đăng nhập Google thất bại!');
+    }
+  }
+
+  async handleRequestOtp(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const emailInput = document.getElementById('forgot-email');
+    const email = emailInput ? emailInput.value.trim() : '';
+
+    if (!email) {
+      this.showError('Vui lòng nhập địa chỉ email đã đăng ký!');
+      return;
+    }
+
+    try {
+      const sendBtn = document.getElementById('btn-send-otp');
+      if (sendBtn) sendBtn.disabled = true;
+
+      const res = await authService.requestPasswordReset(email);
+      this.pendingForgotEmail = email;
+
+      const targetEmailEl = document.getElementById('otp-target-email');
+      if (targetEmailEl) targetEmailEl.textContent = email;
+
+      const step1 = document.getElementById('forgot-step1-form');
+      const step2 = document.getElementById('forgot-step2-form');
+      if (step1) step1.classList.add('hidden');
+      if (step2) step2.classList.remove('hidden');
+
+      const otpInput = document.getElementById('reset-otp-input');
+      if (otpInput) otpInput.focus();
+
+      if (sendBtn) sendBtn.disabled = false;
+      audioManager.playClick();
+    } catch (err) {
+      const sendBtn = document.getElementById('btn-send-otp');
+      if (sendBtn) sendBtn.disabled = false;
+      this.showError(err.message || 'Lỗi gửi mã OTP!');
+    }
+  }
+
+  async handleResetPasswordWithOtp(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const email = this.pendingForgotEmail || document.getElementById('forgot-email')?.value.trim();
+    const otpCode = document.getElementById('reset-otp-input')?.value.trim();
+    const newPassword = document.getElementById('reset-new-password')?.value;
+    const confirmPassword = document.getElementById('reset-confirm-password')?.value;
+
+    if (!otpCode || otpCode.length !== 6) {
+      this.showError('Mã xác thực OTP phải gồm đúng 6 chữ số!');
+      return;
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      this.showError('Mật khẩu mới phải có tối thiểu 6 ký tự!');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      this.showError('Mật khẩu xác nhận không khớp với mật khẩu mới!');
+      return;
+    }
+
+    try {
+      const resetBtn = document.getElementById('btn-confirm-reset');
+      if (resetBtn) resetBtn.disabled = true;
+
+      await authService.resetPassword({
+        email,
+        otpCode,
+        newPassword
+      });
+
+      audioManager.playWin();
+      alert('🎉 Đặt lại mật khẩu thành công! Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.');
+
+      if (resetBtn) resetBtn.disabled = false;
+
+      // Chuyển sang tab đăng nhập và điền sẵn email
+      this.switchTab('login');
+      const loginEmail = document.getElementById('login-email');
+      if (loginEmail) loginEmail.value = email;
+    } catch (err) {
+      const resetBtn = document.getElementById('btn-confirm-reset');
+      if (resetBtn) resetBtn.disabled = false;
+      this.showError(err.message || 'Đặt lại mật khẩu thất bại!');
     }
   }
 

@@ -512,7 +512,10 @@
           <input type="email" id="login-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
         </div>
         <div class="form-group">
-          <label>Mật khẩu:</label>
+          <div class="label-with-action">
+            <label>Mật khẩu:</label>
+            <button type="button" id="btn-goto-forgot" class="link-forgot-pass">Quên mật khẩu?</button>
+          </div>
           <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
         </div>
         <button type="submit" class="modal-btn btn-fpt-orange">Đăng Nhập Thành Viên</button>
@@ -615,6 +618,60 @@
           </button>
           <button type="button" id="profile-logout-btn" class="profile-action-btn logout-btn">
             🚪 Đăng Xuất Khỏi Thị Trấn
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 5: Forgot & Reset Password (OTP via Email) -->
+      <div id="pane-forgot" class="auth-pane hidden">
+        <!-- Step 1: Input Email to receive OTP -->
+        <form id="forgot-step1-form" class="forgot-step-pane">
+          <div class="forgot-guidance-box">
+            <span class="guidance-icon">🛡️</span>
+            <p>Nhập email thành viên đã đăng ký để nhận <strong>Mã xác thực bảo mật OTP (6 số)</strong> về hòm thư.</p>
+          </div>
+          <div class="form-group">
+            <label for="forgot-email">Email Đã Đăng Ký:</label>
+            <input type="email" id="forgot-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
+          </div>
+          <button type="submit" id="btn-send-otp" class="modal-btn btn-fpt-orange">
+            📧 Gửi Mã OTP Xác Thực
+          </button>
+        </form>
+
+        <!-- Step 2: Input OTP & Set New Password -->
+        <form id="forgot-step2-form" class="forgot-step-pane hidden">
+          <div class="otp-notice-box">
+            <span class="otp-icon">📬</span>
+            <div class="otp-notice-text">
+              <div>Mã OTP đã được gửi đến:</div>
+              <strong id="otp-target-email" class="highlight-cyan">email@domain.com</strong>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reset-otp-input">Mã Xác Thực OTP (6 số):</label>
+            <input type="text" id="reset-otp-input" class="modal-input otp-code-input" placeholder="123456" maxlength="6" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reset-new-password">Mật khẩu mới (Tối thiểu 6 ký tự):</label>
+            <input type="password" id="reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reset-confirm-password">Xác nhận mật khẩu mới:</label>
+            <input type="password" id="reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+          </div>
+
+          <button type="submit" id="btn-confirm-reset" class="modal-btn btn-fpt-orange">
+            🔑 Đặt Lại Mật Khẩu Mới
+          </button>
+        </form>
+
+        <div class="forgot-footer-row">
+          <button type="button" id="btn-back-to-login" class="link-back-login">
+            ← Quay Lại Đăng Nhập
           </button>
         </div>
       </div>

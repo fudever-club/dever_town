@@ -189,4 +189,14 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
     const res = await this.pool.query('SELECT id, email, display_name, avatar_id, role, wardrobe_config, equipped_item_id, created_at FROM users');
     return res.rows;
   }
+
+  async updatePasswordByEmail(email, passwordHash) {
+    if (!this.pool) return null;
+    const cleanEmail = email.toLowerCase().trim();
+    const res = await this.pool.query(
+      'UPDATE users SET password_hash = $1 WHERE LOWER(email) = $2 RETURNING *',
+      [passwordHash, cleanEmail]
+    );
+    return res.rows[0] ? this.mapUser(res.rows[0]) : null;
+  }
 }

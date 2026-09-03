@@ -244,4 +244,12 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
       return safe;
     });
   }
+
+  async updatePasswordByEmail(email, passwordHash) {
+    const user = await this.getUserByEmail(email);
+    if (!user) return null;
+    user.password_hash = passwordHash;
+    await this.saveToFile();
+    return user;
+  }
 }

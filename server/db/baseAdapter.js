@@ -45,4 +45,8 @@ export class BaseDatabaseAdapter {
   async getAllUsers() {
     throw new Error('Method getAllUsers() must be implemented');
   }
+
+  async updatePasswordByEmail(email, passwordHash) {
+    throw new Error('Method updatePasswordByEmail() must be implemented');
+  }
 }

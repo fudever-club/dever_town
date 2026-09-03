@@ -120,6 +120,49 @@ class AuthService {
     return googleUser;
   }
 
+  async requestPasswordReset(email) {
+    const res = await fetch(`${this.getBaseUrl()}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.trim() })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Yêu cầu gửi mã OTP thất bại!');
+    }
+    return data;
+  }
+
+  async verifyResetOtp({ email, otpCode }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/auth/verify-reset-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.trim(), otpCode: String(otpCode).trim() })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Mã OTP không hợp lệ!');
+    }
+    return data;
+  }
+
+  async resetPassword({ email, otpCode, newPassword }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.trim(),
+        otpCode: String(otpCode).trim(),
+        newPassword
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Đặt lại mật khẩu thất bại!');
+    }
+    return data;
+  }
+
   async fetchMe() {
     if (!this.token) return null;
 

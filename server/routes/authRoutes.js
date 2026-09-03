@@ -23,6 +23,21 @@ router.post('/register', authLimiter, sanitizeInput, authController.register);
 router.post('/login', authLimiter, sanitizeInput, authController.login);
 
 /**
+ * POST /api/auth/forgot-password - Gửi mã OTP khôi phục mật khẩu
+ */
+router.post('/forgot-password', authLimiter, sanitizeInput, authController.forgotPassword);
+
+/**
+ * POST /api/auth/verify-reset-otp - Kiểm tra mã OTP
+ */
+router.post('/verify-reset-otp', authLimiter, sanitizeInput, authController.verifyResetOtp);
+
+/**
+ * POST /api/auth/reset-password - Đổi mật khẩu mới bằng OTP
+ */
+router.post('/reset-password', authLimiter, sanitizeInput, authController.resetPassword);
+
+/**
  * GET /api/auth/me - Lấy thông tin tài khoản hiện tại từ JWT Token
  */
 router.get('/me', authenticateToken, authController.getMe);
