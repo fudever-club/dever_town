@@ -42,6 +42,8 @@
     "preview": "vite preview",
     "start": "node server/server.js",
     "test:load": "node scripts/stress-test.js",
+    "test:e2e": "playwright test",
+    "deploy:vercel": "vercel --prod",
     "app:desktop": "electron electron/main.cjs"
   },
   "dependencies": {
@@ -55,6 +57,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "concurrently": "^9.1.2",
     "vite": "^6.2.0"
   }
