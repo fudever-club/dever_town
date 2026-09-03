@@ -10,9 +10,9 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await expect(page.locator('.gate-main-title')).toContainText('DEVER TOWN');
 
     // 2. Kiểm tra các tab chuyển đổi (Khách / Đăng nhập / Đăng ký)
-    const guestTabBtn = page.locator('button[data-gate-tab="guest"]');
-    const loginTabBtn = page.locator('button[data-gate-tab="login"]');
-    const registerTabBtn = page.locator('button[data-gate-tab="register"]');
+    const guestTabBtn = page.locator('.gate-tab-btn[data-tab="guest"]');
+    const loginTabBtn = page.locator('.gate-tab-btn[data-tab="login"]');
+    const registerTabBtn = page.locator('.gate-tab-btn[data-tab="register"]');
 
     await expect(guestTabBtn).toBeVisible();
     await expect(loginTabBtn).toBeVisible();
@@ -20,11 +20,11 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
 
     // Chuyển sang tab Login
     await loginTabBtn.click();
-    await expect(page.locator('#gate-panel-login')).toBeVisible();
+    await expect(page.locator('#gate-form-login')).toBeVisible();
 
     // Chuyển lại tab Guest
     await guestTabBtn.click();
-    await expect(page.locator('#gate-panel-guest')).toBeVisible();
+    await expect(page.locator('#gate-form-guest')).toBeVisible();
   });
 
   test('02. Guest Entry into World & Phaser Canvas Initialization', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await nameInput.fill('Dev Tester 2026');
 
     // Nhấn nút vào thế giới
-    const enterBtn = page.locator('#gate-btn-enter-guest');
+    const enterBtn = page.locator('#gate-form-guest button[type="submit"]');
     await enterBtn.click();
 
     // Chờ Welcome Gate ẩn đi
@@ -47,7 +47,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
 
     // Kiểm tra Header HUD
     await expect(page.locator('#main-header')).toBeVisible();
-    await expect(page.locator('.brand-text')).toContainText('DEVER');
+    await expect(page.locator('.brand-title')).toContainText('DEVER');
   });
 
   test('03. Modals & HUD Hotkeys: Inventory [I], Settings, Quests', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
 
     // Vào game với tư cách khách
     await page.locator('#gate-guest-name').fill('HotKeyTester');
-    await page.locator('#gate-btn-enter-guest').click();
+    await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
 
     // 1. Kiểm tra mở Túi đồ qua phím 'I'
@@ -94,7 +94,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await page.goto('/');
 
     await page.locator('#gate-guest-name').fill('ChatterPro');
-    await page.locator('#gate-btn-enter-guest').click();
+    await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
 
     // Kiểm tra Chat input form
@@ -114,7 +114,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
 
     await page.goto('/');
     await page.locator('#gate-guest-name').fill('MobileTester');
-    await page.locator('#gate-btn-enter-guest').click();
+    await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
 
     // Kiểm tra bộ phím ảo Mobile Touch Controls xuất hiện

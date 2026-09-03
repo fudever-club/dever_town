@@ -26,6 +26,7 @@ class PlayerManager {
       role: authUser ? authUser.role : (data.role || 'guest'),
       equippedItemId: equippedItemId,
       wardrobeConfig: wardrobeConfig,
+      deviceId: data.deviceId || (authUser ? authUser.deviceId : null) || null,
       x: data.x || 400,
       y: data.y || 350,
       direction: data.direction || 'down',

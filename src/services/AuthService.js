@@ -18,6 +18,15 @@ class AuthService {
     return GAME_CONFIG.NETWORK.SERVER_URL;
   }
 
+  getDeviceId() {
+    let deviceId = localStorage.getItem('dever_device_id');
+    if (!deviceId) {
+      deviceId = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 10);
+      localStorage.setItem('dever_device_id', deviceId);
+    }
+    return deviceId;
+  }
+
   isLoggedIn() {
     return !!this.token && !!this.user;
   }

@@ -31,12 +31,14 @@ export class SocketManager {
     }
 
     const token = authService.getToken();
-    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL}`);
+    const deviceId = authService.getDeviceId();
+    console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL} (Device: ${deviceId.slice(0, 10)})`);
 
     this.socket = io(GAME_CONFIG.NETWORK.SERVER_URL, {
       transports: ['websocket', 'polling'],
       auth: {
-        token: token || null
+        token: token || null,
+        deviceId: deviceId
       },
       reconnectionAttempts: 10,
       reconnectionDelay: 2000
@@ -101,53 +103,50 @@ export class SocketManager {
       this.scene.handleNewPlayer(playerData);
     });
 
-    // 3. Người chơi khác di chuyển
-    this.socket.on('playerMoved', (movementData) => {
-      this.scene.handleRemoteMovement(movementData);
+    // 3. Người chơi rời phòng
+    this.socket.on('playerDisconnected', (id) => {
+      this.scene.handlePlayerDisconnected(id);
     });
 
-    // 4. Người chơi khác đổi profile
+    // 4. Cập nhật vị trí người chơi khác
+    this.socket.on('playerMoved', (data) => {
+      this.scene.handleRemoteMovement(data);
+    });
+
+    // 5. Cập nhật diện mạo / Avatar người chơi khác
     this.socket.on('playerUpdated', (updateData) => {
       this.scene.handlePlayerUpdated(updateData);
     });
 
-    // 5. Người chơi khác rời phòng hoặc disconnect
-    this.socket.on('playerDisconnected', (socketId) => {
-      this.scene.handlePlayerDisconnected(socketId);
+    // 6. Cập nhật vật phẩm đang cầm (Equipped Item)
+    this.socket.on('itemEquipped', (data) => {
+      this.scene.handleItemEquipped(data);
     });
 
-    // 6. Tin nhắn chat mới trong phòng
-    this.socket.on('newChatMessage', (chatData) => {
-      this.scene.handleNewChatMessage(chatData);
+    // 7. Nhận tin nhắn chat toàn phòng
+    this.socket.on('newChatMessage', (data) => {
+      this.scene.handleNewChatMessage(data);
+    });
+    this.socket.on('chatMessage', (data) => {
+      this.scene.handleNewChatMessage(data);
     });
 
-    // 7. Thống kê số lượng người online theo phòng
+    // 8. Cập nhật số lượng người chơi theo từng phòng
     this.socket.on('roomCounts', (counts) => {
       this.updateRoomCountsUI(counts);
     });
 
-    // 8. BẢO VỆ PHIÊN ĐĂNG NHẬP: Bị chặn do vượt quá 4 thiết bị đồng thời
-    this.socket.on('sessionLimitExceeded', (data) => {
-      console.warn('⚠️ [Device Limit] Vượt quá giới hạn 4 thiết bị:', data);
-      alert(data.message || 'Tài khoản của bạn đã đạt giới hạn tối đa 4 thiết bị đang hoạt động cùng lúc. Vui lòng đăng xuất ở một trong các thiết bị trước đó!');
-      authService.logout();
-      window.location.reload();
-    });
-
-    // 9. CẢNH BÁO BẢO MẬT: Nhận thông báo khi có thiết bị mới đăng nhập hoặc bị chặn
-    this.socket.on('securityAlert', (data) => {
-      console.info('🛡️ [Security Alert]:', data.message);
-      if (this.scene && this.scene.chatBox) {
-        this.scene.chatBox.addMessage({
-          senderName: 'Hệ Thống Bảo Mật',
-          message: data.message,
-          role: 'admin',
-          timestamp: Date.now()
-        });
+    // 9. THAY THẾ PHIÊN CHƠI: Khi tài khoản được mở trên tab / thiết bị khác
+    this.socket.on('sessionReplaced', (data) => {
+      console.warn('🚪 [Session Replaced]:', data);
+      if (this.approvalModal) {
+        this.approvalModal.hide();
+        this.approvalModal.hideWaitingNotice();
       }
+      alert(data.message || 'Tài khoản của bạn đã được kết nối ở một cửa sổ hoặc thiết bị khác.');
     });
 
-    // 10. REAL-TIME DEVICE APPROVAL: Nhận yêu cầu xác nhận khi thiết bị mới muốn đăng nhập
+    // 10. REAL-TIME DEVICE APPROVAL (Legacy fallback nếu có)
     this.socket.on('deviceTransferPrompt', (data) => {
       console.log('🛡️ [Device Transfer Prompt]:', data);
       if (this.approvalModal) {
@@ -199,6 +198,7 @@ export class SocketManager {
       role: options.role || 'guest',
       equippedItemId: options.equippedItemId || null,
       wardrobeConfig: options.wardrobeConfig || null,
+      deviceId: authService.getDeviceId(),
       roomId: options.roomId || 'main_hall',
       x: Math.round(options.x || 320),
       y: Math.round(options.y || 280),

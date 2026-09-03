@@ -1380,39 +1380,38 @@
   </div>
 
   <!-- 7. REAL-TIME DEVICE LOGIN APPROVAL MODAL -->
-  <div id="device-approval-modal" class="modal-backdrop hidden" style="z-index: 9999;">
-    <div class="modal-card modal-card-sm" style="border: 2px solid rgba(242, 111, 33, 0.6); box-shadow: 0 0 35px rgba(242, 111, 33, 0.3);">
-      <div class="modal-header" style="background: linear-gradient(135deg, rgba(242, 111, 33, 0.2), rgba(15, 23, 42, 0.9));">
+  <div id="device-approval-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-sm" style="border: 1px solid rgba(242, 111, 33, 0.4); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);">
+      <div class="modal-header">
         <div class="modal-title-row">
-          <span style="font-size: 24px;">🛡️</span>
           <div>
             <h2 class="modal-title" style="color: #fbbf24; font-size: 1.1rem;">Xác Nhận Thiết Bị Mới</h2>
-            <p class="modal-sub">Cảnh báo bảo mật tài khoản FU-DEVER</p>
+            <p class="modal-sub">Thông báo bảo mật phiên chơi DEVER TOWN</p>
           </div>
         </div>
       </div>
 
       <div class="modal-body" style="padding: 18px;">
         <p style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 12px;">
-          Phát hiện một thiết bị mới đang yêu cầu đăng nhập vào tài khoản của bạn:
+          Tài khoản của bạn vừa được đăng nhập từ một thiết bị khác:
         </p>
 
         <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px; font-size: 0.85rem; color: #cbd5e1; display: grid; gap: 6px; margin-bottom: 16px;">
-          <div><strong style="color: #38bdf8;">🌐 Địa chỉ IP:</strong> <span id="approval-device-ip">127.0.0.1</span></div>
-          <div><strong style="color: #10b981;">⏰ Thời gian:</strong> <span id="approval-device-time">--:--</span></div>
-          <div><strong style="color: #c084fc;">💻 Trình duyệt:</strong> <span id="approval-device-agent">Web Browser</span></div>
+          <div><strong style="color: #38bdf8;">Địa chỉ IP:</strong> <span id="approval-device-ip">127.0.0.1</span></div>
+          <div><strong style="color: #10b981;">Thời gian:</strong> <span id="approval-device-time">--:--</span></div>
+          <div><strong style="color: #c084fc;">Trình duyệt:</strong> <span id="approval-device-agent">Web Browser</span></div>
         </div>
 
         <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 16px;">
-          Bạn có muốn <strong>cho phép thiết bị này đăng nhập</strong> và cùng hoạt động trong thị trấn không?
+          Bạn có muốn tiếp tục duy trì phiên chơi trên thiết bị này không?
         </p>
 
         <div style="display: flex; gap: 10px;">
-          <button type="button" id="approval-btn-deny" style="flex: 1; padding: 10px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #f87171; border-radius: 8px; font-weight: 700; cursor: pointer;">
-            ❌ Từ chối & Chặn
+          <button type="button" id="approval-btn-deny" style="flex: 1; padding: 10px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; border-radius: 8px; font-weight: 700; cursor: pointer;">
+            Đóng cửa sổ này
           </button>
-          <button type="button" id="approval-btn-allow" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; border-radius: 8px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-            ✅ Cho phép đăng nhập
+          <button type="button" id="approval-btn-allow" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; border-radius: 8px; font-weight: 700; cursor: pointer;">
+            Xác nhận
           </button>
         </div>
       </div>

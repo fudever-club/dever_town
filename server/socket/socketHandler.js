@@ -47,61 +47,50 @@ export function setupSocketHandler(io) {
     console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
 
     /**
-     * 1. Tham gia thế giới (Join Game) - Chế độ 1 Nhân Vật Duy Nhất / Handoff Phê Duyệt Thiết Bị Mới
+     * 1. Tham gia thế giới (Join Game) - Chế độ 1 Nhân Vật Duy Nhất / Tự Động Thu Hồi Phiên Cũ (Single Active Session)
      */
     socket.on('joinGame', async (clientData = {}) => {
+      const currentDeviceId = clientData.deviceId || socket.handshake.auth?.deviceId || 'device_default';
+
       // 1. Kiểm tra tài khoản đã đăng nhập
       if (socket.authUser && socket.authUser.id) {
         const activeSessions = playerManager.getPlayersByUserId(socket.authUser.id);
+        const otherSessions = activeSessions.filter(p => p.id !== socket.id);
 
-        // Nếu tài khoản đang có nhân vật online trên một thiết bị khác (Máy A):
-        if (activeSessions.length > 0 && !activeSessions.some(p => p.id === socket.id)) {
-          const reqId = `handoff_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-          const timeStr = new Date().toLocaleTimeString('vi-VN');
-          const deviceTypeStr = userAgent.includes('Mobile') ? 'Điện Thoại / Mobile' : 'Máy Tính / PC';
+        if (otherSessions.length > 0) {
+          const isSameDevice = otherSessions.some(p => p.deviceId && p.deviceId === currentDeviceId);
 
-          console.log(`⏳ [Handoff Pending] Yêu cầu chuyển phiên chơi cho [${socket.authUser.displayName}] từ thiết bị [${deviceTypeStr}] (IP: ${clientIp})`);
-
-          // Lưu thông tin chờ phê duyệt từ thiết bị cũ
-          pendingApprovals.set(reqId, {
-            requestId: reqId,
-            oldSocketIds: activeSessions.map(s => s.id),
-            newSocketId: socket.id,
-            userId: socket.authUser.id,
-            userEmail: socket.authUser.email,
-            clientData,
-            authUser: socket.authUser,
-            clientIp,
-            createdAt: Date.now()
+          // Thu hồi và ngắt kết nối các session cũ của tài khoản này
+          otherSessions.forEach(oldPlayer => {
+            const oldSocket = io.sockets.sockets.get(oldPlayer.id);
+            if (oldSocket) {
+              oldSocket.emit('sessionReplaced', {
+                message: isSameDevice
+                  ? 'Phiên chơi đã được kết nối ở một cửa sổ khác.'
+                  : 'Tài khoản của bạn vừa được đăng nhập trên một thiết bị khác.'
+              });
+              oldSocket.disconnect(true);
+            }
+            const removed = playerManager.removePlayer(oldPlayer.id);
+            if (removed) {
+              socket.to(removed.roomId).emit('playerDisconnected', oldPlayer.id);
+            }
           });
 
-          // 1a. Gửi Email thông báo bảo mật
-          if (socket.authUser.email) {
+          // Chỉ gửi email bảo mật khi thực sự là thiết bị khác (khác deviceId)
+          if (!isSameDevice && socket.authUser.email) {
+            const timeStr = new Date().toLocaleTimeString('vi-VN');
+            const deviceTypeStr = userAgent.includes('Mobile') ? 'Điện Thoại / Mobile' : 'Máy Tính / PC';
             mailService.sendNewDeviceAlert(socket.authUser.email, {
               displayName: socket.authUser.displayName,
               ip: clientIp,
               userAgent: deviceTypeStr,
               time: timeStr,
               activeDevicesCount: 1
-            });
+            }).catch(err => console.warn('Lỗi gửi mail thông báo thiết bị mới:', err.message));
           }
 
-          // 1b. Gửi yêu cầu chờ tới thiết bị mới (Máy B)
-          socket.emit('waitingForApproval', {
-            message: `Tài khoản của bạn đang chơi trên thiết bị khác. Vui lòng bấm [Đồng ý] trên thiết bị đó để chuyển sang máy này!`
-          });
-
-          // 1c. Hiện Modal Xác Nhận trên thiết bị đang online (Máy A)
-          activeSessions.forEach(p => {
-            io.to(p.id).emit('deviceTransferPrompt', {
-              requestId: reqId,
-              ip: clientIp,
-              time: timeStr,
-              deviceType: deviceTypeStr
-            });
-          });
-
-          return; // DỪNG LẠI: Không spawn nhân vật thứ 2 vào Map cho đến khi máy A bấm Cho phép!
+          console.log(`🔄 [Session Takeover] Tài khoản [${socket.authUser.displayName}] chuyển phiên kết nối sang socket ${socket.id} (Same Device: ${isSameDevice})`);
         }
       } else {
         // Khách vãng lai: Đảm bảo không trùng tên với người đang online trong Map
@@ -113,12 +102,15 @@ export function setupSocketHandler(io) {
         }
       }
 
+      // Đính kèm deviceId vào clientData khi thêm player
+      clientData.deviceId = currentDeviceId;
+
       // Spawn nhân vật duy nhất vào Game
       const player = playerManager.addPlayer(socket.id, clientData, socket.authUser);
       const roomId = player.roomId || 'main_hall';
 
       socket.join(roomId);
-      console.log(`👤 [Join Room: ${roomId}] ${player.name} [${player.role}] (${player.avatarId})`);
+      console.log(`👤 [Join Room: ${roomId}] ${player.name} [${player.role}] (${player.avatarId}) [Device: ${currentDeviceId.slice(0, 10)}]`);
 
       const roomPlayers = playerManager.getAllPlayers(roomId);
       socket.emit('currentPlayers', roomPlayers);
@@ -127,55 +119,12 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 1b. Phản hồi Phê Duyệt Chuyển Phiên Chơi sang Thiết Bị Mới
+     * 1b. Tương thích ngược phản hồi chuyển thiết bị (nếu có client cũ gọi)
      */
     socket.on('respondDeviceApproval', ({ requestId, approved }) => {
       const pending = pendingApprovals.get(requestId);
       if (!pending) return;
-
       pendingApprovals.delete(requestId);
-      const newSocket = io.sockets.sockets.get(pending.newSocketId);
-
-      if (approved) {
-        console.log(`✅ [Handoff Approved] Đã đồng ý chuyển phiên chơi của user [${pending.authUser.displayName}] sang thiết bị mới`);
-
-        // 1. Ngắt kết nối các thiết bị cũ & gỡ nhân vật cũ khỏi Map
-        pending.oldSocketIds.forEach(oldId => {
-          const oldSocket = io.sockets.sockets.get(oldId);
-          if (oldSocket) {
-            oldSocket.emit('sessionHandoffSuccess', {
-              message: 'Phiên chơi của bạn đã được chuyển thành công sang thiết bị mới!'
-            });
-            oldSocket.disconnect(true);
-          }
-          const removed = playerManager.removePlayer(oldId);
-          if (removed) {
-            socket.to(removed.roomId).emit('playerDisconnected', oldId);
-          }
-        });
-
-        // 2. Cho phép thiết bị mới vào game và spawn đúng 1 nhân vật duy nhất
-        if (newSocket && newSocket.connected) {
-          const player = playerManager.addPlayer(pending.newSocketId, pending.clientData, pending.authUser);
-          const roomId = player.roomId || 'main_hall';
-
-          newSocket.join(roomId);
-          newSocket.emit('deviceTransferApproved', { player });
-
-          const roomPlayers = playerManager.getAllPlayers(roomId);
-          newSocket.emit('currentPlayers', roomPlayers);
-          newSocket.to(roomId).emit('newPlayer', player);
-          io.emit('roomCounts', playerManager.getRoomCounts());
-        }
-      } else {
-        console.log(`❌ [Handoff Denied] Từ chối chuyển phiên chơi của user [${pending.authUser.displayName}]`);
-        if (newSocket && newSocket.connected) {
-          newSocket.emit('deviceTransferDenied', {
-            message: '🚫 Yêu cầu chuyển phiên chơi đã bị TỪ CHỐI bởi thiết bị đang hoạt động!'
-          });
-          newSocket.disconnect(true);
-        }
-      }
     });
 
     /**
