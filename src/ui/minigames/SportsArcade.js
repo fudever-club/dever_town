@@ -6,9 +6,9 @@
  * 3. 🏐 Bóng Chuyền & Cầu Lông 1v1 (Spike & Rally Arcade)
  * 4. ☕ Barista Pha Chế Cà Phê Muối & Trà Sữa
  */
-import { audioManager } from '../utils/AudioManager.js';
-import { questManager } from '../managers/QuestManager.js';
-import { authService } from '../services/AuthService.js';
+import { audioManager } from '../../utils/AudioManager.js';
+import { questManager } from '../../managers/QuestManager.js';
+import { authService } from '../../services/AuthService.js';
 
 export class SportsArcade {
   constructor(canvasEl, options = {}) {

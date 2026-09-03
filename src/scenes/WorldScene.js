@@ -5,16 +5,18 @@ import { InputController } from '../config/controls.js';
 import { Player } from '../entities/Player.js';
 import { RemotePlayer } from '../entities/RemotePlayer.js';
 import { SocketManager } from '../network/SocketManager.js';
-import { ChatBox } from '../ui/ChatBox.js';
-import { AuthModal } from '../ui/AuthModal.js';
-import { InteractiveModal } from '../ui/InteractiveModal.js';
-import { InventoryModal } from '../ui/InventoryModal.js';
-import { WardrobeModal } from '../ui/WardrobeModal.js';
-import { SettingsModal } from '../ui/SettingsModal.js';
-import { OnboardingGuide } from '../ui/OnboardingGuide.js';
-import { TouchControls } from '../ui/TouchControls.js';
-import { QuestModal } from '../ui/QuestModal.js';
-import { NetworkStatusOverlay } from '../ui/NetworkStatusOverlay.js';
+import {
+  ChatBox,
+  AuthModal,
+  InteractiveModal,
+  InventoryModal,
+  WardrobeModal,
+  SettingsModal,
+  OnboardingGuide,
+  TouchControls,
+  QuestModal,
+  NetworkStatusOverlay
+} from '../ui/index.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
 import { questManager } from '../managers/QuestManager.js';

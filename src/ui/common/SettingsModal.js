@@ -1,5 +1,5 @@
-import { audioManager } from '../utils/AudioManager.js';
-import { i18n } from '../config/i18n.js';
+import { audioManager } from '../../utils/AudioManager.js';
+import { i18n } from '../../config/i18n.js';
 
 export class SettingsModal {
   constructor({ scene } = {}) {

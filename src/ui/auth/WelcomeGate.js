@@ -1,6 +1,6 @@
-import { authService } from '../services/AuthService.js';
-import { audioManager } from '../utils/AudioManager.js';
-import { i18n } from '../config/i18n.js';
+import { authService } from '../../services/AuthService.js';
+import { audioManager } from '../../utils/AudioManager.js';
+import { i18n } from '../../config/i18n.js';
 
 export class WelcomeGate {
   /**

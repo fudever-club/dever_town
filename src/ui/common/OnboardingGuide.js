@@ -1,4 +1,4 @@
-import { audioManager } from '../utils/AudioManager.js';
+import { audioManager } from '../../utils/AudioManager.js';
 
 export class OnboardingGuide {
   constructor() {

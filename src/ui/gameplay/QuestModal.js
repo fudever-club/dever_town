@@ -1,5 +1,5 @@
-import { questManager } from '../managers/QuestManager.js';
-import { audioManager } from '../utils/AudioManager.js';
+import { questManager } from '../../managers/QuestManager.js';
+import { audioManager } from '../../utils/AudioManager.js';
 
 export class QuestModal {
   constructor() {

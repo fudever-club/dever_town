@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
 import { WorldScene } from './scenes/WorldScene.js';
-import { WelcomeGate } from './ui/WelcomeGate.js';
+import { WelcomeGate } from './ui/index.js';
 import { TextureGenerator } from './utils/TextureGenerator.js';
 
 const config = {

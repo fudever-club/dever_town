@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { GAME_CONFIG } from '../config/gameConfig.js';
 import { authService } from '../services/AuthService.js';
-import { DeviceApprovalModal } from '../ui/DeviceApprovalModal.js';
+import { DeviceApprovalModal } from '../ui/index.js';
 
 export class SocketManager {
   /**

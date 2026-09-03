@@ -1,6 +1,6 @@
-import { WARDROBE_CONFIG } from '../config/wardrobe.js';
-import { TextureGenerator } from '../utils/TextureGenerator.js';
-import { authService } from '../services/AuthService.js';
+import { WARDROBE_CONFIG } from '../../config/wardrobe.js';
+import { TextureGenerator } from '../../utils/TextureGenerator.js';
+import { authService } from '../../services/AuthService.js';
 
 export class WardrobeModal {
   /**

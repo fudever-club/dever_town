@@ -133,7 +133,7 @@ Env Variables  :
 
 Nhấn **Deploy** → Nhận URL web game multiplayer chạy trực tuyến! 🎉
 
-> Xem hướng dẫn chi tiết từng bước: [`DEPLOYMENT_GUIDE_3_HUONG.md`](./DEPLOYMENT_GUIDE_3_HUONG.md)
+> Xem hướng dẫn chi tiết từng bước: [`DEPLOYMENT_GUIDE_3_HUONG.md`](./docs/deployment/DEPLOYMENT_GUIDE_3_HUONG.md)
 
 ---
 

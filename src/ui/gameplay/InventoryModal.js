@@ -1,4 +1,4 @@
-import { ITEMS_DATABASE } from '../config/items.js';
+import { ITEMS_DATABASE } from '../../config/items.js';
 
 export class InventoryModal {
   /**

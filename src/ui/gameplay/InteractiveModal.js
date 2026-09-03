@@ -1,12 +1,12 @@
-import { INTERACTION_PRESETS, ROOM_SLIDE_PRESETS } from '../config/interactions.js';
-import { MUSIC_GENRES, LOFI_PRESETS, extractYouTubeVideoId } from '../config/musicPresets.js';
-import { PomodoroTimer } from './PomodoroTimer.js';
-import { questManager } from '../managers/QuestManager.js';
-import { audioManager } from '../utils/AudioManager.js';
-import { SportsArcade } from './SportsArcade.js';
-import { RetroArcade } from './RetroArcade.js';
-import { ROBOT_GAMES } from '../config/robotGames.js';
-import { authService } from '../services/AuthService.js';
+import { INTERACTION_PRESETS, ROOM_SLIDE_PRESETS } from '../../config/interactions.js';
+import { MUSIC_GENRES, LOFI_PRESETS, extractYouTubeVideoId } from '../../config/musicPresets.js';
+import { PomodoroTimer } from '../minigames/PomodoroTimer.js';
+import { questManager } from '../../managers/QuestManager.js';
+import { audioManager } from '../../utils/AudioManager.js';
+import { SportsArcade } from '../minigames/SportsArcade.js';
+import { RetroArcade } from '../minigames/RetroArcade.js';
+import { ROBOT_GAMES } from '../../config/robotGames.js';
+import { authService } from '../../services/AuthService.js';
 
 export class InteractiveModal {
   /**
