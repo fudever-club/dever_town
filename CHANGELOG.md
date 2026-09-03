@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] — 2026-09-04
+
+### Added — Gamification, Juice & Ambient Environment Engine
+- **Dynamic Ambient Particle Engine** (`AmbientEnvironmentManager.js`): Hạt WebGL 60fps mô phỏng khí quyển đặc thù cho 9 phòng (cánh hoa trà, khói cafe, hạt neon lab, bụi nắng thư viện, bọt nước thể thao, tia lửa arcade, bụi bước chân).
+- **Game Feel & "Juice" Feedback** (`JuiceManager.js`): Chữ số bay đàn hồi (Floating Combat/Score Text), micro-camera shake 120ms, pháo hoa Confetti ăn mừng và nhịp nảy DOM Pulse.
+- **Achievement Mastery System** (`AchievementManager.js`): 8 danh hiệu kỷ lục độc bản (*Tân Thủ DEVER, Coder Thần Tốc, Cà Phê Muối Đà Nẵng, Lộc Cóc Vàng, Tiền Đạo FUDA, Tín Đồ Công Nghệ, Vũ Công Sàn Diễn, Sinh Viên Gương Mẫu*), slide-in Golden Toast Banner với kèn Fanfare 8-bit.
+- **Radar Minimap HUD** (`MinimapOverlay.js`): Quét 2D 25x19 realtime, hiển thị vị trí người chơi và tương tác; auto-collapse trên mobile.
+- **Speed Code Duel** (`SpeedCodeDuel.js`): Minigame 10 câu hỏi thuật toán/toán nhẩm nhịp độ cao, hệ số nhân combo (`x1.5` -> `x3 🔥🔥`).
+- **Quick Emotes & Dance Wheel** (`EmoteBar.js`): 6 biểu cảm tương tác với animation nhún nhảy sprite theo nhịp điệu.
+- **Live Campus Ticker** (`CampusTicker.js`): Thanh tin tức trực tiếp luân phiên cập nhật mẹo khám phá ở chân trang.
+- **Chiptune 8-Bit BGM Synthesizer**: Trình tổng hợp âm thanh Web Audio API procedural không cần tải file ngoài.
+- **Linh Vật Cóc Vàng Tâm Linh**: Tương tác rút quẻ bói vận may hàng ngày (Thượng Thượng Quẻ, Đại Cát).
+
+### Added — Mobile Ergonomics & Quality Assurance
+- **Dual-Row Thumb Arc Ergonomics**: Bố trí cụm nút điều khiển ngón cái khoa học (`[⚡]`, `[✨]`, `[💬]`, `[🎒]`, `[🅴]`).
+- **Zero-Overflow Mobile Viewports**: Tối ưu hóa tuyệt đối cho iPhone SE (375px), iPhone 14 (390px), Galaxy S20 (412px) và iPad Mini (768px).
+- **Playwright Test Suite**: 58 bài kiểm thử tự động (100% pass rate) kiểm soát toàn vẹn hệ thống và an toàn bản đồ.
+
+### Added — Database & Security
+- **PostgreSQL Supabase Production Pooler**: Kết nối trực tiếp AWS Singapore qua SSL tự động, tạo schema bảng `users`, `game_scores`, `password_resets`.
+- **API Documentation**: Tài liệu kỹ thuật chi tiết tại `docs/API_DOCUMENTATION.md`.
+
+---
+
 ## [0.3.0] — 2026-08-27
 
 ### Added — 3-Way Deployment Support
