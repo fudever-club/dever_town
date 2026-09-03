@@ -158,7 +158,7 @@ export const authController = {
       });
 
       // Gửi email chứa mã OTP
-      await mailService.sendPasswordResetOtp(cleanEmail, {
+      const mailResult = await mailService.sendPasswordResetOtp(cleanEmail, {
         otpCode,
         displayName: user.display_name,
         expiresInMinutes
@@ -166,7 +166,10 @@ export const authController = {
 
       return res.json({
         success: true,
-        message: `Mã xác thực OTP gồm 6 chữ số đã được gửi tới ${cleanEmail}. Vui lòng kiểm tra hộp thư!`
+        message: mailResult.realEmailSent
+          ? `Mã xác thực OTP gồm 6 chữ số đã được gửi tới ${cleanEmail}. Vui lòng kiểm tra hộp thư!`
+          : `Mã OTP đã được gửi! (Dev Mode: Mã OTP của bạn là [${otpCode}])`,
+        devOtp: mailResult.realEmailSent ? undefined : otpCode
       });
     } catch (err) {
       console.error('❌ [Auth Forgot Password Error]:', err);

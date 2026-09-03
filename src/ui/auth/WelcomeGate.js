@@ -226,7 +226,7 @@ export class WelcomeGate {
       const sendBtn = document.getElementById('gate-btn-send-otp');
       if (sendBtn) sendBtn.disabled = true;
 
-      await authService.requestPasswordReset(email);
+      const res = await authService.requestPasswordReset(email);
       this.pendingForgotEmail = email;
 
       const targetEmailEl = document.getElementById('gate-otp-target-email');
@@ -238,7 +238,12 @@ export class WelcomeGate {
       if (step2) step2.classList.remove('hidden');
 
       const otpInput = document.getElementById('gate-reset-otp-input');
-      if (otpInput) otpInput.focus();
+      if (otpInput) {
+        if (res && res.devOtp) {
+          otpInput.value = res.devOtp;
+        }
+        otpInput.focus();
+      }
 
       if (sendBtn) sendBtn.disabled = false;
       audioManager.playClick();

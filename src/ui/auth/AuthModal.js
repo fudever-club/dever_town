@@ -424,7 +424,12 @@ export class AuthModal {
       if (step2) step2.classList.remove('hidden');
 
       const otpInput = document.getElementById('reset-otp-input');
-      if (otpInput) otpInput.focus();
+      if (otpInput) {
+        if (res && res.devOtp) {
+          otpInput.value = res.devOtp;
+        }
+        otpInput.focus();
+      }
 
       if (sendBtn) sendBtn.disabled = false;
       audioManager.playClick();
