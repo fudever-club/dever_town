@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.1] — 2026-09-04
+
+### Fixed & Enhanced — Autonomous Gameplay Audit & Layout Polish
+- **Autonomous In-Game Playthrough Tooling** (`scripts/play_game_audit.js`): Kịch bản tự hành toàn diện kiểm tra tương tác Cóc Vàng, mở túi đồ, kích hoạt thanh biểu cảm, nhảy múa, giải đố Speed Duel và chuyển phòng.
+- **Radar HUD Footer Isolation**: Căn chỉnh `position: fixed; bottom: 96px; left: 20px;`, loại bỏ triệt để xung đột chồng đè với thanh Footer và điều hướng WASD.
+- **Dynamic Text Width Clamping**: Bổ sung ước lượng chuỗi ký tự tự động `Math.max(label.width, text.length * 8 + 16)` cho toàn bộ nhãn cổng dịch chuyển và huy hiệu zone, ngăn chặn xén chữ mép màn hình.
+- **Header Button Streamlining**: Rút gọn văn phong nút bấm trên Header Desktop, giải phóng không gian cho bộ đếm điểm nhiệm vụ hiển thị trọn vẹn 100%.
+- **Global Shortcut KeyZ**: Đăng ký sự kiện bàn phím toàn cục cho Speed Code Duel.
+- **Overlay Centering on Game Canvas**: Căn giữa Emote Bar, Room Arrival Banner và Achievement Toast theo trục tâm màn hình game 800px.
+- **Vertical Staggering for Nearby Labels**: Tự động so le trục Y (`posY - 32` vs `posY - 16`) cho các nhãn zone và portal nằm liền kề.
+
+---
+
 ## [0.4.0] — 2026-09-04
 
 ### Added — Gamification, Juice & Ambient Environment Engine

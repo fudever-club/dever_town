@@ -114,7 +114,13 @@ Tài liệu kỹ thuật chi tiết về hệ thống REST API, Socket.io Realti
 - **Request Body:** `{ "email": "student@fpt.edu.vn" }`
 - **Cơ chế:** Gửi OTP 6 chữ số qua Resend API hoặc Nodemailer; hiệu lực 10 phút.
 
-#### 6. Đặt lại mật khẩu qua OTP
+#### 6. Xác thực mã OTP khôi phục
+- **Method:** `POST`
+- **Endpoint:** `/api/auth/verify-reset-otp`
+- **Request Body:** `{ "email": "student@fpt.edu.vn", "otp": "839102" }`
+- **Response (200 OK):** `{ "status": "success", "message": "Mã xác thực hợp lệ" }`
+
+#### 7. Đặt lại mật khẩu qua OTP
 - **Method:** `POST`
 - **Endpoint:** `/api/auth/reset-password`
 - **Request Body:**
@@ -125,6 +131,51 @@ Tài liệu kỹ thuật chi tiết về hệ thống REST API, Socket.io Realti
   "newPassword": "NewStrongPassword456!"
 }
 ```
+
+#### 8. Đổi mật khẩu trong game
+- **Method:** `PUT`
+- **Endpoint:** `/api/auth/change-password`
+- **Headers:** `Authorization: Bearer <TOKEN>`
+- **Request Body:**
+```json
+{
+  "currentPassword": "OldPassword123!",
+  "newPassword": "NewStrongPassword456!"
+}
+```
+
+#### 9. Đồng bộ toàn diện hồ sơ (Profile Sync)
+- **Method:** `PUT`
+- **Endpoint:** `/api/auth/sync-profile`
+- **Headers:** `Authorization: Bearer <TOKEN>`
+- **Request Body:**
+```json
+{
+  "wardrobeConfig": { ... },
+  "inventoryItems": { ... },
+  "equippedItemId": "item_macbook_m3",
+  "questsState": { ... },
+  "gameRecords": { ... },
+  "deverPoints": 1250
+}
+```
+
+#### 10. Lưu cấu hình trang phục & trang bị
+- **Method:** `PUT`
+- **Endpoint:** `/api/auth/customization`
+- **Headers:** `Authorization: Bearer <TOKEN>`
+- **Request Body:**
+```json
+{
+  "wardrobeConfig": { ... },
+  "equippedItemId": "item_keychron_k2"
+}
+```
+
+#### 11. Kiểm tra tính khả dụng của tên nhân vật
+- **Method:** `GET`
+- **Endpoint:** `/api/auth/check-name?name=DeverHero`
+- **Response (200 OK):** `{ "available": true, "message": "Tên khả dụng" }`
 
 ---
 
@@ -146,8 +197,9 @@ Tài liệu kỹ thuật chi tiết về hệ thống REST API, Socket.io Realti
 
 #### 1. Lưu điểm kỷ lục minigame
 - **Method:** `POST`
-- **Endpoint:** `/api/game/scores`
+- **Endpoint:** `/api/game/score`
 - **Headers:** `Authorization: Bearer <TOKEN>`
+- **Rate Limit:** 30 requests / 1 phút.
 - **Request Body:**
 ```json
 {
@@ -159,8 +211,9 @@ Tài liệu kỹ thuật chi tiết về hệ thống REST API, Socket.io Realti
 
 #### 2. Xem Bảng Xếp Hạng Top Cao Thủ
 - **Method:** `GET`
-- **Endpoint:** `/api/game/leaderboard?gameType=speed_code_duel&limit=10`
-- **Response (200 OK):** Top người chơi có điểm số cao nhất cùng chuỗi thắng kỷ lục.
+- **Endpoint:** `/api/game/leaderboard/:gameType`
+- **Ví dụ:** `/api/game/leaderboard/speed_code_duel`
+- **Response (200 OK):** Danh sách top 10 người chơi có điểm số cao nhất cùng chuỗi streak ấn tượng.
 
 ---
 
@@ -251,4 +304,39 @@ CREATE TABLE IF NOT EXISTS password_resets (
   expires_at BIGINT NOT NULL,
   attempts INTEGER DEFAULT 0
 );
+```
+
+---
+
+## ⌨️ 5. Phím Tắt Toàn Cục & Điều Khiển Client (Global Shortcuts)
+
+| Phím Tắt | Hành Động | Ghi Chú |
+|:---|:---|:---|
+| `[Z]` | Mở / Đóng Đấu Trí Lập Trình Siêu Tốc (`SpeedCodeDuel.js`) | Kích hoạt tức thì khi không gõ trong input/textarea |
+| `[G]` | Mở / Đóng Thanh Biểu Cảm & Nhảy Múa (`EmoteBar.js`) | Hỗ trợ 6 cảm xúc & animation nhảy múa |
+| `[I]` | Mở / Đóng Túi Đồ & Trang Bị (`InventoryManager.js`) | Hiển thị 7 vật phẩm Dev & FPTU |
+| `[M]` | Thu Gọn / Mở Rộng Radar HUD (`MinimapOverlay.js`) | Tự động chuyển dạng pill nhỏ trên Mobile |
+| `[E]` / `Space` | Tương tác với Thực thể / Zone gần nhất | Hỗ trợ Hysteresis chống chớp giật |
+| `WASD` / `Mũi Tên` | Di chuyển nhân vật 4 hướng | Chuẩn hóa Vector tốc độ chéo 140px/s |
+| `Escape` | Đóng toàn bộ Modal / Hướng dẫn đang mở | Phục hồi tiêu điểm (Focus) an toàn |
+
+---
+
+## ⚙️ 6. Cấu Hình Biến Môi Trường (`.env`)
+
+```env
+# Server Runtime
+PORT=3001
+NODE_ENV=development
+CLIENT_URL=http://localhost:3030
+
+# Supabase PostgreSQL (Transaction Pooler / Direct)
+DATABASE_URL=postgresql://postgres.xxx:yyy@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+
+# JSON Web Token
+JWT_SECRET=dever_town_jwt_super_secret_key_production_2026_fuda
+
+# Email Delivery (Resend API)
+RESEND_API_KEY=re_xxx
+EMAIL_FROM=onboarding@resend.dev
 ```

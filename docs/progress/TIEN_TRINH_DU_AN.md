@@ -1,14 +1,14 @@
 # 📘 BÁO CÁO TIẾN TRÌNH DỰ ÁN DEVER TOWN (2D PIXEL GATHER.TOWN)
 
 *Cập nhật tự động bởi hệ thống Autonomous Agents*  
-*Tác giả Git:* **RaH11** `<hungnguyen.190206@gmail.com>`
+*Tác giả Git:* **RaH11** `<hungnguyen.190206@gmail.com>` & **qnhat1504** `<dangquangnhat1504@gmail.com>`
 
 ---
 
 ## 🎯 TỔNG QUAN TIẾN ĐỘ
 
 ```
-[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Viewport 800x600 & FPTU Brand] ➔ [✅ EXPANSION v3: 7 Rooms, Inventory, Wardrobe, Animated Beacons, Sports Complex & Smart Lofi]
+[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Viewport 800x600 & FPTU Brand] ➔ [✅ EXPANSION v3: 7 Rooms, Inventory, Wardrobe, Animated Beacons, Sports Complex] ➔ [✅ EXPANSION v4: Radar HUD, Speed Duel & Chiptune] ➔ [✅ EXPANSION v5: Mobile Ergonomics & Zero-Overflow] ➔ [✅ EXPANSION v6: Ambient Particles, Juice, Achievements & Supabase] ➔ [✅ EXPANSION v7: Autonomous Gameplay Audit & Production Polish]
 ```
 
 ---
@@ -130,6 +130,18 @@
 
 ---
 
+### 🎮 EXPANSION v7: AUTONOMOUS GAMEPLAY AUDIT & PRODUCTION POLISH (Hoàn thành - 2026-09-04)
+- **Kiểm Thử Thực Tế Bằng AI Agent Tự Hành (`scripts/play_game_audit.js`):** AI Agent trực tiếp đóng vai người chơi di chuyển khắp bản đồ, tương tác Cóc Vàng, mở túi đồ, kích hoạt thanh biểu cảm, nhảy múa và tham gia giải đố Speed Code Duel.
+- **Triệt Tiêu Xung Đột Radar HUD vs Footer:** Tách biệt Radar HUD về `position: fixed; bottom: 96px; left: 20px;`, đảm bảo khoảng cách đáy không bao giờ đè lên Footer (`radarBottom: 704px < footerTop: 713.25px`, `overlap: false`).
+- **Khắc Phục Lỗi Xén Chữ Mép Màn Hình (Dynamic Edge Clamping):** Bổ sung công thức fallback bề rộng ký tự `Math.max(label.width, text.length * 8 + 16)` kết hợp `Phaser.Math.Clamp` trong `WorldScene.js` và `InteractionManager.js`, loại bỏ triệt để hiện tượng mất chữ tại các ô biên.
+- **Tinh Gọn Cụm 10 Nút Header Desktop:** Tối ưu hóa độ dài văn bản nút bấm, loại bỏ chữ co cụm `0 N...`, hiển thị trọn vẹn điểm số `0 Nhiệm Vụ` và `25 Nhiệm Vụ`.
+- **Wiring Phím Tắt Toàn Cục `KeyZ`:** Cho phép bấm phím `[Z]` mở nhanh modal Đấu Trí Lập Trình Siêu Tốc từ bất kỳ đâu khi không nhập text.
+- **Căn Giữa Theo Tâm Game Canvas:** Định vị `left: calc((100vw - 1160px) / 2 + 400px)` cho Room Arrival Banner và Emote Bar, giữ khung chat bên phải hoàn toàn thông thoáng.
+- **So Le Trục Y Thông Minh Cho Nhãn Liền Kề:** Tự động so le `posY - 32` vs `posY - 16` khi 2 vùng tương tác hoặc cổng portal nằm ở các ô sát nhau.
+- **Chụp 26 Ảnh Màn Hình Nghiệm Thu:** Toàn bộ lưu trữ tại `audit_gameplay/`.
+
+---
+
 ## 🧪 BÁO CÁO NGHIỆM THU KIỂM THỬ (QA REPORT)
 - **Playwright E2E Test Suite (`tests/e2e/*.spec.js`):** **58/58 TESTS PASSED (100% PASS RATE)** trên cả Desktop Chromium và Mobile Chrome (FUDA Touch):
   - `tests/e2e/ambient-and-achievements.spec.js`: 12/12 passed.
@@ -139,6 +151,6 @@
   - `tests/e2e/develop-visual-hub.spec.js`: 6/6 passed.
   - `tests/e2e/dever-town.spec.js`: 12/12 passed.
   - `tests/e2e/session-reload.spec.js`: 2/2 passed.
-- **Production Build (`npm run build`):** **PASSED 100% (Built in 4.38s, 0 errors)**
+- **Production Build (`npm run build`):** **PASSED 100% (Built in 4.43s, 0 errors)**
 - **Dev Server:** Chạy cổng `3030` (Vite)
 - **Realtime Backend Server:** Chạy cổng `3001` (Node.js/Socket.io + Supabase PostgreSQL)
