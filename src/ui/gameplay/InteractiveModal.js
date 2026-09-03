@@ -648,31 +648,33 @@ export class InteractiveModal {
   }
 
   renderLofiPresets() {
-    const listEl = document.getElementById('lofi-presets-list');
-    if (!listEl) return;
+    const selectEl = document.getElementById('lofi-preset-select');
+    if (!selectEl) return;
 
-    listEl.innerHTML = '';
     const filtered = this.activeMusicGenre === 'all'
       ? LOFI_PRESETS
       : LOFI_PRESETS.filter(p => p.genre === this.activeMusicGenre);
 
+    selectEl.innerHTML = `<option value="">🎵 Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
+
     filtered.forEach(preset => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'lofi-preset-btn';
-      btn.textContent = preset.name;
-      btn.title = preset.desc;
-
-      btn.addEventListener('click', () => {
-        listEl.querySelectorAll('.lofi-preset-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const input = document.getElementById('lofi-url-input');
-        if (input) input.value = `https://youtu.be/${preset.videoId}`;
-        this.loadLofiVideo(preset.videoId);
-      });
-
-      listEl.appendChild(btn);
+      const opt = document.createElement('option');
+      opt.value = preset.videoId;
+      opt.textContent = preset.name;
+      selectEl.appendChild(opt);
     });
+
+    if (!selectEl.dataset.bound) {
+      selectEl.dataset.bound = 'true';
+      selectEl.addEventListener('change', () => {
+        const vid = selectEl.value;
+        if (vid) {
+          const input = document.getElementById('lofi-url-input');
+          if (input) input.value = `https://youtu.be/${vid}`;
+          this.loadLofiVideo(vid);
+        }
+      });
+    }
   }
 
   loadLofiVideo(videoId) {

@@ -1025,13 +1025,15 @@
       <div id="pane-coffee" class="interactive-pane hidden">
         <div class="coffee-topbar">
           <div class="lofi-input-row">
-            <input type="text" id="lofi-url-input" class="modal-input-sm" placeholder="Dán link YouTube (thường, rút gọn youtu.be, Shorts)..." />
+            <input type="text" id="lofi-url-input" class="modal-input-sm" placeholder="Dán link YouTube (thường, youtu.be, Shorts)..." />
             <button type="button" id="lofi-load-btn" class="btn-sm-action">Phát Nhạc</button>
+            <div class="lofi-preset-select-wrapper">
+              <select id="lofi-preset-select" class="lofi-preset-dropdown">
+                <option value="">🎵 Chọn bài hát gợi ý có sẵn...</option>
+              </select>
+            </div>
           </div>
           <div class="lofi-genres-nav" id="lofi-genres-nav"></div>
-          <div class="lofi-presets-bar">
-            <div id="lofi-presets-list" class="lofi-presets-list"></div>
-          </div>
         </div>
 
         <div class="coffee-workspace-grid">
