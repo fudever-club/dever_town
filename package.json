@@ -54,6 +54,7 @@
     "nodemailer": "^9.1.1",
     "pg": "^8.23.0",
     "phaser": "^3.88.2",
+    "resend": "^6.25.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   },

@@ -1,26 +1,44 @@
+import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
 
 /**
- * MailService: Gửi email cảnh báo bảo mật và thông báo đăng nhập thiết bị mới / OTP đặt lại mật khẩu.
- * Hỗ trợ cấu hình SMTP thực tế (Gmail, SendGrid, Brevo, Custom SMTP) qua biến môi trường.
- * Nếu chưa cấu hình SMTP, tự động chuyển sang chế độ Console Security Logger phục vụ thử nghiệm local.
+ * MailService: Gửi email cảnh báo bảo mật và mã OTP đặt lại mật khẩu.
+ * Hỗ trợ 2 cơ chế gửi mail hàng đầu:
+ *  1. Resend REST API (Khuyên dùng - Cực nhanh, chỉ cần 1 chuỗi RESEND_API_KEY)
+ *  2. SMTP Transporter (Nodemailer - Gmail, Brevo, SendGrid, Custom SMTP)
+ *  3. Console Security Logger (Dev fallback cho local testing)
  */
 export class MailService {
   constructor() {
+    this.resendApiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || null;
+    this.resendSender = process.env.RESEND_FROM || process.env.SENDER_EMAIL || 'DEVER TOWN <onboarding@resend.dev>';
+    this.resendClient = null;
+
     this.smtpHost = process.env.SMTP_HOST || process.env.MAIL_HOST || 'smtp.gmail.com';
     this.smtpPort = Number(process.env.SMTP_PORT || process.env.MAIL_PORT || 587);
-    this.smtpUser = process.env.SMTP_USER || process.env.MAIL_USER || process.env.GMAIL_USER || null;
-    this.smtpPass = process.env.SMTP_PASS || process.env.MAIL_PASS || process.env.GMAIL_APP_PASS || null;
-    this.senderEmail = process.env.SENDER_EMAIL || this.smtpUser || 'fudever.club@gmail.com';
-    this.transporter = null;
+    this.smtpUser = process.env.SMTP_USER || process.env.MAIL_USER || null;
+    this.smtpPass = process.env.SMTP_PASS || process.env.MAIL_PASS || null;
+    this.smtpTransporter = null;
 
-    this.initTransporter();
+    this.initEngines();
   }
 
-  initTransporter() {
+  initEngines() {
+    // 1. Khởi tạo Resend REST API Client (Ưu tiên cao nhất)
+    if (this.resendApiKey) {
+      try {
+        this.resendClient = new Resend(this.resendApiKey);
+        console.log(`🚀 [MailService] Đã kích hoạt Resend REST API Engine (Sender: ${this.resendSender})`);
+      } catch (err) {
+        console.warn(`⚠️ [MailService] Lỗi khởi tạo Resend API:`, err.message);
+        this.resendClient = null;
+      }
+    }
+
+    // 2. Khởi tạo SMTP Transporter nếu có thông tin đăng nhập
     if (this.smtpUser && this.smtpPass) {
       try {
-        this.transporter = nodemailer.createTransport({
+        this.smtpTransporter = nodemailer.createTransport({
           host: this.smtpHost,
           port: this.smtpPort,
           secure: this.smtpPort === 465,
@@ -32,13 +50,15 @@ export class MailService {
             rejectUnauthorized: false
           }
         });
-        console.log(`📧 [MailService] Đã kích hoạt SMTP Transporter kết nối tới ${this.smtpHost}:${this.smtpPort} (${this.smtpUser})`);
+        console.log(`📧 [MailService] Đã kích hoạt SMTP Transporter (${this.smtpHost}:${this.smtpPort})`);
       } catch (err) {
         console.warn(`⚠️ [MailService] Không thể khởi tạo SMTP transporter:`, err.message);
-        this.transporter = null;
+        this.smtpTransporter = null;
       }
-    } else {
-      console.log(`ℹ️ [MailService] Chưa cấu hình SMTP_USER / SMTP_PASS. Chạy ở chế độ Dev Console Logger (Mã OTP sẽ hiển thị trực tiếp trên Terminal Server).`);
+    }
+
+    if (!this.resendClient && !this.smtpTransporter) {
+      console.log(`ℹ️ [MailService] Chưa cấu hình RESEND_API_KEY hoặc SMTP. Đang chạy ở chế độ Dev Logger.`);
     }
   }
 
@@ -100,33 +120,63 @@ Trân trọng,
 Đội Ngũ Kỹ Thuật CLB FU-DEVER • FUDA
     `.trim();
 
-    // 1. Luôn in ra console server để dev dễ kiểm tra và debug
+    // In ra Console Server để hỗ trợ dev và debug
     console.log(`\n================== 📧 [PASSWORD RESET OTP EMAIL] ==================`);
     console.log(`To: ${userEmail}`);
     console.log(`Subject: ${emailSubject}`);
     console.log(`OTP Code: >>> [ ${otpCode} ] <<< (Valid for ${expiresInMinutes} mins)`);
     console.log(`===================================================================\n`);
 
-    // 2. Nếu đã cấu hình SMTP Transporter, gửi email thật tới hộp thư
-    if (this.transporter) {
+    // 1. Gửi qua Resend REST API (Nếu có RESEND_API_KEY)
+    if (this.resendClient) {
       try {
-        const info = await this.transporter.sendMail({
-          from: `"FU-DEVER TOWN Security" <${this.senderEmail}>`,
+        const { data, error } = await this.resendClient.emails.send({
+          from: this.resendSender,
+          to: [userEmail],
+          subject: emailSubject,
+          text: textContent,
+          html: htmlContent
+        });
+
+        if (error) {
+          console.error(`❌ [MailService:Resend] Lỗi gửi mail qua Resend:`, error);
+        } else {
+          console.log(`✅ [MailService:Resend] Đã gửi email OTP thành công qua Resend API! ID:`, data?.id);
+          return {
+            success: true,
+            deliveredTo: userEmail,
+            realEmailSent: true,
+            provider: 'resend',
+            id: data?.id,
+            timestamp: Date.now()
+          };
+        }
+      } catch (resendErr) {
+        console.error(`❌ [MailService:Resend Exception]:`, resendErr.message);
+      }
+    }
+
+    // 2. Gửi qua SMTP Transporter (Nếu có cấu hình SMTP)
+    if (this.smtpTransporter) {
+      try {
+        const info = await this.smtpTransporter.sendMail({
+          from: `"FU-DEVER TOWN" <${this.smtpUser}>`,
           to: userEmail,
           subject: emailSubject,
           text: textContent,
           html: htmlContent
         });
-        console.log(`✅ [MailService] Đã gửi email OTP thực tế thành công tới ${userEmail} (MessageId: ${info.messageId})`);
+        console.log(`✅ [MailService:SMTP] Đã gửi email OTP thành công qua SMTP! MessageId:`, info.messageId);
         return {
           success: true,
           deliveredTo: userEmail,
           realEmailSent: true,
+          provider: 'smtp',
           messageId: info.messageId,
           timestamp: Date.now()
         };
-      } catch (sendErr) {
-        console.error(`❌ [MailService] Lỗi khi gửi email thực tế qua SMTP:`, sendErr.message);
+      } catch (smtpErr) {
+        console.error(`❌ [MailService:SMTP] Lỗi gửi mail qua SMTP:`, smtpErr.message);
       }
     }
 
@@ -177,16 +227,27 @@ Trân trọng,
     console.log(`Details: IP=${ip} | User=${displayName} | Time=${time} | ActiveDevices=${activeDevicesCount}/4`);
     console.log(`===================================================================\n`);
 
-    if (this.transporter) {
+    if (this.resendClient) {
       try {
-        await this.transporter.sendMail({
-          from: `"FU-DEVER TOWN Security" <${this.senderEmail}>`,
+        await this.resendClient.emails.send({
+          from: this.resendSender,
+          to: [userEmail],
+          subject: emailSubject,
+          text: emailBodyText
+        });
+      } catch (e) {
+        console.warn('Lỗi gửi email cảnh báo qua Resend:', e.message);
+      }
+    } else if (this.smtpTransporter) {
+      try {
+        await this.smtpTransporter.sendMail({
+          from: `"FU-DEVER TOWN" <${this.smtpUser}>`,
           to: userEmail,
           subject: emailSubject,
           text: emailBodyText
         });
       } catch (e) {
-        console.warn('Lỗi gửi email cảnh báo thiết bị:', e.message);
+        console.warn('Lỗi gửi email cảnh báo qua SMTP:', e.message);
       }
     }
 
