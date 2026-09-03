@@ -63,13 +63,13 @@ export class DeviceApprovalModal {
     if (!waitingEl) {
       waitingEl = document.createElement('div');
       waitingEl.id = 'device-waiting-overlay';
-      waitingEl.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;';
+      waitingEl.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);z-index:10000020;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Outfit,sans-serif;';
       waitingEl.innerHTML = `
-        <div style="text-align:center;padding:32px;background:rgba(30,41,59,0.95);border:2px solid rgba(242,111,33,0.5);border-radius:16px;max-width:420px;box-shadow:0 0 40px rgba(242,111,33,0.3);">
-          <div style="font-size:48px;margin-bottom:14px;animation:pulse 1.5s infinite;">⏳</div>
-          <h3 style="font-size:1.25rem;color:#fbbf24;margin-bottom:10px;">Chờ Xác Nhận Thiết Bị</h3>
+        <div style="text-align:center;padding:32px;background:rgba(30,41,59,0.95);border:1px solid rgba(242,111,33,0.5);border-radius:16px;max-width:420px;box-shadow:0 10px 40px rgba(0,0,0,0.8);">
+          <div style="width:40px;height:40px;border:3px solid rgba(242,111,33,0.3);border-top-color:#f26f21;border-radius:50%;margin:0 auto 16px;animation:spinNeonRing 1s linear infinite;"></div>
+          <h3 style="font-size:1.25rem;font-weight:800;color:#fbbf24;margin-bottom:10px;">Chờ Xác Nhận Thiết Bị</h3>
           <p id="device-waiting-msg" style="font-size:0.9rem;color:#cbd5e1;line-height:1.6;margin-bottom:18px;">
-            ${message || 'Tài khoản của bạn đang mở trên thiết bị khác. Vui lòng bấm [Đồng ý] trên thiết bị đó để chuyển sang máy này!'}
+            ${message || 'Tài khoản của bạn đang mở trên thiết bị khác. Vui lòng bấm Xác nhận trên thiết bị đó để chuyển sang máy này.'}
           </p>
           <div style="font-size:0.8rem;color:#94a3b8;">Đang kết nối bảo mật...</div>
         </div>
