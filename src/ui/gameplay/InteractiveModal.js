@@ -31,16 +31,20 @@ export class InteractiveModal {
   initPomodoro() {
     this.pomodoro = new PomodoroTimer({
       onTick: (timeStr, mode) => {
-        const timeEl = document.getElementById('pomo-timer-display');
-        const badgeEl = document.getElementById('pomo-mode-badge');
+        const timeEl = document.getElementById('pomo-timer') || document.getElementById('pomo-timer-display');
+        const badgeEl = document.getElementById('pomo-badge') || document.getElementById('pomo-mode-badge');
         if (timeEl) timeEl.textContent = timeStr;
         if (badgeEl) {
-          badgeEl.textContent = mode === 'work' ? 'Tập trung (25p)' : 'Nghỉ ngơi (5p)';
+          badgeEl.textContent = mode === 'work' ? 'Tập Trung (Work)' : 'Nghỉ Ngơi (Break)';
           badgeEl.className = `pomo-badge ${mode}`;
         }
       },
       onComplete: (mode) => {
-        alert(mode === 'work' ? 'Đã hết 25 phút tập trung! Hãy nghỉ giải lao 5 phút.' : 'Hết giờ nghỉ ngơi! Bắt đầu phiên làm việc mới nào.');
+        audioManager.playSuccess();
+        const badgeEl = document.getElementById('pomo-badge') || document.getElementById('pomo-mode-badge');
+        if (badgeEl) {
+          badgeEl.textContent = mode === 'work' ? 'Đã Hoàn Thành (25p)' : 'Sẵn Sàng Làm Việc';
+        }
       }
     });
   }
@@ -1207,25 +1211,31 @@ export class InteractiveModal {
       this.retroArcade = new RetroArcade(canvas);
     }
 
+    const defaultGame = (zoneData && zoneData.defaultGame) || 'snake';
     if (this.retroArcade) {
-      this.retroArcade.setGame('snake');
+      this.retroArcade.setGame(defaultGame);
       this.retroArcade.start();
     }
 
     const navTabs = document.getElementById('arcade-nav-tabs');
-    if (navTabs && !navTabs.dataset.initialized) {
-      navTabs.dataset.initialized = 'true';
+    if (navTabs) {
       navTabs.querySelectorAll('.arcade-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          navTabs.querySelectorAll('.arcade-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          const game = tab.dataset.game;
-          if (this.retroArcade) {
-            this.retroArcade.setGame(game);
-          }
-          audioManager.playClick();
-        });
+        tab.classList.toggle('active', tab.dataset.game === defaultGame);
       });
+      if (!navTabs.dataset.initialized) {
+        navTabs.dataset.initialized = 'true';
+        navTabs.querySelectorAll('.arcade-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            navTabs.querySelectorAll('.arcade-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const game = tab.dataset.game;
+            if (this.retroArcade) {
+              this.retroArcade.setGame(game);
+            }
+            audioManager.playClick();
+          });
+        });
+      }
     }
   }
 
