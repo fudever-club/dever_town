@@ -457,18 +457,30 @@
        3. MODAL DIALOGS
        ========================================================================== -->
 
-  <!-- 1. AUTH MODAL (LOGIN / REGISTER / GUEST / PROFILE) -->
+  <!-- 1. AUTH & PROFILE MODAL (LOGIN / REGISTER / GUEST / PROFILE) -->
   <div id="auth-modal" class="modal-backdrop hidden">
-    <div class="modal-card">
+    <div class="modal-card auth-modal-card">
       <div class="modal-header">
-        <h2 id="auth-modal-title" class="modal-title">Tham Gia DEVER TOWN</h2>
+        <div class="modal-title-row">
+          <div class="auth-modal-header-icon" id="auth-header-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f26f21" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <h2 id="auth-modal-title" class="modal-title">Hồ Sơ Nhân Vật & Tài Khoản</h2>
+            <p id="auth-modal-sub" class="modal-sub">Thông tin tài khoản và định danh trong DEVER TOWN</p>
+          </div>
+        </div>
         <button type="button" id="auth-modal-close" class="modal-close-btn">&times;</button>
       </div>
 
-      <div class="modal-tabs">
-        <button type="button" class="tab-btn active" data-tab="guest">Chơi Nhanh (Khách)</button>
-        <button type="button" class="tab-btn" data-tab="login">Đăng Nhập</button>
-        <button type="button" class="tab-btn" data-tab="register">Đăng Ký Thành Viên</button>
+      <!-- Segmented Tabs (Hiển thị khi đăng nhập/đăng ký/khách) -->
+      <div id="auth-modal-tabs" class="modal-tabs">
+        <button type="button" class="tab-btn active" data-tab="guest">🎮 Chơi Nhanh (Khách)</button>
+        <button type="button" class="tab-btn" data-tab="login">🔐 Đăng Nhập</button>
+        <button type="button" class="tab-btn" data-tab="register">✨ Đăng Ký Thành Viên</button>
       </div>
 
       <div id="auth-error-msg" class="auth-error-box hidden"></div>
@@ -476,10 +488,21 @@
       <!-- Tab 1: Guest Login -->
       <form id="pane-guest" class="auth-pane">
         <div class="form-group">
-          <label>Nhập Biệt danh (Hỗ trợ khoảng trắng & tiếng Việt):</label>
+          <label>Nhập Biệt danh (Hỗ trợ tiếng Việt & dấu cách):</label>
           <input type="text" id="guest-name" class="modal-input" placeholder="Ví dụ: Dev Alpha FUDA" maxlength="24" required />
         </div>
-        <button type="submit" class="modal-btn">Vào Khám Phá Ngay</button>
+        <button type="submit" class="modal-btn btn-fpt-orange">Vào Khám Phá Ngay</button>
+
+        <div class="auth-divider"><span>hoặc</span></div>
+        <button type="button" class="btn-google-sso" id="guest-google-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          Đăng Nhập Với Google (@fpt.edu.vn)
+        </button>
       </form>
 
       <!-- Tab 2: Member Login -->
@@ -492,7 +515,18 @@
           <label>Mật khẩu:</label>
           <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
         </div>
-        <button type="submit" class="modal-btn">Đăng Nhập Thành Viên</button>
+        <button type="submit" class="modal-btn btn-fpt-orange">Đăng Nhập Thành Viên</button>
+
+        <div class="auth-divider"><span>hoặc</span></div>
+        <button type="button" class="btn-google-sso" id="login-google-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          Đăng Nhập Nhanh Với Google
+        </button>
       </form>
 
       <!-- Tab 3: Member Register -->
@@ -509,17 +543,81 @@
           <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
           <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
         </div>
-        <button type="submit" class="modal-btn">Tạo Tài Khoản Thành Viên</button>
+        <button type="submit" class="modal-btn btn-fpt-orange">Tạo Tài Khoản Thành Viên</button>
       </form>
 
-      <!-- Tab 4: Profile -->
-      <form id="pane-profile" class="auth-pane hidden">
-        <div class="form-group">
-          <label>Tên hiển thị mới:</label>
-          <input type="text" id="profile-name" class="modal-input" placeholder="Tên hiển thị mới..." maxlength="24" required />
+      <!-- Tab 4: Profile Details & Management -->
+      <div id="pane-profile" class="auth-pane hidden">
+        <!-- Account Info Summary Card -->
+        <div class="profile-summary-card">
+          <div class="profile-hero-row">
+            <div class="profile-avatar-box">
+              <span id="profile-avatar-icon" class="profile-avatar-emoji">🧑‍💻</span>
+            </div>
+            <div class="profile-hero-info">
+              <div class="profile-name-row">
+                <h3 id="profile-current-name" class="profile-display-name">Dev Member</h3>
+                <span id="profile-current-role" class="role-tag dev">MEMBER</span>
+              </div>
+              <div class="profile-meta-chips">
+                <span id="profile-points-badge" class="profile-chip points">⭐ 0 Points</span>
+                <span id="profile-user-id" class="profile-chip id">#ID: guest</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-detail-list">
+            <!-- Row 1: Login Method -->
+            <div class="profile-detail-item">
+              <span class="detail-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Cách Đăng Nhập:
+              </span>
+              <span id="profile-login-method" class="detail-value highlight-cyan">
+                🎮 Khách Vãng Lai (Guest)
+              </span>
+            </div>
+
+            <!-- Row 2: Email -->
+            <div class="profile-detail-item">
+              <span class="detail-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f26f21" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Email Đăng Nhập:
+              </span>
+              <span id="profile-user-email" class="detail-value">
+                Chưa liên kết email
+              </span>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="modal-btn">Lưu Thay Đổi</button>
-      </form>
+
+        <!-- Form Update Display Name -->
+        <form id="pane-profile-form" class="profile-edit-section">
+          <div class="form-group">
+            <label for="profile-name">Đổi Tên Hiển Thị Mới:</label>
+            <div class="profile-input-row">
+              <input type="text" id="profile-name" class="modal-input" placeholder="Nhập tên hiển thị mới..." maxlength="24" required />
+              <button type="submit" class="modal-btn btn-fpt-orange btn-save-name">Lưu Thay Đổi</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Profile Bottom Action Buttons -->
+        <div class="profile-actions-row">
+          <button type="button" id="profile-upgrade-btn" class="profile-action-btn upgrade-btn hidden">
+            ✨ Nâng Cấp Lên Tài Khoản Thành Viên
+          </button>
+          <button type="button" id="profile-logout-btn" class="profile-action-btn logout-btn">
+            🚪 Đăng Xuất Khỏi Thị Trấn
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

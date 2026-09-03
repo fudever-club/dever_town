@@ -101,6 +101,25 @@ class AuthService {
     return data.user;
   }
 
+  async loginWithGoogle({ email, displayName }) {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = displayName ? displayName.trim() : cleanEmail.split('@')[0];
+    const googleUser = {
+      id: `google_${Date.now()}`,
+      email: cleanEmail,
+      display_name: cleanName,
+      displayName: cleanName,
+      role: 'dev',
+      avatar_id: 'dev_hoodie',
+      auth_provider: 'google',
+      provider: 'google',
+      dever_points: Number(localStorage.getItem('dever_points') || 0)
+    };
+    const mockToken = `google_token_${Date.now()}_${btoa(cleanEmail)}`;
+    this.saveSession(mockToken, googleUser);
+    return googleUser;
+  }
+
   async fetchMe() {
     if (!this.token) return null;
 
