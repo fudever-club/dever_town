@@ -4,6 +4,8 @@ dist-ssr
 *.local
 .env
 .env.*
+*.env
+DEVER_TOWN.env
 !.env.example
 server/data/users.json
 server/data/game_scores.json
