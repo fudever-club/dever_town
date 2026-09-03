@@ -12,6 +12,7 @@ export class WelcomeGate {
     this.gateEl = document.getElementById('welcome-gate');
     this.loadingEl = document.getElementById('game-loading-screen');
     this.currentTab = 'guest';
+    this.pendingForgotEmail = '';
 
     this.initDOM();
     this.bindEvents();
@@ -31,7 +32,7 @@ export class WelcomeGate {
   bindEvents() {
     if (!this.gateEl) return;
 
-    // Ngăn chặn phím lan ra ngoài
+    // Ngăn chặn phím lan ra ngoài Phaser
     const inputs = this.gateEl.querySelectorAll('input, select, textarea');
     inputs.forEach(inp => {
       const stopBubble = (e) => e.stopPropagation();
@@ -65,6 +66,36 @@ export class WelcomeGate {
     if (regForm) {
       regForm.addEventListener('submit', (e) => this.handleRegisterSubmit(e));
     }
+
+    // Nút chuyển sang màn hình Quên Mật Khẩu ở Welcome Gate
+    const gotoForgotBtn = document.getElementById('gate-btn-goto-forgot');
+    if (gotoForgotBtn) {
+      gotoForgotBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.switchTab('forgot');
+      });
+    }
+
+    // Nút quay lại Đăng nhập từ màn hình Quên Mật Khẩu
+    const backToLoginBtn = document.getElementById('gate-btn-back-to-login');
+    if (backToLoginBtn) {
+      backToLoginBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.switchTab('login');
+      });
+    }
+
+    // Quên mật khẩu - Bước 1: Gửi OTP
+    const forgotStep1Form = document.getElementById('gate-forgot-step1-form');
+    if (forgotStep1Form) {
+      forgotStep1Form.addEventListener('submit', (e) => this.handleGateRequestOtp(e));
+    }
+
+    // Quên mật khẩu - Bước 2: Nhập OTP & Đổi Mật Khẩu
+    const forgotStep2Form = document.getElementById('gate-forgot-step2-form');
+    if (forgotStep2Form) {
+      forgotStep2Form.addEventListener('submit', (e) => this.handleGateResetPasswordWithOtp(e));
+    }
   }
 
   switchTab(tab) {
@@ -79,7 +110,24 @@ export class WelcomeGate {
       p.classList.toggle('hidden', p.id !== `gate-form-${tab}`);
     });
 
+    if (tab === 'forgot') {
+      this.resetForgotSteps();
+    }
+
     this.clearError();
+  }
+
+  resetForgotSteps() {
+    const step1 = document.getElementById('gate-forgot-step1-form');
+    const step2 = document.getElementById('gate-forgot-step2-form');
+    if (step1) step1.classList.remove('hidden');
+    if (step2) step2.classList.add('hidden');
+
+    const emailInput = document.getElementById('gate-forgot-email');
+    const loginEmailInput = document.getElementById('gate-login-email');
+    if (emailInput && loginEmailInput && loginEmailInput.value) {
+      emailInput.value = loginEmailInput.value;
+    }
   }
 
   showError(msg) {
@@ -159,6 +207,95 @@ export class WelcomeGate {
       this.startLoadingAndEnter({ user, isGuest: false });
     } catch (err) {
       this.showError(err.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+    }
+  }
+
+  async handleGateRequestOtp(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const emailInput = document.getElementById('gate-forgot-email');
+    const email = emailInput ? emailInput.value.trim() : '';
+
+    if (!email) {
+      this.showError('Vui lòng nhập địa chỉ email đã đăng ký!');
+      return;
+    }
+
+    try {
+      const sendBtn = document.getElementById('gate-btn-send-otp');
+      if (sendBtn) sendBtn.disabled = true;
+
+      await authService.requestPasswordReset(email);
+      this.pendingForgotEmail = email;
+
+      const targetEmailEl = document.getElementById('gate-otp-target-email');
+      if (targetEmailEl) targetEmailEl.textContent = email;
+
+      const step1 = document.getElementById('gate-forgot-step1-form');
+      const step2 = document.getElementById('gate-forgot-step2-form');
+      if (step1) step1.classList.add('hidden');
+      if (step2) step2.classList.remove('hidden');
+
+      const otpInput = document.getElementById('gate-reset-otp-input');
+      if (otpInput) otpInput.focus();
+
+      if (sendBtn) sendBtn.disabled = false;
+      audioManager.playClick();
+    } catch (err) {
+      const sendBtn = document.getElementById('gate-btn-send-otp');
+      if (sendBtn) sendBtn.disabled = false;
+      this.showError(err.message || 'Lỗi gửi mã OTP!');
+    }
+  }
+
+  async handleGateResetPasswordWithOtp(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const email = this.pendingForgotEmail || document.getElementById('gate-forgot-email')?.value.trim();
+    const otpCode = document.getElementById('gate-reset-otp-input')?.value.trim();
+    const newPassword = document.getElementById('gate-reset-new-password')?.value;
+    const confirmPassword = document.getElementById('gate-reset-confirm-password')?.value;
+
+    if (!otpCode || otpCode.length !== 6) {
+      this.showError('Mã xác thực OTP phải gồm đúng 6 chữ số!');
+      return;
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      this.showError('Mật khẩu mới phải có tối thiểu 6 ký tự!');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      this.showError('Mật khẩu xác nhận không khớp với mật khẩu mới!');
+      return;
+    }
+
+    try {
+      const resetBtn = document.getElementById('gate-btn-confirm-reset');
+      if (resetBtn) resetBtn.disabled = true;
+
+      await authService.resetPassword({
+        email,
+        otpCode,
+        newPassword
+      });
+
+      audioManager.playWin();
+      alert('🎉 Đặt lại mật khẩu thành công! Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.');
+
+      if (resetBtn) resetBtn.disabled = false;
+
+      // Chuyển sang tab đăng nhập và điền sẵn email
+      this.switchTab('login');
+      const loginEmail = document.getElementById('gate-login-email');
+      if (loginEmail) loginEmail.value = email;
+    } catch (err) {
+      const resetBtn = document.getElementById('gate-btn-confirm-reset');
+      if (resetBtn) resetBtn.disabled = false;
+      this.showError(err.message || 'Đặt lại mật khẩu thất bại!');
     }
   }
 

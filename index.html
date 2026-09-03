@@ -109,11 +109,14 @@
         <!-- Tab 2: Login Form -->
         <form id="gate-form-login" class="gate-form-pane hidden">
           <div class="form-group">
-            <label>Email Sinh viên / Thành viên:</label>
-            <input type="email" id="gate-login-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
+            <label>Email:</label>
+            <input type="email" id="gate-login-email" class="modal-input" placeholder="example@gmail.com" required />
           </div>
           <div class="form-group">
-            <label>Mật khẩu:</label>
+            <div class="label-with-action">
+              <label>Mật khẩu:</label>
+              <button type="button" id="gate-btn-goto-forgot" class="link-forgot-pass">Quên mật khẩu?</button>
+            </div>
             <input type="password" id="gate-login-password" class="modal-input" placeholder="••••••••" required />
           </div>
           <button type="submit" class="gate-submit-btn btn-fpt-gradient">Đăng Nhập Thành Viên</button>
@@ -126,8 +129,8 @@
             <input type="text" id="gate-reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
           </div>
           <div class="form-group">
-            <label>Email FUDA / Cá nhân:</label>
-            <input type="email" id="gate-reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
+            <label>Email:</label>
+            <input type="email" id="gate-reg-email" class="modal-input" placeholder="example@gmail.com" required />
           </div>
           <div class="form-group">
             <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
@@ -135,6 +138,60 @@
           </div>
           <button type="submit" class="gate-submit-btn btn-fpt-gradient">Tạo Tài Khoản Thành Viên</button>
         </form>
+
+        <!-- Tab 4: Forgot & Reset Password (OTP via Email) at Welcome Gate -->
+        <div id="gate-form-forgot" class="gate-form-pane hidden">
+          <!-- Step 1: Input Email to receive OTP -->
+          <form id="gate-forgot-step1-form" class="forgot-step-pane">
+            <div class="forgot-guidance-box">
+              <span class="guidance-icon">🛡️</span>
+              <p>Nhập email đã đăng ký để nhận <strong>Mã OTP 6 số</strong> đặt lại mật khẩu về hòm thư.</p>
+            </div>
+            <div class="form-group">
+              <label for="gate-forgot-email">Email Đã Đăng Ký:</label>
+              <input type="email" id="gate-forgot-email" class="modal-input" placeholder="example@gmail.com" required />
+            </div>
+            <button type="submit" id="gate-btn-send-otp" class="gate-submit-btn btn-fpt-gradient">
+              📧 Gửi Mã OTP Xác Thực
+            </button>
+          </form>
+
+          <!-- Step 2: Input OTP & Set New Password -->
+          <form id="gate-forgot-step2-form" class="forgot-step-pane hidden">
+            <div class="otp-notice-box">
+              <span class="otp-icon">📬</span>
+              <div class="otp-notice-text">
+                <div>Mã OTP đã gửi đến:</div>
+                <strong id="gate-otp-target-email" class="highlight-cyan">email@domain.com</strong>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gate-reset-otp-input">Mã OTP (6 số):</label>
+              <input type="text" id="gate-reset-otp-input" class="modal-input otp-code-input" placeholder="123456" maxlength="6" required />
+            </div>
+
+            <div class="form-group">
+              <label for="gate-reset-new-password">Mật khẩu mới (Tối thiểu 6 ký tự):</label>
+              <input type="password" id="gate-reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            </div>
+
+            <div class="form-group">
+              <label for="gate-reset-confirm-password">Xác nhận mật khẩu mới:</label>
+              <input type="password" id="gate-reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            </div>
+
+            <button type="submit" id="gate-btn-confirm-reset" class="gate-submit-btn btn-fpt-gradient">
+              🔑 Đặt Lại Mật Khẩu Mới
+            </button>
+          </form>
+
+          <div class="forgot-footer-row">
+            <button type="button" id="gate-btn-back-to-login" class="link-back-login">
+              ← Quay Lại Đăng Nhập
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -508,8 +565,8 @@
       <!-- Tab 2: Member Login -->
       <form id="pane-login" class="auth-pane hidden">
         <div class="form-group">
-          <label>Email Sinh viên / CLB:</label>
-          <input type="email" id="login-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
+          <label>Email:</label>
+          <input type="email" id="login-email" class="modal-input" placeholder="example@gmail.com" required />
         </div>
         <div class="form-group">
           <div class="label-with-action">
@@ -539,8 +596,8 @@
           <input type="text" id="reg-name" class="modal-input" placeholder="Ví dụ: Nguyễn Văn Hùng" maxlength="24" required />
         </div>
         <div class="form-group">
-          <label>Email FUDA / Cá nhân:</label>
-          <input type="email" id="reg-email" class="modal-input" placeholder="tenban@fpt.edu.vn" required />
+          <label>Email:</label>
+          <input type="email" id="reg-email" class="modal-input" placeholder="example@gmail.com" required />
         </div>
         <div class="form-group">
           <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
@@ -631,8 +688,8 @@
             <p>Nhập email thành viên đã đăng ký để nhận <strong>Mã xác thực bảo mật OTP (6 số)</strong> về hòm thư.</p>
           </div>
           <div class="form-group">
-            <label for="forgot-email">Email Đã Đăng Ký:</label>
-            <input type="email" id="forgot-email" class="modal-input" placeholder="member@dever.fpt.edu.vn" required />
+            <label for="forgot-email">Email:</label>
+            <input type="email" id="forgot-email" class="modal-input" placeholder="example@gmail.com" required />
           </div>
           <button type="submit" id="btn-send-otp" class="modal-btn btn-fpt-orange">
             📧 Gửi Mã OTP Xác Thực
