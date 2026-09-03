@@ -144,24 +144,22 @@
           <!-- Step 1: Input Email to receive OTP -->
           <form id="gate-forgot-step1-form" class="forgot-step-pane">
             <div class="forgot-guidance-box">
-              <span class="guidance-icon">🛡️</span>
-              <p>Nhập email đã đăng ký để nhận <strong>Mã OTP 6 số</strong> đặt lại mật khẩu về hòm thư.</p>
+              <p>Nhập email đã đăng ký để nhận mã xác thực (OTP) 6 số đặt lại mật khẩu về hòm thư.</p>
             </div>
             <div class="form-group">
-              <label for="gate-forgot-email">Email Đã Đăng Ký:</label>
+              <label for="gate-forgot-email">Email:</label>
               <input type="email" id="gate-forgot-email" class="modal-input" placeholder="example@gmail.com" required />
             </div>
             <button type="submit" id="gate-btn-send-otp" class="gate-submit-btn btn-fpt-gradient">
-              📧 Gửi Mã OTP Xác Thực
+              Gửi Mã Xác Thực OTP
             </button>
           </form>
 
           <!-- Step 2: Input OTP & Set New Password -->
           <form id="gate-forgot-step2-form" class="forgot-step-pane hidden">
             <div class="otp-notice-box">
-              <span class="otp-icon">📬</span>
               <div class="otp-notice-text">
-                <div>Mã OTP đã gửi đến:</div>
+                <div>Mã xác thực OTP đã được gửi đến:</div>
                 <strong id="gate-otp-target-email" class="highlight-cyan">email@domain.com</strong>
               </div>
             </div>
@@ -182,7 +180,7 @@
             </div>
 
             <button type="submit" id="gate-btn-confirm-reset" class="gate-submit-btn btn-fpt-gradient">
-              🔑 Đặt Lại Mật Khẩu Mới
+              Đặt Lại Mật Khẩu
             </button>
           </form>
 
@@ -671,10 +669,10 @@
         <!-- Profile Bottom Action Buttons -->
         <div class="profile-actions-row">
           <button type="button" id="profile-upgrade-btn" class="profile-action-btn upgrade-btn hidden">
-            ✨ Nâng Cấp Lên Tài Khoản Thành Viên
+            Nâng Cấp Tài Khoản Thành Viên
           </button>
           <button type="button" id="profile-logout-btn" class="profile-action-btn logout-btn">
-            🚪 Đăng Xuất Khỏi Thị Trấn
+            Đăng Xuất
           </button>
         </div>
       </div>
@@ -684,22 +682,20 @@
         <!-- Step 1: Input Email to receive OTP -->
         <form id="forgot-step1-form" class="forgot-step-pane">
           <div class="forgot-guidance-box">
-            <span class="guidance-icon">🛡️</span>
-            <p>Nhập email thành viên đã đăng ký để nhận <strong>Mã xác thực bảo mật OTP (6 số)</strong> về hòm thư.</p>
+            <p>Nhập email thành viên đã đăng ký để nhận mã xác thực bảo mật (OTP) 6 số về hòm thư.</p>
           </div>
           <div class="form-group">
             <label for="forgot-email">Email:</label>
             <input type="email" id="forgot-email" class="modal-input" placeholder="example@gmail.com" required />
           </div>
           <button type="submit" id="btn-send-otp" class="modal-btn btn-fpt-orange">
-            📧 Gửi Mã OTP Xác Thực
+            Gửi Mã Xác Thực OTP
           </button>
         </form>
 
         <!-- Step 2: Input OTP & Set New Password -->
         <form id="forgot-step2-form" class="forgot-step-pane hidden">
           <div class="otp-notice-box">
-            <span class="otp-icon">📬</span>
             <div class="otp-notice-text">
               <div>Mã OTP đã được gửi đến:</div>
               <strong id="otp-target-email" class="highlight-cyan">email@domain.com</strong>
@@ -722,7 +718,7 @@
           </div>
 
           <button type="submit" id="btn-confirm-reset" class="modal-btn btn-fpt-orange">
-            🔑 Đặt Lại Mật Khẩu Mới
+            Đặt Lại Mật Khẩu
           </button>
         </form>
 

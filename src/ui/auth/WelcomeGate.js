@@ -256,23 +256,23 @@ export class WelcomeGate {
     e.preventDefault();
     this.clearError();
 
-    const email = this.pendingForgotEmail || document.getElementById('gate-forgot-email')?.value.trim();
-    const otpCode = document.getElementById('gate-reset-otp-input')?.value.trim();
+    const email = (this.pendingForgotEmail || document.getElementById('gate-forgot-email')?.value || '').trim();
+    const otpCode = (document.getElementById('gate-reset-otp-input')?.value || '').replace(/\D/g, '').trim();
     const newPassword = document.getElementById('gate-reset-new-password')?.value;
     const confirmPassword = document.getElementById('gate-reset-confirm-password')?.value;
 
     if (!otpCode || otpCode.length !== 6) {
-      this.showError('Mã xác thực OTP phải gồm đúng 6 chữ số!');
+      this.showError('Mã xác thực OTP phải gồm đúng 6 chữ số.');
       return;
     }
 
     if (!newPassword || newPassword.length < 6) {
-      this.showError('Mật khẩu mới phải có tối thiểu 6 ký tự!');
+      this.showError('Mật khẩu mới phải có tối thiểu 6 ký tự.');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      this.showError('Mật khẩu xác nhận không khớp với mật khẩu mới!');
+      this.showError('Mật khẩu xác nhận không khớp với mật khẩu mới.');
       return;
     }
 
@@ -287,7 +287,7 @@ export class WelcomeGate {
       });
 
       audioManager.playWin();
-      alert('🎉 Đặt lại mật khẩu thành công! Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.');
+      alert('Đặt lại mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới.');
 
       if (resetBtn) resetBtn.disabled = false;
 
@@ -298,7 +298,7 @@ export class WelcomeGate {
     } catch (err) {
       const resetBtn = document.getElementById('gate-btn-confirm-reset');
       if (resetBtn) resetBtn.disabled = false;
-      this.showError(err.message || 'Đặt lại mật khẩu thất bại!');
+      this.showError(err.message || 'Đặt lại mật khẩu không thành công.');
     }
   }
 

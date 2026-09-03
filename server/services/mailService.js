@@ -74,41 +74,41 @@ export class MailService {
    */
   async sendPasswordResetOtp(userEmail, { otpCode, displayName = 'Thành viên DEVER', expiresInMinutes = 10 }) {
     const cleanEmail = userEmail.trim().toLowerCase();
-    const emailSubject = `[FU-DEVER TOWN] 🔑 Mã Xác Thực Đặt Lại Mật Khẩu: ${otpCode}`;
+    const emailSubject = `[FU-DEVER] Mã xác thực đặt lại mật khẩu: ${otpCode}`;
 
     const htmlContent = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 580px; margin: 0 auto; background: #0f172a; color: #f8fafc; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
-        <div style="background: linear-gradient(135deg, #f26f21, #ea580c); padding: 24px 30px; text-align: center;">
-          <h1 style="margin: 0; font-size: 24px; color: #ffffff; letter-spacing: 1px;">DEVER TOWN</h1>
-          <p style="margin: 4px 0 0; font-size: 13px; color: #fed7aa; text-transform: uppercase; letter-spacing: 2px;">FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0f172a; color: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
+        <div style="background: linear-gradient(135deg, #f26f21, #d9531e); padding: 22px 28px; text-align: center;">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px;">DEVER TOWN</h1>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #ffedd5; text-transform: uppercase; letter-spacing: 1.5px;">FU-DEVER Club • FPT University Đà Nẵng</p>
         </div>
         
-        <div style="padding: 30px 30px 20px;">
-          <h2 style="color: #ffffff; font-size: 18px; margin-top: 0;">Xin chào ${displayName},</h2>
-          <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
-            Bạn (hoặc ai đó) vừa gửi yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản DEVER TOWN gắn với email: <span style="color: #38bdf8; font-weight: bold;">${cleanEmail}</span>.
+        <div style="padding: 28px 28px 20px;">
+          <h2 style="color: #ffffff; font-size: 16px; font-weight: 600; margin-top: 0;">Xin chào ${displayName},</h2>
+          <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+            Hệ thống nhận được yêu cầu đặt lại mật khẩu cho tài khoản DEVER TOWN gắn với email: <strong style="color: #38bdf8;">${cleanEmail}</strong>.
           </p>
 
-          <div style="background: #1e293b; border: 2px dashed #f26f21; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;">
-            <div style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Mã Xác Thực Bảo Mật (OTP) Của Bạn:</div>
-            <div style="font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #f26f21; font-family: 'Courier New', Courier, monospace;">${otpCode}</div>
-            <div style="font-size: 12px; color: #fbbf24; margin-top: 8px;">⏳ Mã này có hiệu lực trong vòng <strong>${expiresInMinutes} phút</strong>.</div>
+          <div style="background: #1e293b; border: 1px solid #475569; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0;">
+            <div style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Mã xác thực bảo mật (OTP)</div>
+            <div style="font-size: 36px; font-weight: 800; letter-spacing: 6px; color: #f26f21; font-family: 'JetBrains Mono', 'Courier New', monospace;">${otpCode}</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Mã có hiệu lực trong vòng <strong>${expiresInMinutes} phút</strong>.</div>
           </div>
 
-          <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 6px; margin: 20px 0;">
+          <div style="background: rgba(239, 68, 68, 0.08); border-left: 3px solid #ef4444; padding: 12px 16px; border-radius: 4px; margin: 20px 0;">
             <p style="margin: 0; font-size: 13px; color: #fca5a5; line-height: 1.5;">
-              ⚠️ <strong>Cảnh báo bảo mật:</strong> Tuyệt đối không chia sẻ mã này cho bất kỳ ai, kể cả Ban Quản Trị CLB FU-DEVER.
+              <strong>Lưu ý bảo mật:</strong> Không chia sẻ mã xác thực này cho bất kỳ ai. Ban Quản trị CLB không bao giờ chủ động yêu cầu mã OTP của bạn.
             </p>
           </div>
 
-          <p style="color: #94a3b8; font-size: 13px; line-height: 1.5;">
-            Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này. Tài khoản của bạn vẫn được bảo vệ an toàn.
+          <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 0;">
+            Nếu bạn không thực hiện yêu cầu này, bạn có thể yên tâm bỏ qua email. Tài khoản vẫn được giữ an toàn.
           </p>
         </div>
 
-        <div style="background: #020617; padding: 16px 30px; text-align: center; border-top: 1px solid #1e293b; font-size: 12px; color: #64748b;">
-          © 2026 FU-DEVER Club • FPT University Đà Nẵng (FUDA)<br/>
-          <em>WORK HARD - PLAY HARD</em>
+        <div style="background: #020617; padding: 14px 28px; text-align: center; border-top: 1px solid #1e293b; font-size: 12px; color: #64748b;">
+          FU-DEVER Club • FPT University Đà Nẵng (FUDA)<br/>
+          WORK HARD - PLAY HARD
         </div>
       </div>
     `;
@@ -118,12 +118,13 @@ Xin chào ${displayName},
 
 Bạn vừa yêu cầu đặt lại mật khẩu cho tài khoản DEVER TOWN (${cleanEmail}).
 
-MÃ XÁC THỰC BẢO MẬT (OTP) CỦA BẠN: [ ${otpCode} ]
-Hiệu lực: ${expiresInMinutes} phút.
+Mã xác thực OTP: [ ${otpCode} ]
+Thời hạn hiệu lực: ${expiresInMinutes} phút.
 
 Tuyệt đối không chia sẻ mã này cho bất kỳ ai.
+
 Trân trọng,
-Đội Ngũ Kỹ Thuật CLB FU-DEVER • FUDA
+CLB FU-DEVER • FUDA
     `.trim();
 
     // 1. Luôn in ra console server

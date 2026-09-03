@@ -56,6 +56,7 @@ Triệt tiêu hoàn toàn các biểu hiện "AI Slop" (nội dung vô hồn, v�
 
 ### 🚫 Các Từ Khóa Cấm & Lỗi Cần Tránh (Anti-Cliché Checklist):
 - ❌ **Không dùng văn mẫu AI rập khuôn**: Tránh các cụm từ như *"Chào mừng bạn đến với thế giới kỳ diệu"*, *"Một trải nghiệm đỉnh cao chưa từng có"*, *"Nền tảng đột phá thay đổi tương lai"*.
+- ❌ **Không lạm dụng Emoji tràn lan (Anti-Emoji Clutter)**: Tuyệt đối không nhét emoji máy móc vào đầu các nút bấm (CTA), thông báo hệ thống hoặc nội dung email bảo mật (ví dụ: cấm dùng `🔑 Đặt Lại Mật Khẩu`, `📧 Gửi Mã OTP`, `🛡️ Cảnh báo`, `⏳ Thời hạn`, `✨ Nâng cấp`). Emoji chỉ được dùng có chọn lọc tại các thành phần trực quan cần biểu tượng (như icon túi đồ vật phẩm, avatar).
 - ❌ **Không dùng dữ liệu giả generic**: Không dùng "Lorem ipsum", "John Doe", "Room 1 2 3", "Item test".
 - ❌ **Không gãy chữ tiếng Việt**: Kiểm tra font `Outfit` và `JetBrains Mono` hiển thị trơn tru, không lỗi dấu Unicode.
 - ❌ **Không dùng màu sắc nhạt nhẽo / lệch theme**: Tuân thủ bảng màu chuẩn FPT Cam (`#f26f21`), Xanh DEVER (`#0066CC`), Nền tối Cyber Dark (`#070a12`, `#0f172a`) và hiệu ứng Glassmorphism.

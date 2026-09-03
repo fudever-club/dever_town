@@ -19,3 +19,8 @@
 ## 4. Git Commit Author Rule
 - Mọi commit git bắt buộc phải chỉ định author:
   `--author="RaH11 <hungnguyen.190206@gmail.com>"`
+
+## 5. Anti-AI-Slop & Impeccable UI Rule (Chống Lạm Dụng Emoji & Văn Phong AI Slop)
+- Tuyệt đối không lạm dụng emoji tràn lan ở tiêu đề, nút bấm (CTA), thông báo hệ thống hoặc nội dung email.
+- Emoji chỉ được dùng có chọn lọc ở những nơi thực sự cần biểu thị trực quan (như icon vật phẩm túi đồ, avatar, danh sách phòng).
+- Mọi nút bấm, thông báo lỗi/thành công và email bảo mật phải dùng văn phong tinh gọn, trang nhã, chuẩn mực kỹ thuật và chuyên nghiệp.

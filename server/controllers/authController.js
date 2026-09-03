@@ -2,9 +2,7 @@ import bcrypt from 'bcryptjs';
 import { getDB } from '../db/index.js';
 import { generateToken, sanitizeUser } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
-
-// Bộ nhớ tạm lưu trữ mã OTP khôi phục mật khẩu (TTL 10 phút)
-const resetOtpStore = new Map();
+import { otpService } from '../services/otpService.js';
 
 export const authController = {
   /**
@@ -53,25 +51,22 @@ export const authController = {
       const newUser = await db.createUser({
         email,
         passwordHash,
-        displayName,
+        displayName: cleanDisplayName,
         avatarId: chosenAvatar,
         role: 'dev'
       });
 
-      const safeUser = sanitizeUser(newUser);
       const token = generateToken(newUser);
-
-      console.log(`🎉 [Auth] Đăng ký thành công tài khoản: ${safeUser.email} (${safeUser.display_name})`);
+      console.log(`✨ [Auth] Thành viên mới đăng ký: ${cleanDisplayName} (${email})`);
 
       return res.status(201).json({
         success: true,
-        message: 'Đăng ký tài khoản thành công!',
         token,
-        user: safeUser
+        user: sanitizeUser(newUser)
       });
     } catch (err) {
       console.error('❌ [Auth Register Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
+      return res.status(500).json({ success: false, message: 'Lỗi đăng ký tài khoản!' });
     }
   },
 
@@ -85,7 +80,7 @@ export const authController = {
       if (!email || !password) {
         return res.status(400).json({
           success: false,
-          message: 'Vui lòng điền đầy đủ email và mật khẩu!'
+          message: 'Vui lòng cung cấp email và mật khẩu!'
         });
       }
 
@@ -107,20 +102,17 @@ export const authController = {
         });
       }
 
-      const safeUser = sanitizeUser(user);
       const token = generateToken(user);
-
-      console.log(`🔐 [Auth] Đăng nhập thành công: ${safeUser.email} [${safeUser.role}]`);
+      console.log(`🔑 [Auth] Đăng nhập thành công: ${user.display_name} (${user.email})`);
 
       return res.json({
         success: true,
-        message: 'Đăng nhập thành công!',
         token,
-        user: safeUser
+        user: sanitizeUser(user)
       });
     } catch (err) {
       console.error('❌ [Auth Login Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi máy chủ nội bộ!' });
+      return res.status(500).json({ success: false, message: 'Lỗi máy chủ khi đăng nhập!' });
     }
   },
 
@@ -142,14 +134,9 @@ export const authController = {
       // Tạo mã OTP 6 số ngẫu nhiên
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresInMinutes = 10;
-      const expiresAt = Date.now() + expiresInMinutes * 60 * 1000;
 
-      // Lưu mã OTP vào bộ nhớ tạm
-      resetOtpStore.set(cleanEmail, {
-        otp: otpCode,
-        expiresAt,
-        attempts: 0
-      });
+      // Lưu mã OTP bền vững vào OtpService
+      otpService.setOtp(cleanEmail, otpCode, expiresInMinutes);
 
       // Gửi email chứa mã OTP
       const mailResult = await mailService.sendPasswordResetOtp(cleanEmail, {
@@ -167,11 +154,11 @@ export const authController = {
 
       return res.json({
         success: true,
-        message: `Mã xác thực OTP gồm 6 chữ số đã được gửi tới ${cleanEmail}. Vui lòng kiểm tra hộp thư!`
+        message: `Mã xác thực OTP gồm 6 chữ số đã được gửi tới ${cleanEmail}. Vui lòng kiểm tra hộp thư.`
       });
     } catch (err) {
       console.error('❌ [Auth Forgot Password Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi xử lý yêu cầu quên mật khẩu!' });
+      return res.status(500).json({ success: false, message: 'Lỗi xử lý yêu cầu quên mật khẩu.' });
     }
   },
 
@@ -186,45 +173,22 @@ export const authController = {
       }
 
       const cleanEmail = email.toLowerCase().trim();
-      const record = resetOtpStore.get(cleanEmail);
+      const verifyResult = otpService.verifyOtp(cleanEmail, otpCode);
 
-      if (!record) {
+      if (!verifyResult.valid) {
         return res.status(400).json({
           success: false,
-          message: 'Không tìm thấy yêu cầu đặt lại mật khẩu hoặc mã OTP đã hết hạn!'
-        });
-      }
-
-      if (Date.now() > record.expiresAt) {
-        resetOtpStore.delete(cleanEmail);
-        return res.status(400).json({
-          success: false,
-          message: 'Mã OTP đã hết hiệu lực. Vui lòng bấm "Gửi lại mã"!'
-        });
-      }
-
-      if (record.otp !== String(otpCode).trim()) {
-        record.attempts = (record.attempts || 0) + 1;
-        if (record.attempts >= 5) {
-          resetOtpStore.delete(cleanEmail);
-          return res.status(400).json({
-            success: false,
-            message: 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng yêu cầu mã mới!'
-          });
-        }
-        return res.status(400).json({
-          success: false,
-          message: `Mã OTP không chính xác! (Còn ${5 - record.attempts} lần thử)`
+          message: verifyResult.message
         });
       }
 
       return res.json({
         success: true,
-        message: 'Mã OTP chính xác. Bạn có thể đặt mật khẩu mới!'
+        message: 'Mã OTP chính xác. Bạn có thể đặt mật khẩu mới.'
       });
     } catch (err) {
       console.error('❌ [Auth Verify OTP Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi xác thực mã OTP!' });
+      return res.status(500).json({ success: false, message: 'Lỗi xác thực mã OTP.' });
     }
   },
 
@@ -235,33 +199,25 @@ export const authController = {
     try {
       const { email, otpCode, newPassword } = req.body;
       if (!email || !otpCode || !newPassword) {
-        return res.status(400).json({ success: false, message: 'Thiếu thông tin đặt lại mật khẩu!' });
+        return res.status(400).json({ success: false, message: 'Thiếu thông tin đặt lại mật khẩu.' });
       }
 
       if (newPassword.length < 6) {
-        return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 6 ký tự!' });
+        return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 6 ký tự.' });
       }
 
       const cleanEmail = email.toLowerCase().trim();
-      const record = resetOtpStore.get(cleanEmail);
+      const verifyResult = otpService.verifyOtp(cleanEmail, otpCode);
 
-      if (!record || record.otp !== String(otpCode).trim()) {
+      if (!verifyResult.valid) {
         return res.status(400).json({
           success: false,
-          message: 'Mã OTP không hợp lệ hoặc đã hết hạn!'
+          message: verifyResult.message
         });
       }
 
-      if (Date.now() > record.expiresAt) {
-        resetOtpStore.delete(cleanEmail);
-        return res.status(400).json({
-          success: false,
-          message: 'Mã OTP đã hết hạn!'
-        });
-      }
-
-      // Xóa OTP khỏi bộ nhớ để chống tấn công Replay Attack
-      resetOtpStore.delete(cleanEmail);
+      // Xóa OTP sau khi xác thực thành công
+      otpService.deleteOtp(cleanEmail);
 
       // Mã hóa mật khẩu mới bằng bcrypt
       const salt = await bcrypt.genSalt(10);
@@ -285,11 +241,11 @@ export const authController = {
 
       return res.json({
         success: true,
-        message: '🎉 Đặt lại mật khẩu thành công! Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.'
+        message: 'Đặt lại mật khẩu thành công. Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.'
       });
     } catch (err) {
       console.error('❌ [Auth Reset Password Error]:', err);
-      return res.status(500).json({ success: false, message: 'Lỗi đặt lại mật khẩu!' });
+      return res.status(500).json({ success: false, message: 'Lỗi đặt lại mật khẩu mới.' });
     }
   },
 

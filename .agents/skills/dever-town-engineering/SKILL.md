@@ -32,3 +32,7 @@ Khi nhận một nhiệm vụ phức tạp từ người dùng, luôn phân rã 
 ## 5. Quy Chuẩn Git Commit
 - Mọi commit bắt buộc phải có cờ author của người dùng:
   `git commit -m "<message>" --author="RaH11 <hungnguyen.190206@gmail.com>"`
+
+## 6. Anti-AI-Slop & Impeccable UI Rule
+- Không lạm dụng emoji tràn lan trên các nút bấm, thông báo và email hệ thống.
+- Văn phong tinh gọn, trang nhã, chuyên nghiệp, thể hiện đẳng cấp sản phẩm của CLB Lập trình.
