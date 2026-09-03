@@ -28,6 +28,10 @@ import { authService } from '../services/AuthService.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { i18n } from '../config/i18n.js';
+import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager.js';
+import { JuiceManager } from '../managers/JuiceManager.js';
+import { AchievementManager } from '../managers/AchievementManager.js';
+import { CampusTicker } from '../ui/common/CampusTicker.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -45,6 +49,12 @@ export class WorldScene extends Phaser.Scene {
 
   create() {
     this.physics.world.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
+
+    // 0. Khởi tạo Juice, Môi trường hạt & Thành tựu
+    this.juiceManager = new JuiceManager(this);
+    this.ambientManager = new AmbientEnvironmentManager(this);
+    this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
+    this.campusTicker = new CampusTicker();
 
     // 1. Khởi tạo Local Player
     const user = authService.getUser();
@@ -94,6 +104,9 @@ export class WorldScene extends Phaser.Scene {
       onEquipChange: (item) => {
         if (this.inventoryModal && this.inventoryModal.isOpen()) {
           this.inventoryModal.render();
+        }
+        if (item && (item.id === 'item_macbook_m3' || item.id === 'item_custom_keyboard') && this.achievementManager) {
+          this.achievementManager.unlock('tech_pro');
         }
       }
     });
@@ -325,6 +338,16 @@ export class WorldScene extends Phaser.Scene {
     }
 
     this.teleportGraceUntil = performance.now() + 2000;
+
+    // Cập nhật hiệu ứng hạt môi trường cho phòng
+    if (this.ambientManager) {
+      this.ambientManager.setRoom(roomId);
+    }
+
+    // Kiểm tra mở khóa Tân Thủ DEVER khi đến Sảnh Alpha
+    if (this.achievementManager && roomId === 'main_hall') {
+      this.achievementManager.unlock('first_arrival');
+    }
 
     if (this.hudText) {
       this.hudText.setText(`DEVER TOWN | ${mapData.name}`);
@@ -781,6 +804,9 @@ export class WorldScene extends Phaser.Scene {
     if (this.player) {
       this.player.showEmote(emoteId);
     }
+    if (emoteId === 'dance' && this.achievementManager) {
+      this.achievementManager.unlock('stage_dancer');
+    }
     if (this.socketManager) {
       this.socketManager.sendEmote(emoteId);
     }
@@ -802,8 +828,13 @@ export class WorldScene extends Phaser.Scene {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
 
-      if (inputData.isMoving && this.audioManager) {
-        this.audioManager.playFootstep();
+      if (inputData.isMoving) {
+        if (this.audioManager) {
+          this.audioManager.playFootstep();
+        }
+        if (this.ambientManager && Math.random() < 0.22) {
+          this.ambientManager.spawnFootstepDust(this.player.x, this.player.y);
+        }
       }
 
       if (this.socketManager) {

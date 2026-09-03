@@ -303,6 +303,118 @@ class AudioManager {
   }
 
   /**
+   * Fanfare hợp âm rực rỡ khi mở khóa Thành Tựu Mới (C5 -> E5 -> G5 -> C6 -> E6)
+   */
+  playAchievementFanfare() {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = i === notes.length - 1 ? 'square' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i * 0.09);
+
+        const vol = this.masterVolume * 0.28;
+        gain.gain.setValueAtTime(vol, now + i * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.onended = () => {
+          try {
+            osc.disconnect();
+            gain.disconnect();
+          } catch (err) {}
+        };
+
+        osc.start(now + i * 0.09);
+        osc.stop(now + i * 0.09 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  /**
+   * Tiếng chuông thăng hoa theo cấp độ Combo (1 -> 5+)
+   */
+  playComboChime(comboLevel = 1) {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const baseFreq = 440 + Math.min(comboLevel * 120, 960);
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(baseFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.12);
+
+      const vol = this.masterVolume * 0.25;
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch (err) {}
+      };
+
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  /**
+   * Tiếng blip nhẹ khi có điểm số bay Bouncing Text
+   */
+  playScorePopup() {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+
+      const vol = this.masterVolume * 0.15;
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.onended = () => {
+        try {
+          osc.disconnect();
+          gain.disconnect();
+        } catch (err) {}
+      };
+
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } catch (e) {}
+  }
+
+  /**
    * Khởi động nhạc nền Chiptune 8-bit vui tươi (Web Audio Synthesizer)
    */
   startBgm() {

@@ -197,6 +197,7 @@ export class InteractiveModal {
         break;
       case 'coffee_lofi':
         this.setupCoffeeView(zoneData);
+        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('coffee_salt');
         break;
       case 'gallery_memory':
         this.setupGalleryView(zoneData);
@@ -209,12 +210,14 @@ export class InteractiveModal {
         break;
       case 'fptu_student_portal':
         this.setupFptuPortalView(zoneData);
+        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
         break;
       case 'canteen_menus':
         this.setupCanteenMenuView(zoneData);
         break;
       case 'campus_map':
         this.setupCampusMapView(zoneData);
+        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
         break;
       case 'dever_charter':
       case 'swe201c_guide':
@@ -228,6 +231,7 @@ export class InteractiveModal {
         break;
       case 'golden_frog_fortune':
         this.setupGoldenFrogFortuneView(zoneData);
+        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('golden_frog');
         break;
       default:
         break;
