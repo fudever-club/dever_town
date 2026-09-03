@@ -363,7 +363,7 @@ export class WelcomeGate {
       sessionStorage.removeItem('dever_pending_forgot_email');
       this.pendingForgotEmail = '';
 
-      audioManager.playWin();
+      audioManager.playVictory();
       alert('Đặt lại mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới.');
 
       if (resetBtn) resetBtn.disabled = false;

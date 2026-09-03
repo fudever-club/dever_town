@@ -289,6 +289,13 @@ class AudioManager {
       });
     } catch (e) {}
   }
+
+  /**
+   * Alias cho playVictory
+   */
+  playWin() {
+    this.playVictory();
+  }
 }
 
 export const audioManager = new AudioManager();

@@ -447,7 +447,7 @@ export class AuthModal {
         email: promptEmail,
         displayName: promptName
       });
-      audioManager.playWin();
+      audioManager.playVictory();
       this.hide();
       if (this.onAuthSuccess) {
         this.onAuthSuccess({ user, isGuest: false });
@@ -550,7 +550,7 @@ export class AuthModal {
       sessionStorage.removeItem('dever_pending_forgot_email');
       this.pendingForgotEmail = '';
 
-      audioManager.playWin();
+      audioManager.playVictory();
       alert('Đặt lại mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới.');
 
       if (resetBtn) resetBtn.disabled = false;
@@ -616,7 +616,7 @@ export class AuthModal {
 
     try {
       await authService.changePassword({ oldPassword, newPassword });
-      audioManager.playWin();
+      audioManager.playVictory();
       alert('Đổi mật khẩu thành công. Mật khẩu mới đã được cập nhật.');
 
       const form = document.getElementById('profile-change-pw-form');
