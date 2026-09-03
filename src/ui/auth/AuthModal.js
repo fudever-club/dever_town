@@ -425,9 +425,7 @@ export class AuthModal {
 
       const otpInput = document.getElementById('reset-otp-input');
       if (otpInput) {
-        if (res && res.devOtp) {
-          otpInput.value = res.devOtp;
-        }
+        otpInput.value = '';
         otpInput.focus();
       }
 

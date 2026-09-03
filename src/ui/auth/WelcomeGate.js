@@ -239,9 +239,7 @@ export class WelcomeGate {
 
       const otpInput = document.getElementById('gate-reset-otp-input');
       if (otpInput) {
-        if (res && res.devOtp) {
-          otpInput.value = res.devOtp;
-        }
+        otpInput.value = '';
         otpInput.focus();
       }
 
