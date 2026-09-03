@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
 import { WorldScene } from './scenes/WorldScene.js';
-import { WelcomeGate } from './ui/index.js';
+import { WelcomeGate, SettingsModal } from './ui/index.js';
 import { TextureGenerator } from './utils/TextureGenerator.js';
 
 const config = {
@@ -30,11 +30,15 @@ function initGame() {
   if (window.__DEVER_INITIALIZED__) return;
   window.__DEVER_INITIALIZED__ = true;
 
-  // 1. Khởi động Game Phaser ngay lập tức
+  // 1. Khởi tạo Settings Modal toàn cục (cho cả Welcome Gate và trong Game)
+  const settingsModal = new SettingsModal();
+  window.__SETTINGS_MODAL__ = settingsModal;
+
+  // 2. Khởi động Game Phaser ngay lập tức
   const game = new Phaser.Game(config);
   window.__DEVER_GAME__ = game;
 
-  // 2. Khởi tạo Welcome Gate & Loading Overlay
+  // 3. Khởi tạo Welcome Gate & Loading Overlay
   const welcomeGate = new WelcomeGate({
     onEnterGame: ({ user, isGuest }) => {
       const scene = game.scene.getScene('WorldScene');

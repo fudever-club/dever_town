@@ -287,6 +287,50 @@ export const authController = {
   },
 
   /**
+   * PUT /api/auth/change-password - Đổi mật khẩu trong game (Yêu cầu mật khẩu cũ)
+   */
+  async changePassword(req, res) {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp mật khẩu cũ và mật khẩu mới.' });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 6 ký tự.' });
+      }
+
+      const db = getDB();
+      const user = await db.getUserById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin tài khoản.' });
+      }
+
+      // Xác thực mật khẩu cũ
+      const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác.' });
+      }
+
+      // Mã hóa mật khẩu mới
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      await db.updatePasswordByEmail(user.email, hashedPassword);
+
+      console.log(`🔑 [Auth] Người dùng ${user.email} đã đổi mật khẩu thành công trong game.`);
+
+      return res.json({
+        success: true,
+        message: 'Đổi mật khẩu thành công.'
+      });
+    } catch (err) {
+      console.error('❌ [Auth Change Password Error]:', err);
+      return res.status(500).json({ success: false, message: 'Lỗi xử lý đổi mật khẩu.' });
+    }
+  },
+
+  /**
    * PUT /api/auth/sync-profile - Đồng bộ toàn diện dữ liệu nhân vật, trang phục, túi đồ, nhiệm vụ & kỷ lục vào DB
    */
   async syncProfile(req, res) {

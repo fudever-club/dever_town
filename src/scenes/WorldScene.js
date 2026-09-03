@@ -362,9 +362,15 @@ export class WorldScene extends Phaser.Scene {
     });
 
     // 5. Settings Modal
-    this.settingsModal = new SettingsModal({
-      scene: this
-    });
+    if (window.__SETTINGS_MODAL__) {
+      this.settingsModal = window.__SETTINGS_MODAL__;
+      this.settingsModal.scene = this;
+    } else {
+      this.settingsModal = new SettingsModal({
+        scene: this
+      });
+      window.__SETTINGS_MODAL__ = this.settingsModal;
+    }
 
     // 6. Quests & Points Modal
     this.questModal = new QuestModal();

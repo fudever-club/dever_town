@@ -48,6 +48,11 @@ router.get('/me', authenticateToken, authController.getMe);
 router.put('/profile', authenticateToken, sanitizeInput, authController.updateProfile);
 
 /**
+ * PUT /api/auth/change-password - Đổi mật khẩu trong game (Yêu cầu mật khẩu cũ)
+ */
+router.put('/change-password', authenticateToken, sanitizeInput, authController.changePassword);
+
+/**
  * PUT /api/auth/sync-profile - Đồng bộ toàn diện dữ liệu nhân vật, trang phục, túi đồ, nhiệm vụ & kỷ lục vào DB
  */
 router.put('/sync-profile', authenticateToken, authController.syncProfile);

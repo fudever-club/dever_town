@@ -31,10 +31,34 @@ class AuthService {
   }
 
   isAdmin() {
-    // BẢO MẬT: Bắt buộc phải ĐÃ ĐĂNG NHẬP (isLoggedIn() === true, có Bearer token) VÀ role là admin/leader
     if (!this.isLoggedIn() || !this.user) return false;
     const role = (this.user.role || '').toLowerCase();
     return role === 'admin' || role === 'leader';
+  }
+
+  saveSession(token, user) {
+    this.token = token;
+    this.user = user;
+    if (token) localStorage.setItem('dever_token', token);
+    if (user) {
+      localStorage.setItem('dever_user', JSON.stringify(user));
+      if (user.display_name) localStorage.setItem('dever_nickname', user.display_name);
+      this.applyUserServerData(user);
+    }
+    this.touchSession();
+  }
+
+  touchSession() {
+    localStorage.setItem('dever_last_active', Date.now().toString());
+  }
+
+  isSessionValid(maxIdleHours = 24) {
+    const lastActive = Number(localStorage.getItem('dever_last_active') || 0);
+    if (!lastActive) return false;
+    const maxIdleMs = maxIdleHours * 60 * 60 * 1000;
+    const isFresh = (Date.now() - lastActive) < maxIdleMs;
+    const hasUser = !!this.user || !!localStorage.getItem('dever_user');
+    return isFresh && hasUser;
   }
 
   setGuestSession(nickname) {
@@ -46,10 +70,11 @@ class AuthService {
       role: 'guest',
       avatar_id: 'dev_hoodie'
     };
-    // Thu hồi toàn bộ token và quyền từ phiên đăng nhập cũ
     localStorage.removeItem('dever_token');
     localStorage.setItem('dever_user', JSON.stringify(this.user));
     localStorage.setItem('dever_nickname', nickname);
+    this.touchSession();
+    return this.user;
   }
 
   async checkNameAvailability(name) {
@@ -59,7 +84,6 @@ class AuthService {
       const data = await res.json();
       return data;
     } catch (e) {
-      // Fallback nếu server offline
       const cleanLower = name.trim().toLowerCase();
       const RESERVED = ['admin', 'bqt', 'leader', 'moderator', 'system', 'root', 'bot', 'fu-dever'];
       if (RESERVED.some(r => cleanLower === r || cleanLower.startsWith(`${r} `))) {
@@ -70,35 +94,49 @@ class AuthService {
   }
 
   async register({ email, password, displayName, avatarId }) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, displayName, avatarId })
-    });
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, displayName, avatarId })
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Đăng ký thất bại');
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Đăng ký thất bại');
+      }
+
+      this.saveSession(data.token, data.user);
+      return data.user;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-
-    this.saveSession(data.token, data.user);
-    return data.user;
   }
 
   async login({ email, password }) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Đăng nhập thất bại');
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Đăng nhập thất bại');
+      }
+
+      this.saveSession(data.token, data.user);
+      return data.user;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-
-    this.saveSession(data.token, data.user);
-    return data.user;
   }
 
   async loginWithGoogle({ email, displayName }) {
@@ -121,46 +159,93 @@ class AuthService {
   }
 
   async requestPasswordReset(email) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/forgot-password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.trim() })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Yêu cầu gửi mã OTP thất bại!');
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Yêu cầu gửi mã OTP thất bại!');
+      }
+      return data;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-    return data;
   }
 
   async verifyResetOtp({ email, otpCode }) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/verify-reset-otp`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.trim(), otpCode: String(otpCode).trim() })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Mã OTP không hợp lệ!');
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/verify-reset-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), otpCode: String(otpCode).trim() })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Mã OTP không hợp lệ!');
+      }
+      return data;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-    return data;
   }
 
   async resetPassword({ email, otpCode, newPassword }) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/reset-password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email.trim(),
-        otpCode: String(otpCode).trim(),
-        newPassword
-      })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Đặt lại mật khẩu thất bại!');
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          otpCode: String(otpCode).trim(),
+          newPassword
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Đặt lại mật khẩu thất bại!');
+      }
+      return data;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-    return data;
+  }
+
+  async changePassword({ oldPassword, newPassword }) {
+    if (!this.token) {
+      throw new Error('Bạn cần đăng nhập tài khoản thành viên để đổi mật khẩu!');
+    }
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/change-password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`
+        },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Đổi mật khẩu thất bại!');
+      }
+      return data;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
+    }
   }
 
   async fetchMe() {
@@ -175,6 +260,7 @@ class AuthService {
         this.user = data.user;
         localStorage.setItem('dever_user', JSON.stringify(data.user));
         this.applyUserServerData(data.user);
+        this.touchSession();
         return data.user;
       }
     } catch (err) {
@@ -185,34 +271,42 @@ class AuthService {
 
   async updateProfile({ displayName, avatarId }) {
     if (!this.token) {
-      // Khách vãng lai: Lưu tạm vào LocalStorage
       const guestUser = this.user || { role: 'guest' };
       guestUser.display_name = displayName;
       guestUser.avatar_id = avatarId;
       this.user = guestUser;
       localStorage.setItem('dever_user', JSON.stringify(guestUser));
       localStorage.setItem('dever_nickname', displayName);
+      this.touchSession();
       return guestUser;
     }
 
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/profile`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.token}`
-      },
-      body: JSON.stringify({ displayName, avatarId })
-    });
+    try {
+      const res = await fetch(`${this.getBaseUrl()}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`
+        },
+        body: JSON.stringify({ displayName, avatarId })
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || 'Cập nhật thất bại');
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Cập nhật thất bại');
+      }
+
+      this.user = data.user;
+      localStorage.setItem('dever_user', JSON.stringify(data.user));
+      localStorage.setItem('dever_nickname', data.user.display_name);
+      this.touchSession();
+      return data.user;
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Máy chủ đang khởi động lại hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại sau vài giây!');
+      }
+      throw err;
     }
-
-    this.user = data.user;
-    localStorage.setItem('dever_user', JSON.stringify(data.user));
-    localStorage.setItem('dever_nickname', data.user.display_name);
-    return data.user;
   }
 
   applyUserServerData(user) {
@@ -258,41 +352,17 @@ class AuthService {
         }
       }
     } catch (e) {
-      console.warn('Lỗi đồng bộ dữ liệu người dùng từ máy chủ:', e);
+      console.warn('⚠️ Lỗi parse dữ liệu người dùng từ server:', e);
     }
   }
 
-  saveSession(token, user) {
-    this.token = token;
-    this.user = user;
-    localStorage.setItem('dever_token', token);
-    localStorage.setItem('dever_user', JSON.stringify(user));
-    localStorage.setItem('dever_nickname', user.display_name);
+  queueProfileSync(field, value) {
+    this.pendingSyncData[field] = value;
+    this.touchSession();
 
-    // Tự động kiểm tra và đồng bộ trang phục cũ từ máy nếu trên server chưa có
-    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
-    if (!user.wardrobe_config && savedWardrobeRaw) {
-      try {
-        const cfg = JSON.parse(savedWardrobeRaw);
-        user.wardrobe_config = cfg;
-        this.syncFullProfile({ wardrobeConfig: cfg });
-      } catch (e) {}
-    }
-
-    this.applyUserServerData(user);
-  }
-
-  async syncFullProfile(payload = {}) {
     if (!this.token) {
-      // Khách vãng lai: không gửi request
-      return null;
+      return Promise.resolve(null);
     }
-
-    // Gộp payload vào hàng đợi đồng bộ
-    this.pendingSyncData = {
-      ...this.pendingSyncData,
-      ...payload
-    };
 
     if (this.syncTimer) {
       clearTimeout(this.syncTimer);
@@ -335,20 +405,7 @@ class AuthService {
     this.user = null;
     localStorage.removeItem('dever_token');
     localStorage.removeItem('dever_user');
-  }
-
-  setGuestSession(displayName, avatarId) {
-    this.token = null;
-    this.user = {
-      id: null,
-      display_name: displayName,
-      avatar_id: avatarId,
-      role: 'guest'
-    };
-    localStorage.removeItem('dever_token');
-    localStorage.setItem('dever_user', JSON.stringify(this.user));
-    localStorage.setItem('dever_nickname', displayName);
-    return this.user;
+    localStorage.removeItem('dever_last_active');
   }
 }
 

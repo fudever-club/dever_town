@@ -16,6 +16,25 @@ export class WelcomeGate {
 
     this.initDOM();
     this.bindEvents();
+    this.setupPasswordToggles();
+    
+    // Tự động duy trì phiên nếu vừa mới chơi / reload trang trong vòng 24 giờ
+    setTimeout(() => this.checkAutoLogin(), 50);
+  }
+
+  checkAutoLogin() {
+    if (authService.isSessionValid(24)) {
+      const user = authService.getUser();
+      if (user) {
+        console.log('🔄 [WelcomeGate] Tự động duy trì phiên đăng nhập gần nhất:', user.display_name || user.email);
+        this.startLoadingAndEnter({
+          user,
+          isGuest: user.role === 'guest'
+        });
+        return true;
+      }
+    }
+    return false;
   }
 
   initDOM() {
@@ -27,6 +46,33 @@ export class WelcomeGate {
     if (guestInput && savedNick) {
       guestInput.value = savedNick;
     }
+  }
+
+  setupPasswordToggles() {
+    if (!this.gateEl) return;
+    const toggleBtns = this.gateEl.querySelectorAll('.btn-toggle-password');
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = btn.closest('.password-input-wrapper');
+        if (!wrapper) return;
+        const input = wrapper.querySelector('input');
+        const iconEye = btn.querySelector('.icon-eye');
+        const iconEyeOff = btn.querySelector('.icon-eye-off');
+        if (!input) return;
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (iconEye) iconEye.classList.add('hidden');
+          if (iconEyeOff) iconEyeOff.classList.remove('hidden');
+        } else {
+          input.type = 'password';
+          if (iconEye) iconEye.classList.remove('hidden');
+          if (iconEyeOff) iconEyeOff.classList.add('hidden');
+        }
+      });
+    });
   }
 
   bindEvents() {
@@ -50,6 +96,20 @@ export class WelcomeGate {
         this.switchTab(tab);
       });
     });
+
+    // Cài đặt âm lượng & ngôn ngữ ở Welcome Gate
+    const gateSettingsBtn = document.getElementById('gate-settings-btn');
+    if (gateSettingsBtn) {
+      gateSettingsBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        if (window.__SETTINGS_MODAL__) {
+          window.__SETTINGS_MODAL__.show();
+        } else {
+          const sm = document.getElementById('settings-modal');
+          if (sm) sm.classList.remove('hidden');
+        }
+      });
+    }
 
     // Forms
     const guestForm = document.getElementById('gate-form-guest');

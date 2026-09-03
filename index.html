@@ -107,6 +107,7 @@
         </form>
 
         <!-- Tab 2: Login Form -->
+        <!-- Tab 2: Login Form -->
         <form id="gate-form-login" class="gate-form-pane hidden">
           <div class="form-group">
             <label>Email:</label>
@@ -117,7 +118,13 @@
               <label>Mật khẩu:</label>
               <button type="button" id="gate-btn-goto-forgot" class="link-forgot-pass">Quên mật khẩu?</button>
             </div>
-            <input type="password" id="gate-login-password" class="modal-input" placeholder="••••••••" required />
+            <div class="password-input-wrapper">
+              <input type="password" id="gate-login-password" class="modal-input" placeholder="••••••••" required />
+              <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
           <button type="submit" class="gate-submit-btn btn-fpt-gradient">Đăng Nhập Thành Viên</button>
         </form>
@@ -134,7 +141,13 @@
           </div>
           <div class="form-group">
             <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
-            <input type="password" id="gate-reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            <div class="password-input-wrapper">
+              <input type="password" id="gate-reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+              <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
           <button type="submit" class="gate-submit-btn btn-fpt-gradient">Tạo Tài Khoản Thành Viên</button>
         </form>
@@ -171,12 +184,24 @@
 
             <div class="form-group">
               <label for="gate-reset-new-password">Mật khẩu mới (Tối thiểu 6 ký tự):</label>
-              <input type="password" id="gate-reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+              <div class="password-input-wrapper">
+                <input type="password" id="gate-reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+                <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                  <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
             </div>
 
             <div class="form-group">
               <label for="gate-reset-confirm-password">Xác nhận mật khẩu mới:</label>
-              <input type="password" id="gate-reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+              <div class="password-input-wrapper">
+                <input type="password" id="gate-reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+                <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                  <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
             </div>
 
             <button type="submit" id="gate-btn-confirm-reset" class="gate-submit-btn btn-fpt-gradient">
@@ -571,7 +596,13 @@
             <label>Mật khẩu:</label>
             <button type="button" id="btn-goto-forgot" class="link-forgot-pass">Quên mật khẩu?</button>
           </div>
-          <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
+          <div class="password-input-wrapper">
+            <input type="password" id="login-password" class="modal-input" placeholder="••••••••" required />
+            <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+              <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="modal-btn btn-fpt-orange">Đăng Nhập Thành Viên</button>
 
@@ -599,7 +630,13 @@
         </div>
         <div class="form-group">
           <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
-          <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+          <div class="password-input-wrapper">
+            <input type="password" id="reg-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+              <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="modal-btn btn-fpt-orange">Tạo Tài Khoản Thành Viên</button>
       </form>
@@ -666,6 +703,47 @@
           </div>
         </form>
 
+        <!-- Form In-Game Change Password (For Logged-in Members) -->
+        <div id="profile-change-pw-box" class="profile-edit-section hidden">
+          <div class="section-toggle-header" id="btn-toggle-change-pw-form">
+            <span>Đổi Mật Khẩu Tài Khoản</span>
+            <button type="button" class="btn-text-link">Mở Form ▼</button>
+          </div>
+          <form id="profile-change-pw-form" class="profile-pw-subform hidden">
+            <div class="form-group">
+              <label for="change-old-password">Mật khẩu hiện tại:</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="change-old-password" class="modal-input" placeholder="••••••••" required />
+                <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                  <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="change-new-password">Mật khẩu mới (Tối thiểu 6 ký tự):</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="change-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+                <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                  <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="change-confirm-password">Xác nhận mật khẩu mới:</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="change-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+                <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                  <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="modal-btn btn-fpt-orange">Cập Nhật Mật Khẩu</button>
+          </form>
+        </div>
+
         <!-- Profile Bottom Action Buttons -->
         <div class="profile-actions-row">
           <button type="button" id="profile-upgrade-btn" class="profile-action-btn upgrade-btn hidden">
@@ -709,12 +787,24 @@
 
           <div class="form-group">
             <label for="reset-new-password">Mật khẩu mới (Tối thiểu 6 ký tự):</label>
-            <input type="password" id="reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            <div class="password-input-wrapper">
+              <input type="password" id="reset-new-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+              <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
 
           <div class="form-group">
             <label for="reset-confirm-password">Xác nhận mật khẩu mới:</label>
-            <input type="password" id="reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+            <div class="password-input-wrapper">
+              <input type="password" id="reset-confirm-password" class="modal-input" placeholder="••••••••" minlength="6" required />
+              <button type="button" class="btn-toggle-password" tabindex="-1" title="Hiện/Ẩn mật khẩu">
+                <svg class="icon-eye" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
 
           <button type="submit" id="btn-confirm-reset" class="modal-btn btn-fpt-orange">

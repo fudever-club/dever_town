@@ -14,6 +14,34 @@ export class AuthModal {
     this.pendingForgotEmail = '';
 
     this.bindEvents();
+    this.setupPasswordToggles();
+  }
+
+  setupPasswordToggles() {
+    if (!this.modalEl) return;
+    const toggleBtns = this.modalEl.querySelectorAll('.btn-toggle-password');
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = btn.closest('.password-input-wrapper');
+        if (!wrapper) return;
+        const input = wrapper.querySelector('input');
+        const iconEye = btn.querySelector('.icon-eye');
+        const iconEyeOff = btn.querySelector('.icon-eye-off');
+        if (!input) return;
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (iconEye) iconEye.classList.add('hidden');
+          if (iconEyeOff) iconEyeOff.classList.remove('hidden');
+        } else {
+          input.type = 'password';
+          if (iconEye) iconEye.classList.remove('hidden');
+          if (iconEyeOff) iconEyeOff.classList.add('hidden');
+        }
+      });
+    });
   }
 
   bindEvents() {
@@ -57,6 +85,26 @@ export class AuthModal {
     const profileForm = document.getElementById('pane-profile-form');
     if (profileForm) {
       profileForm.addEventListener('submit', (e) => this.handleUpdateProfile(e));
+    }
+
+    // Toggle Form Đổi Mật Khẩu Trong Game
+    const toggleChangePwBtn = document.getElementById('btn-toggle-change-pw-form');
+    if (toggleChangePwBtn) {
+      toggleChangePwBtn.addEventListener('click', () => {
+        const form = document.getElementById('profile-change-pw-form');
+        if (form) {
+          form.classList.toggle('hidden');
+          const isHidden = form.classList.contains('hidden');
+          const btnText = toggleChangePwBtn.querySelector('.btn-text-link');
+          if (btnText) btnText.textContent = isHidden ? 'Mở Form ▼' : 'Đóng Form ▲';
+        }
+      });
+    }
+
+    // Submit Đổi Mật Khẩu Trong Game
+    const changePwForm = document.getElementById('profile-change-pw-form');
+    if (changePwForm) {
+      changePwForm.addEventListener('submit', (e) => this.handleInGameChangePassword(e));
     }
 
     // Google SSO Buttons
@@ -225,6 +273,19 @@ export class AuthModal {
     // Hiển thị nút nâng cấp nếu đang là khách
     if (upgradeBtn) {
       upgradeBtn.classList.toggle('hidden', isLoggedIn);
+    }
+
+    // 7. Toggle khung đổi mật khẩu trong game (chỉ hiển thị cho thành viên email)
+    const changePwBox = document.getElementById('profile-change-pw-box');
+    if (changePwBox) {
+      changePwBox.classList.toggle('hidden', !isLoggedIn || isGoogle);
+      const form = document.getElementById('profile-change-pw-form');
+      if (form) {
+        form.reset();
+        form.classList.add('hidden');
+      }
+      const btnText = document.querySelector('#btn-toggle-change-pw-form .btn-text-link');
+      if (btnText) btnText.textContent = 'Mở Form ▼';
     }
   }
 
@@ -511,7 +572,7 @@ export class AuthModal {
 
     const displayName = document.getElementById('profile-name').value.trim();
     if (!displayName) {
-      this.showError('Tên hiển thị không được để trống!');
+      this.showError('Tên hiển thị không được để trống.');
       return;
     }
 
@@ -520,13 +581,53 @@ export class AuthModal {
         displayName
       });
       audioManager.playClick();
-      alert(`🎉 Cập nhật tên hiển thị thành "${displayName}" thành công!`);
+      alert(`Cập nhật tên hiển thị thành "${displayName}" thành công.`);
       this.hide();
       if (this.onAuthSuccess) {
         this.onAuthSuccess({ user, isGuest: !authService.isLoggedIn() });
       }
     } catch (err) {
-      this.showError(err.message || 'Cập nhật thất bại.');
+      this.showError(err.message || 'Cập nhật không thành công.');
+    }
+  }
+
+  async handleInGameChangePassword(e) {
+    e.preventDefault();
+    this.clearError();
+
+    const oldPassword = document.getElementById('change-old-password')?.value;
+    const newPassword = document.getElementById('change-new-password')?.value;
+    const confirmPassword = document.getElementById('change-confirm-password')?.value;
+
+    if (!oldPassword) {
+      this.showError('Vui lòng nhập mật khẩu hiện tại.');
+      return;
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      this.showError('Mật khẩu mới phải có tối thiểu 6 ký tự.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      this.showError('Mật khẩu xác nhận không khớp với mật khẩu mới.');
+      return;
+    }
+
+    try {
+      await authService.changePassword({ oldPassword, newPassword });
+      audioManager.playWin();
+      alert('Đổi mật khẩu thành công. Mật khẩu mới đã được cập nhật.');
+
+      const form = document.getElementById('profile-change-pw-form');
+      if (form) {
+        form.reset();
+        form.classList.add('hidden');
+      }
+      const btnText = document.querySelector('#btn-toggle-change-pw-form .btn-text-link');
+      if (btnText) btnText.textContent = 'Mở Form ▼';
+    } catch (err) {
+      this.showError(err.message || 'Đổi mật khẩu không thành công.');
     }
   }
 
