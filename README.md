@@ -159,23 +159,38 @@ npx electron-builder --win
 
 ```
 DEVER_TOWN/
+├── 📁 docs/                # Toàn bộ tài liệu, plans, deployment & content
+│   ├── 📁 content/         # Kịch bản & nội dung FUDA
+│   ├── 📁 deployment/      # Hướng dẫn triển khai 3 hướng
+│   ├── 📁 media/           # Raw assets & sticker sources
+│   ├── 📁 plans/           # Kế hoạch phát triển (v1, v2, v3)
+│   └── 📁 progress/        # Tiến trình dự án
 ├── 📁 electron/            # Desktop App (Electron main process)
-├── 📁 public/              # Assets tĩnh (favicon, logo, hình ảnh)
+├── 📁 public/              # Assets tĩnh cho Web (campus, logos, stickers)
+├── 📁 scripts/             # Kịch bản kiểm thử tải & stress test
 ├── 📁 server/              # Backend Node.js
+│   ├── 📁 controllers/     # Controller layer (auth, room, game)
+│   ├── 📁 data/            # JSON DB files (dev mode)
 │   ├── 📁 db/              # Database Adapters (File / PostgreSQL)
 │   ├── 📁 middleware/      # Rate Limiter, XSS Sanitizer, Auth JWT
-│   ├── 📁 routes/          # REST API (auth, game scores, leaderboard)
-│   ├── 📁 socket/          # Socket.io Realtime Handler
+│   ├── 📁 routes/          # REST API endpoints
+│   ├── 📁 services/        # Mail & business services
+│   ├── 📁 socket/          # Socket.io Realtime Handler & Player Manager
 │   └── server.js           # Entry point backend
-├── 📁 src/                 # Frontend Source Code
-│   ├── 📁 config/          # Game config, maps, controls, i18n
-│   ├── 📁 entities/        # Player, RemotePlayer (pixel art)
-│   ├── 📁 managers/        # Interaction, Inventory Manager
+├── 📁 src/                 # Frontend Source Code (Phaser 3 + Vanilla JS)
+│   ├── 📁 config/          # Game config, maps, items, controls, i18n
+│   ├── 📁 entities/        # Player, RemotePlayer (Pixel Art Sprites)
+│   ├── 📁 managers/        # EventBus, Interaction, Inventory, Quest Managers
 │   ├── 📁 network/         # Socket.io Client Manager
 │   ├── 📁 scenes/          # Phaser Scenes (BootScene, WorldScene)
-│   ├── 📁 services/        # Auth Service
+│   ├── 📁 services/        # API Client Services
 │   ├── 📁 styles/          # CSS Design System (Glassmorphism)
-│   ├── 📁 ui/              # UI Components (Modal, Chat, Wardrobe, TouchControls...)
+│   ├── 📁 ui/              # UI Components (Phân nhóm theo module)
+│   │   ├── 📁 auth/        # WelcomeGate, AuthModal, NicknameModal, DeviceApproval
+│   │   ├── 📁 gameplay/    # InteractiveModal, InventoryModal, QuestModal, Wardrobe
+│   │   ├── 📁 minigames/   # SportsArcade, RetroArcade, PomodoroTimer
+│   │   ├── 📁 common/      # ChatBox, Settings, TouchControls, Onboarding, Network
+│   │   └── index.js        # Barrel export tập trung
 │   └── 📁 utils/           # TextureGenerator, AudioManager (Web Audio API)
 ├── index.html              # App Entry HTML
 ├── vite.config.js          # Vite Build Config
