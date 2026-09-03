@@ -17,8 +17,9 @@
 - WorldScene phải duy trì teleport cooldown >= 1.5s để chống vòng lặp kẹt cổng.
 
 ## 4. Git Commit Author Rule
-- Mọi commit git bắt buộc phải chỉ định author:
-  `--author="RaH11 <hungnguyen.190206@gmail.com>"`
+- Mọi commit git bắt buộc phải chỉ định author của người dùng:
+  `--author="qnhat1504 <dangquangnhat1504@gmail.com>"` (hoặc `--author="RaH11 <hungnguyen.190206@gmail.com>"`)
+
 
 ## 5. Anti-AI-Slop & Impeccable UI Rule (Chống Lạm Dụng Emoji & Văn Phong AI Slop)
 - Tuyệt đối không lạm dụng emoji tràn lan ở tiêu đề, nút bấm (CTA), thông báo hệ thống hoặc nội dung email.

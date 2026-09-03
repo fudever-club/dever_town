@@ -18,6 +18,7 @@ export { WardrobeModal } from './gameplay/WardrobeModal.js';
 export { RetroArcade } from './minigames/RetroArcade.js';
 export { SportsArcade } from './minigames/SportsArcade.js';
 export { PomodoroTimer } from './minigames/PomodoroTimer.js';
+export { SpeedCodeDuel } from './minigames/SpeedCodeDuel.js';
 
 // 4. Common, HUD & Controls
 export { ChatBox } from './common/ChatBox.js';
@@ -25,3 +26,7 @@ export { OnboardingGuide } from './common/OnboardingGuide.js';
 export { SettingsModal } from './common/SettingsModal.js';
 export { TouchControls } from './common/TouchControls.js';
 export { NetworkStatusOverlay } from './common/NetworkStatusOverlay.js';
+export { MinimapOverlay } from './common/MinimapOverlay.js';
+export { RoomBanner } from './common/RoomBanner.js';
+export { EmoteBar } from './common/EmoteBar.js';
+

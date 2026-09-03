@@ -9,7 +9,10 @@ class AudioManager {
     this.masterVolume = 0.7;
     this.sfxEnabled = true;
     this.footstepsEnabled = true;
+    this.bgmEnabled = false;
     this.lastFootstepTime = 0;
+    this.bgmTimer = null;
+    this.bgmStep = 0;
 
     this.loadSettings();
     this.initAudioContextOnUserGesture();
@@ -25,6 +28,7 @@ class AudioManager {
         this.masterVolume = parsed.masterVolume ?? 0.7;
         this.sfxEnabled = parsed.sfxEnabled ?? true;
         this.footstepsEnabled = parsed.footstepsEnabled ?? true;
+        this.bgmEnabled = parsed.bgmEnabled ?? false;
       }
     } catch (e) {
       console.warn('Lỗi nạp Audio Settings:', e);
@@ -38,7 +42,8 @@ class AudioManager {
         isMuted: this.isMuted,
         masterVolume: this.masterVolume,
         sfxEnabled: this.sfxEnabled,
-        footstepsEnabled: this.footstepsEnabled
+        footstepsEnabled: this.footstepsEnabled,
+        bgmEnabled: this.bgmEnabled
       }));
     } catch (e) {
       console.warn('Lỗi lưu Audio Settings:', e);
@@ -295,6 +300,236 @@ class AudioManager {
    */
   playWin() {
     this.playVictory();
+  }
+
+  /**
+   * Khởi động nhạc nền Chiptune 8-bit vui tươi (Web Audio Synthesizer)
+   */
+  startBgm() {
+    if (this.bgmTimer) return;
+    this.bgmEnabled = true;
+    this.saveSettings();
+
+    // Chuỗi nốt giai điệu vui tươi Retro Chiptune (C major / Pentatonic bouncy)
+    const melody = [
+      523.25, 659.25, 783.99, 1046.50, // C5, E5, G5, C6
+      880.00, 783.99, 659.25, 587.33,  // A5, G5, E5, D5
+      523.25, 587.33, 659.25, 783.99,  // C5, D5, E5, G5
+      659.25, 587.33, 523.25, 0        // E5, D5, C5, rest
+    ];
+
+    const bass = [
+      130.81, 130.81, 164.81, 164.81, // C3, C3, E3, E3
+      174.61, 174.61, 196.00, 196.00  // F3, F3, G3, G3
+    ];
+
+    this.bgmStep = 0;
+    this.bgmTimer = setInterval(() => {
+      if (this.isMuted || !this.bgmEnabled) return;
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+
+      try {
+        const now = ctx.currentTime;
+        const noteFreq = melody[this.bgmStep % melody.length];
+        const bassFreq = bass[Math.floor(this.bgmStep / 2) % bass.length];
+
+        // 1. Giai điệu chính (Lead)
+        if (noteFreq > 0) {
+          const oscLead = ctx.createOscillator();
+          const gainLead = ctx.createGain();
+          oscLead.type = 'square';
+          oscLead.frequency.setValueAtTime(noteFreq, now);
+
+          const volLead = this.masterVolume * 0.045; // Nhẹ nhàng, không làm phiền
+          gainLead.gain.setValueAtTime(volLead, now);
+          gainLead.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+
+          oscLead.connect(gainLead);
+          gainLead.connect(ctx.destination);
+
+          oscLead.start(now);
+          oscLead.stop(now + 0.13);
+        }
+
+        // 2. Tiếng bass đệm (Triangle Bass)
+        if (this.bgmStep % 2 === 0 && bassFreq > 0) {
+          const oscBass = ctx.createOscillator();
+          const gainBass = ctx.createGain();
+          oscBass.type = 'triangle';
+          oscBass.frequency.setValueAtTime(bassFreq, now);
+
+          const volBass = this.masterVolume * 0.055;
+          gainBass.gain.setValueAtTime(volBass, now);
+          gainBass.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+          oscBass.connect(gainBass);
+          gainBass.connect(ctx.destination);
+
+          oscBass.start(now);
+          oscBass.stop(now + 0.19);
+        }
+
+        this.bgmStep++;
+      } catch (e) {}
+    }, 180);
+  }
+
+  /**
+   * Dừng nhạc nền BGM
+   */
+  stopBgm() {
+    if (this.bgmTimer) {
+      clearInterval(this.bgmTimer);
+      this.bgmTimer = null;
+    }
+    this.bgmEnabled = false;
+    this.saveSettings();
+  }
+
+  /**
+   * Bật / Tắt BGM
+   */
+  toggleBgm() {
+    if (this.bgmEnabled && this.bgmTimer) {
+      this.stopBgm();
+      return false;
+    } else {
+      this.startBgm();
+      return true;
+    }
+  }
+
+  /**
+   * Âm thanh trả lời đúng trong Speed Code Duel (Cao độ tăng theo Combo)
+   */
+  playCorrectChime(streak = 1) {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      // Tần số gốc C5, tăng dần nếu có streak cao
+      const baseFreq = 523.25 * (1 + Math.min(streak * 0.05, 0.4));
+      const chord = [baseFreq, baseFreq * 1.25, baseFreq * 1.5]; // Arpeggio sáng rực rỡ
+
+      chord.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+        const vol = this.masterVolume * 0.28;
+        gain.gain.setValueAtTime(vol, now + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.15);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.16);
+      });
+    } catch (e) {}
+  }
+
+  /**
+   * Âm thanh trả lời sai (Boop nhẹ nhàng, vui nhộn)
+   */
+  playWrongBoop() {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.18);
+
+      const vol = this.masterVolume * 0.2;
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.19);
+    } catch (e) {}
+  }
+
+  /**
+   * Âm thanh biểu cảm Emotes
+   */
+  playEmoteSound(emoteId = 'wave') {
+    if (this.isMuted || !this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      if (emoteId === 'wave') {
+        // Double chirp
+        [600, 800].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.07);
+          gain.gain.setValueAtTime(this.masterVolume * 0.25, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.08);
+        });
+      } else if (emoteId === 'heart') {
+        // Sweet chord
+        [523.25, 659.25].forEach(freq => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(this.masterVolume * 0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        });
+      } else if (emoteId === 'fire' || emoteId === 'dance') {
+        // Fast cheerful arpeggio
+        [440, 554, 659, 880].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(freq, now + i * 0.04);
+          gain.gain.setValueAtTime(this.masterVolume * 0.16, now + i * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.04);
+          osc.stop(now + i * 0.04 + 0.09);
+        });
+      } else {
+        // Generic pop
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(450, now);
+        osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+        gain.gain.setValueAtTime(this.masterVolume * 0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      }
+    } catch (e) {}
   }
 }
 

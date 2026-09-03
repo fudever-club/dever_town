@@ -201,6 +201,72 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.createNameTag();
   }
 
+  showEmote(emoteId) {
+    const emoteIcons = {
+      wave: '👋',
+      heart: '❤️',
+      fire: '🔥',
+      clap: '👏',
+      dance: '🕺',
+      question: '❓'
+    };
+    const icon = emoteIcons[emoteId] || '✨';
+
+    if (this.emoteContainer) {
+      this.emoteContainer.destroy();
+      this.emoteContainer = null;
+    }
+
+    const container = this.scene.add.container(this.x, this.y - 48);
+    container.setDepth(1000003);
+
+    const bg = this.scene.add.graphics();
+    bg.fillStyle(0x0f172a, 0.9);
+    bg.fillCircle(0, 0, 16);
+    bg.lineStyle(2, 0xc084fc, 1);
+    bg.strokeCircle(0, 0, 16);
+
+    const txt = this.scene.add.text(0, 0, icon, {
+      fontSize: '18px'
+    }).setOrigin(0.5, 0.5);
+
+    container.add([bg, txt]);
+    this.emoteContainer = container;
+
+    // Float upward tween
+    this.scene.tweens.add({
+      targets: container,
+      y: this.y - 68,
+      alpha: { from: 1, to: 0 },
+      duration: 2600,
+      ease: 'Cubic.easeOut',
+      onComplete: () => {
+        if (this.emoteContainer === container) {
+          container.destroy();
+          this.emoteContainer = null;
+        }
+      }
+    });
+
+    // If dance, play a fun wiggle bounce animation on sprite
+    if (emoteId === 'dance') {
+      const origY = this.y;
+      this.scene.tweens.add({
+        targets: this,
+        angle: { from: -8, to: 8 },
+        y: origY - 6,
+        yoyo: true,
+        repeat: 5,
+        duration: 120,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          this.setAngle(0);
+          this.y = origY;
+        }
+      });
+    }
+  }
+
   update(time, delta = 16.67) {
     const distSq = (this.targetX - this.x) * (this.targetX - this.x) + (this.targetY - this.y) * (this.targetY - this.y);
 
@@ -261,6 +327,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     }
     if (this.equippedContainer) {
       this.equippedContainer.destroy();
+    }
+    if (this.emoteContainer) {
+      this.emoteContainer.destroy();
+      this.emoteContainer = null;
     }
     if (this.speechTimer) {
       this.speechTimer.remove();

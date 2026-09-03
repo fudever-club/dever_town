@@ -363,6 +363,23 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 7b. Phát Biểu Cảm / Emote Realtime
+     */
+    socket.on('playerEmote', ({ emoteId }) => {
+      const player = playerManager.getPlayer(socket.id);
+      if (!player) return;
+
+      const validEmotes = new Set(['wave', 'heart', 'fire', 'clap', 'dance', 'question']);
+      if (!validEmotes.has(emoteId)) return;
+
+      console.log(`✨ [Emote:${player.roomId}] ${player.name} gửi biểu cảm [${emoteId}]`);
+      io.to(player.roomId).emit('playerEmote', {
+        id: socket.id,
+        emoteId
+      });
+    });
+
+    /**
      * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {

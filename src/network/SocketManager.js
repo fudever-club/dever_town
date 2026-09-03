@@ -131,6 +131,11 @@ export class SocketManager {
       this.scene.handleNewChatMessage(data);
     });
 
+    // 7b. Nhận biểu cảm Emote từ người chơi khác
+    this.socket.on('playerEmote', (data) => {
+      this.scene.handleRemoteEmote(data);
+    });
+
     // 8. Cập nhật số lượng người chơi theo từng phòng
     this.socket.on('roomCounts', (counts) => {
       this.updateRoomCountsUI(counts);
@@ -249,6 +254,11 @@ export class SocketManager {
   sendChatMessage(message) {
     if (!this.socket || !this.isConnected) return;
     this.socket.emit('sendChatMessage', { message });
+  }
+
+  sendEmote(emoteId) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('playerEmote', { emoteId });
   }
 
   updateProfile({ name, avatarId }) {

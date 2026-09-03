@@ -16,4 +16,6 @@ server/data/game_scores.json
 *.njsproj
 *.sln
 *.sw?
+playwright-report/
+test-results/
 

@@ -15,7 +15,11 @@ import {
   OnboardingGuide,
   TouchControls,
   QuestModal,
-  NetworkStatusOverlay
+  NetworkStatusOverlay,
+  MinimapOverlay,
+  RoomBanner,
+  EmoteBar,
+  SpeedCodeDuel
 } from '../ui/index.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
@@ -297,6 +301,14 @@ export class WorldScene extends Phaser.Scene {
     if (notifySocket && this.socketManager) {
       this.socketManager.switchRoom(roomId, spawnX, spawnY);
     }
+
+    // Cập nhật Minimap & Room Banner
+    if (this.minimap) {
+      this.minimap.setRoom(roomId);
+    }
+    if (this.roomBanner) {
+      this.roomBanner.show(roomId, this.remotePlayers.size + 1);
+    }
   }
 
   handlePortalOverlap(portalData) {
@@ -455,6 +467,22 @@ export class WorldScene extends Phaser.Scene {
       socketManager: this.socketManager
     });
 
+    // 10. Minimap Radar HUD
+    this.minimap = new MinimapOverlay({
+      scene: this
+    });
+
+    // 11. Room Banner Transition
+    this.roomBanner = new RoomBanner();
+
+    // 12. Emote Bar (Biểu cảm nhanh & Nhảy múa)
+    this.emoteBar = new EmoteBar({
+      onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
+    });
+
+    // 13. Minigame Đấu Trí Siêu Tốc (Speed Code Duel)
+    this.speedCodeDuel = new SpeedCodeDuel();
+
     // 7. Header Buttons
     const invBtn = document.getElementById('header-inventory-btn');
     if (invBtn) {
@@ -480,6 +508,36 @@ export class WorldScene extends Phaser.Scene {
           name: 'Cổng Tiện Ích Học Vụ & Phần Mềm Thi FPTU',
           label: 'Cổng FPTU & Thi'
         });
+      });
+    }
+
+    const emoteBtn = document.getElementById('header-emote-btn');
+    if (emoteBtn) {
+      emoteBtn.addEventListener('click', () => {
+        this.emoteBar.toggle();
+      });
+    }
+
+    const speedDuelBtn = document.getElementById('header-speed-duel-btn');
+    if (speedDuelBtn) {
+      speedDuelBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        this.speedCodeDuel.show();
+      });
+    }
+
+    const bgmBtn = document.getElementById('header-bgm-btn');
+    if (bgmBtn) {
+      bgmBtn.addEventListener('click', () => {
+        const isPlaying = audioManager.toggleBgm();
+        bgmBtn.classList.toggle('active', isPlaying);
+      });
+    }
+
+    const questsBtn = document.getElementById('header-quests-btn');
+    if (questsBtn) {
+      questsBtn.addEventListener('click', () => {
+        this.questModal.show();
       });
     }
 
@@ -682,6 +740,26 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  handleLocalEmote(emoteId) {
+    if (this.player) {
+      this.player.showEmote(emoteId);
+    }
+    if (this.socketManager) {
+      this.socketManager.sendEmote(emoteId);
+    }
+  }
+
+  handleRemoteEmote({ id, emoteId }) {
+    const isSelf = this.socketManager?.socket?.id === id;
+    if (isSelf) return;
+
+    const remote = this.remotePlayers.get(id);
+    if (remote) {
+      remote.showEmote(emoteId);
+      audioManager.playEmoteSound(emoteId);
+    }
+  }
+
   update(time, delta) {
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();
@@ -711,6 +789,10 @@ export class WorldScene extends Phaser.Scene {
 
     for (const remote of this.remotePlayers.values()) {
       remote.update(time, delta);
+    }
+
+    if (this.minimap) {
+      this.minimap.render();
     }
   }
 }

@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dever_town_super_secret_jwt_key_20
 
 const VALID_GAME_TYPES = new Set([
   'football', 'basketball', 'volleyball', 'barista',
-  'snake', 'sokoban', 'goldminer'
+  'snake', 'sokoban', 'goldminer', 'code_duel'
 ]);
 
 export const gameController = {

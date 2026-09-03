@@ -1,0 +1,138 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () => {
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+
+    // Nhập tên và đăng nhập với tư cách khách
+    const nameInput = page.locator('#gate-guest-name');
+    await nameInput.fill('Tester Alpha');
+    await page.locator('#gate-form-guest button[type="submit"]').click();
+
+    // Chờ màn hình đón tiếp ẩn đi và canvas hiển thị
+    await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
+    await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 10000 });
+  });
+
+  test('01. Minimap / Radar HUD is present, renders canvas and toggles via [M] and button', async ({ page }) => {
+    const minimap = page.locator('#minimap-overlay');
+    await expect(minimap).toBeVisible();
+
+    const canvas = page.locator('#minimap-canvas');
+    await expect(canvas).toBeVisible();
+
+    const toggleBtn = page.locator('#minimap-toggle-btn');
+    await expect(toggleBtn).toBeVisible();
+
+    // Click toggle button để thu gọn
+    await toggleBtn.click();
+    await expect(minimap).toHaveClass(/collapsed/);
+
+    // Click lại để mở rộng
+    await toggleBtn.click();
+    await expect(minimap).not.toHaveClass(/collapsed/);
+
+    // Bấm phím M để toggle
+    await page.keyboard.press('KeyM');
+    await expect(minimap).toHaveClass(/collapsed/);
+
+    await page.keyboard.press('KeyM');
+    await expect(minimap).not.toHaveClass(/collapsed/);
+  });
+
+  test('02. Room Banner displays cinematic arrival on room switch', async ({ page }) => {
+    const banner = page.locator('#room-banner');
+    await expect(banner).toBeAttached();
+
+    // Chuyển sang phòng Tech Lab bằng dropdown
+    const roomSelector = page.locator('#room-selector');
+    await roomSelector.selectOption('dever_lab');
+
+    // Chờ banner hiển thị
+    await expect(banner).toHaveClass(/visible/, { timeout: 5000 });
+    const title = page.locator('#room-banner-title');
+    await expect(title).toBeVisible();
+    await expect(title).toContainText(/Lab|Tech/);
+  });
+
+  test('03. Emote Bar opens via [G] or Header button and triggers reaction', async ({ page }) => {
+    const emoteBar = page.locator('#emote-bar');
+    await expect(emoteBar).toHaveClass(/hidden/);
+
+    // Mở bằng nút Header
+    const headerEmoteBtn = page.locator('#header-emote-btn');
+    await headerEmoteBtn.click();
+    await expect(emoteBar).toHaveClass(/visible/);
+
+    // Đóng bằng phím G
+    await page.keyboard.press('KeyG');
+    await expect(emoteBar).not.toHaveClass(/visible/);
+
+    // Mở lại bằng phím G
+    await page.keyboard.press('KeyG');
+    await expect(emoteBar).toHaveClass(/visible/);
+
+    // Chọn biểu cảm Vẫy Chào [1]
+    const waveBtn = page.locator('.emote-item-btn[data-emote="wave"]');
+    await waveBtn.click();
+
+    // Thanh biểu cảm tự động đóng lại
+    await expect(emoteBar).not.toHaveClass(/visible/);
+  });
+
+  test('04. Speed Code Duel opens, starts sprint, answers question and scores', async ({ page }) => {
+    const duelModal = page.locator('#speed-code-duel-modal');
+    await expect(duelModal).toHaveClass(/hidden/);
+
+    // Mở minigame qua nút Header
+    const duelBtn = page.locator('#header-speed-duel-btn');
+    await duelBtn.click();
+    await expect(duelModal).not.toHaveClass(/hidden/);
+
+    // Màn hình mở đầu (Intro)
+    const introPane = page.locator('#duel-pane-intro');
+    await expect(introPane).toBeVisible();
+
+    // Bắt đầu trận đấu
+    const startBtn = page.locator('#duel-start-btn');
+    await startBtn.click();
+
+    // Chuyển sang màn hình thi đấu
+    const gameplayPane = page.locator('#duel-pane-gameplay');
+    await expect(gameplayPane).toBeVisible();
+
+    // Kiểm tra câu hỏi hiển thị
+    const qText = page.locator('#duel-question-text');
+    await expect(qText).not.toBeEmpty();
+
+    // Kiểm tra 4 lựa chọn đáp án
+    const answers = page.locator('.duel-ans-btn');
+    await expect(answers).toHaveCount(4);
+
+    // Bấm phím 1 để trả lời
+    await page.keyboard.press('Digit1');
+
+    // Nút phản hồi hoặc toast xuất hiện
+    const toast = page.locator('#duel-feedback-toast');
+    await expect(toast).not.toHaveClass(/hidden/);
+
+    // Đóng modal bằng phím Escape
+    await page.keyboard.press('Escape');
+    await expect(duelModal).toHaveClass(/hidden/);
+  });
+
+  test('05. Chiptune 8-Bit BGM button toggles state', async ({ page }) => {
+    const bgmBtn = page.locator('#header-bgm-btn');
+    await expect(bgmBtn).toBeVisible();
+
+    // Bật nhạc nền
+    await bgmBtn.click();
+    await expect(bgmBtn).toHaveClass(/active/);
+
+    // Tắt nhạc nền
+    await bgmBtn.click();
+    await expect(bgmBtn).not.toHaveClass(/active/);
+  });
+
+});
