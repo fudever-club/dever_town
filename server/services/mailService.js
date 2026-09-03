@@ -3,64 +3,68 @@ import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
 
 /**
- * MailService: Gửi email cảnh báo bảo mật và mã OTP đặt lại mật khẩu.
- * Hỗ trợ 2 cơ chế gửi mail hàng đầu:
- *  1. Resend REST API (Khuyên dùng - Cực nhanh, chỉ cần 1 chuỗi RESEND_API_KEY)
- *  2. SMTP Transporter (Nodemailer - Gmail, Brevo, SendGrid, Custom SMTP)
- *  3. Console Security Logger (Dev fallback cho local testing)
+ * MailService: Quản lý gửi email xác thực OTP và thông báo bảo mật.
+ * Hỗ trợ linh hoạt:
+ *  1. Resend REST API (Khuyên dùng - Đơn giản nhất với 1 API Key 're_...')
+ *  2. SMTP Transporter (Nodemailer - Hỗ trợ Gmail, Brevo, SendGrid)
+ *  3. Dynamic Logger & Dev Fallback (Tự động thích ứng nếu chưa cấu hình)
  */
 export class MailService {
   constructor() {
-    this.resendApiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || null;
-    this.resendSender = process.env.RESEND_FROM || process.env.SENDER_EMAIL || 'DEVER TOWN <onboarding@resend.dev>';
     this.resendClient = null;
-
-    this.smtpHost = process.env.SMTP_HOST || process.env.MAIL_HOST || 'smtp.gmail.com';
-    this.smtpPort = Number(process.env.SMTP_PORT || process.env.MAIL_PORT || 587);
-    this.smtpUser = process.env.SMTP_USER || process.env.MAIL_USER || null;
-    this.smtpPass = process.env.SMTP_PASS || process.env.MAIL_PASS || null;
     this.smtpTransporter = null;
-
-    this.initEngines();
   }
 
-  initEngines() {
-    // 1. Khởi tạo Resend REST API Client (Ưu tiên cao nhất)
-    if (this.resendApiKey) {
-      try {
-        this.resendClient = new Resend(this.resendApiKey);
-        console.log(`🚀 [MailService] Đã kích hoạt Resend REST API Engine (Sender: ${this.resendSender})`);
-      } catch (err) {
-        console.warn(`⚠️ [MailService] Lỗi khởi tạo Resend API:`, err.message);
-        this.resendClient = null;
+  /**
+   * Lấy Resend Client với khả năng nạp động biến môi trường
+   */
+  getResendClient() {
+    const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY;
+    if (apiKey) {
+      if (!this.resendClient || this._lastResendKey !== apiKey) {
+        try {
+          this.resendClient = new Resend(apiKey.trim());
+          this._lastResendKey = apiKey;
+          console.log(`🚀 [MailService] Đã kích hoạt Resend REST API Client thành công!`);
+        } catch (err) {
+          console.warn(`⚠️ [MailService] Lỗi khởi tạo Resend Client:`, err.message);
+          this.resendClient = null;
+        }
       }
     }
+    return this.resendClient;
+  }
 
-    // 2. Khởi tạo SMTP Transporter nếu có thông tin đăng nhập
-    if (this.smtpUser && this.smtpPass) {
+  /**
+   * Lấy địa chỉ Sender gửi đi
+   */
+  getSenderEmail() {
+    return process.env.RESEND_FROM || process.env.SENDER_EMAIL || 'DEVER TOWN <onboarding@resend.dev>';
+  }
+
+  /**
+   * Lấy SMTP Transporter
+   */
+  getSmtpTransporter() {
+    const user = process.env.SMTP_USER || process.env.MAIL_USER;
+    const pass = process.env.SMTP_PASS || process.env.MAIL_PASS;
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const port = Number(process.env.SMTP_PORT || 587);
+
+    if (user && pass && !this.smtpTransporter) {
       try {
         this.smtpTransporter = nodemailer.createTransport({
-          host: this.smtpHost,
-          port: this.smtpPort,
-          secure: this.smtpPort === 465,
-          auth: {
-            user: this.smtpUser,
-            pass: this.smtpPass
-          },
-          tls: {
-            rejectUnauthorized: false
-          }
+          host,
+          port,
+          secure: port === 465,
+          auth: { user, pass },
+          tls: { rejectUnauthorized: false }
         });
-        console.log(`📧 [MailService] Đã kích hoạt SMTP Transporter (${this.smtpHost}:${this.smtpPort})`);
       } catch (err) {
-        console.warn(`⚠️ [MailService] Không thể khởi tạo SMTP transporter:`, err.message);
-        this.smtpTransporter = null;
+        console.warn(`⚠️ [MailService] Lỗi khởi tạo SMTP:`, err.message);
       }
     }
-
-    if (!this.resendClient && !this.smtpTransporter) {
-      console.log(`ℹ️ [MailService] Chưa cấu hình RESEND_API_KEY hoặc SMTP. Đang chạy ở chế độ Dev Logger.`);
-    }
+    return this.smtpTransporter;
   }
 
   /**
@@ -69,6 +73,7 @@ export class MailService {
    * @param {Object} data - { otpCode, displayName, expiresInMinutes }
    */
   async sendPasswordResetOtp(userEmail, { otpCode, displayName = 'Thành viên DEVER', expiresInMinutes = 10 }) {
+    const cleanEmail = userEmail.trim().toLowerCase();
     const emailSubject = `[FU-DEVER TOWN] 🔑 Mã Xác Thực Đặt Lại Mật Khẩu: ${otpCode}`;
 
     const htmlContent = `
@@ -81,7 +86,7 @@ export class MailService {
         <div style="padding: 30px 30px 20px;">
           <h2 style="color: #ffffff; font-size: 18px; margin-top: 0;">Xin chào ${displayName},</h2>
           <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
-            Bạn (hoặc ai đó) vừa gửi yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản DEVER TOWN gắn với email: <span style="color: #38bdf8; font-weight: bold;">${userEmail}</span>.
+            Bạn (hoặc ai đó) vừa gửi yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản DEVER TOWN gắn với email: <span style="color: #38bdf8; font-weight: bold;">${cleanEmail}</span>.
           </p>
 
           <div style="background: #1e293b; border: 2px dashed #f26f21; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;">
@@ -111,7 +116,7 @@ export class MailService {
     const textContent = `
 Xin chào ${displayName},
 
-Bạn vừa yêu cầu đặt lại mật khẩu cho tài khoản DEVER TOWN (${userEmail}).
+Bạn vừa yêu cầu đặt lại mật khẩu cho tài khoản DEVER TOWN (${cleanEmail}).
 
 MÃ XÁC THỰC BẢO MẬT (OTP) CỦA BẠN: [ ${otpCode} ]
 Hiệu lực: ${expiresInMinutes} phút.
@@ -121,69 +126,88 @@ Trân trọng,
 Đội Ngũ Kỹ Thuật CLB FU-DEVER • FUDA
     `.trim();
 
-    // In ra Console Server để hỗ trợ dev và debug
+    // 1. Luôn in ra console server
     console.log(`\n================== 📧 [PASSWORD RESET OTP EMAIL] ==================`);
-    console.log(`To: ${userEmail}`);
+    console.log(`To: ${cleanEmail}`);
     console.log(`Subject: ${emailSubject}`);
     console.log(`OTP Code: >>> [ ${otpCode} ] <<< (Valid for ${expiresInMinutes} mins)`);
     console.log(`===================================================================\n`);
 
-    // 1. Gửi qua Resend REST API (Nếu có RESEND_API_KEY)
-    if (this.resendClient) {
+    // 2. Gửi qua Resend REST API (Nếu có RESEND_API_KEY)
+    const resend = this.getResendClient();
+    if (resend) {
+      const sender = this.getSenderEmail();
       try {
-        const { data, error } = await this.resendClient.emails.send({
-          from: this.resendSender,
-          to: [userEmail],
+        console.log(`📤 [MailService] Đang gửi OTP qua Resend API từ [${sender}] tới [${cleanEmail}]...`);
+        const { data, error } = await resend.emails.send({
+          from: sender,
+          to: [cleanEmail],
           subject: emailSubject,
           text: textContent,
           html: htmlContent
         });
 
         if (error) {
-          console.error(`❌ [MailService:Resend] Lỗi gửi mail qua Resend:`, error);
-        } else {
-          console.log(`✅ [MailService:Resend] Đã gửi email OTP thành công qua Resend API! ID:`, data?.id);
+          console.error(`❌ [MailService:Resend Error]:`, error);
           return {
             success: true,
-            deliveredTo: userEmail,
-            realEmailSent: true,
-            provider: 'resend',
-            id: data?.id,
+            deliveredTo: cleanEmail,
+            realEmailSent: false,
+            resendError: error.message || String(error),
             timestamp: Date.now()
           };
         }
-      } catch (resendErr) {
-        console.error(`❌ [MailService:Resend Exception]:`, resendErr.message);
+
+        console.log(`✅ [MailService:Resend Success] Đã gửi email thành công! Message ID:`, data?.id);
+        return {
+          success: true,
+          deliveredTo: cleanEmail,
+          realEmailSent: true,
+          provider: 'resend',
+          id: data?.id,
+          timestamp: Date.now()
+        };
+      } catch (resendEx) {
+        console.error(`❌ [MailService:Resend Exception]:`, resendEx.message);
+        return {
+          success: true,
+          deliveredTo: cleanEmail,
+          realEmailSent: false,
+          resendError: resendEx.message,
+          timestamp: Date.now()
+        };
       }
     }
 
-    // 2. Gửi qua SMTP Transporter (Nếu có cấu hình SMTP)
-    if (this.smtpTransporter) {
+    // 3. Gửi qua SMTP nếu có
+    const smtp = this.getSmtpTransporter();
+    if (smtp) {
       try {
-        const info = await this.smtpTransporter.sendMail({
-          from: `"FU-DEVER TOWN" <${this.smtpUser}>`,
-          to: userEmail,
+        const info = await smtp.sendMail({
+          from: `"FU-DEVER TOWN" <${process.env.SMTP_USER}>`,
+          to: cleanEmail,
           subject: emailSubject,
           text: textContent,
           html: htmlContent
         });
-        console.log(`✅ [MailService:SMTP] Đã gửi email OTP thành công qua SMTP! MessageId:`, info.messageId);
+        console.log(`✅ [MailService:SMTP Success] Đã gửi email qua SMTP! ID:`, info.messageId);
         return {
           success: true,
-          deliveredTo: userEmail,
+          deliveredTo: cleanEmail,
           realEmailSent: true,
           provider: 'smtp',
           messageId: info.messageId,
           timestamp: Date.now()
         };
-      } catch (smtpErr) {
-        console.error(`❌ [MailService:SMTP] Lỗi gửi mail qua SMTP:`, smtpErr.message);
+      } catch (smtpEx) {
+        console.error(`❌ [MailService:SMTP Error]:`, smtpEx.message);
       }
     }
 
+    // 4. Fallback Dev Mode
     return {
       success: true,
-      deliveredTo: userEmail,
+      deliveredTo: cleanEmail,
       realEmailSent: false,
       timestamp: Date.now()
     };
@@ -191,8 +215,6 @@ Trân trọng,
 
   /**
    * Gửi email cảnh báo đăng nhập thiết bị mới
-   * @param {string} userEmail - Email người dùng nhận cảnh báo
-   * @param {Object} details - Thông tin chi tiết thiết bị
    */
   async sendNewDeviceAlert(userEmail, details = {}) {
     const {
@@ -204,34 +226,13 @@ Trân trọng,
     } = details;
 
     const emailSubject = `[FU-DEVER TOWN] 🛡️ Cảnh Báo: Thiết bị mới vừa đăng nhập tài khoản của bạn`;
-    
-    const emailBodyText = `
-Xin chào ${displayName},
+    const emailBodyText = `Xin chào ${displayName},\n\nHệ thống bảo mật DEVER TOWN vừa ghi nhận một lượt đăng nhập mới vào tài khoản của bạn (${userEmail}):\n- Thời gian: ${time}\n- IP: ${ip}\n- Trình duyệt: ${userAgent}\n\nTrân trọng,\nĐội Ngũ Kỹ Thuật FU-DEVER`;
 
-Hệ thống bảo mật DEVER TOWN vừa ghi nhận một lượt đăng nhập mới vào tài khoản của bạn (${userEmail}):
-
-- Thời gian: ${time}
-- Địa chỉ IP: ${ip}
-- Thiết bị / Trình duyệt: ${userAgent}
-- Số thiết bị đang hoạt động: ${activeDevicesCount}/4 thiết bị
-
-Nếu đây là bạn, bạn có thể bỏ qua email này.
-Nếu bạn KHÔNG thực hiện đăng nhập này, vui lòng truy cập game ngay để đổi mật khẩu và liên hệ Ban Quản Trị CLB FU-DEVER.
-
-Trân trọng,
-Đội Ngũ Kỹ Thuật FU-DEVER
-    `.trim();
-
-    console.log(`\n================== 📧 [SECURITY EMAIL DISPATCHED] ==================`);
-    console.log(`To: ${userEmail}`);
-    console.log(`Subject: ${emailSubject}`);
-    console.log(`Details: IP=${ip} | User=${displayName} | Time=${time} | ActiveDevices=${activeDevicesCount}/4`);
-    console.log(`===================================================================\n`);
-
-    if (this.resendClient) {
+    const resend = this.getResendClient();
+    if (resend) {
       try {
-        await this.resendClient.emails.send({
-          from: this.resendSender,
+        await resend.emails.send({
+          from: this.getSenderEmail(),
           to: [userEmail],
           subject: emailSubject,
           text: emailBodyText
@@ -239,24 +240,9 @@ Trân trọng,
       } catch (e) {
         console.warn('Lỗi gửi email cảnh báo qua Resend:', e.message);
       }
-    } else if (this.smtpTransporter) {
-      try {
-        await this.smtpTransporter.sendMail({
-          from: `"FU-DEVER TOWN" <${this.smtpUser}>`,
-          to: userEmail,
-          subject: emailSubject,
-          text: emailBodyText
-        });
-      } catch (e) {
-        console.warn('Lỗi gửi email cảnh báo qua SMTP:', e.message);
-      }
     }
 
-    return {
-      success: true,
-      deliveredTo: userEmail,
-      timestamp: Date.now()
-    };
+    return { success: true, deliveredTo: userEmail, timestamp: Date.now() };
   }
 }
 
