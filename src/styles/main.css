@@ -2800,15 +2800,15 @@ body {
    ONBOARDING GUIDE OVERLAY (Mục 1.4 Plan Add-on v3)
    ========================================================================== */
 .onboarding-guide-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(6, 9, 19, 0.85);
   backdrop-filter: blur(10px);
-  z-index: 999999;
+  z-index: 100002;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -2816,13 +2816,15 @@ body {
   background: #0f172a;
   border: 1px solid #f26f21;
   border-radius: 18px;
-  padding: 28px 32px;
+  padding: 24px 28px;
   max-width: 600px;
+  max-height: 92vh;
+  overflow-y: auto;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(242, 111, 33, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .onboarding-header {
@@ -4173,8 +4175,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 12px;
+  gap: 8px;
   padding-bottom: 4px;
+}
+
+.touch-actions-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.touch-actions-main-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 .touch-action-btn {
@@ -4192,6 +4208,24 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.25);
 }
 
+.touch-action-btn.duel {
+  width: 44px;
+  height: 44px;
+  font-size: 19px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+}
+
+.touch-action-btn.emote {
+  width: 44px;
+  height: 44px;
+  font-size: 19px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  border-color: rgba(192, 132, 252, 0.5);
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+}
+
 .touch-action-btn.interact {
   width: 66px;
   height: 66px;
@@ -4203,16 +4237,16 @@ body {
 }
 
 .touch-action-btn.inv {
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
   background: linear-gradient(135deg, #0284c7, #0369a1);
 }
 
 .touch-action-btn.chat {
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
+  width: 44px;
+  height: 44px;
+  font-size: 19px;
   background: rgba(30, 41, 59, 0.9);
   border-color: rgba(56, 189, 248, 0.4);
 }
@@ -4308,23 +4342,38 @@ body {
     display: flex !important;
     align-items: center !important;
     flex-wrap: nowrap !important;
-    gap: 4px !important;
+    gap: 5px !important;
     flex-shrink: 0 !important;
   }
 
-  .header-actions button span:not(.header-points-text) {
+  .header-actions button span[data-i18n] {
     display: none !important;
   }
 
   .btn-primary-sm, .btn-ghost, .btn-icon-square {
-    padding: 4px 6px !important;
-    min-width: 30px !important;
-    height: 30px !important;
-    font-size: 12px !important;
+    padding: 0 !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: rgba(15, 23, 42, 0.7) !important;
+    background: rgba(15, 23, 42, 0.75) !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  #header-quests-btn {
+    width: auto !important;
+    min-width: 44px !important;
+    padding: 0 6px !important;
+    gap: 3px !important;
+  }
+
+  #header-inventory-btn,
+  #fullscreen-btn {
+    display: none !important;
   }
 
   .network-ping-badge, .badge-online, .status-indicator {
@@ -4408,6 +4457,16 @@ body {
   .touch-action-btn.chat {
     background: rgba(30, 41, 59, 0.55) !important;
     border-color: rgba(56, 189, 248, 0.35) !important;
+  }
+
+  .touch-action-btn.duel {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.75), rgba(2, 132, 199, 0.75)) !important;
+    border-color: rgba(56, 189, 248, 0.5) !important;
+  }
+
+  .touch-action-btn.emote {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.75), rgba(124, 58, 237, 0.75)) !important;
+    border-color: rgba(192, 132, 252, 0.5) !important;
   }
 
   /* Mobile Chat Floating Popover / Bottom Drawer */
@@ -4551,15 +4610,19 @@ body {
   }
 
   .interactive-pane {
-    flex: 1 1 auto !important;
-    height: auto !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    touch-action: pan-y !important;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    touch-action: pan-y;
+  }
+
+  .interactive-pane.hidden {
+    display: none !important;
   }
 
   /* Coffee & Pomodoro Mobile Stack */
@@ -4668,24 +4731,77 @@ body {
 }
 
 @media (max-width: 640px) {
-  .logo-group span:not(.badge-logo) {
-    display: none;
+  .brand-title,
+  .brand-badge {
+    display: none !important;
   }
 
-  .btn-primary-sm span:not(.header-points-text) {
-    display: none;
+  .brand-container {
+    gap: 0 !important;
+    margin-right: 2px !important;
+    flex-shrink: 0 !important;
   }
 
-  .btn-primary-sm {
-    padding: 6px 8px !important;
+  .brand-icon {
+    width: 20px !important;
+    height: 20px !important;
   }
 
-  .status-indicator {
-    display: none;
+  .room-nav-container {
+    max-width: 86px !important;
+    margin: 0 1px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .room-select {
+    max-width: 100% !important;
+    font-size: 10px !important;
+    padding: 2px 2px !important;
+  }
+
+  #main-header, #ui-header {
+    overflow: hidden !important;
+    padding: 2px 3px !important;
+    width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ẩn các nút trùng lặp đã có trên phím cảm ứng touch controls để thanh header không bao giờ tràn mép */
+  #header-inventory-btn,
+  #fullscreen-btn,
+  #header-emote-btn,
+  #header-speed-duel-btn,
+  #header-logout-btn {
+    display: none !important;
+  }
+
+  .header-actions {
+    gap: 3px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .btn-primary-sm, .btn-ghost, .btn-icon-square {
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+  }
+
+  #header-quests-btn {
+    min-width: 36px !important;
+    padding: 0 3px !important;
+    gap: 2px !important;
+    font-size: 10px !important;
   }
 
   .sports-direction-bar {
     grid-template-columns: 1fr !important;
+  }
+
+  .campus-map-workspace {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 }
 
@@ -5497,7 +5613,7 @@ body {
   position: fixed;
   bottom: 24px;
   left: 24px;
-  z-index: 9990;
+  z-index: 100;
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 12px;

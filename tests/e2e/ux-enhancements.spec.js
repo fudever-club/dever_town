@@ -19,11 +19,17 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const minimap = page.locator('#minimap-overlay');
     await expect(minimap).toBeVisible();
 
-    const canvas = page.locator('#minimap-canvas');
-    await expect(canvas).toBeVisible();
-
     const toggleBtn = page.locator('#minimap-toggle-btn');
     await expect(toggleBtn).toBeVisible();
+
+    // Nếu khởi tạo ở trạng thái collapsed (trên mobile), mở rộng ra để kiểm tra canvas
+    const isCollapsed = await minimap.evaluate(el => el.classList.contains('collapsed'));
+    if (isCollapsed) {
+      await toggleBtn.click();
+    }
+
+    const canvas = page.locator('#minimap-canvas');
+    await expect(canvas).toBeVisible();
 
     // Click toggle button để thu gọn
     await toggleBtn.click();
@@ -60,9 +66,15 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const emoteBar = page.locator('#emote-bar');
     await expect(emoteBar).toHaveClass(/hidden/);
 
-    // Mở bằng nút Header
+    // Mở bằng nút Header hoặc nút Touch Controls nếu trên mobile
     const headerEmoteBtn = page.locator('#header-emote-btn');
-    await headerEmoteBtn.click();
+    if (await headerEmoteBtn.isVisible()) {
+      await headerEmoteBtn.click();
+    } else {
+      const touchEmote = page.locator('#touch-btn-emote');
+      await touchEmote.dispatchEvent('pointerdown');
+      await touchEmote.dispatchEvent('pointerup');
+    }
     await expect(emoteBar).toHaveClass(/visible/);
 
     // Đóng bằng phím G
@@ -85,9 +97,15 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const duelModal = page.locator('#speed-code-duel-modal');
     await expect(duelModal).toHaveClass(/hidden/);
 
-    // Mở minigame qua nút Header
+    // Mở minigame qua nút Header hoặc nút Touch Controls nếu trên mobile
     const duelBtn = page.locator('#header-speed-duel-btn');
-    await duelBtn.click();
+    if (await duelBtn.isVisible()) {
+      await duelBtn.click();
+    } else {
+      const touchDuel = page.locator('#touch-btn-speed-duel');
+      await touchDuel.dispatchEvent('pointerdown');
+      await touchDuel.dispatchEvent('pointerup');
+    }
     await expect(duelModal).not.toHaveClass(/hidden/);
 
     // Màn hình mở đầu (Intro)
