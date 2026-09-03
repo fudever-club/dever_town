@@ -90,12 +90,26 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     }
   });
 
-  test('05. Chat & Realtime Messaging Component', async ({ page }) => {
+  test('05. Chat & Realtime Messaging Component', async ({ page, isMobile }) => {
     await page.goto('/');
 
     await page.locator('#gate-guest-name').fill('ChatterPro');
     await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
+
+    // Đóng hướng dẫn tân thủ nếu xuất hiện
+    const onboardingBtn = page.locator('#onboarding-close-btn');
+    if (await onboardingBtn.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await onboardingBtn.click();
+    }
+
+    // Nếu trên Mobile, mở Chat Drawer qua nút touch chat
+    if (isMobile) {
+      await expect(page.locator('#mobile-touch-controls')).toBeVisible();
+      const touchChatBtn = page.locator('#touch-btn-chat');
+      await touchChatBtn.click();
+      await expect(page.locator('#chat-wrapper')).toHaveClass(/mobile-open/);
+    }
 
     // Kiểm tra Chat input form
     const chatInput = page.locator('#chat-input');
@@ -103,7 +117,7 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
 
     // Gửi tin nhắn test
     await chatInput.fill('Xin chào FU-DEVER và FUDA! 🎮');
-    await page.locator('.chat-send-btn, #chat-form button[type="submit"]').click();
+    await page.locator('#chat-send-btn').click();
 
     // Input được làm sạch sau khi gửi
     await expect(chatInput).toHaveValue('');

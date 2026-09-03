@@ -5,14 +5,18 @@ export class ChatBox {
    */
   constructor({ onSendMessage } = {}) {
     this.onSendMessage = onSendMessage;
+    this.chatWrapper = document.getElementById('chat-wrapper');
     this.chatForm = document.getElementById('chat-form');
     this.chatInput = document.getElementById('chat-input');
     this.chatMessages = document.getElementById('chat-messages');
     this.stickerBtn = document.getElementById('chat-sticker-btn');
     this.stickerPopover = document.getElementById('chat-sticker-popover');
+    this.closeBtn = document.getElementById('chat-mobile-close-btn');
+    this.mobileBackdrop = document.getElementById('chat-mobile-backdrop');
 
     this.initEvents();
     this.initStickers();
+    this.initMobileEvents();
   }
 
   initEvents() {
@@ -52,11 +56,67 @@ export class ChatBox {
 
           if (!isModalOpen && this.chatInput) {
             e.preventDefault();
+            this.openMobileChat();
             this.chatInput.focus();
           }
         }
       }
     });
+  }
+
+  initMobileEvents() {
+    // 1. Nút đóng Chat trên Mobile
+    if (this.closeBtn) {
+      this.closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.closeMobileChat();
+      });
+    }
+
+    // 2. Backdrop đóng chat khi click ra ngoài
+    if (this.mobileBackdrop) {
+      this.mobileBackdrop.addEventListener('click', () => {
+        this.closeMobileChat();
+      });
+    }
+  }
+
+  openMobileChat() {
+    if (this.chatWrapper) {
+      this.chatWrapper.classList.add('mobile-open');
+    }
+    if (this.mobileBackdrop) {
+      this.mobileBackdrop.classList.remove('hidden');
+    }
+    setTimeout(() => {
+      if (this.chatInput) {
+        this.chatInput.focus();
+      }
+    }, 150);
+  }
+
+  closeMobileChat() {
+    if (this.chatWrapper) {
+      this.chatWrapper.classList.remove('mobile-open');
+    }
+    if (this.mobileBackdrop) {
+      this.mobileBackdrop.classList.add('hidden');
+    }
+    if (this.stickerPopover) {
+      this.stickerPopover.classList.add('hidden');
+    }
+    if (this.chatInput) {
+      this.chatInput.blur();
+    }
+  }
+
+  toggleMobileChat() {
+    if (this.chatWrapper && this.chatWrapper.classList.contains('mobile-open')) {
+      this.closeMobileChat();
+    } else {
+      this.openMobileChat();
+    }
   }
 
   initStickers() {

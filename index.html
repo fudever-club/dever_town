@@ -473,6 +473,9 @@
         </div>
       </div>
 
+      <!-- Mobile Chat Backdrop -->
+      <div id="chat-mobile-backdrop" class="chat-mobile-backdrop hidden"></div>
+
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
         <div class="chat-header">
@@ -482,7 +485,10 @@
             </svg>
             <span class="chat-title" data-i18n="chatTitle">Kênh Chat FUDA & DEVER</span>
           </div>
-          <span class="chat-sub" data-i18n="chatSub">Kênh phòng Realtime</span>
+          <div class="chat-header-right">
+            <span class="chat-sub" data-i18n="chatSub">Kênh phòng Realtime</span>
+            <button type="button" id="chat-mobile-close-btn" class="chat-mobile-close-btn" title="Đóng Chat" aria-label="Đóng Chat">✕</button>
+          </div>
         </div>
 
         <div id="chat-messages" class="chat-messages-box">

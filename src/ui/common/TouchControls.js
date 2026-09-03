@@ -110,11 +110,15 @@ export class TouchControls {
       btnChat.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const chatWrapper = document.getElementById('chat-wrapper');
-        if (chatWrapper) {
-          chatWrapper.classList.toggle('mobile-open');
-          audioManager.playClick();
+        if (this.scene && this.scene.chatBox) {
+          this.scene.chatBox.toggleMobileChat();
+        } else {
+          const chatWrapper = document.getElementById('chat-wrapper');
+          if (chatWrapper) {
+            chatWrapper.classList.toggle('mobile-open');
+          }
         }
+        audioManager.playClick();
       });
     }
 
