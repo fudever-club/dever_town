@@ -433,12 +433,15 @@ export class InteractiveModal {
 
   initVoiceEngine() {
     // 1. Phím tắt M để toggle Mute nhanh
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', async (e) => {
       if (e.key === 'm' || e.key === 'M') {
         if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
         if (this.isOpen() && this.voiceService?.isJoined) {
-          const isMuted = this.voiceService.toggleMic();
+          const isMuted = await this.voiceService.toggleMic();
           this.updateVoiceControlUI({ micMuted: isMuted });
+          if (!isMuted) {
+            document.getElementById('voice-listen-notice')?.classList.add('hidden');
+          }
           audioManager.playClick();
         }
       }
@@ -455,9 +458,12 @@ export class InteractiveModal {
     const micBtn = document.getElementById('btn-toggle-mic');
     if (micBtn && !micBtn.dataset.initialized) {
       micBtn.dataset.initialized = 'true';
-      micBtn.addEventListener('click', () => {
-        const isMuted = this.voiceService.toggleMic();
+      micBtn.addEventListener('click', async () => {
+        const isMuted = await this.voiceService.toggleMic();
         this.updateVoiceControlUI({ micMuted: isMuted });
+        if (!isMuted) {
+          document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        }
         audioManager.playClick();
       });
     }
@@ -470,6 +476,9 @@ export class InteractiveModal {
         const isVideoMuted = await this.voiceService.toggleCamera();
         this.updateVoiceControlUI({ videoMuted: isVideoMuted });
         this.updateLocalVideoDisplay();
+        if (!isVideoMuted) {
+          document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        }
         audioManager.playClick();
       });
     }
@@ -556,6 +565,12 @@ export class InteractiveModal {
               label.textContent = 'Chưa tham gia';
             }
           }
+        },
+        onMediaUpgraded: ({ micMuted, videoMuted }) => {
+          const notice = document.getElementById('voice-listen-notice');
+          if (notice) notice.classList.add('hidden');
+          this.updateVoiceControlUI({ micMuted, videoMuted });
+          this.updateLocalVideoDisplay();
         }
       });
     }
@@ -566,6 +581,16 @@ export class InteractiveModal {
     if (this.voiceService.isJoined) {
       if (lobby) lobby.classList.add('hidden');
       if (active) active.classList.remove('hidden');
+      if (!this.voiceService.isListenOnly) {
+        const notice = document.getElementById('voice-listen-notice');
+        if (notice) notice.classList.add('hidden');
+      }
+      this.updateVoiceControlUI({
+        micMuted: this.voiceService.micMuted,
+        videoMuted: this.voiceService.videoMuted,
+        screenSharing: this.voiceService.isScreenSharing
+      });
+      this.updateLocalVideoDisplay();
     } else {
       if (lobby) lobby.classList.remove('hidden');
       if (active) active.classList.add('hidden');
@@ -652,7 +677,7 @@ export class InteractiveModal {
 
     if (reason === 'NotAllowedError') {
       if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Quyền Micro đang bị chặn)';
-      if (descEl) descEl.textContent = 'Trình duyệt đang chặn truy cập Micro. Nhấp vào biểu tượng Ổ khóa / Cài đặt bên trái thanh địa chỉ URL để Cho phép Micro, sau đó bấm [Cấp quyền Micro].';
+      if (descEl) descEl.textContent = 'Trình duyệt đang chặn Micro. Bạn hãy bật quyền trong biểu tượng Cài đặt bên cạnh URL rồi nhấn [Cấp quyền Micro] (hoặc tải lại F5).';
     } else if (reason === 'NotFoundError') {
       if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Không tìm thấy Micro)';
       if (descEl) descEl.textContent = 'Không tìm thấy thiết bị thu âm trên máy tính. Bạn vẫn có thể lắng nghe mọi người và chia sẻ màn hình.';
@@ -674,7 +699,7 @@ export class InteractiveModal {
           audioManager.playSuccess();
         } catch (e) {
           console.warn('Cấp quyền lại chưa thành công:', e);
-          alert('Chưa nhận được quyền Micro. Vui lòng kiểm tra lại quyền trong Cài đặt trang web của trình duyệt (biểu tượng Ổ khóa bên cạnh thanh URL).');
+          alert('Chưa thể kích hoạt Micro. Nếu bạn vừa bật quyền trong Cài đặt trang web bên cạnh thanh URL, vui lòng tải lại trang (F5) để trình duyệt áp dụng thay đổi.');
         }
       });
     }

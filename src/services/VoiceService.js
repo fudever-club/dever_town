@@ -41,6 +41,63 @@ export class VoiceService {
     this.onTrackReceived = null;
     this.onSpeakingChanged = null;
     this.onStatusChanged = null;
+    this.onMediaUpgraded = null;
+
+    this.socketListenersAttached = false;
+    this.setupAutoPermissionListener();
+  }
+
+  /**
+   * Tự động theo dõi khi người dùng bật quyền Micro/Camera trên thanh địa chỉ URL
+   */
+  setupAutoPermissionListener() {
+    if (typeof navigator === 'undefined' || !navigator.permissions || !navigator.permissions.query) {
+      return;
+    }
+
+    const checkAndUpgradePermission = async () => {
+      if (!this.isJoined || !this.isListenOnly) return;
+      try {
+        const micStatus = await navigator.permissions.query({ name: 'microphone' });
+        if (micStatus.state === 'granted') {
+          console.log('[VoiceService] Quyền Micro đã được cấp qua trình duyệt, tự động nâng cấp từ Listen-Only...');
+          await this.requestMediaAccess({ audio: true, video: !this.videoMuted });
+        }
+      } catch (err) {}
+    };
+
+    try {
+      navigator.permissions.query({ name: 'microphone' }).then(permissionStatus => {
+        permissionStatus.onchange = async () => {
+          console.log('[VoiceService] Trạng thái quyền Microphone thay đổi:', permissionStatus.state);
+          if (permissionStatus.state === 'granted' && this.isJoined && this.isListenOnly) {
+            try {
+              await this.requestMediaAccess({ audio: true, video: !this.videoMuted });
+            } catch (err) {
+              console.warn('[VoiceService] Tự động kích hoạt Micro thất bại:', err);
+            }
+          }
+        };
+      }).catch(() => {});
+
+      navigator.permissions.query({ name: 'camera' }).then(permissionStatus => {
+        permissionStatus.onchange = async () => {
+          console.log('[VoiceService] Trạng thái quyền Camera thay đổi:', permissionStatus.state);
+        };
+      }).catch(() => {});
+    } catch (e) {}
+
+    // Kích hoạt kiểm tra ngay khi người dùng quay lại trang từ thanh cài đặt URL
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', () => {
+        checkAndUpgradePermission();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          checkAndUpgradePermission();
+        }
+      });
+    }
   }
 
   /**
@@ -52,10 +109,14 @@ export class VoiceService {
     this.onTrackReceived = callbacks.onTrackReceived;
     this.onSpeakingChanged = callbacks.onSpeakingChanged;
     this.onStatusChanged = callbacks.onStatusChanged;
+    this.onMediaUpgraded = callbacks.onMediaUpgraded;
 
     if (!this.socket) return;
 
-    this.setupSocketListeners();
+    if (!this.socketListenersAttached) {
+      this.socketListenersAttached = true;
+      this.setupSocketListeners();
+    }
   }
 
   setupSocketListeners() {
@@ -423,6 +484,10 @@ export class VoiceService {
       });
     }
 
+    if (this.onMediaUpgraded) {
+      this.onMediaUpgraded({ micMuted: this.micMuted, videoMuted: this.videoMuted });
+    }
+
     return { success: true, localStream: this.localStream };
   }
 
@@ -557,12 +622,25 @@ export class VoiceService {
           if (!this.localStream) this.localStream = new MediaStream();
           this.localStream.addTrack(newTrack);
 
-          // Thêm track này vào tất cả các peer connections hiện có
-          this.peerConnections.forEach(pc => {
-            pc.addTrack(newTrack, this.localStream);
-          });
-
           this.videoMuted = false;
+          this.isListenOnly = false;
+
+          // Thêm track này vào tất cả các peer connections hiện có và tạo Offer
+          for (const [socketId, pc] of this.peerConnections) {
+            pc.addTrack(newTrack, this.localStream);
+            try {
+              const offer = await pc.createOffer();
+              await pc.setLocalDescription(offer);
+              this.socket?.emit('voice:signal', {
+                to: socketId,
+                signal: { type: 'offer', sdp: offer }
+              });
+            } catch (e) {}
+          }
+
+          if (this.onMediaUpgraded) {
+            this.onMediaUpgraded({ micMuted: this.micMuted, videoMuted: this.videoMuted });
+          }
         }
       } catch (err) {
         console.warn('Không thể bật camera:', err);
