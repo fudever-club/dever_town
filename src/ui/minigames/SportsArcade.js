@@ -170,16 +170,20 @@ export class SportsArcade {
     }
 
     // Tự động đồng bộ kỷ lục thể thao lên Database máy chủ khi đăng nhập
-    if (authService && authService.isLoggedIn()) {
-      authService.syncFullProfile({
-        gameRecords: {
-          footballStreak: this.scores.footballStreak || 0,
-          footballHigh: this.scores.footballHigh || 0,
-          basketballHigh: this.scores.basketballHigh || 0,
-          volleyballHigh: this.scores.volleyballHigh || 0,
-          baristaScore: this.scores.baristaScore || 0
-        }
-      });
+    try {
+      if (authService && authService.isLoggedIn() && typeof authService.syncFullProfile === 'function') {
+        authService.syncFullProfile({
+          gameRecords: {
+            footballStreak: this.scores.footballStreak || 0,
+            footballHigh: this.scores.footballHigh || 0,
+            basketballHigh: this.scores.basketballHigh || 0,
+            volleyballHigh: this.scores.volleyballHigh || 0,
+            baristaScore: this.scores.baristaScore || 0
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('⚠️ Lỗi đồng bộ kỷ lục thể thao lên máy chủ:', e);
     }
   }
 

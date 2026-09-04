@@ -90,7 +90,7 @@ export class WorldScene extends Phaser.Scene {
     this.interactionManager = new InteractionManager(this, {
       onInteract: (zoneData) => {
         if (this.interactiveModal) {
-          this.interactiveModal.show(zoneData);
+          this.interactiveModal.show({ ...zoneData, roomId: this.currentRoomId });
         }
       }
     });
