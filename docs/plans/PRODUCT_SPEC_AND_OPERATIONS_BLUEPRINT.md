@@ -170,6 +170,22 @@ $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
 * **Khả năng phục hồi:** Khi gặp sự cố mạng (WiFi gián đoạn, chuyển sóng 4G hoặc thu nhỏ tab điện thoại), SocketManager tự động kích hoạt cơ chế tái kết nối với thuật toán Exponential Backoff (1s, 2s, 4s, 8s, tối đa 5 lần).
 * **Bảo toàn trạng thái:** Giữ nguyên vị trí nhân vật, phòng đang đứng và nội dung nhập dở; không điều hướng người chơi trở lại cổng Welcome Gate khi rớt mạng tạm thời.
 
+### 25. Chính Sách Tên Nhân Vật & Tự Do Sáng Tạo (Nickname Policy & Filter)
+* **Tự do sáng tạo:** Người chơi (cả Guest và Member) được thoải mái đặt biệt danh mang dấu ấn cá nhân, có hỗ trợ dấu tiếng Việt và khoảng trắng tự nhiên.
+* **Bộ lọc vi phạm:** Tự động chặn các biệt danh chứa từ ngữ thô tục, công kích bạo lực, vi phạm pháp luật hoặc thuần phong mỹ tục học đường.
+
+### 26. Chu Kỳ Mùa Giải & Sảnh Vinh Danh (Leaderboard Seasonality & Hall of Fame)
+* **Chu kỳ mùa giải:** Bảng Xếp Hạng Dever Points và minigame được làm mới (Reset) theo từng **Học kỳ FPTU (Spring, Summer, Fall)**.
+* **Bảo tồn giá trị người chơi:**
+  * Toàn bộ trang phục, kiểu tóc, vật phẩm trong Tủ đồ đã mở khóa được **bảo lưu vĩnh viễn**.
+  * Thành tích và Top người chơi của mùa cũ được ghi danh trang trọng vào **Sảnh Vinh Danh (Hall of Fame)** để lưu lại dấu ấn lịch sử CLB.
+  * Việc reset điểm đua Top theo kỳ giúp tân sinh viên các khóa mới luôn có động lực công bằng để vươn lên bảng vàng.
+
+### 27. Vòng Đời Dữ Liệu & Hủy Tài Khoản (Account Deletion & Data Privacy)
+* **Chính sách Soft Delete:** Khi sinh viên tốt nghiệp hoặc gửi yêu cầu xóa tài khoản (Right to be Forgotten):
+  * Hệ thống tiến hành vô hiệu hóa tài khoản (`is_active = false`), hủy session JWT và ẩn thông tin người dùng khỏi tất cả các bảng xếp hạng công khai.
+  * Thông tin nhận dạng cá nhân (Email, IP) được ẩn danh hóa (Anonymized) nhưng giữ lại mã định danh nội bộ để bảo toàn tính toàn vẹn của lịch sử hệ thống.
+
 ---
 
 ## 3. KẾT LUẬN & CAM KẾT TRIỂN KHAI
