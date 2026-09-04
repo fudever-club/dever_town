@@ -185,15 +185,20 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
 
     // Chuyển sang phòng sports_complex
     await page.locator('#room-selector').selectOption('sports_complex');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(1200);
 
-    // Di chuyển tới Sân bóng đá tại tile (5, 4)
+    // Di chuyển tới hành lang cạnh Sân bóng đá tại tile (5, 9)
+    // Zone football nằm ở tileY:8 (hành lang corridor), player đứng row 9 -> dist=32px < RADIUS_IN=52px
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
-      scene.player.setPosition(5 * 32 + 16, 5 * 32 + 16);
-      scene.interactionManager.update(scene.player);
+      if (!scene) return;
+      // Reset throttle để update() chạy ngay
+      if (scene.interactionManager) scene.interactionManager.lastCheckTime = 0;
+      scene.player.setPosition(5 * 32 + 16, 9 * 32 + 16);
+      scene.player.body?.reset(5 * 32 + 16, 9 * 32 + 16);
+      scene.interactionManager?.update(scene.player);
     });
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(300);
 
     // Bấm phím E
     await page.keyboard.press('KeyE');

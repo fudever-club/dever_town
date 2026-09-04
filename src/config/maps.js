@@ -475,7 +475,7 @@ export const MAPS_CONFIG = {
         id: 'zone_sports_football',
         type: 'sports_activity',
         tileX: 5,
-        tileY: 4,
+        tileY: 8,
         name: 'Sân Bóng Đá Mini Cỏ Nhân Tạo FUDA',
         label: 'Sút Phạt Đền Mini',
         metadata: { sport: 'football', title: 'SÚT BÓNG VÀO LƯỚI FUDA' }
@@ -484,7 +484,7 @@ export const MAPS_CONFIG = {
         id: 'zone_sports_basketball',
         type: 'sports_activity',
         tileX: 19,
-        tileY: 4,
+        tileY: 8,
         name: 'Sân Bóng Rổ FUDA',
         label: 'Ném Bóng 3 Điểm',
         metadata: { sport: 'basketball', title: 'THỬ THÁCH NÉM BÓNG RỔ FUDA' }
@@ -564,7 +564,7 @@ export const MAPS_CONFIG = {
         id: 'zone_cafe_acoustic',
         type: 'coffee_lofi',
         tileX: 5,
-        tileY: 13,
+        tileY: 11,
         name: 'Góc Nhạc Acoustic Cafe & Pomodoro',
         label: 'Acoustic Chill',
         metadata: { title: 'NHẠC ACOUSTIC CAFE ĐÀ NẴNG' }
@@ -573,7 +573,7 @@ export const MAPS_CONFIG = {
         id: 'zone_cafe_meeting',
         type: 'meeting_stage',
         tileX: 19,
-        tileY: 13,
+        tileY: 11,
         name: 'Bàn Tròn Thảo Luận & Boardgame',
         label: 'Bàn Họp Nhóm',
         metadata: { title: 'BÀN THẢO LUẬN CANTEEN' }
