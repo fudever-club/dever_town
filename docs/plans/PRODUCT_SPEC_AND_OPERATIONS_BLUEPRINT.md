@@ -145,6 +145,30 @@ $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
 * **Cơ chế Feature Flag:** Tích hợp bộ cờ bật/tắt tính năng thông qua `GAME_CONFIG.FEATURES` và `localStorage` (ví dụ: `FEATURE_VOICE_CHAT: false`, `FEATURE_RADAR_COLLAPSE: true`).
 * **Quy trình thử nghiệm:** Cho phép tài khoản Tester/Dev kích hoạt thử nghiệm tính năng mới trên người dùng thật trước khi rollout rộng rãi cho toàn thể sinh viên FPTU.
 
+### 19. Sức Chứa Phòng & Phân Kênh Tự Động (Room Capacity & Auto-Instancing)
+* **Ngưỡng sức chứa tiêu chuẩn:** Tối đa **40 – 50 người chơi / phòng**.
+* **Cơ chế phân kênh (Dynamic Channeling):** Khi một phòng đạt quá 50 người cùng lúc (ví dụ trong sự kiện lớn), máy chủ Socket.io sẽ tự động mở Channel mới (ví dụ: `main_hall-ch1`, `main_hall-ch2`). Người chơi có thể tự do chọn chuyển kênh hoặc tự động ghép vào kênh có bạn bè.
+* **Mục đích:** Bảo vệ hiệu năng render của Phaser 3, tránh quá tải CPU và giật lag trên các dòng điện thoại hoặc máy tính cấu hình thấp.
+
+### 20. Đàm Thoại Giọng Nói Cự Ly Gần (Proximity Voice Chat)
+* **Cơ chế âm thanh không gian (Spatial Audio):** Người chơi di chuyển lại gần nhau trong bán kính **100px** sẽ tự động nghe thấy giọng nói của nhau; âm lượng tăng dần khi lại gần và nhỏ dần khi đi xa (chuẩn Gather.town).
+* **Kiến trúc kỹ thuật:** Sử dụng WebRTC Mesh P2P cho nhóm nhỏ ($\le 6$ người cùng nói), tích hợp các phím tắt nhanh: `[Mute Mic]` và `[Deafen Audio]` hiển thị rõ trên thanh công cụ.
+
+### 21. Định Hướng Gameplay Minigames (Single-player with Global Leaderboards)
+* **Mô hình triển khai:** Toàn bộ Minigames (Sút bóng, bóng rổ, bóng chuyền, pha chế cà phê, Snake, Sokoban, Đào vàng) hoạt động theo mô hình **Single-player cục bộ kết hợp Bảng Xếp Hạng Toàn Cầu**.
+* **Lý do lựa chọn:** Đảm bảo độ trễ vật lý $0\text{ms}$, mượt mà tuyệt đối kể cả khi mạng yếu; điểm số được tự động đồng bộ lên Database thông qua `authService.syncFullProfile()` để cạnh tranh thứ hạng trên Hall of Fame.
+
+### 22. Chính Sách Tài Khoản & Quyền Lợi Bình Đẳng (Universal Account & Equal Access)
+* **Chính sách mở rộng:** Chấp nhận tất cả tài khoản đăng ký qua Email thường hoặc Google OAuth cá nhân; không bắt buộc độc quyền email trường.
+* **Quyền lợi:** Mọi thành viên đăng ký đều có quyền bình đẳng trong việc tích lũy Dever Points, sở hữu tủ đồ, tham gia sự kiện và đua Top bảng xếp hạng.
+
+### 23. Chính Sách Vật Phẩm & Chống Chợ Đen (Account-Bound Items & Anti-Trading)
+* **Quy tắc sở hữu:** Toàn bộ vật phẩm thu thập (Móc khóa FUDA, Cúp Hackathon, Cà phê muối, v.v.), trang phục Tủ đồ và Danh hiệu đều là **Account-bound (Gắn chặt với tài khoản)**.
+* **Không mở giao dịch tự do (No P2P Trading):** Triệt tiêu hoàn toàn nguy cơ phát sinh thị trường chợ đen, cày thuê tài khoản và lạm phát điểm Dever Points trong cộng đồng sinh viên.
+
+### 24. Cơ Chế Tái Kết Nối Tự Động & Chống Mất Dữ Liệu (Auto-Reconnect & State Resilience)
+* **Khả năng phục hồi:** Khi gặp sự cố mạng (WiFi gián đoạn, chuyển sóng 4G hoặc thu nhỏ tab điện thoại), SocketManager tự động kích hoạt cơ chế tái kết nối với thuật toán Exponential Backoff (1s, 2s, 4s, 8s, tối đa 5 lần).
+* **Bảo toàn trạng thái:** Giữ nguyên vị trí nhân vật, phòng đang đứng và nội dung nhập dở; không điều hướng người chơi trở lại cổng Welcome Gate khi rớt mạng tạm thời.
 
 ---
 
