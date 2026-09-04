@@ -172,7 +172,7 @@ export const TRANSLATIONS = {
 
     // Footer
     footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.8.5 • WORK HARD PLAY HARD',
+    footerSlogan: 'DEVER TOWN v0.4.1 • WORK HARD PLAY HARD',
     footerMove: 'WASD/Mũi tên: Di chuyển',
     footerInteract: '[E]: Tương tác',
     footerInv: '[I]: Túi đồ',
@@ -360,7 +360,7 @@ export const TRANSLATIONS = {
 
     // Footer
     footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.8.5 • WORK HARD PLAY HARD',
+    footerSlogan: 'DEVER TOWN v0.4.1 • WORK HARD PLAY HARD',
     footerMove: 'WASD/Arrows: Move',
     footerInteract: '[E]: Interact',
     footerInv: '[I]: Inventory',

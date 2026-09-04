@@ -19,7 +19,8 @@ import {
   MinimapOverlay,
   RoomBanner,
   EmoteBar,
-  SpeedCodeDuel
+  SpeedCodeDuel,
+  DailyGoalHUD
 } from '../ui/index.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
@@ -45,6 +46,7 @@ export class WorldScene extends Phaser.Scene {
     this.portalLabels = [];
     this.audioManager = audioManager;
     this.i18n = i18n;
+    this.playerSessionActive = false;
   }
 
   create() {
@@ -105,7 +107,7 @@ export class WorldScene extends Phaser.Scene {
         if (this.inventoryModal && this.inventoryModal.isOpen()) {
           this.inventoryModal.render();
         }
-        if (item && (item.id === 'item_macbook_m3' || item.id === 'item_custom_keyboard') && this.achievementManager) {
+        if (item && (item.id === 'macbook_dev' || item.id === 'keychron_kb') && this.achievementManager) {
           this.achievementManager.unlock('tech_pro');
         }
       }
@@ -351,7 +353,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     // Kiểm tra mở khóa Tân Thủ DEVER khi đến Sảnh Alpha
-    if (this.achievementManager && roomId === 'main_hall') {
+    if (this.playerSessionActive && this.achievementManager && roomId === 'main_hall') {
       this.achievementManager.unlock('first_arrival');
     }
 
@@ -450,7 +452,8 @@ export class WorldScene extends Phaser.Scene {
       onClose: () => {
         if (this.inputController) this.inputController.enableInput();
         if (this.game && this.game.canvas) this.game.canvas.focus();
-      }
+      },
+      onAchievement: (achievementId) => this.achievementManager?.unlock(achievementId)
     });
 
     // 3. Inventory Modal
@@ -479,10 +482,14 @@ export class WorldScene extends Phaser.Scene {
 
     // 6. Quests & Points Modal
     this.questModal = new QuestModal();
+    this.dailyGoalHud = new DailyGoalHUD({
+      onOpenQuests: (triggerEl) => this.questModal.show(triggerEl)
+    });
 
     // 7. Auth Modal
     this.authModal = new AuthModal({
       onAuthSuccess: ({ user, isGuest }) => {
+        this.activatePlayerSession();
         const name = user.display_name || user.displayName;
         const avatarId = user.avatar_id || user.avatarId || 'dev_hoodie';
         const role = user.role || (isGuest ? 'guest' : 'dev');
@@ -547,7 +554,7 @@ export class WorldScene extends Phaser.Scene {
     });
 
     // 13. Minigame Đấu Trí Siêu Tốc (Speed Code Duel)
-    this.speedCodeDuel = new SpeedCodeDuel();
+    this.speedCodeDuel = new SpeedCodeDuel({ scene: this });
 
     // 7. Header Buttons
     const invBtn = document.getElementById('header-inventory-btn');
@@ -597,13 +604,6 @@ export class WorldScene extends Phaser.Scene {
       bgmBtn.addEventListener('click', () => {
         const isPlaying = audioManager.toggleBgm();
         bgmBtn.classList.toggle('active', isPlaying);
-      });
-    }
-
-    const questsBtn = document.getElementById('header-quests-btn');
-    if (questsBtn) {
-      questsBtn.addEventListener('click', () => {
-        this.questModal.show();
       });
     }
 
@@ -661,6 +661,14 @@ export class WorldScene extends Phaser.Scene {
 
     const currentUser = authService.getUser();
     this.updateHeaderProfile(currentUser);
+  }
+
+  activatePlayerSession() {
+    this.playerSessionActive = true;
+    questManager.startSession({ currentRoomId: this.currentRoomId });
+    if (this.currentRoomId === 'main_hall' && this.achievementManager) {
+      this.achievementManager.unlock('first_arrival');
+    }
   }
 
   toggleFullscreen() {

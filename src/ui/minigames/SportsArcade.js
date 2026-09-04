@@ -304,6 +304,9 @@ export class SportsArcade {
           localStorage.setItem('dever_penalty_streak', this.scores.footballStreak.toString());
 
           questManager.incrementProgress('penalty_goal', 1);
+          if (this.scores.footballStreak >= 3) {
+            this.options.onAchievement?.('striker');
+          }
           audioManager.playVictory();
           this.spawnConfetti(320, 140, 40);
         }

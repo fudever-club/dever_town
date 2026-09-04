@@ -33,15 +33,15 @@
         <p class="gate-slogan">WORK HARD - PLAY HARD</p>
         <p class="gate-desc">
           Thế giới ảo Pixel 2D Gather.town style kết nối cộng đồng lập trình viên FUDA.
-          Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 7 phân khu chức năng sống động!
+          Học tập, giao lưu, tổ chức workshop, sút bóng đá và khám phá 9 phân khu chức năng sống động!
         </p>
 
         <div class="gate-features-grid">
           <div class="gate-feature-item">
             <span class="feat-icon">🏛️</span>
             <div class="feat-text">
-              <strong>7 Phân Khu 2D</strong>
-              <span>Sảnh Alpha, Tech Lab, Thư viện, Kỷ niệm, Web, Media, Thể thao</span>
+              <strong>9 Phân Khu 2D</strong>
+              <span>Alpha, Tech Lab, Arcade, Thư viện, Kỷ niệm, Web, Media, Thể thao, Căn tin</span>
             </div>
           </div>
           <div class="gate-feature-item">
@@ -446,6 +446,37 @@
           </div>
         </div>
 
+        <!-- Daily Momentum: mục tiêu tiếp theo, không chặn thao tác trên bản đồ -->
+        <aside id="daily-goal-hud" class="daily-goal-hud hidden" aria-labelledby="daily-goal-title">
+          <div class="daily-goal-heading">
+            <div>
+              <span class="daily-goal-kicker">MỤC TIÊU HÔM NAY</span>
+              <h2 id="daily-goal-title" class="daily-goal-title">Đang chuẩn bị tiến trình</h2>
+            </div>
+            <button type="button" id="daily-goal-collapse" class="daily-goal-collapse" aria-label="Thu gọn mục tiêu hôm nay" aria-expanded="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="daily-goal-details">
+            <p id="daily-goal-description" class="daily-goal-description">Tiến trình sẽ xuất hiện khi phiên chơi bắt đầu.</p>
+            <div class="daily-goal-progress-row">
+              <div class="daily-goal-progress-track" role="progressbar" aria-label="Tiến độ tới rương thưởng ngày" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                <span id="daily-goal-progress" class="daily-goal-progress-fill"></span>
+              </div>
+              <span id="daily-goal-progress-text" class="daily-goal-progress-text">0/4 tới rương ngày</span>
+            </div>
+            <div class="daily-goal-footer">
+              <span id="daily-goal-sync-status" class="daily-goal-sync-status" role="status" aria-live="polite">Đã lưu trên thiết bị</span>
+              <div class="daily-goal-actions">
+                <button type="button" id="daily-goal-retry" class="daily-goal-retry hidden">Thử lại</button>
+                <button type="button" id="daily-goal-action" class="daily-goal-action">Xem nhiệm vụ</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
         <!-- Mobile Touch Virtual Controls (D-Pad & Action Buttons) -->
         <div id="mobile-touch-controls" class="mobile-touch-controls hidden">
           <!-- Left: Virtual D-Pad -->
@@ -554,7 +585,7 @@
       <div class="footer-left">
         <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • FUDA</span>
         <span class="divider">|</span>
-        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.8.5 • WORK HARD PLAY HARD</span>
+        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.4.1 • WORK HARD PLAY HARD</span>
       </div>
       <div class="footer-right">
         <span>WASD/Mũi tên: Di chuyển</span>
@@ -1385,17 +1416,17 @@
   <!-- ==========================================================================
        6. DAILY QUESTS & REWARD POINTS MODAL
        ========================================================================== -->
-  <div id="quest-modal" class="modal-backdrop hidden">
-    <div class="modal-card modal-card-lg">
+  <div id="quest-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="quest-modal-title" aria-hidden="true">
+    <div class="modal-card modal-card-lg" tabindex="-1">
       <div class="modal-header">
         <div class="modal-title-row">
           <span class="modal-title-icon">🪙</span>
           <div>
-            <h2 class="modal-title">Nhiệm Vụ Hằng Ngày & Tích Điểm</h2>
+            <h2 id="quest-modal-title" class="modal-title">Nhiệm Vụ Hằng Ngày & Tích Điểm</h2>
             <p class="modal-sub">Hoàn thành thử thách mỗi ngày để tích lũy DEVER Points và mở rương quà bí mật!</p>
           </div>
         </div>
-        <button type="button" id="quest-modal-close" class="modal-close-btn">&times;</button>
+        <button type="button" id="quest-modal-close" class="modal-close-btn" aria-label="Đóng nhiệm vụ hằng ngày">&times;</button>
       </div>
 
       <div class="modal-body quest-modal-body">
@@ -1417,9 +1448,9 @@
           <div class="milestone-info">
             <div class="milestone-title-row">
               <h4>Rương Thưởng Hoàn Thành Ngày</h4>
-              <span id="quest-prog-text" class="milestone-badge">0 / 6 Hoàn thành</span>
+              <span id="quest-prog-text" class="milestone-badge">0 / 7 Hoàn thành</span>
             </div>
-            <p>Hoàn thành ít nhất 4/6 nhiệm vụ trong ngày để mở rương nhận thêm <strong>+50 🪙 Dever Points</strong>!</p>
+            <p>Hoàn thành ít nhất 4/7 nhiệm vụ trong ngày để mở rương nhận thêm <strong>+50 🪙 Dever Points</strong>!</p>
             <div class="milestone-progress-bar">
               <div id="quest-prog-fill" class="milestone-fill" style="width: 0%"></div>
             </div>

@@ -6,10 +6,10 @@
 import { QUIZ_QUESTIONS } from '../../config/quizQuestions.js';
 import { audioManager } from '../../utils/AudioManager.js';
 import { authService } from '../../services/AuthService.js';
-import { questManager } from '../../managers/QuestManager.js';
 
 export class SpeedCodeDuel {
-  constructor() {
+  constructor({ scene = null } = {}) {
+    this.scene = scene;
     this.isOpen = false;
     this.questions = [];
     this.currentIndex = 0;
@@ -440,9 +440,6 @@ export class SpeedCodeDuel {
     this.clearCountdown();
     this.switchPane('result');
     audioManager.playWin();
-
-    // Record quest progress
-    questManager.incrementProgress('focus_lofi_pomo', 1);
 
     const accuracy = Math.round((this.correctCount / this.questions.length) * 100);
 

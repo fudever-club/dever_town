@@ -13,10 +13,12 @@ export class InteractiveModal {
    * @param {Object} options
    * @param {Function} options.onOpen
    * @param {Function} options.onClose
+   * @param {Function} options.onAchievement
    */
-  constructor({ onOpen, onClose } = {}) {
+  constructor({ onOpen, onClose, onAchievement } = {}) {
     this.onOpen = onOpen;
     this.onClose = onClose;
+    this.onAchievement = onAchievement;
     this.modalEl = document.getElementById('interactive-modal');
     this.currentZone = null;
     this.currentMemoryIndex = 0;
@@ -850,7 +852,8 @@ export class InteractiveModal {
       this.sportsArcade = new SportsArcade(canvas, {
         onScoreUpdate: ({ game, scores }) => {
           this.updateSportsBadges(game, scores);
-        }
+        },
+        onAchievement: (achievementId) => this.onAchievement?.(achievementId)
       });
     }
 

@@ -4,6 +4,7 @@ import { audioManager } from '../../utils/AudioManager.js';
 export class QuestModal {
   constructor() {
     this.modalEl = document.getElementById('quest-modal');
+    this.previousFocus = null;
     this.init();
   }
 
@@ -30,7 +31,7 @@ export class QuestModal {
     const headerBtn = document.getElementById('header-quests-btn');
     if (headerBtn) {
       headerBtn.addEventListener('click', () => {
-        this.toggle();
+        this.toggle(headerBtn);
         audioManager.playClick();
       });
     }
@@ -56,28 +57,46 @@ export class QuestModal {
     if (pointsEl) {
       pointsEl.textContent = state.points.toLocaleString('vi-VN');
     }
+    const headerBtn = document.getElementById('header-quests-btn');
+    if (headerBtn) {
+      headerBtn.setAttribute(
+        'aria-label',
+        `Nhiệm vụ hằng ngày, ${state.points} điểm, ${state.claimableCount} phần thưởng sẵn sàng`
+      );
+    }
   }
 
   isOpen() {
     return this.modalEl && !this.modalEl.classList.contains('hidden');
   }
 
-  show() {
+  show(triggerEl = null) {
     if (!this.modalEl) return;
+    this.previousFocus = triggerEl || document.activeElement;
     this.modalEl.classList.remove('hidden');
+    this.modalEl.setAttribute('aria-hidden', 'false');
     this.render(questManager.getState());
+    requestAnimationFrame(() => {
+      const closeBtn = document.getElementById('quest-modal-close');
+      (closeBtn || this.modalEl.querySelector('.modal-card'))?.focus();
+    });
   }
 
   hide() {
     if (!this.modalEl) return;
     this.modalEl.classList.add('hidden');
+    this.modalEl.setAttribute('aria-hidden', 'true');
+    if (this.previousFocus && document.contains(this.previousFocus)) {
+      this.previousFocus.focus();
+    }
+    this.previousFocus = null;
   }
 
-  toggle() {
+  toggle(triggerEl = null) {
     if (this.isOpen()) {
       this.hide();
     } else {
-      this.show();
+      this.show(triggerEl);
     }
   }
 

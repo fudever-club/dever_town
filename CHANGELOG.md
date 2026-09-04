@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added — Reliable Daily Momentum
+- Thêm Daily Goal HUD gọn, responsive và truy cập được để chỉ ra mục tiêu tiếp theo, tiến độ rương ngày, trạng thái lưu local/tài khoản và thao tác retry.
+- Thêm behavioral E2E cho claim reward, reload, hydration tài khoản, offline retry, serialized sync, achievement và bố cục mobile.
+- Khởi tạo roadmap + project wiki cho chiến lược retention có metric và guardrail rõ ràng.
+
+### Fixed
+- Hợp nhất điểm, daily quest, achievement và authenticated profile sync theo local-first state path; batch sync được debounce, tuần tự hóa và phục hồi đầy đủ sau lỗi mạng.
+- Giữ explorer progress đơn điệu qua reload và chỉ khởi tạo daily session sau khi danh tính người chơi đã sẵn sàng.
+- Khôi phục trigger thật cho `speed_coder`, `striker`, `tech_pro`; Speed Code Duel không còn ghi nhầm tiến trình Pomodoro.
+- Sửa stress-test JavaScript, room IDs và summary teardown; đồng bộ copy 9 khu cùng version `v0.4.1`.
+
+---
+
 ## [0.4.1] — 2026-09-04
 
 ### Fixed & Enhanced — Autonomous Gameplay Audit & Layout Polish

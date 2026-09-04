@@ -48,7 +48,7 @@ DEVER TOWN là một nền tảng Metaverse 2D Pixel Art hoàn chỉnh, kết h�
 
 ## 🗺️ 1. Bản Đồ & 9 Phân Khu Chức Năng 2D
 
-Hệ thống gồm 9 bản đồ (Map Grid 25x19 tiles = 800x608 px) kết nối liền mạch qua các **Cổng Dịch Chuyển (Portal)** có cơ chế Cooldown chống kẹt cổng an toàn:
+Hệ thống gồm 9 bản đồ (Map Grid 25x19 tiles = 800x608 px) kết nối liền mạch qua các **Cổng Dịch Chuyển (Portal)** có cơ chế Cooldown chống kẹt cổng an toàn. Vườn Trà FUDA là một vùng tương tác trong Tòa Alpha, không phải bản đồ thứ mười:
 
 | Phân Khu | Tên & Đặc Điểm | Vùng Tương Tác `[E]` Nổi Bật |
 |:---|:---|:---|
@@ -61,7 +61,7 @@ Hệ thống gồm 9 bản đồ (Map Grid 25x19 tiles = 800x608 px) kết nối
 | 📰 **Media Hub Học Vụ** | Cổng tiện ích học tập FPTU và mạng xã hội truyền thông | Cổng FAP, FLM, LMS FPTU, Fanpage CLB, TikTok FUDA, Kho GitHub Org |
 | ⚽🏀 **Khu Phức Hợp Thể Thao** | Sân bóng cỏ nhân tạo, sân bóng rổ, cầu lông, hồ bơi | Sân Bóng Đá Mini 11m, Sân Bóng Rổ 3 Điểm, Sân Bóng Chuyền & Cầu Lông 1v1, Hồ bơi thư giãn |
 | ☕🍽️ **Căn Tin & The High Deli** | Không gian ẩm thực sinh viên & lounge đồ uống | Quầy thực đơn 3 căn tin thực tế tầng 1 & 2, Mini-game Barista Pha Cà Phê Muối, Góc Acoustic Cafe |
-| 🍵🍃 **Vườn Trà FUDA (Tea Garden)** | Không gian sân vườn ngoài trời tĩnh lặng, thoáng đãng | Bàn trà đàm đạo, ghế đá thư giãn dưới tán hoa anh đào và làn gió thoảng |
+| ↳ 🍵 **Vùng Vườn Trà FUDA (thuộc Tòa Alpha)** | Không gian sân vườn ngoài trời tĩnh lặng, thoáng đãng | Bàn trà đàm đạo, ghế đá thư giãn dưới tán hoa anh đào và làn gió thoảng |
 
 ---
 
