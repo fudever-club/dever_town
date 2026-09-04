@@ -15,51 +15,51 @@ DEVER TOWN là không gian số tương tác thời gian thực (Real-time 2D Pi
 ## 2. BẢN ĐẶC TẢ CHI TIẾT 18 TIÊU CHÍ CHIẾN LƯỢC & VẬN HÀNH
 
 ### 1. Chân Dung Người Chơi Ưu Tiên (Target Personas)
-* **Nhóm trọng tâm số 1 (Core):** Sinh viên chuyên ngành Kỹ thuật Phần mềm (SE), An toàn Thông tin (IA), Trí tuệ Nhân tạo (AI), Thiết kế Đồ họa (GD) tại Đại học FPT Đà Nẵng.
-* **Nhóm trọng tâm số 2 (Active Members):** Thành viên chính thức và ứng viên các thế hệ của CLB FU-DEVER.
-* **Nhóm mở rộng (Community):** Tân sinh viên chuẩn bị nhập học FPTU, học sinh THPT tham quan trải nghiệm văn hóa công nghệ trường và cộng đồng lập trình viên đối tác.
+* **Nhóm trọng tâm số 1 (Core Persona):** Sinh viên chuyên ngành Kỹ thuật Phần mềm (SE), An toàn Thông tin (IA), Trí tuệ Nhân tạo (AI), Thiết kế Đồ họa (GD) tại Đại học FPT Đà Nẵng. Nhu cầu chính: Tra cứu tài liệu thi, gặp gỡ bạn cùng khóa, khám phá không gian số của trường.
+* **Nhóm trọng tâm số 2 (Active Members):** Thành viên chính thức và ứng viên các thế hệ của CLB FU-DEVER (Admin, Leader, Dev). Nhu cầu: Sinh hoạt nội bộ, tổ chức workshop, quản lý dự án và thi đấu lập trình.
+* **Nhóm mở rộng (Community):** Tân sinh viên (K20, K21...) chuẩn bị nhập học FPTU, học sinh THPT tham quan trải nghiệm văn hóa công nghệ trường và cộng đồng lập trình viên đối tác.
+* **Khuyến nghị Game Design (Recommendation):** Định vị DEVER TOWN như một *"Digital Clubhouse"* (ngôi nhà số ấm cúng của CLB) thay vì một game cày cuốc; chú trọng cảm giác thân thuộc, gần gũi với giảng đường và văn hóa FPTU.
 
 ### 2. Nhân Khẩu Học, Nền Tảng & Thiết Bị (Demographics & Platforms)
-* **Độ tuổi:** 18 – 23 tuổi (Gen Z, am hiểu công nghệ, ưa chuộng trải nghiệm tương tác trực quan).
-* **Nền tảng mục tiêu:**
-  1. *Desktop / Laptop (Ưu tiên số 1):* Trình duyệt Chrome, Edge, Brave, Firefox trên Windows / macOS / Linux. Độ phân giải phổ biến: 1366x768 đến 1920x1080.
-  2. *Mobile Web (Ưu tiên số 2):* Safari (iOS), Chrome (Android) với thiết kế Responsive (360px – 430px), tích hợp Touch D-Pad, nút chạm kích hoạt nhanh (Quick Emotes, Speed Code, Radar HUD tự động gập gọn).
+* **Độ tuổi:** 18 – 23 tuổi (Gen Z, yêu thích công nghệ, chuộng tương tác trực quan và đồ họa pixel art).
+* **Nền tảng & Thiết bị mục tiêu:**
+  1. *Desktop / Laptop (70% thời lượng):* Trình duyệt Chrome, Edge, Brave, Firefox trên Windows & macOS. Độ phân giải phổ biến: 1366x768 đến 1920x1080.
+  2. *Mobile Web (30% thời lượng):* Safari (iOS), Chrome (Android) với màn hình 360px – 430px. Tích hợp Touch D-Pad, các nút kích hoạt nhanh ngón cái (Quick Emotes, Speed Duel) và tự động gập gọn Radar HUD để tối ưu không gian nhìn.
+* **Khuyến nghị Game Design (Recommendation):** Duy trì tỷ lệ khung hình chuẩn 16:9 với camera zoom 1.32x trên Desktop; trên Mobile Web tự động ẩn thanh địa chỉ trình duyệt khi cuộn và hỗ trợ xoay ngang (landscape) để bao quát toàn phòng.
 
 ### 3. Mục Tiêu Giữ Chân Người Dùng (Retention & Engagement Targets)
-* **Day-1 Retention (D1):** $\ge 40\%$ (Đạt được nhờ cơ chế Chơi Ngay không rào cản + Quẻ bói Cóc Vàng hàng ngày).
-* **Day-7 Retention (D7):** $\ge 20\%$ (Đạt được nhờ chuỗi nhiệm vụ tuần, sự kiện workshop và bảng xếp hạng minigame).
+* **Day-1 Retention (D1):** $\ge 40\%$ (Mục tiêu cao, đạt được nhờ cơ chế Chơi Ngay không cần tạo tài khoản + Quẻ bói Cóc Vàng Tâm Linh mỗi ngày).
+* **Day-7 Retention (D7):** $\ge 20\%$ (Duy trì nhờ chuỗi nhiệm vụ tuần, bảng vinh danh Hall of Fame và lịch sinh hoạt CLB).
 * **Thời lượng phiên trung bình (Session Length):** 12 – 18 phút/phiên.
 * **Tỷ lệ quay lại hàng tháng (MWR):** $\ge 30\%$.
+* **Khuyến nghị Game Design (Recommendation):** Thiết lập cơ chế *"Daily Ritual"* (Nghi thức hàng ngày) — người chơi vào game để xin quẻ Cóc Vàng, kiểm tra nhiệm vụ ngày và điểm danh streak để giữ chân người chơi tự nhiên.
 
 ### 4. Hiện Trạng Chỉ Số Cơ Sở (Baseline Metrics)
-* **DAU / WAU:** 30 – 50 DAU (các đợt playtest nội bộ); 120 – 150 WAU.
-* **Onboarding Conversion:** $\ge 95\%$ người dùng nhập nickname và bước vào Sảnh Alpha thành công trong vòng 5 giây đầu tiên.
-* **Tỷ lệ tương tác Zone:** Trung bình mỗi phiên người chơi ghé thăm ít nhất 3 phòng chức năng và tương tác với ít nhất 2 Minigames / Tủ đồ.
+* **DAU / WAU giai đoạn v0.4.1:** 30 – 50 DAU (các đợt playtest nội bộ); 120 – 150 WAU.
+* **Tỷ lệ Onboarding Conversion:** $\ge 95\%$ người dùng nhập nickname và bước vào Sảnh Alpha thành công trong vòng 5 giây đầu tiên (Bounce rate < 5%).
+* **Khuyến nghị Game Design (Recommendation):** Tích hợp bộ ghi sự kiện nội bộ nhẹ (Internal Lightweight Telemetry) thay vì nhúng Google Analytics nặng nề, đo chính xác phễu chuyển đổi qua từng phòng và thời gian dừng lại ở từng zone.
 
 ### 5. Hạ Tầng Triển Khai & Quyền Hạn Hệ Thống (Infrastructure & Access Control)
-* **Production Client:** Vercel Hosting tự động triển khai từ nhánh `main` (Domain tùy biến `town.fudever.com` / Vercel Edge Network).
+* **Production Client:** Vercel Hosting tự động triển khai từ nhánh `main` (Domain tùy biến `town.fudever.com`).
 * **Production Server / Realtime Socket:** Máy chủ Render / VPS chạy Node.js + Socket.io.
 * **Staging / QA Environment:** Vercel Preview Deployments tự động từ các nhánh tính năng (`develop_hung`, `develop`).
-* **Quyền hạn truy cập:**
-  * *Guest:* Trải nghiệm toàn bộ phòng và tính năng game.
-  * *Dev / Member:* Lưu trữ tủ đồ, nhiệm vụ, thành tựu lên Database.
-  * *Leader / Admin:* Quyền quản trị nội dung thông báo, kick/mute người vi phạm và quản lý phòng họp.
+* **Phân quyền hệ thống:** `guest` $\rightarrow$ `dev` $\rightarrow$ `leader` $\rightarrow$ `admin`. Ban Quản Trị có quyền xem log hệ thống, cơ sở dữ liệu PostgreSQL và số liệu người chơi trực tuyến.
 
 ### 6. Chính Sách Dữ Liệu, Telemetry & Quyền Riêng Tư (Privacy & Telemetry Guard)
-* **Dữ liệu được phép thu thập:** Lượt vào phòng (room visits), điểm kỷ lục minigame, tiến trình nhiệm vụ, báo cáo lỗi JavaScript ẩn danh.
-* **Chính sách Consent:** Thông báo điều khoản sử dụng và phiên làm việc cookie minh bạch tại cổng Welcome Gate.
+* **Dữ liệu được phép thu thập:** Lượt vào phòng, kỷ lục minigame, tiến trình nhiệm vụ, báo cáo lỗi JavaScript ẩn danh.
 * **QUY ĐỊNH BẤT KHẢ XÂM PHẠM — DỮ LIỆU TUYỆT ĐỐI KHÔNG ĐƯỢC LƯU:**
   * Tuyệt đối không lưu mật khẩu dạng văn bản thô (Plain-text Password) — bắt buộc băm bằng `bcrypt` salt 10 rounds.
-  * Không lưu mã OTP xác thực sau khi người dùng đã đổi mật khẩu thành công.
-  * Không lưu trữ lịch sử chat riêng tư nếu không có yêu cầu điều tra vi phạm.
-  * Không truy cập danh bạ, camera/mic (trừ khi người dùng chủ động cho phép WebRTC), và dữ liệu ngoài phạm vi trình duyệt.
+  * Không lưu mã OTP sau khi người dùng đã đổi mật khẩu thành công.
+  * Không can thiệp clipboard hoặc dữ liệu bên ngoài tab game.
+  * Không thu thập thông tin CCCD, thẻ sinh viên hoặc tài khoản ngân hàng.
 
 ### 7. Trọng Tâm Sản Phẩm & Thứ Tự Ưu Tiên (Core Product Pillars)
-Dựa trên định hướng chiến lược đã phê duyệt:
+Quyết định chiến lược đã phê duyệt:
 $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
-1. **Social (50% - Trọng tâm cốt lõi):** Metaverse kết nối bạn bè, bong bóng chat trực tiếp, biểu cảm nhảy/múa, tụ tập tại Vườn Trà Sảnh Alpha, Góc Cafe Acoustic Căn Tin và Bàn Thảo Luận Tech Lab.
+1. **Social (50% - Trọng tâm số 1):** Metaverse kết nối bạn bè, bong bóng chat trực tiếp, biểu cảm nhảy múa, tụ tập tại Vườn Trà Sảnh Alpha, Góc Cafe Acoustic Căn Tin và Bàn Thảo Luận Tech Lab.
 2. **Learn (30% - Giá trị lâu dài):** Tủ Cẩm nang ôn thi PE/FE SWE201c, IT Helpdesk & phần mềm thi FPTU (EOS, FAP, FLM, LMS), Slide đào tạo kỹ thuật, Kho dự án thực chiến của CLB.
-3. **Play (20% - Gia vị giữ chân):** Hệ thống Minigames tốc độ cao (Sút bóng penalty, ném bóng rổ, pha chế cà phê muối, Cyber Snake, Buggy Sokoban, Đào vàng Cóc Vàng, Speed Code Duel) đóng vai trò là chất xúc tác tạo niềm vui và điểm thưởng giao lưu.
+3. **Play (20% - Gia vị giữ chân):** Hệ thống Minigames tốc độ cao (Sút bóng penalty, ném bóng rổ, pha chế cà phê muối, Cyber Snake, Buggy Sokoban, Đào vàng Cóc Vàng, Speed Code Duel) đóng vai trò xúc tác tạo niềm vui và điểm thưởng giao lưu.
+* **Khuyến nghị Game Design (Recommendation):** Learn là *"Lý do chính đáng để vào"* (học tập, tra cứu), Play là *"Gia vị xả stress"*, và Social là *"Chất keo giữ chân vĩnh viễn"*.
 
 ### 8. Thống Kê Hành Vi: Hoạt Động Yêu Thích vs Bỏ Dở (Behavioral Insights)
 * **Hoạt động yêu thích nhất:**
@@ -69,15 +69,15 @@ $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
   * Chat bong bóng và biểu cảm icon nhảy múa cùng đồng đội.
 * **Hoạt động dễ bị bỏ dở (Cần tối ưu UX):**
   * Các tài liệu/slide có khối lượng chữ quá dày đặc mà không có infographic tóm tắt.
-  * Đọc thực đơn nếu danh sách món quá dài không có bộ lọc phân loại.
+  * Đọc thực đơn nếu danh sách món quá dài không có bộ lọc phân loại giá tiền.
 
 ### 9. Đúc Kết Từ Playtest & Phỏng Vấn Thực Tế (Playtest Feedback)
-* *Khảo sát 1:* Người chơi rất hài lòng khi hệ thống cho phép vào chơi ngay bằng Guest mà không bắt buộc tạo tài khoản ngay lập tức.
+* *Khảo sát 1:* Người chơi đánh giá rất cao việc được vào game tức thì bằng Guest Mode 1-click.
 * *Khảo sát 2:* Cần duy trì phím tắt công thái học đồng nhất (`[E]` tương tác, `[I]` túi đồ, `[M]` radar minimap, `[G]` thanh biểu cảm, `[Escape]` đóng modal).
-* *Khảo sát 3:* Trải nghiệm di chuyển và kích hoạt phím `[E]` phải hoàn toàn chuẩn xác, không bị delay hoặc kẹt góc tường.
+* *Khảo sát 3:* Trải nghiệm di chuyển và kích hoạt phím `[E]` phải hoàn toàn chuẩn xác, không bị delay hoặc kẹt góc tường (đã giải quyết triệt để tại v0.4.1).
 
 ### 10. Vận Hành Cộng Đồng & Chuỗi Sự Kiện (Community Operations)
-* **Workshop Kỹ Thuật (Hàng tháng):** Tổ chức trực tiếp tại phòng Tech Lab (`dever_lab`) và Sảnh Đón Tiếp (`main_hall`), chiếu slide chính thức của CLB.
+* **Workshop Kỹ Thuật (Hàng tháng):** Tổ chức trực tiếp tại phòng Tech Lab (`dever_lab`) và Sảnh Đón Tiếp (`main_hall`), diễn giả đứng trên bục `zone_lab_meeting`, chiếu slide chính thức của CLB.
 * **Giải Đấu Speed Code & Esports Arcade (Định kỳ):** Tổ chức tại Bàn Thi Đấu Game & Livestream (`zone_arcade_meeting`).
 * **Đội ngũ phụ trách:** Ban Nội dung & Ban Kỹ thuật FU-DEVER định kỳ bảo trì ngân hàng câu hỏi lập trình, tài liệu học phần và thực đơn căn tin.
 
@@ -94,41 +94,40 @@ $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
 * **Quy tắc Chống Farming (Anti-Farming Rules):**
   * Giới hạn trần điểm kiếm từ minigame: Tối đa **500 DP / ngày / tài khoản**.
   * Quẻ Cóc Vàng chỉ phát quà 1 lần duy nhất mỗi ngày (reset lúc 00:00).
-  * Xác thực điểm và token bảo mật qua API `PUT /api/auth/sync-profile`.
+  * Xác thực điểm và token bảo mật qua API `PUT /api/auth/sync-profile` phía server (Zero-trust client score).
 
 ### 12. Cơ Chế Chuyển Đổi Guest Sang Account & Đồng Bộ (Guest Migration & Sync)
 * **Zero Friction Entry:** Người chơi vào game tức thì với tư cách Guest, tiến trình tạm thời được lưu trong `localStorage`.
 * **Auto-Merge Khi Đăng Ký / Đăng Nhập:**
-  * Khi người dùng từ Guest tiến hành Đăng ký hoặc Đăng nhập tài khoản chính thức, hệ thống tự động gộp toàn bộ Dever Points, trạng thái nhiệm vụ, tủ đồ và kỷ lục trò chơi của Guest vào tài khoản server.
+  * Khi người dùng từ Guest tiến hành Đăng ký hoặc Đăng nhập tài khoản chính thức, hệ thống tự động gộp (merge) toàn bộ Dever Points, trạng thái nhiệm vụ, tủ đồ và kỷ lục trò chơi của Guest vào tài khoản server.
 * **Multi-Device Synchronization:**
   * Mọi thay đổi về tủ đồ, trang bị và điểm số của tài khoản chính thức được đồng bộ tức thì lên Database thông qua `authService.syncFullProfile()`.
 
 ### 13. Kiểm Soát Nội Dung & An Toàn Cộng Đồng (Moderation & Safety)
-* **Bộ lọc từ cấm tự động (Profanity Filter):** Tự động phát hiện và che giấu các từ ngữ tục tĩu, công kích cá nhân hoặc spam link độc hại trên kênh chat thế giới và bong bóng thoại.
-* **Client-side Ignore/Mute:** Người chơi có thể ẩn tin nhắn từ một đối tượng cụ thể trên giao diện cá nhân.
-* **Quyền hạn Ban Quản Trị:** Tài khoản Role `admin` hoặc `leader` có thẩm quyền kick khỏi phòng hoặc cấm chat đối với tài khoản cố tình vi phạm quy chuẩn ứng xử văn minh của trường.
+* **Bộ lọc từ cấm tự động (Profanity Filter):** Chạy ở cả Client và Server, tự động phát hiện và thay thế từ ngữ tục tĩu bằng ký tự `***`.
+* **Client-side Ignore/Mute:** Người chơi có thể tự ẩn tin nhắn từ đối tượng làm phiền trên màn hình cá nhân.
+* **Quyền hạn Ban Quản Trị:** Lệnh quản trị `/kick <username>` và `/mute <username> <minutes>` gửi qua Socket dành riêng cho role `admin` hoặc `leader` để xử lý vi phạm tức thì.
 
 ### 14. Nguồn Chuẩn Duy Nhất Cho Bản Đồ (Single Source of Truth - SSOT)
-* **Hiện trạng v0.4.1:** Đã đồng bộ hoàn toàn giữa Client [`src/config/maps.js`](file:///D:/THStudy/DeverClub/DEVER_TOWN/src/config/maps.js) và Server [`server/data/rooms.json`](file:///D:/THStudy/DeverClub/DEVER_TOWN/server/data/rooms.json).
-* **Chuẩn hóa kiến trúc tương lai:**
-  * Thiết lập một file cấu hình duy nhất dùng chung `shared/maps.json` (hoặc Client là Master SSOT) để Server nạp trực tiếp, loại bỏ vĩnh viễn rủi ro lệch metadata tọa độ zone hoặc điểm dịch chuyển giữa hai phía.
+* **Kiến trúc chuẩn hóa (Architectural Decision):**
+  * Chọn Client `src/config/maps.js` (hoặc thư mục dùng chung `shared/maps.json`) làm **Master Single Source of Truth (SSOT)**.
+  * Server backend sẽ import trực tiếp file này lúc khởi động, loại bỏ hoàn toàn nguy cơ lệch metadata tọa độ zone hoặc portal giữa frontend và backend khi cập nhật.
 
 ### 15. Ngân Sách Hiệu Năng & Giới Hạn Phần Cứng (Performance Budget)
 * **Cấu hình sàn hỗ trợ (Lowest Hardware Spec):**
-  * Thiết bị: Smartphone Android RAM 2GB, vi xử lý tầm trung (Snapdragon 450, MediaTek Helio P35).
-  * Kết nối: 3G/4G ổn định với độ trễ $\le 150\text{ms}$.
+  * Thiết bị: Smartphone Android RAM 2GB, chip Snapdragon 450 / Helio P35.
+  * Mạng: 3G/4G ổn định với độ trễ $\le 150\text{ms}$.
 * **Chỉ số hiệu năng cam kết:**
   * Tốc độ khung hình: Duy trì ổn định $55 - 60\text{ FPS}$.
   * Heap Memory tiêu thụ trên trình duyệt: $\le 25\text{ MB}$.
   * Dung lượng Bundle sản phẩm (Vite build gzipped): $\le 500\text{ KB}$ JS.
-  * Tần số đồng bộ Socket: Throttling vị trí người chơi ở mức $40 - 50\text{ms}$/lần để bảo vệ băng thông và CPU máy chủ.
+  * Tần số đồng bộ Socket: Throttling vị trí người chơi ở mức $40 - 50\text{ms}$/lần (chỉ gửi khi vị trí có sự thay đổi).
 
 ### 16. Lộ Trình Phát Triển & Giới Hạn Thay Đổi (Release Roadmap & Scope)
 * **Phiên bản hiện tại (v0.4.1):** Ổn định hoàn hảo hệ thống tương tác phím `[E]`, chuẩn hóa tọa độ 8 phân khu, diệt trừ lỗi crash auth, kiểm thử Playwright đạt 100% xanh.
-* **Phiên bản tiếp theo (v0.5.0):**
-  * Hoàn thiện giao diện gộp điểm tự động (Auto-Merge UI) khi Guest đăng ký tài khoản.
-  * Bảng vinh danh Top Điểm Thưởng CLB (Club Hall of Fame).
-  * Thử nghiệm âm thanh WebRTC Proximity Voice Chat cho các buổi họp nhóm nhỏ.
+* **Mốc phát triển tiếp theo (v0.5.0 - Trong 2-3 tuần tới):**
+  * Trọng tâm: Hoàn thiện Tính Năng Xã Hội (Social).
+  * Hạng mục cụ thể: Cơ chế Auto-merge Guest sang Account, Bảng vinh danh Hall of Fame, và Thử nghiệm WebRTC Proximity Voice Chat cho các buổi họp nhóm nhỏ.
 * **Quy tắc cô lập:** Tuyệt đối không thay đổi collider, spawn point hoặc map layout của các phòng đang vận hành ổn định.
 
 ### 17. Bộ Quy Chuẩn Thương Hiệu & Mỹ Thuật (Brand Identity & Assets)
@@ -143,8 +142,9 @@ $$\text{Social (50\%)} > \text{Learn (30\%)} > \text{Play (20\%)}$$
 * **Âm thanh:** Âm thanh Chiptune 8-Bit độc quyền được tạo tự động bằng bộ tổng hợp dao động Web Audio API, không tốn dung lượng tải file âm thanh ngoài.
 
 ### 18. Thử Nghiệm A/B & Feature Flags (Experimentation Framework)
-* **Cơ chế Feature Flag:** Tích hợp bộ cờ bật/tắt tính năng thông qua `localStorage` và biến môi trường (ví dụ: `FEATURE_VOICE_CHAT`, `FEATURE_RADAR_COLLAPSE`).
-* **Quy trình triển khai an toàn:** Mọi tính năng mới phải được kiểm thử E2E tự động qua Playwright, sau đó kích hoạt thử nghiệm cho nhóm Tester nội bộ (Beta group) trước khi mở rộng cho toàn thể sinh viên FPTU.
+* **Cơ chế Feature Flag:** Tích hợp bộ cờ bật/tắt tính năng thông qua `GAME_CONFIG.FEATURES` và `localStorage` (ví dụ: `FEATURE_VOICE_CHAT: false`, `FEATURE_RADAR_COLLAPSE: true`).
+* **Quy trình thử nghiệm:** Cho phép tài khoản Tester/Dev kích hoạt thử nghiệm tính năng mới trên người dùng thật trước khi rollout rộng rãi cho toàn thể sinh viên FPTU.
+
 
 ---
 
