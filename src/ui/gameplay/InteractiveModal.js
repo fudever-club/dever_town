@@ -159,7 +159,9 @@ export class InteractiveModal {
     // 7. Sports Game Action
     const sportActionBtn = document.getElementById('sports-action-btn');
     if (sportActionBtn) {
-      sportActionBtn.addEventListener('click', () => this.playSportMiniGame());
+      sportActionBtn.addEventListener('click', () => {
+        if (this.sportsArcade) this.sportsArcade.onActionTrigger();
+      });
     }
   }
 
@@ -174,7 +176,7 @@ export class InteractiveModal {
   show(zoneData) {
     if (!this.modalEl) return;
     this.currentZone = zoneData;
-    this.currentRoomId = zoneData.roomId || zoneData.room || 'main_hall';
+    this.currentRoomId = zoneData.roomId || zoneData.room || window.__DEVER_GAME__?.scene?.keys?.WorldScene?.currentRoomId || 'main_hall';
 
     const titleEl = document.getElementById('interactive-modal-title');
     const descEl = document.getElementById('interactive-modal-desc');
@@ -185,56 +187,60 @@ export class InteractiveModal {
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));
 
-    switch (zoneData.type) {
-      case 'whiteboard_slides':
-        this.setupSlidesView(zoneData);
-        break;
-      case 'meeting_stage':
-        this.setupMeetingView(zoneData);
-        break;
-      case 'code_editor':
-        this.setupCodeView(zoneData);
-        break;
-      case 'coffee_lofi':
-        this.setupCoffeeView(zoneData);
-        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('coffee_salt');
-        break;
-      case 'gallery_memory':
-        this.setupGalleryView(zoneData);
-        break;
-      case 'club_website':
-        this.setupWebsiteView(zoneData);
-        break;
-      case 'sports_activity':
-        this.setupSportsView(zoneData);
-        break;
-      case 'fptu_student_portal':
-        this.setupFptuPortalView(zoneData);
-        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
-        break;
-      case 'canteen_menus':
-        this.setupCanteenMenuView(zoneData);
-        break;
-      case 'campus_map':
-        this.setupCampusMapView(zoneData);
-        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
-        break;
-      case 'dever_charter':
-      case 'swe201c_guide':
-        this.setupCharterGuideView(zoneData);
-        break;
-      case 'arcade_games':
-        this.setupArcadeGamesView(zoneData);
-        break;
-      case 'robot_showcase':
-        this.setupRobotShowcaseView(zoneData);
-        break;
-      case 'golden_frog_fortune':
-        this.setupGoldenFrogFortuneView(zoneData);
-        window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('golden_frog');
-        break;
-      default:
-        break;
+    try {
+      switch (zoneData.type) {
+        case 'whiteboard_slides':
+          this.setupSlidesView(zoneData);
+          break;
+        case 'meeting_stage':
+          this.setupMeetingView(zoneData);
+          break;
+        case 'code_editor':
+          this.setupCodeView(zoneData);
+          break;
+        case 'coffee_lofi':
+          this.setupCoffeeView(zoneData);
+          window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('coffee_salt');
+          break;
+        case 'gallery_memory':
+          this.setupGalleryView(zoneData);
+          break;
+        case 'club_website':
+          this.setupWebsiteView(zoneData);
+          break;
+        case 'sports_activity':
+          this.setupSportsView(zoneData);
+          break;
+        case 'fptu_student_portal':
+          this.setupFptuPortalView(zoneData);
+          window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
+          break;
+        case 'canteen_menus':
+          this.setupCanteenMenuView(zoneData);
+          break;
+        case 'campus_map':
+          this.setupCampusMapView(zoneData);
+          window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('campus_scholar');
+          break;
+        case 'dever_charter':
+        case 'swe201c_guide':
+          this.setupCharterGuideView(zoneData);
+          break;
+        case 'arcade_games':
+          this.setupArcadeGamesView(zoneData);
+          break;
+        case 'robot_showcase':
+          this.setupRobotShowcaseView(zoneData);
+          break;
+        case 'golden_frog_fortune':
+          this.setupGoldenFrogFortuneView(zoneData);
+          window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('golden_frog');
+          break;
+        default:
+          break;
+      }
+    } catch (err) {
+      console.error('⚠️ Lỗi khi khởi tạo giao diện tương tác:', err);
     }
 
     this.modalEl.classList.remove('hidden');
@@ -255,6 +261,9 @@ export class InteractiveModal {
     }
     this.modalEl.classList.add('hidden');
 
+    const panes = this.modalEl.querySelectorAll('.interactive-pane');
+    panes.forEach(p => p.classList.add('hidden'));
+
     const slideIframe = document.getElementById('slide-iframe');
     if (slideIframe) slideIframe.src = 'about:blank';
 
@@ -266,6 +275,11 @@ export class InteractiveModal {
 
     const webIframe = document.getElementById('web-iframe');
     if (webIframe) webIframe.src = 'about:blank';
+
+    const gameCanvas = document.querySelector('#game-container canvas');
+    if (gameCanvas) {
+      gameCanvas.focus();
+    }
 
     if (this.onClose) {
       this.onClose();

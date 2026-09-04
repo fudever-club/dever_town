@@ -365,8 +365,29 @@ class AuthService {
     }
   }
 
-  queueProfileSync(field, value) {
-    this.pendingSyncData[field] = value;
+  /**
+   * Đồng bộ toàn diện hồ sơ (Wardrobe, Quests, Items, Game Records) lên Database
+   * @param {Object} data - Đối tượng chứa các trường dữ liệu cần đồng bộ
+   * @returns {Promise<Object|null>}
+   */
+  syncFullProfile(data = {}) {
+    if (!data || typeof data !== 'object') return Promise.resolve(null);
+
+    // Deep merge gameRecords nếu có để không ghi đè mất kỷ lục các môn khác
+    if (data.gameRecords && typeof data.gameRecords === 'object') {
+      this.pendingSyncData.gameRecords = {
+        ...(this.pendingSyncData.gameRecords || {}),
+        ...data.gameRecords
+      };
+    }
+
+    // Merge các thuộc tính còn lại
+    Object.keys(data).forEach(key => {
+      if (key !== 'gameRecords' && data[key] !== undefined) {
+        this.pendingSyncData[key] = data[key];
+      }
+    });
+
     this.touchSession();
 
     if (!this.token) {
@@ -393,11 +414,11 @@ class AuthService {
             body: JSON.stringify(dataToSend)
           });
 
-          const data = await res.json();
-          if (res.ok && data.success && data.user) {
-            this.user = data.user;
-            localStorage.setItem('dever_user', JSON.stringify(data.user));
-            resolve(data.user);
+          const resData = await res.json();
+          if (res.ok && resData.success && resData.user) {
+            this.user = resData.user;
+            localStorage.setItem('dever_user', JSON.stringify(resData.user));
+            resolve(resData.user);
           } else {
             resolve(null);
           }
@@ -407,6 +428,10 @@ class AuthService {
         }
       }, 400);
     });
+  }
+
+  queueProfileSync(field, value) {
+    return this.syncFullProfile({ [field]: value });
   }
 
   logout() {

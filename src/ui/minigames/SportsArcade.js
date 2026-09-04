@@ -39,6 +39,7 @@ export class SportsArcade {
     // Phím điều khiển
     this.keys = { left: false, right: false, up: false, space: false };
     this.particles = [];
+    this.activationGraceUntil = 0;
 
     this.initFootball();
     this.initBasketball();
@@ -51,39 +52,46 @@ export class SportsArcade {
   bindEvents() {
     this.handleKeyDown = (e) => {
       if (!this.running) return;
-      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD', 'KeyW'].includes(e.code)) {
+      if (Date.now() < this.activationGraceUntil) return;
+
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable) {
+        return;
+      }
+
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD', 'KeyW', 'Enter'].includes(e.code) || [' ', 'Enter'].includes(e.key)) {
         e.preventDefault();
       }
-      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') {
+
+      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
         this.keys.space = true;
         this.keys.up = true;
         this.onActionTrigger();
       }
-      if (e.code === 'ArrowLeft' || e.code === 'KeyA') this.keys.left = true;
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') this.keys.right = true;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = true;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = true;
     };
 
     this.handleKeyUp = (e) => {
-      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') {
+      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
         this.keys.space = false;
         this.keys.up = false;
       }
-      if (e.code === 'ArrowLeft' || e.code === 'KeyA') this.keys.left = false;
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') this.keys.right = false;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = false;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = false;
     };
 
     this.handleCanvasClick = (e) => {
+      if (!this.running || Date.now() < this.activationGraceUntil) return;
       e.preventDefault();
       this.onActionTrigger();
     };
 
-    window.addEventListener('keydown', this.handleKeyDown);
-    window.addEventListener('keyup', this.handleKeyUp);
-    this.canvas.addEventListener('click', this.handleCanvasClick);
-    this.canvas.addEventListener('touchstart', (e) => {
+    this.handleCanvasTouch = (e) => {
+      if (!this.running || Date.now() < this.activationGraceUntil) return;
       e.preventDefault();
       this.onActionTrigger();
-    }, { passive: false });
+    };
   }
 
   setGame(gameType) {
@@ -97,8 +105,17 @@ export class SportsArcade {
   }
 
   start() {
+    if (this.running) {
+      this.stop();
+    }
     this.running = true;
+    this.activationGraceUntil = Date.now() + 300;
     let lastTime = performance.now();
+
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
+    this.canvas.addEventListener('click', this.handleCanvasClick);
+    this.canvas.addEventListener('touchstart', this.handleCanvasTouch, { passive: false });
 
     const loop = (now) => {
       if (!this.running) return;
@@ -121,13 +138,15 @@ export class SportsArcade {
       cancelAnimationFrame(this.animId);
       this.animId = null;
     }
+
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
+    this.canvas.removeEventListener('click', this.handleCanvasClick);
+    this.canvas.removeEventListener('touchstart', this.handleCanvasTouch);
   }
 
   destroy() {
     this.stop();
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('keyup', this.handleKeyUp);
-    this.canvas.removeEventListener('click', this.handleCanvasClick);
   }
 
   onActionTrigger() {
@@ -151,16 +170,20 @@ export class SportsArcade {
     }
 
     // Tự động đồng bộ kỷ lục thể thao lên Database máy chủ khi đăng nhập
-    if (authService && authService.isLoggedIn()) {
-      authService.syncFullProfile({
-        gameRecords: {
-          footballStreak: this.scores.footballStreak || 0,
-          footballHigh: this.scores.footballHigh || 0,
-          basketballHigh: this.scores.basketballHigh || 0,
-          volleyballHigh: this.scores.volleyballHigh || 0,
-          baristaScore: this.scores.baristaScore || 0
-        }
-      });
+    try {
+      if (authService && authService.isLoggedIn() && typeof authService.syncFullProfile === 'function') {
+        authService.syncFullProfile({
+          gameRecords: {
+            footballStreak: this.scores.footballStreak || 0,
+            footballHigh: this.scores.footballHigh || 0,
+            basketballHigh: this.scores.basketballHigh || 0,
+            volleyballHigh: this.scores.volleyballHigh || 0,
+            baristaScore: this.scores.baristaScore || 0
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('⚠️ Lỗi đồng bộ kỷ lục thể thao lên máy chủ:', e);
     }
   }
 

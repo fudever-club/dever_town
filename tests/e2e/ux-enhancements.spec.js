@@ -153,4 +153,168 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(bgmBtn).not.toHaveClass(/active/);
   });
 
+  test('06. Interactive [E] in Game Arcade opens arcade games and robot studio', async ({ page }) => {
+    // Chuyển sang phòng game_arcade
+    await page.locator('#room-selector').selectOption('game_arcade');
+    await page.waitForTimeout(1000);
+
+    // Di chuyển tới máy Cyber Snake tại tile (4, 4)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      scene.player.setPosition(4 * 32 + 16, 5 * 32 + 16);
+      scene.interactionManager.update(scene.player);
+    });
+    await page.waitForTimeout(200);
+
+    // Bấm phím E
+    await page.keyboard.press('KeyE');
+    const modal = page.locator('#interactive-modal');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-arcade-games')).not.toHaveClass(/hidden/);
+    await expect(page.locator('#retro-arcade-canvas')).toBeVisible();
+
+    // Đóng modal bằng phím Escape
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+  });
+
+  test('07. Interactive [E] in Sports Complex opens sports minigames, switches tabs, and handles action triggers without error', async ({ page }) => {
+    // Lắng nghe uncaught errors trên page
+    const pageErrors = [];
+    page.on('pageerror', err => pageErrors.push(err.message));
+
+    // Chuyển sang phòng sports_complex
+    await page.locator('#room-selector').selectOption('sports_complex');
+    await page.waitForTimeout(1200);
+
+    // Di chuyển tới Sân bóng đá tại tile (5, 4)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      if (!scene) return;
+      if (scene.interactionManager) scene.interactionManager.lastCheckTime = 0;
+      scene.player.setPosition(5 * 32 + 16, 4 * 32 + 16);
+      scene.player.body?.reset(5 * 32 + 16, 4 * 32 + 16);
+      scene.interactionManager?.update(scene.player);
+    });
+    await page.waitForTimeout(300);
+
+    // Bấm phím E
+    await page.keyboard.press('KeyE');
+    const modal = page.locator('#interactive-modal');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
+    await expect(page.locator('#sports-arcade-canvas')).toBeVisible();
+
+    // Click nút Hành Động Sút bóng / Nhảy
+    const actionBtn = page.locator('#sports-action-btn');
+    await expect(actionBtn).toBeVisible();
+    await actionBtn.click();
+    await page.waitForTimeout(100);
+
+    // Thử phím Space để sút bóng
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(200);
+
+    // Chuyển tab sang Basketball
+    const basketballTab = page.locator('.sports-nav-tab[data-sport="basketball"]');
+    if (await basketballTab.isVisible()) {
+      await basketballTab.click();
+      await page.waitForTimeout(100);
+      await actionBtn.click();
+    }
+
+    // Chuyển tab sang Volleyball
+    const volleyballTab = page.locator('.sports-nav-tab[data-sport="volleyball"]');
+    if (await volleyballTab.isVisible()) {
+      await volleyballTab.click();
+      await page.waitForTimeout(100);
+      await actionBtn.click();
+    }
+
+    // Đóng modal bằng phím Escape
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+
+    // Đảm bảo không có uncaught exception nào xảy ra
+    expect(pageErrors).toHaveLength(0);
+  });
+
+  test('08. Logged-in user interacts with Sports and Barista Coffee without authService.syncFullProfile error', async ({ page }) => {
+    const pageErrors = [];
+    page.on('pageerror', err => pageErrors.push(err.message));
+
+    // Giả lập trạng thái logged in trong AuthService
+    await page.evaluate(async () => {
+      localStorage.setItem('dever_token', 'mock_jwt_token_test');
+      localStorage.setItem('dever_user', JSON.stringify({
+        id: 'test_user_logged_in',
+        display_name: 'Member Pro',
+        role: 'dev'
+      }));
+      const { authService } = await import('/src/services/AuthService.js');
+      authService.token = 'mock_jwt_token_test';
+      authService.user = { id: 'test_user_logged_in', display_name: 'Member Pro', role: 'dev' };
+    });
+
+    // Chuyển sang canteen_cafe để kiểm tra quầy Barista
+    await page.locator('#room-selector').selectOption('canteen_cafe');
+    await page.waitForTimeout(1200);
+
+    // Di chuyển tới Quầy Barista tại tile (19, 3) sát quầy (tile 19, 2)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      if (!scene) return;
+      if (scene.interactionManager) scene.interactionManager.lastCheckTime = 0;
+      scene.player.setPosition(19 * 32 + 16, 3 * 32 + 16);
+      scene.player.body?.reset(19 * 32 + 16, 3 * 32 + 16);
+      scene.interactionManager?.update(scene.player);
+    });
+    await page.waitForTimeout(300);
+
+    // Bấm phím E mở Barista
+    await page.keyboard.press('KeyE');
+    const modal = page.locator('#interactive-modal');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
+
+    // Click nút Hành Động Pha Chế
+    const actionBtn = page.locator('#sports-action-btn');
+    await expect(actionBtn).toBeVisible();
+    await actionBtn.click();
+    await page.waitForTimeout(100);
+
+    // Đóng modal
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+
+    // Chuyển sang sports_complex kiểm tra sân bóng đá khi logged in
+    await page.locator('#room-selector').selectOption('sports_complex');
+    await page.waitForTimeout(1200);
+
+    // Di chuyển vào sân bóng đá tại tile (5, 4)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      if (!scene) return;
+      if (scene.interactionManager) scene.interactionManager.lastCheckTime = 0;
+      scene.player.setPosition(5 * 32 + 16, 4 * 32 + 16);
+      scene.player.body?.reset(5 * 32 + 16, 4 * 32 + 16);
+      scene.interactionManager?.update(scene.player);
+    });
+    await page.waitForTimeout(300);
+
+    // Bấm phím E mở Sút bóng
+    await page.keyboard.press('KeyE');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
+
+    // Đóng modal
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+
+    // Xác nhận không có bất kỳ ngoại lệ nào
+    expect(pageErrors).toHaveLength(0);
+  });
+
 });
+
+
