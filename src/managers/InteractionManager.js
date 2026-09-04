@@ -45,10 +45,26 @@ export class InteractionManager {
   }
 
   bindEvents() {
-    // Lắng nghe phím E bàn phím
-    this.scene.input.keyboard.on('keydown-E', () => {
-      this.interactCurrentZone();
-    });
+    // 1. Lắng nghe phím E qua Phaser Keyboard
+    if (this.scene?.input?.keyboard) {
+      this.scene.input.keyboard.on('keydown-E', () => {
+        this.interactCurrentZone();
+      });
+    }
+
+    // 2. Fallback toàn cục trên Window cho phím E (hỗ trợ cả khi iframe/touch blur canvas)
+    this.handleWindowKeyDown = (e) => {
+      if ((e.code === 'KeyE' || e.key === 'e' || e.key === 'E') && !e.repeat) {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) {
+          return;
+        }
+        if (this.canInteract()) {
+          this.interactCurrentZone();
+        }
+      }
+    };
+    window.addEventListener('keydown', this.handleWindowKeyDown);
   }
 
   interactCurrentZone() {
@@ -229,12 +245,13 @@ export class InteractionManager {
   update(player) {
     if (!player || !this.zones.length) {
       this.hideHUD();
+      this.currentActiveZone = null;
       return;
     }
 
-    // Throttling: Kiểm tra khoảng cách mỗi 60ms để tối ưu hóa CPU
+    // Throttling: Kiểm tra khoảng cách mỗi 40ms để tối ưu hóa CPU và mượt mà
     const now = performance.now();
-    if (now - (this.lastCheckTime || 0) < 60) {
+    if (now - (this.lastCheckTime || 0) < 40) {
       if (this.currentActiveZone) {
         this.updateHUDPosition(this.currentActiveZone);
       }
@@ -264,15 +281,34 @@ export class InteractionManager {
     const radiusInSq = this.RADIUS_IN * this.RADIUS_IN;
     const radiusOutSq = this.RADIUS_OUT * this.RADIUS_OUT;
 
-    // Áp dụng thuật toán Proximity Hysteresis
+    // 1. Nếu đang có active zone
     if (this.currentActiveZone) {
-      if (minDistanceSq > radiusOutSq) {
-        this.currentActiveZone = null;
-        this.hideHUD();
-      } else {
+      const currentDx = player.x - this.currentActiveZone.worldX;
+      const currentDy = player.y - this.currentActiveZone.worldY;
+      const currentDistSq = currentDx * currentDx + currentDy * currentDy;
+
+      // A. Nếu có zone khác gần hơn và nằm trong tầm kích hoạt -> Chuyển ngay sang zone mới
+      if (closestZone && closestZone.id !== this.currentActiveZone.id && minDistanceSq < currentDistSq && minDistanceSq <= radiusInSq) {
+        this.currentActiveZone = closestZone;
+        this.showHUD(closestZone);
+      }
+      // B. Nếu đã đi ra ngoài phạm vi thoát của zone hiện tại
+      else if (currentDistSq > radiusOutSq) {
+        if (closestZone && minDistanceSq <= radiusInSq) {
+          this.currentActiveZone = closestZone;
+          this.showHUD(closestZone);
+        } else {
+          this.currentActiveZone = null;
+          this.hideHUD();
+        }
+      }
+      // C. Vẫn đứng trong tầm của zone hiện tại -> Cập nhật vị trí tooltip
+      else {
         this.updateHUDPosition(this.currentActiveZone);
       }
-    } else {
+    }
+    // 2. Chưa có active zone nào
+    else {
       if (closestZone && minDistanceSq <= radiusInSq) {
         this.currentActiveZone = closestZone;
         this.showHUD(closestZone);
@@ -281,6 +317,7 @@ export class InteractionManager {
   }
 
   showHUD(zone) {
+    if (!zone) return;
     const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || zone.name || 'Tương tác';
     const label = `[E] ${zoneName}`;
     this.tooltipText.setText(label);
@@ -296,17 +333,19 @@ export class InteractionManager {
     this.bgGraphics.lineStyle(2, 0xf26f21, 1); // FPT Orange Glow
     this.bgGraphics.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
 
-    // Ẩn badge gốc của zone này để loại bỏ triệt để hiện tượng 2 dòng chữ đè lên nhau
-    const activeBadge = this.badges.find(b => b.zoneId === zone.id);
-    if (activeBadge && activeBadge.container) {
-      activeBadge.container.setVisible(false);
-    }
+    // Ẩn badge gốc của zone này để loại bỏ hiện tượng đè chữ
+    this.badges.forEach(b => {
+      if (b.container) {
+        b.container.setVisible(b.zoneId !== zone.id);
+      }
+    });
 
     this.updateHUDPosition(zone);
     this.hudContainer.setVisible(true);
   }
 
   updateHUDPosition(zone) {
+    if (!zone) return;
     // Nếu zone nằm ở hàng trên cùng (worldY <= 48), đẩy HUD xuống dưới để không bị kẹp trần canvas
     const hudY = zone.worldY <= 48 ? (zone.worldY + 36) : Math.max(zone.worldY - 38, 22);
     const hudX = Phaser.Math.Clamp(zone.worldX, 90, 800 - 90);
@@ -329,6 +368,9 @@ export class InteractionManager {
 
   destroy() {
     this.clearVisualMarkers();
+    if (this.handleWindowKeyDown) {
+      window.removeEventListener('keydown', this.handleWindowKeyDown);
+    }
     if (this.hudContainer) {
       this.hudContainer.destroy();
     }

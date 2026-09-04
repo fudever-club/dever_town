@@ -70,23 +70,30 @@ export class RetroArcade {
     this.keys[e.key] = true;
     
     // Prevent default scrolling for game keys
-    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'Space', 'KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyE', 'Enter'].includes(e.code) || ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
       e.preventDefault();
     }
 
+    const key = (e.key || '').toLowerCase();
+    const code = e.code || '';
+
     if (this.currentGame === 'snake') {
-      if (['w','ArrowUp'].includes(e.key) && this.snake.dy === 0) { this.snake.dx = 0; this.snake.dy = -1; }
-      else if (['s','ArrowDown'].includes(e.key) && this.snake.dy === 0) { this.snake.dx = 0; this.snake.dy = 1; }
-      else if (['a','ArrowLeft'].includes(e.key) && this.snake.dx === 0) { this.snake.dx = -1; this.snake.dy = 0; }
-      else if (['d','ArrowRight'].includes(e.key) && this.snake.dx === 0) { this.snake.dx = 1; this.snake.dy = 0; }
+      if ((key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') && this.snake.dy === 0) { this.snake.dx = 0; this.snake.dy = -1; }
+      else if ((key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') && this.snake.dy === 0) { this.snake.dx = 0; this.snake.dy = 1; }
+      else if ((key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') && this.snake.dx === 0) { this.snake.dx = -1; this.snake.dy = 0; }
+      else if ((key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') && this.snake.dx === 0) { this.snake.dx = 1; this.snake.dy = 0; }
+      else if ((code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') && this.snake.gameOver) { this.resetSnake(); }
     } else if (this.currentGame === 'sokoban') {
-      if (['w','ArrowUp'].includes(e.key)) this.moveSokoban(0, -1);
-      else if (['s','ArrowDown'].includes(e.key)) this.moveSokoban(0, 1);
-      else if (['a','ArrowLeft'].includes(e.key)) this.moveSokoban(-1, 0);
-      else if (['d','ArrowRight'].includes(e.key)) this.moveSokoban(1, 0);
-      else if (e.key === 'u' || e.key === 'U') this.undoSokoban();
+      if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.moveSokoban(0, -1);
+      else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.moveSokoban(0, 1);
+      else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.moveSokoban(-1, 0);
+      else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.moveSokoban(1, 0);
+      else if (key === 'u' || code === 'KeyU') this.undoSokoban();
+      else if ((code === 'KeyR' || key === 'r') || ((code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') && this.sokoban.won)) { this.resetSokoban(); }
     } else if (this.currentGame === 'goldminer') {
-      if (e.key === ' ' || e.key === 'Enter') this.shootMiner();
+      if (code === 'Space' || key === ' ' || code === 'Enter' || key === 'enter' || code === 'KeyE' || key === 'e' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS' || key === 's') {
+        this.shootMiner();
+      }
     }
   }
 
@@ -97,6 +104,10 @@ export class RetroArcade {
   handleClick(e) {
     if (this.currentGame === 'goldminer') {
       this.shootMiner();
+    } else if (this.currentGame === 'snake' && this.snake.gameOver) {
+      this.resetSnake();
+    } else if (this.currentGame === 'sokoban' && this.sokoban.won) {
+      this.resetSokoban();
     }
   }
 

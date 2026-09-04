@@ -255,6 +255,9 @@ export class InteractiveModal {
     }
     this.modalEl.classList.add('hidden');
 
+    const panes = this.modalEl.querySelectorAll('.interactive-pane');
+    panes.forEach(p => p.classList.add('hidden'));
+
     const slideIframe = document.getElementById('slide-iframe');
     if (slideIframe) slideIframe.src = 'about:blank';
 
@@ -266,6 +269,11 @@ export class InteractiveModal {
 
     const webIframe = document.getElementById('web-iframe');
     if (webIframe) webIframe.src = 'about:blank';
+
+    const gameCanvas = document.querySelector('#game-container canvas');
+    if (gameCanvas) {
+      gameCanvas.focus();
+    }
 
     if (this.onClose) {
       this.onClose();

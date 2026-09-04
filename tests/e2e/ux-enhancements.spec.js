@@ -153,4 +153,59 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(bgmBtn).not.toHaveClass(/active/);
   });
 
+  test('06. Interactive [E] in Game Arcade opens arcade games and robot studio', async ({ page }) => {
+    // Chuyển sang phòng game_arcade
+    await page.locator('#room-selector').selectOption('game_arcade');
+    await page.waitForTimeout(1000);
+
+    // Di chuyển tới máy Cyber Snake tại tile (4, 4)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      scene.player.setPosition(4 * 32 + 16, 5 * 32 + 16);
+      scene.interactionManager.update(scene.player);
+    });
+    await page.waitForTimeout(200);
+
+    // Bấm phím E
+    await page.keyboard.press('KeyE');
+    const modal = page.locator('#interactive-modal');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-arcade-games')).not.toHaveClass(/hidden/);
+    await expect(page.locator('#retro-arcade-canvas')).toBeVisible();
+
+    // Đóng modal bằng phím Escape
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+  });
+
+  test('07. Interactive [E] in Sports Complex opens sports minigames', async ({ page }) => {
+    // Chuyển sang phòng sports_complex
+    await page.locator('#room-selector').selectOption('sports_complex');
+    await page.waitForTimeout(1000);
+
+    // Di chuyển tới Sân bóng đá tại tile (5, 4)
+    await page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      scene.player.setPosition(5 * 32 + 16, 5 * 32 + 16);
+      scene.interactionManager.update(scene.player);
+    });
+    await page.waitForTimeout(200);
+
+    // Bấm phím E
+    await page.keyboard.press('KeyE');
+    const modal = page.locator('#interactive-modal');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
+    await expect(page.locator('#sports-arcade-canvas')).toBeVisible();
+
+    // Thử phím Space để sút bóng
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(200);
+
+    // Đóng modal bằng phím Escape
+    await page.keyboard.press('Escape');
+    await expect(modal).toHaveClass(/hidden/);
+  });
+
 });
+

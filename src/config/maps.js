@@ -99,7 +99,7 @@ export const MAPS_CONFIG = {
     id: 'game_arcade',
     name: 'Tòa Gamma Plus - Arcade Gaming & Robot Studio',
     description: 'Không gian máy game arcade cổ điển, đấu robot và thử tài các mini-game của CLB DEVER.',
-    spawnPoint: { x: 400, y: 350 },
+    spawnPoint: { x: 400, y: 450 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],

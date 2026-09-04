@@ -51,25 +51,25 @@ export class SportsArcade {
   bindEvents() {
     this.handleKeyDown = (e) => {
       if (!this.running) return;
-      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD', 'KeyW'].includes(e.code)) {
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyA', 'KeyD', 'KeyW', 'KeyE', 'Enter'].includes(e.code) || [' ', 'Enter', 'e', 'E'].includes(e.key)) {
         e.preventDefault();
       }
-      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') {
+      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'KeyE' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter' || e.key === 'e' || e.key === 'E') {
         this.keys.space = true;
         this.keys.up = true;
         this.onActionTrigger();
       }
-      if (e.code === 'ArrowLeft' || e.code === 'KeyA') this.keys.left = true;
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') this.keys.right = true;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = true;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = true;
     };
 
     this.handleKeyUp = (e) => {
-      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') {
+      if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'KeyE' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter' || e.key === 'e' || e.key === 'E') {
         this.keys.space = false;
         this.keys.up = false;
       }
-      if (e.code === 'ArrowLeft' || e.code === 'KeyA') this.keys.left = false;
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') this.keys.right = false;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = false;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = false;
     };
 
     this.handleCanvasClick = (e) => {
