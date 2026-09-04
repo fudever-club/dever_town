@@ -581,10 +581,10 @@ export class VoiceService {
     if (this.isListenOnly || !this.localStream) {
       try {
         await this.requestMediaAccess({ audio: true, video: !this.videoMuted });
-        return false;
+        return { isMuted: false };
       } catch (err) {
         console.warn('[VoiceService] Không thể mở Mic từ Listen-Only:', err);
-        return true;
+        return { isMuted: true, error: err };
       }
     }
 
@@ -600,14 +600,14 @@ export class VoiceService {
         });
       }
     }
-    return this.micMuted;
+    return { isMuted: this.micMuted };
   }
 
   /**
    * Bật / Tắt Camera
    */
   async toggleCamera() {
-    if (!this.isJoined) return this.videoMuted;
+    if (!this.isJoined) return { isVideoMuted: this.videoMuted };
 
     let videoTrack = this.localStream?.getVideoTracks()[0];
 
@@ -641,10 +641,12 @@ export class VoiceService {
           if (this.onMediaUpgraded) {
             this.onMediaUpgraded({ micMuted: this.micMuted, videoMuted: this.videoMuted });
           }
+          return { isVideoMuted: false };
         }
       } catch (err) {
         console.warn('Không thể bật camera:', err);
         this.videoMuted = true;
+        return { isVideoMuted: true, error: err };
       }
     } else {
       this.videoMuted = !this.videoMuted;
@@ -658,7 +660,7 @@ export class VoiceService {
       });
     }
 
-    return this.videoMuted;
+    return { isVideoMuted: this.videoMuted };
   }
 
   /**

@@ -431,16 +431,32 @@ export class InteractiveModal {
     iframe.src = targetUrl;
   }
 
+  handleMediaErrorNotification(err, type = 'audio') {
+    if (!err) return;
+    const isAudio = type === 'audio';
+    const deviceName = isAudio ? 'Microphone' : 'Webcam / Camera';
+    if (err.name === 'NotFoundError') {
+      alert(`Quyền trình duyệt đã được cấp, nhưng máy tính không tìm thấy thiết bị ${deviceName} phần cứng. Bạn hãy cắm tai nghe có mic hoặc webcam vào máy tính rồi bấm thử lại.`);
+    } else if (err.name === 'NotAllowedError') {
+      alert(`Quyền ${deviceName} đang bị chặn trên trình duyệt. Bạn hãy bật quyền trong biểu tượng Cài đặt bên cạnh URL và tải lại trang.`);
+    } else {
+      alert(`Không thể kích hoạt ${deviceName} (${err.name || err.message}). Vui lòng kiểm tra lại thiết bị.`);
+    }
+  }
+
   initVoiceEngine() {
     // 1. Phím tắt M để toggle Mute nhanh
     window.addEventListener('keydown', async (e) => {
       if (e.key === 'm' || e.key === 'M') {
         if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
         if (this.isOpen() && this.voiceService?.isJoined) {
-          const isMuted = await this.voiceService.toggleMic();
+          const res = await this.voiceService.toggleMic();
+          const isMuted = typeof res === 'object' ? res.isMuted : res;
           this.updateVoiceControlUI({ micMuted: isMuted });
           if (!isMuted) {
             document.getElementById('voice-listen-notice')?.classList.add('hidden');
+          } else if (res?.error) {
+            this.handleMediaErrorNotification(res.error, 'audio');
           }
           audioManager.playClick();
         }
@@ -459,10 +475,13 @@ export class InteractiveModal {
     if (micBtn && !micBtn.dataset.initialized) {
       micBtn.dataset.initialized = 'true';
       micBtn.addEventListener('click', async () => {
-        const isMuted = await this.voiceService.toggleMic();
+        const res = await this.voiceService.toggleMic();
+        const isMuted = typeof res === 'object' ? res.isMuted : res;
         this.updateVoiceControlUI({ micMuted: isMuted });
         if (!isMuted) {
           document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        } else if (res?.error) {
+          this.handleMediaErrorNotification(res.error, 'audio');
         }
         audioManager.playClick();
       });
@@ -473,11 +492,14 @@ export class InteractiveModal {
     if (camBtn && !camBtn.dataset.initialized) {
       camBtn.dataset.initialized = 'true';
       camBtn.addEventListener('click', async () => {
-        const isVideoMuted = await this.voiceService.toggleCamera();
+        const res = await this.voiceService.toggleCamera();
+        const isVideoMuted = typeof res === 'object' ? res.isVideoMuted : res;
         this.updateVoiceControlUI({ videoMuted: isVideoMuted });
         this.updateLocalVideoDisplay();
         if (!isVideoMuted) {
           document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        } else if (res?.error) {
+          this.handleMediaErrorNotification(res.error, 'video');
         }
         audioManager.playClick();
       });
@@ -678,12 +700,15 @@ export class InteractiveModal {
     if (reason === 'NotAllowedError') {
       if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Quyền Micro đang bị chặn)';
       if (descEl) descEl.textContent = 'Trình duyệt đang chặn Micro. Bạn hãy bật quyền trong biểu tượng Cài đặt bên cạnh URL rồi nhấn [Cấp quyền Micro] (hoặc tải lại F5).';
+      if (retryBtn) retryBtn.textContent = 'Cấp quyền Micro';
     } else if (reason === 'NotFoundError') {
-      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Không tìm thấy Micro)';
-      if (descEl) descEl.textContent = 'Không tìm thấy thiết bị thu âm trên máy tính. Bạn vẫn có thể lắng nghe mọi người và chia sẻ màn hình.';
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Không tìm thấy Microphone)';
+      if (descEl) descEl.textContent = 'Trình duyệt đã được cấp quyền, nhưng máy tính chưa có Microphone phần cứng. Bạn hãy cắm tai nghe có mic vào máy tính để nói chuyện, hoặc tiếp tục lắng nghe mọi người và chia sẻ màn hình.';
+      if (retryBtn) retryBtn.textContent = 'Kiểm tra lại thiết bị';
     } else {
       if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Chỉ nghe)';
-      if (descEl) descEl.textContent = 'Chưa thể kết nối Microphone. Bạn vẫn có thể lắng nghe mọi người trong phòng.';
+      if (descEl) descEl.textContent = 'Chưa thể kết nối Microphone. Bạn vẫn có thể lắng nghe mọi người trong phòng và chia sẻ màn hình.';
+      if (retryBtn) retryBtn.textContent = 'Thử kết nối lại';
     }
 
     if (retryBtn && !retryBtn.dataset.initialized) {
@@ -699,7 +724,7 @@ export class InteractiveModal {
           audioManager.playSuccess();
         } catch (e) {
           console.warn('Cấp quyền lại chưa thành công:', e);
-          alert('Chưa thể kích hoạt Micro. Nếu bạn vừa bật quyền trong Cài đặt trang web bên cạnh thanh URL, vui lòng tải lại trang (F5) để trình duyệt áp dụng thay đổi.');
+          this.handleMediaErrorNotification(e, 'audio');
         }
       });
     }
