@@ -25,3 +25,17 @@
 - Tuyệt đối không lạm dụng emoji tràn lan ở tiêu đề, nút bấm (CTA), thông báo hệ thống hoặc nội dung email.
 - Emoji chỉ được dùng có chọn lọc ở những nơi thực sự cần biểu thị trực quan (như icon vật phẩm túi đồ, avatar, danh sách phòng).
 - Mọi nút bấm, thông báo lỗi/thành công và email bảo mật phải dùng văn phong tinh gọn, trang nhã, chuẩn mực kỹ thuật và chuyên nghiệp.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues for `fudever-club/dever_town`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default mattpocock/skills triage labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context repository. See `docs/agents/domain.md`.
