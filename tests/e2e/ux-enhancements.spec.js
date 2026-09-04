@@ -178,7 +178,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(modal).toHaveClass(/hidden/);
   });
 
-  test('07. Interactive [E] in Sports Complex opens sports minigames', async ({ page }) => {
+  test('07. Interactive [E] in Sports Complex opens sports minigames, switches tabs, and handles action triggers without error', async ({ page }) => {
+    // Lắng nghe uncaught errors trên page
+    const pageErrors = [];
+    page.on('pageerror', err => pageErrors.push(err.message));
+
     // Chuyển sang phòng sports_complex
     await page.locator('#room-selector').selectOption('sports_complex');
     await page.waitForTimeout(1000);
@@ -198,13 +202,38 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
     await expect(page.locator('#sports-arcade-canvas')).toBeVisible();
 
+    // Click nút Hành Động Sút bóng / Nhảy
+    const actionBtn = page.locator('#sports-action-btn');
+    await expect(actionBtn).toBeVisible();
+    await actionBtn.click();
+    await page.waitForTimeout(100);
+
     // Thử phím Space để sút bóng
     await page.keyboard.press('Space');
     await page.waitForTimeout(200);
 
+    // Chuyển tab sang Basketball
+    const basketballTab = page.locator('.sports-nav-tab[data-sport="basketball"]');
+    if (await basketballTab.isVisible()) {
+      await basketballTab.click();
+      await page.waitForTimeout(100);
+      await actionBtn.click();
+    }
+
+    // Chuyển tab sang Volleyball
+    const volleyballTab = page.locator('.sports-nav-tab[data-sport="volleyball"]');
+    if (await volleyballTab.isVisible()) {
+      await volleyballTab.click();
+      await page.waitForTimeout(100);
+      await actionBtn.click();
+    }
+
     // Đóng modal bằng phím Escape
     await page.keyboard.press('Escape');
     await expect(modal).toHaveClass(/hidden/);
+
+    // Đảm bảo không có uncaught exception nào xảy ra
+    expect(pageErrors).toHaveLength(0);
   });
 
 });

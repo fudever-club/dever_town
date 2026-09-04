@@ -38,6 +38,7 @@ export class RetroArcade {
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    this.activationGraceUntil = Date.now() + 250;
 
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
@@ -67,6 +68,7 @@ export class RetroArcade {
   }
 
   handleKeyDown(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
     this.keys[e.key] = true;
     
     // Prevent default scrolling for game keys
@@ -102,6 +104,7 @@ export class RetroArcade {
   }
 
   handleClick(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
     if (this.currentGame === 'goldminer') {
       this.shootMiner();
     } else if (this.currentGame === 'snake' && this.snake.gameOver) {
