@@ -12,7 +12,7 @@ export function setupVoiceHandler(io, socket) {
   /**
    * 1. Tham gia phòng Voice/Video (Join Voice Room)
    */
-  socket.on('voice:join', ({ meetingId, micMuted = false, videoMuted = true }) => {
+  socket.on('voice:join', ({ meetingId, micMuted = false, videoMuted = true, isListenOnly = false }) => {
     if (!meetingId) return;
 
     // Rời phòng cũ nếu đang ở phòng khác
@@ -37,6 +37,7 @@ export function setupVoiceHandler(io, socket) {
       role: player?.role || socket.authUser?.role || 'member',
       micMuted: Boolean(micMuted),
       videoMuted: Boolean(videoMuted),
+      isListenOnly: Boolean(isListenOnly),
       isSpeaking: false,
       screenSharing: false,
       joinedAt: Date.now()
@@ -74,7 +75,7 @@ export function setupVoiceHandler(io, socket) {
   /**
    * 3. Cập nhật trạng thái thiết bị (Mute Mic, Tắt Camera, Đang nói, Chia sẻ màn hình)
    */
-  socket.on('voice:state_change', ({ meetingId, micMuted, videoMuted, isSpeaking, screenSharing }) => {
+  socket.on('voice:state_change', ({ meetingId, micMuted, videoMuted, isSpeaking, screenSharing, isListenOnly }) => {
     const targetMeeting = meetingId || socket._currentVoiceMeeting;
     if (!targetMeeting || !voiceRooms.has(targetMeeting)) return;
 
@@ -86,6 +87,7 @@ export function setupVoiceHandler(io, socket) {
     if (typeof videoMuted === 'boolean') peer.videoMuted = videoMuted;
     if (typeof isSpeaking === 'boolean') peer.isSpeaking = isSpeaking;
     if (typeof screenSharing === 'boolean') peer.screenSharing = screenSharing;
+    if (typeof isListenOnly === 'boolean') peer.isListenOnly = isListenOnly;
 
     socket.to(`voice_${targetMeeting}`).emit('voice:state_change', {
       meetingId: targetMeeting,
@@ -93,7 +95,8 @@ export function setupVoiceHandler(io, socket) {
       micMuted: peer.micMuted,
       videoMuted: peer.videoMuted,
       isSpeaking: peer.isSpeaking,
-      screenSharing: peer.screenSharing
+      screenSharing: peer.screenSharing,
+      isListenOnly: peer.isListenOnly
     });
   });
 

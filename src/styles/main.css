@@ -6873,7 +6873,10 @@ body {
 }
 
 .voice-room-icon {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
 }
 
 .voice-room-title {
@@ -6949,9 +6952,16 @@ body {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-.voice-lobby-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
+.voice-lobby-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
 .voice-lobby-title {
@@ -7187,6 +7197,101 @@ body {
   width: 1px;
   height: 24px;
   background: rgba(255, 255, 255, 0.12);
+}
+
+.voice-btn .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.voice-btn .btn-icon svg,
+.voice-room-icon svg,
+.voice-lobby-icon-box svg,
+.tile-mic-icon svg {
+  display: block;
+}
+
+.tile-mic-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Listen-Only Mode Notification Banner */
+.voice-listen-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(245, 158, 11, 0.12);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+  font-size: 11.5px;
+  animation: fadeInNotice 0.3s ease;
+}
+
+@keyframes fadeInNotice {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.voice-notice-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.voice-notice-icon {
+  flex-shrink: 0;
+}
+
+.voice-notice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.35;
+}
+
+.voice-notice-title {
+  font-weight: 700;
+  color: #fef3c7;
+  font-size: 11.5px;
+}
+
+.voice-notice-desc {
+  color: #fde68a;
+  font-size: 10.5px;
+}
+
+.voice-btn-retry {
+  background: #f59e0b;
+  color: #1e1b4b;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.voice-btn-retry:hover {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.avatar-initials {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 

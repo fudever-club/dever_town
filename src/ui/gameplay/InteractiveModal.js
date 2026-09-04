@@ -573,8 +573,8 @@ export class InteractiveModal {
     }
     const localAvatar = document.getElementById('local-tile-avatar');
     if (localAvatar) {
-      const pAvatar = currentScene?.player?.avatarId || 'male_1';
-      localAvatar.textContent = this.getAvatarEmoji(pAvatar);
+      const pName = currentScene?.player?.name || authService.getUser()?.displayName || 'Bạn';
+      localAvatar.innerHTML = `<span class="avatar-initials">${this.getAvatarInitials(pName)}</span>`;
     }
   }
 
@@ -601,6 +601,9 @@ export class InteractiveModal {
         const active = document.getElementById('voice-active-room');
         if (active) active.classList.remove('hidden');
 
+        // Hiển thị thanh thông báo Thính giả nếu chưa có micro / quyền bị chặn
+        this.updateListenOnlyNotice(res.isListenOnly, res.reason);
+
         this.updateVoiceControlUI({
           micMuted: this.voiceService.micMuted,
           videoMuted: this.voiceService.videoMuted,
@@ -611,11 +614,61 @@ export class InteractiveModal {
         questManager.incrementProgress('meeting_connect', 1);
       }
     } catch (err) {
-      alert('Không thể truy cập Microphone/Camera. Vui lòng cho phép quyền truy cập trên trình duyệt để tham gia phòng đàm thoại.');
+      console.warn('Lỗi kết nối phòng đàm thoại:', err);
+      this.updateListenOnlyNotice(true, err?.name || 'Error');
+    }
+  }
+
+  updateListenOnlyNotice(isListenOnly, reason = '') {
+    const notice = document.getElementById('voice-listen-notice');
+    if (!notice) return;
+
+    if (!isListenOnly) {
+      notice.classList.add('hidden');
+      return;
+    }
+
+    notice.classList.remove('hidden');
+    const titleEl = document.getElementById('voice-notice-title');
+    const descEl = document.getElementById('voice-notice-desc');
+    const retryBtn = document.getElementById('btn-retry-media');
+
+    if (reason === 'NotAllowedError') {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Quyền Micro đang bị chặn)';
+      if (descEl) descEl.textContent = 'Trình duyệt đang chặn truy cập Micro. Nhấp vào biểu tượng Ổ khóa / Cài đặt bên trái thanh địa chỉ URL để Cho phép Micro, sau đó bấm [Cấp quyền Micro].';
+    } else if (reason === 'NotFoundError') {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Không tìm thấy Micro)';
+      if (descEl) descEl.textContent = 'Không tìm thấy thiết bị thu âm trên máy tính. Bạn vẫn có thể lắng nghe mọi người và chia sẻ màn hình.';
+    } else {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Chỉ nghe)';
+      if (descEl) descEl.textContent = 'Chưa thể kết nối Microphone. Bạn vẫn có thể lắng nghe mọi người trong phòng.';
+    }
+
+    if (retryBtn && !retryBtn.dataset.initialized) {
+      retryBtn.dataset.initialized = 'true';
+      retryBtn.addEventListener('click', async () => {
+        try {
+          await this.voiceService.requestMediaAccess({ audio: true, video: false });
+          notice.classList.add('hidden');
+          this.updateVoiceControlUI({
+            micMuted: false,
+            videoMuted: this.voiceService.videoMuted
+          });
+          audioManager.playSuccess();
+        } catch (e) {
+          console.warn('Cấp quyền lại chưa thành công:', e);
+          alert('Chưa nhận được quyền Micro. Vui lòng kiểm tra lại quyền trong Cài đặt trang web của trình duyệt (biểu tượng Ổ khóa bên cạnh thanh URL).');
+        }
+      });
     }
   }
 
   updateVoiceControlUI({ micMuted, videoMuted, screenSharing } = {}) {
+    const SVG_MIC_ON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_MIC_OFF = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_CAM_ON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
+    const SVG_CAM_OFF = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L23 7v10"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z"/></svg>`;
+
     if (typeof micMuted === 'boolean') {
       const micBtn = document.getElementById('btn-toggle-mic');
       const micIcon = document.getElementById('mic-icon');
@@ -623,9 +676,9 @@ export class InteractiveModal {
       const localMicStatus = document.getElementById('local-tile-mic-status');
 
       if (micBtn) micBtn.classList.toggle('off', micMuted);
-      if (micIcon) micIcon.textContent = micMuted ? '🔇' : '🎤';
+      if (micIcon) micIcon.innerHTML = micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
       if (micText) micText.textContent = micMuted ? 'Bật Mic' : 'Tắt Mic';
-      if (localMicStatus) localMicStatus.textContent = micMuted ? '🔇' : '🎤';
+      if (localMicStatus) localMicStatus.innerHTML = micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
     }
 
     if (typeof videoMuted === 'boolean') {
@@ -634,7 +687,7 @@ export class InteractiveModal {
       const camText = document.getElementById('cam-text');
 
       if (camBtn) camBtn.classList.toggle('off', videoMuted);
-      if (camIcon) camIcon.textContent = videoMuted ? '📷' : '📹';
+      if (camIcon) camIcon.innerHTML = videoMuted ? SVG_CAM_OFF : SVG_CAM_ON;
       if (camText) camText.textContent = videoMuted ? 'Bật Cam' : 'Tắt Cam';
     }
 
@@ -673,6 +726,9 @@ export class InteractiveModal {
     const grid = document.getElementById('voice-tiles-grid');
     if (!container || !grid) return;
 
+    const SVG_MIC_ON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_MIC_OFF = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+
     // Cập nhật class số lượng ô
     const totalCount = peers.length + 1;
     if (totalCount === 1) grid.className = 'voice-tiles-grid count-1';
@@ -686,18 +742,19 @@ export class InteractiveModal {
       tile.className = 'voice-tile';
       tile.id = `voice-tile-${peer.socketId}`;
 
-      const avatarEmoji = this.getAvatarEmoji(peer.avatarId);
+      const initials = this.getAvatarInitials(peer.name);
+      const micSvg = peer.micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
 
       tile.innerHTML = `
         <div class="tile-video-wrap">
           <video id="video-${peer.socketId}" autoplay playsinline class="tile-video ${peer.videoMuted ? 'hidden' : ''}"></video>
           <div class="tile-avatar-fallback ${peer.videoMuted ? '' : 'hidden'}" id="avatar-wrap-${peer.socketId}">
-            <div class="tile-avatar-circle">${avatarEmoji}</div>
+            <div class="tile-avatar-circle"><span class="avatar-initials">${initials}</span></div>
           </div>
         </div>
         <div class="tile-overlay-bar">
           <div class="tile-name-group">
-            <span class="tile-mic-icon" id="mic-${peer.socketId}">${peer.micMuted ? '🔇' : '🎤'}</span>
+            <span class="tile-mic-icon" id="mic-${peer.socketId}">${micSvg}</span>
             <span class="tile-user-name">${peer.name}</span>
             <span class="tile-role-pill">${(peer.role || 'member').toUpperCase()}</span>
           </div>
@@ -720,14 +777,13 @@ export class InteractiveModal {
     });
   }
 
-  getAvatarEmoji(avatarId = '') {
-    const id = String(avatarId).toLowerCase();
-    if (id.includes('dev')) return '💻';
-    if (id.includes('tech')) return '⚡';
-    if (id.includes('cat') || id.includes('fur')) return '🐱';
-    if (id.includes('frog')) return '🐸';
-    if (id.includes('female')) return '👩‍💻';
-    return '🧑‍💻';
+  getAvatarInitials(name = '') {
+    if (!name) return 'DE';
+    const words = name.trim().split(/\s+/);
+    if (words.length >= 2) {
+      return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 
   setupCodeView(zoneData) {

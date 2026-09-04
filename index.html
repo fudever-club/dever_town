@@ -1031,7 +1031,13 @@
           <!-- Voice Top Bar -->
           <div class="voice-header-bar">
             <div class="voice-room-info">
-              <span class="voice-room-icon">🎙️</span>
+              <span class="voice-room-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
+              </span>
               <h3 id="voice-room-title" class="voice-room-title">Sync Lounge • Kênh Đàm Thoại</h3>
               <span id="voice-peer-counter" class="voice-peer-counter">1 người</span>
             </div>
@@ -1048,42 +1054,64 @@
 
           <!-- 1. Lobby Screen (Shown when not connected yet) -->
           <div id="voice-lobby" class="voice-lobby-card">
-            <div class="voice-lobby-icon">🎧</div>
-            <h4 class="voice-lobby-title">Kênh Đàm Thoại Trực Tiếp (Voice & Video)</h4>
+            <div class="voice-lobby-icon-box">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </div>
+            <h4 class="voice-lobby-title">Kênh Đàm Thoại Trực Tiếp</h4>
             <p class="voice-lobby-desc">
-              Kết nối âm thanh và hình ảnh P2P trực tiếp với các thành viên trong phòng.
-              Chỉ cần nhấn nút, trình duyệt sẽ hỏi quyền Micro/Camera và bạn sẽ vào ngay lập tức!
+              Kết nối âm thanh và hình ảnh P2P trực tiếp với các thành viên trong phòng. Hệ thống tự động kích hoạt chế độ Thính giả nếu chưa có quyền microphone.
             </p>
             <div class="voice-lobby-options">
               <label class="voice-checkbox-label">
                 <input type="checkbox" id="voice-lobby-mic" checked />
-                <span>Bật Micro khi vào</span>
+                <span>Bật Micro khi tham gia</span>
               </label>
               <label class="voice-checkbox-label">
                 <input type="checkbox" id="voice-lobby-cam" />
-                <span>Bật Camera khi vào</span>
+                <span>Bật Camera khi tham gia</span>
               </label>
             </div>
             <button type="button" id="btn-join-voice" class="voice-btn-join-room">
-              <span>🔊</span>
-              <span>Tham Gia Kênh Đàm Thoại</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <span>Tham gia phòng</span>
             </button>
           </div>
 
           <!-- 2. Active Room Workspace (Shown when connected) -->
           <div id="voice-active-room" class="voice-active-workspace hidden">
+            <!-- Listen-Only / Device Warning Banner -->
+            <div id="voice-listen-notice" class="voice-listen-notice hidden">
+              <div class="voice-notice-left">
+                <svg class="voice-notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div class="voice-notice-text">
+                  <span class="voice-notice-title" id="voice-notice-title">Chế độ Thính giả (Chỉ nghe)</span>
+                  <span class="voice-notice-desc" id="voice-notice-desc">Chưa thể kết nối Microphone. Bạn vẫn có thể nghe mọi người nói và chia sẻ màn hình.</span>
+                </div>
+              </div>
+              <div class="voice-notice-right">
+                <button type="button" id="btn-retry-media" class="voice-btn-retry">Cấp quyền Micro</button>
+              </div>
+            </div>
+
             <div id="voice-tiles-grid" class="voice-tiles-grid count-1">
               <!-- Local Tile -->
               <div class="voice-tile is-local" id="voice-tile-local">
                 <div class="tile-video-wrap">
                   <video id="voice-video-local" autoplay muted playsinline class="tile-video hidden"></video>
                   <div class="tile-avatar-fallback" id="local-avatar-wrap">
-                    <div class="tile-avatar-circle" id="local-tile-avatar">🦊</div>
+                    <div class="tile-avatar-circle" id="local-tile-avatar"><span class="avatar-initials" id="local-initials">BẠN</span></div>
                   </div>
                 </div>
                 <div class="tile-overlay-bar">
                   <div class="tile-name-group">
-                    <span class="tile-mic-icon" id="local-tile-mic-status">🎤</span>
+                    <span class="tile-mic-icon" id="local-tile-mic-status"></span>
                     <span class="tile-user-name" id="local-tile-name">Bạn</span>
                     <span class="tile-role-pill">BẠN</span>
                   </div>
@@ -1096,20 +1124,28 @@
             <!-- Discord-style Bottom Dock -->
             <div class="voice-controls-bar">
               <button type="button" id="btn-toggle-mic" class="voice-btn" title="Bật/Tắt Micro (Phím tắt: M)">
-                <span class="btn-icon" id="mic-icon">🎤</span>
+                <span class="btn-icon" id="mic-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                </span>
                 <span class="btn-text" id="mic-text">Micro</span>
               </button>
               <button type="button" id="btn-toggle-cam" class="voice-btn off" title="Bật/Tắt Camera">
-                <span class="btn-icon" id="cam-icon">📹</span>
+                <span class="btn-icon" id="cam-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L23 7v10"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z"/></svg>
+                </span>
                 <span class="btn-text" id="cam-text">Camera</span>
               </button>
               <button type="button" id="btn-toggle-screen" class="voice-btn off" title="Chia sẻ màn hình">
-                <span class="btn-icon">🖥️</span>
+                <span class="btn-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                </span>
                 <span class="btn-text">Chia Sẻ</span>
               </button>
               <div class="voice-btn-divider"></div>
               <button type="button" id="btn-leave-voice" class="voice-btn voice-btn-leave" title="Rời khỏi phòng đàm thoại">
-                <span class="btn-icon">📞</span>
+                <span class="btn-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                </span>
                 <span class="btn-text">Rời Kênh</span>
               </button>
             </div>

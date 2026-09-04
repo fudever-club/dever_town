@@ -26,6 +26,9 @@ export class VoiceService {
     this.videoMuted = true;
     this.isScreenSharing = false;
     this.isJoined = false;
+    this.isListenOnly = false;
+    this.listenOnlyReason = null;
+    this.remoteAudioElements = new Map(); // socketId -> HTMLAudioElement
 
     // Web Audio Active Speaker Detection
     this.audioContext = null;
@@ -126,13 +129,14 @@ export class VoiceService {
     });
 
     // 4. Trạng thái Mic/Cam của thành viên thay đổi
-    this.socket.on('voice:state_change', ({ socketId, micMuted, videoMuted, isSpeaking, screenSharing }) => {
+    this.socket.on('voice:state_change', ({ socketId, micMuted, videoMuted, isSpeaking, screenSharing, isListenOnly }) => {
       const peer = this.peers.get(socketId);
       if (peer) {
         if (typeof micMuted === 'boolean') peer.micMuted = micMuted;
         if (typeof videoMuted === 'boolean') peer.videoMuted = videoMuted;
         if (typeof isSpeaking === 'boolean') peer.isSpeaking = isSpeaking;
         if (typeof screenSharing === 'boolean') peer.screenSharing = screenSharing;
+        if (typeof isListenOnly === 'boolean') peer.isListenOnly = isListenOnly;
 
         if (this.onPeersUpdated) this.onPeersUpdated(Array.from(this.peers.values()));
         if (this.onSpeakingChanged) this.onSpeakingChanged(socketId, isSpeaking);
@@ -167,6 +171,11 @@ export class VoiceService {
         pc.addTrack(track, this.localStream);
       });
     }
+    if (this.screenStream) {
+      this.screenStream.getTracks().forEach(track => {
+        pc.addTrack(track, this.screenStream);
+      });
+    }
 
     // Lắng nghe ICE Candidate sinh ra để gửi cho đối phương
     pc.onicecandidate = (event) => {
@@ -188,8 +197,17 @@ export class VoiceService {
       }
       stream.addTrack(event.track);
 
-      // Nếu là audio track, kích hoạt Volume Analyser để nhận biết khi họ đang nói
+      // Nếu là audio track: tự động phát qua Audio element và kích hoạt Analyser
       if (event.track.kind === 'audio') {
+        let audioEl = this.remoteAudioElements.get(remoteSocketId);
+        if (!audioEl) {
+          audioEl = new Audio();
+          audioEl.autoplay = true;
+          this.remoteAudioElements.set(remoteSocketId, audioEl);
+        }
+        audioEl.srcObject = stream;
+        audioEl.play().catch(e => console.warn('[VoiceService] Tự động phát âm thanh bị hạn chế:', e));
+
         this.setupRemoteAudioAnalyser(remoteSocketId, stream);
       }
 
@@ -241,11 +259,17 @@ export class VoiceService {
       stream.getTracks().forEach(t => t.stop());
       this.remoteStreams.delete(socketId);
     }
+    const audioEl = this.remoteAudioElements.get(socketId);
+    if (audioEl) {
+      try { audioEl.srcObject = null; } catch (e) {}
+      this.remoteAudioElements.delete(socketId);
+    }
     this.analyserNodes.delete(socketId);
   }
 
   /**
    * Tham gia kênh đàm thoại 1-Click (Discord style)
+   * Tự động chuyển sang Chế độ Thính Giả (Listen-Only) nếu micro/camera không khả dụng
    */
   async join({ meetingId, enableVideo = false, enableAudio = true }) {
     if (this.isJoined) {
@@ -255,64 +279,151 @@ export class VoiceService {
     this.meetingId = meetingId;
     this.videoMuted = !enableVideo;
     this.micMuted = !enableAudio;
+    this.isListenOnly = false;
+    this.listenOnlyReason = null;
 
     if (this.onStatusChanged) this.onStatusChanged('connecting', 1);
 
-    try {
-      // 1. Yêu cầu quyền Micro & Camera chuẩn Discord
-      // Trình duyệt sẽ hiển thị prompt xin quyền rõ ràng, không có tiếng Nhật hay trang trung gian
-      const constraints = {
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        },
-        video: enableVideo ? { width: { ideal: 640 }, height: { ideal: 360 } } : false
-      };
+    let streamAcquired = false;
 
-      try {
-        this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
-      } catch (mediaErr) {
-        console.warn('Không thể mở cả camera & mic, thử mở riêng microphone:', mediaErr);
-        // Thử chỉ mở microphone nếu camera bận hoặc không có
-        this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        this.videoMuted = true;
+    // Chỉ xin quyền media nếu người dùng bật audio hoặc video
+    if (enableAudio || enableVideo) {
+      if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+        try {
+          const constraints = {
+            audio: enableAudio ? {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            } : false,
+            video: enableVideo ? { width: { ideal: 640 }, height: { ideal: 360 } } : false
+          };
+
+          this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+          streamAcquired = true;
+        } catch (mediaErr) {
+          console.warn('[VoiceService] Không thể mở đồng thời thiết bị, thử chuyển sang chỉ micro:', mediaErr.name, mediaErr.message);
+          this.listenOnlyReason = mediaErr.name || 'DeviceError';
+
+          // Nếu lỗi do video, thử fallback chỉ micro
+          if (enableAudio) {
+            try {
+              this.localStream = await navigator.mediaDevices.getUserMedia({
+                audio: { echoCancellation: true, noiseSuppression: true }
+              });
+              streamAcquired = true;
+              this.videoMuted = true;
+              this.listenOnlyReason = null;
+            } catch (audioErr) {
+              console.warn('[VoiceService] Không thể mở Microphone:', audioErr.name, audioErr.message);
+              this.listenOnlyReason = audioErr.name || 'NotAllowedError';
+            }
+          }
+        }
+      } else {
+        console.warn('[VoiceService] navigator.mediaDevices không khả dụng trong ngữ cảnh này.');
+        this.listenOnlyReason = 'NotSupportedError';
       }
+    }
 
-      // Đảm bảo trạng thái mute được thiết lập chính xác
+    // Nếu không lấy được thiết bị -> Tự động kích hoạt Chế độ Thính Giả (Listen-Only Mode)
+    if (!streamAcquired) {
+      console.info('[VoiceService] Gia nhập phòng ở Chế độ Thính Giả (Listen-Only).');
+      this.localStream = null;
+      this.micMuted = true;
+      this.videoMuted = true;
+      this.isListenOnly = true;
+    } else {
       const audioTrack = this.localStream.getAudioTracks()[0];
       if (audioTrack) audioTrack.enabled = !this.micMuted;
 
       const videoTrack = this.localStream.getVideoTracks()[0];
       if (videoTrack) videoTrack.enabled = !this.videoMuted;
 
-      // 2. Khởi tạo Web Audio Analyser để phát hiện giọng nói
       this.setupLocalAudioAnalyser();
-
-      // 3. Bắt đầu chu kỳ kiểm tra Volume để highlight viền xanh khi nói
       this.startVolumeMonitoring();
-
-      // 4. Phát tín hiệu gia nhập tới Server
-      if (this.socket) {
-        this.socket.emit('voice:join', {
-          meetingId: this.meetingId,
-          micMuted: this.micMuted,
-          videoMuted: this.videoMuted
-        });
-      }
-
-      this.isJoined = true;
-      if (this.onStatusChanged) this.onStatusChanged('connected', 1);
-
-      return {
-        success: true,
-        localStream: this.localStream
-      };
-    } catch (err) {
-      console.error('❌ Lỗi tham gia Voice Channel:', err);
-      if (this.onStatusChanged) this.onStatusChanged('error', 0);
-      throw err;
     }
+
+    // Phát tín hiệu gia nhập tới Server
+    if (this.socket) {
+      this.socket.emit('voice:join', {
+        meetingId: this.meetingId,
+        micMuted: this.micMuted,
+        videoMuted: this.videoMuted,
+        isListenOnly: this.isListenOnly
+      });
+    }
+
+    this.isJoined = true;
+    if (this.onStatusChanged) this.onStatusChanged('connected', this.peers.size + 1);
+
+    return {
+      success: true,
+      localStream: this.localStream,
+      isListenOnly: this.isListenOnly,
+      reason: this.listenOnlyReason
+    };
+  }
+
+  /**
+   * Xin quyền Microphone/Camera sau khi đã vào phòng (nâng cấp từ Listen-Only)
+   */
+  async requestMediaAccess({ audio = true, video = false } = {}) {
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+      throw new Error('Trình duyệt không hỗ trợ getUserMedia.');
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: audio ? { echoCancellation: true, noiseSuppression: true } : false,
+      video: video ? { width: { ideal: 640 }, height: { ideal: 360 } } : false
+    });
+
+    this.localStream = stream;
+    this.isListenOnly = false;
+    this.listenOnlyReason = null;
+    this.micMuted = !audio;
+    this.videoMuted = !video;
+
+    // Gắn track mới vào tất cả PeerConnections
+    for (const [socketId, pc] of this.peerConnections) {
+      stream.getTracks().forEach(track => {
+        const senders = pc.getSenders();
+        const existing = senders.find(s => s.track && s.track.kind === track.kind);
+        if (existing) {
+          existing.replaceTrack(track);
+        } else {
+          pc.addTrack(track, stream);
+        }
+      });
+
+      // Tạo Offer mới để renegotiate
+      try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        this.socket?.emit('voice:signal', {
+          to: socketId,
+          signal: { type: 'offer', sdp: offer }
+        });
+      } catch (e) {
+        console.warn('Lỗi re-negotiate sau khi thêm track:', e);
+      }
+    }
+
+    this.setupLocalAudioAnalyser();
+    this.startVolumeMonitoring();
+
+    if (this.socket && this.isJoined) {
+      this.socket.emit('voice:state_change', {
+        meetingId: this.meetingId,
+        micMuted: this.micMuted,
+        videoMuted: this.videoMuted,
+        isSpeaking: false,
+        screenSharing: this.isScreenSharing,
+        isListenOnly: false
+      });
+    }
+
+    return { success: true, localStream: this.localStream };
   }
 
   /**
@@ -401,8 +512,16 @@ export class VoiceService {
   /**
    * Bật / Tắt Microphone (Mute / Unmute)
    */
-  toggleMic() {
-    if (!this.localStream) return this.micMuted;
+  async toggleMic() {
+    if (this.isListenOnly || !this.localStream) {
+      try {
+        await this.requestMediaAccess({ audio: true, video: !this.videoMuted });
+        return false;
+      } catch (err) {
+        console.warn('[VoiceService] Không thể mở Mic từ Listen-Only:', err);
+        return true;
+      }
+    }
 
     const audioTrack = this.localStream.getAudioTracks()[0];
     if (audioTrack) {
@@ -571,6 +690,10 @@ export class VoiceService {
       stream.getTracks().forEach(t => t.stop());
     });
     this.remoteStreams.clear();
+    this.remoteAudioElements.forEach(audioEl => {
+      try { audioEl.srcObject = null; } catch (e) {}
+    });
+    this.remoteAudioElements.clear();
     this.analyserNodes.clear();
 
     if (this.audioContext && this.audioContext.state !== 'closed') {
