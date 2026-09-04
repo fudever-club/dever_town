@@ -303,6 +303,13 @@ class AudioManager {
   }
 
   /**
+   * Âm thanh hoàn thành tác vụ thành công
+   */
+  playSuccess() {
+    this.playVictory();
+  }
+
+  /**
    * Fanfare hợp âm rực rỡ khi mở khóa Thành Tựu Mới (C5 -> E5 -> G5 -> C6 -> E6)
    */
   playAchievementFanfare() {

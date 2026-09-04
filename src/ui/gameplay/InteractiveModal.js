@@ -560,11 +560,16 @@ export class InteractiveModal {
       });
     }
 
-    // Hiển thị lobby và thông tin nhân vật bản thân
+    // Hiển thị trạng thái phù hợp (Đang ở trong phòng hay đang ở Lobby)
     const lobby = document.getElementById('voice-lobby');
-    if (lobby) lobby.classList.remove('hidden');
     const active = document.getElementById('voice-active-room');
-    if (active) active.classList.add('hidden');
+    if (this.voiceService.isJoined) {
+      if (lobby) lobby.classList.add('hidden');
+      if (active) active.classList.remove('hidden');
+    } else {
+      if (lobby) lobby.classList.remove('hidden');
+      if (active) active.classList.add('hidden');
+    }
 
     const localName = document.getElementById('local-tile-name');
     if (localName) {
@@ -594,27 +599,39 @@ export class InteractiveModal {
         enableVideo
       });
 
-      if (res && res.success) {
-        audioManager.playSuccess();
-        const lobby = document.getElementById('voice-lobby');
-        if (lobby) lobby.classList.add('hidden');
-        const active = document.getElementById('voice-active-room');
-        if (active) active.classList.remove('hidden');
+      // Ẩn lobby card và hiển thị phòng đàm thoại ngay lập tức
+      const lobby = document.getElementById('voice-lobby');
+      if (lobby) lobby.classList.add('hidden');
+      const active = document.getElementById('voice-active-room');
+      if (active) active.classList.remove('hidden');
 
-        // Hiển thị thanh thông báo Thính giả nếu chưa có micro / quyền bị chặn
+      // Hiển thị thanh thông báo Thính giả nếu chưa có micro / quyền bị chặn
+      if (res) {
         this.updateListenOnlyNotice(res.isListenOnly, res.reason);
-
-        this.updateVoiceControlUI({
-          micMuted: this.voiceService.micMuted,
-          videoMuted: this.voiceService.videoMuted,
-          screenSharing: false
-        });
-        this.updateLocalVideoDisplay();
-
-        questManager.incrementProgress('meeting_connect', 1);
       }
+
+      this.updateVoiceControlUI({
+        micMuted: this.voiceService.micMuted,
+        videoMuted: this.voiceService.videoMuted,
+        screenSharing: false
+      });
+      this.updateLocalVideoDisplay();
+
+      try {
+        if (typeof audioManager.playSuccess === 'function') {
+          audioManager.playSuccess();
+        } else {
+          audioManager.playClick?.();
+        }
+      } catch (audioErr) {}
+
+      questManager.incrementProgress('meeting_connect', 1);
     } catch (err) {
       console.warn('Lỗi kết nối phòng đàm thoại:', err);
+      const lobby = document.getElementById('voice-lobby');
+      if (lobby) lobby.classList.add('hidden');
+      const active = document.getElementById('voice-active-room');
+      if (active) active.classList.remove('hidden');
       this.updateListenOnlyNotice(true, err?.name || 'Error');
     }
   }
