@@ -1,6 +1,7 @@
 import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
+import { setupVoiceHandler } from './voiceHandler.js';
 
 // Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
 const ipConnectionCounts = new Map();
@@ -45,6 +46,9 @@ export function setupSocketHandler(io) {
     const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
     const userAgent = socket.handshake.headers['user-agent'] || 'Web Browser';
     console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
+
+    // Khởi tạo Voice/Video Signaling cho socket
+    const { handleVoiceLeave } = setupVoiceHandler(io, socket);
 
     /**
      * 1. Tham gia thế giới (Join Game) - Chế độ 1 Nhân Vật Duy Nhất & Xác Nhận Thiết Bị Mới Thông Minh
@@ -247,6 +251,8 @@ export function setupSocketHandler(io) {
       const { player, oldRoomId, newRoomId } = result;
       console.log(`🚪 [Switch Room] ${player.name} chuyển từ [${oldRoomId}] ➔ [${newRoomId}]`);
 
+      if (handleVoiceLeave) handleVoiceLeave();
+
       socket.leave(oldRoomId);
       socket.to(oldRoomId).emit('playerDisconnected', socket.id);
 
@@ -383,6 +389,8 @@ export function setupSocketHandler(io) {
      * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {
+      if (handleVoiceLeave) handleVoiceLeave();
+
       // Giảm bộ đếm kết nối IP khi client ngắt kết nối
       const current = ipConnectionCounts.get(clientIp) || 1;
       if (current <= 1) ipConnectionCounts.delete(clientIp);
