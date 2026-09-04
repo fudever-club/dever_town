@@ -255,8 +255,8 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       { name: '🏛️ Fanpage FUDA', url: 'https://www.facebook.com/daihocfptdanang' },
       { name: '🎵 TikTok FUDA', url: 'https://www.tiktok.com/@daihocfptdanang' },
       { name: '🐙 GitHub FU-DEVER', url: 'https://github.com/fudever-club' },
-      { name: '👤 Member Portal', url: 'https://dever-client-sigma.vercel.app' },
-      { name: '🛡️ Admin Portal', url: 'https://dever-admin-three.vercel.app' }
+      { name: '👤 Member Portal', url: 'https://client.fudever.com' },
+      { name: '🛡️ Admin Portal', url: 'https://admin.fudever.com' }
     ]
   },
 

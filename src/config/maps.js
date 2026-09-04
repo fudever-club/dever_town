@@ -320,7 +320,7 @@ export const MAPS_CONFIG = {
         name: 'Member Portal - Hệ Thống Thành Viên',
         label: 'Mở Member Portal',
         metadata: {
-          url: 'https://dever-client-sigma.vercel.app',
+          url: 'https://client.fudever.com',
           title: 'FU-DEVER MEMBER PORTAL'
         }
       },
@@ -344,7 +344,7 @@ export const MAPS_CONFIG = {
         name: 'Cổng Đăng Ký Thành Viên FU-DEVER',
         label: 'Đăng Ký Thành Viên',
         metadata: {
-          url: 'https://docs.google.com/forms/d/1zr-qtjxbWkFvV10AWEyRnlsdq2IzqqOrewaHWXKIuDQ/prefill',
+          url: 'https://forms.gle/2us1yB5Qp2HYejj28',
           title: 'ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER'
         }
       }
