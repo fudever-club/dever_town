@@ -1025,20 +1025,98 @@
         </div>
       </div>
 
-      <!-- View 2: Video Call Meeting View -->
+      <!-- View 2: Video Call Meeting View (Discord-Style WebRTC Sync Lounge) -->
       <div id="pane-meeting" class="interactive-pane hidden">
-        <div class="meeting-topbar">
-          <span class="meeting-status">Phòng họp trực tuyến đang mở</span>
-          <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
-            Mở Google Meet Tab Mới
-          </a>
-        </div>
-        <div class="iframe-container">
-          <iframe
-            id="meeting-iframe"
-            src="about:blank"
-            allow="camera; microphone; fullscreen; display-capture"
-          ></iframe>
+        <div class="voice-pane-wrapper">
+          <!-- Voice Top Bar -->
+          <div class="voice-header-bar">
+            <div class="voice-room-info">
+              <span class="voice-room-icon">🎙️</span>
+              <h3 id="voice-room-title" class="voice-room-title">Sync Lounge • Kênh Đàm Thoại</h3>
+              <span id="voice-peer-counter" class="voice-peer-counter">1 người</span>
+            </div>
+            <div class="voice-status-badges">
+              <div id="voice-conn-status" class="voice-conn-badge idle">
+                <span class="status-dot"></span>
+                <span id="voice-conn-label">Chưa tham gia</span>
+              </div>
+              <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent" style="padding: 4px 10px; font-size: 11px;">
+                Mở Google Meet ngoài
+              </a>
+            </div>
+          </div>
+
+          <!-- 1. Lobby Screen (Shown when not connected yet) -->
+          <div id="voice-lobby" class="voice-lobby-card">
+            <div class="voice-lobby-icon">🎧</div>
+            <h4 class="voice-lobby-title">Kênh Đàm Thoại Trực Tiếp (Voice & Video)</h4>
+            <p class="voice-lobby-desc">
+              Kết nối âm thanh và hình ảnh P2P trực tiếp với các thành viên trong phòng.
+              Chỉ cần nhấn nút, trình duyệt sẽ hỏi quyền Micro/Camera và bạn sẽ vào ngay lập tức!
+            </p>
+            <div class="voice-lobby-options">
+              <label class="voice-checkbox-label">
+                <input type="checkbox" id="voice-lobby-mic" checked />
+                <span>Bật Micro khi vào</span>
+              </label>
+              <label class="voice-checkbox-label">
+                <input type="checkbox" id="voice-lobby-cam" />
+                <span>Bật Camera khi vào</span>
+              </label>
+            </div>
+            <button type="button" id="btn-join-voice" class="voice-btn-join-room">
+              <span>🔊</span>
+              <span>Tham Gia Kênh Đàm Thoại</span>
+            </button>
+          </div>
+
+          <!-- 2. Active Room Workspace (Shown when connected) -->
+          <div id="voice-active-room" class="voice-active-workspace hidden">
+            <div id="voice-tiles-grid" class="voice-tiles-grid count-1">
+              <!-- Local Tile -->
+              <div class="voice-tile is-local" id="voice-tile-local">
+                <div class="tile-video-wrap">
+                  <video id="voice-video-local" autoplay muted playsinline class="tile-video hidden"></video>
+                  <div class="tile-avatar-fallback" id="local-avatar-wrap">
+                    <div class="tile-avatar-circle" id="local-tile-avatar">🦊</div>
+                  </div>
+                </div>
+                <div class="tile-overlay-bar">
+                  <div class="tile-name-group">
+                    <span class="tile-mic-icon" id="local-tile-mic-status">🎤</span>
+                    <span class="tile-user-name" id="local-tile-name">Bạn</span>
+                    <span class="tile-role-pill">BẠN</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Remote Tiles injected dynamically -->
+              <div id="voice-remote-tiles" style="display:contents;"></div>
+            </div>
+
+            <!-- Discord-style Bottom Dock -->
+            <div class="voice-controls-bar">
+              <button type="button" id="btn-toggle-mic" class="voice-btn" title="Bật/Tắt Micro (Phím tắt: M)">
+                <span class="btn-icon" id="mic-icon">🎤</span>
+                <span class="btn-text" id="mic-text">Micro</span>
+              </button>
+              <button type="button" id="btn-toggle-cam" class="voice-btn off" title="Bật/Tắt Camera">
+                <span class="btn-icon" id="cam-icon">📹</span>
+                <span class="btn-text" id="cam-text">Camera</span>
+              </button>
+              <button type="button" id="btn-toggle-screen" class="voice-btn off" title="Chia sẻ màn hình">
+                <span class="btn-icon">🖥️</span>
+                <span class="btn-text">Chia Sẻ</span>
+              </button>
+              <div class="voice-btn-divider"></div>
+              <button type="button" id="btn-leave-voice" class="voice-btn voice-btn-leave" title="Rời khỏi phòng đàm thoại">
+                <span class="btn-icon">📞</span>
+                <span class="btn-text">Rời Kênh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hidden fallback iframe to prevent any legacy breakage -->
+          <iframe id="meeting-iframe" src="about:blank" style="display:none;" tabindex="-1" aria-hidden="true"></iframe>
         </div>
       </div>
 

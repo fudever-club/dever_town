@@ -7,6 +7,7 @@ import { SportsArcade } from '../minigames/SportsArcade.js';
 import { RetroArcade } from '../minigames/RetroArcade.js';
 import { ROBOT_GAMES } from '../../config/robotGames.js';
 import { authService } from '../../services/AuthService.js';
+import { voiceService } from '../../services/VoiceService.js';
 
 export class InteractiveModal {
   /**
@@ -20,6 +21,7 @@ export class InteractiveModal {
     this.onClose = onClose;
     this.onAchievement = onAchievement;
     this.modalEl = document.getElementById('interactive-modal');
+    this.voiceService = voiceService;
     this.currentZone = null;
     this.currentMemoryIndex = 0;
     this.currentSlideSet = null;
@@ -27,6 +29,7 @@ export class InteractiveModal {
 
     this.initPomodoro();
     this.initSportsEngine();
+    this.initVoiceEngine();
     this.initEvents();
   }
 
@@ -272,6 +275,14 @@ export class InteractiveModal {
     const meetingIframe = document.getElementById('meeting-iframe');
     if (meetingIframe) meetingIframe.src = 'about:blank';
 
+    if (this.voiceService) {
+      this.voiceService.leave();
+    }
+    const voiceLobby = document.getElementById('voice-lobby');
+    if (voiceLobby) voiceLobby.classList.remove('hidden');
+    const voiceActiveRoom = document.getElementById('voice-active-room');
+    if (voiceActiveRoom) voiceActiveRoom.classList.add('hidden');
+
     const lofiIframe = document.getElementById('lofi-iframe');
     if (lofiIframe) lofiIframe.src = 'about:blank';
 
@@ -420,19 +431,303 @@ export class InteractiveModal {
     iframe.src = targetUrl;
   }
 
+  initVoiceEngine() {
+    // 1. Phím tắt M để toggle Mute nhanh
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'm' || e.key === 'M') {
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+        if (this.isOpen() && this.voiceService?.isJoined) {
+          const isMuted = this.voiceService.toggleMic();
+          this.updateVoiceControlUI({ micMuted: isMuted });
+          audioManager.playClick();
+        }
+      }
+    });
+
+    // 2. Nút Tham gia Voice từ Lobby
+    const joinBtn = document.getElementById('btn-join-voice');
+    if (joinBtn && !joinBtn.dataset.initialized) {
+      joinBtn.dataset.initialized = 'true';
+      joinBtn.addEventListener('click', () => this.handleJoinVoiceRoom());
+    }
+
+    // 3. Nút Toggle Micro
+    const micBtn = document.getElementById('btn-toggle-mic');
+    if (micBtn && !micBtn.dataset.initialized) {
+      micBtn.dataset.initialized = 'true';
+      micBtn.addEventListener('click', () => {
+        const isMuted = this.voiceService.toggleMic();
+        this.updateVoiceControlUI({ micMuted: isMuted });
+        audioManager.playClick();
+      });
+    }
+
+    // 4. Nút Toggle Camera
+    const camBtn = document.getElementById('btn-toggle-cam');
+    if (camBtn && !camBtn.dataset.initialized) {
+      camBtn.dataset.initialized = 'true';
+      camBtn.addEventListener('click', async () => {
+        const isVideoMuted = await this.voiceService.toggleCamera();
+        this.updateVoiceControlUI({ videoMuted: isVideoMuted });
+        this.updateLocalVideoDisplay();
+        audioManager.playClick();
+      });
+    }
+
+    // 5. Nút Toggle Screen Share
+    const screenBtn = document.getElementById('btn-toggle-screen');
+    if (screenBtn && !screenBtn.dataset.initialized) {
+      screenBtn.dataset.initialized = 'true';
+      screenBtn.addEventListener('click', async () => {
+        const isSharing = await this.voiceService.toggleScreenShare();
+        this.updateVoiceControlUI({ screenSharing: isSharing });
+        this.updateLocalVideoDisplay();
+        audioManager.playClick();
+      });
+    }
+
+    // 6. Nút Rời Voice Room
+    const leaveBtn = document.getElementById('btn-leave-voice');
+    if (leaveBtn && !leaveBtn.dataset.initialized) {
+      leaveBtn.dataset.initialized = 'true';
+      leaveBtn.addEventListener('click', () => {
+        this.voiceService.leave();
+        const lobby = document.getElementById('voice-lobby');
+        if (lobby) lobby.classList.remove('hidden');
+        const active = document.getElementById('voice-active-room');
+        if (active) active.classList.add('hidden');
+        audioManager.playClick();
+      });
+    }
+  }
+
   setupMeetingView(zoneData) {
     const pane = document.getElementById('pane-meeting');
     if (!pane) return;
     pane.classList.remove('hidden');
 
-    const roomName = `FU_DEVER_${zoneData.id || 'Alpha'}`;
-    const jitsiUrl = INTERACTION_PRESETS.meeting_stage.getJitsiUrl(roomName);
+    const titleEl = document.getElementById('voice-room-title');
+    if (titleEl) {
+      titleEl.textContent = `Sync Lounge • ${zoneData.name || 'Kênh Đàm Thoại'}`;
+    }
 
-    const iframe = document.getElementById('meeting-iframe');
-    if (iframe) iframe.src = jitsiUrl;
+    // Lấy socket hiện tại từ WorldScene
+    const currentScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+    const socket = currentScene?.socketManager?.socket;
 
-    const gmeetBtn = document.getElementById('gmeet-open-btn');
-    if (gmeetBtn) gmeetBtn.href = `https://meet.google.com/new`;
+    if (socket && !this.voiceInitialized) {
+      this.voiceInitialized = true;
+      this.voiceService.init(socket, {
+        onPeersUpdated: (peers) => this.renderRemotePeerTiles(peers),
+        onTrackReceived: (socketId, stream, kind) => {
+          if (kind === 'video') {
+            const vid = document.getElementById(`video-${socketId}`);
+            if (vid) {
+              vid.srcObject = stream;
+              vid.classList.remove('hidden');
+              const avatarWrap = document.getElementById(`avatar-wrap-${socketId}`);
+              if (avatarWrap) avatarWrap.classList.add('hidden');
+            }
+          }
+        },
+        onSpeakingChanged: (id, isSpeaking) => {
+          if (id === 'local') {
+            const localTile = document.getElementById('voice-tile-local');
+            if (localTile) localTile.classList.toggle('is-speaking', isSpeaking);
+          } else {
+            const peerTile = document.getElementById(`voice-tile-${id}`);
+            if (peerTile) peerTile.classList.toggle('is-speaking', isSpeaking);
+          }
+        },
+        onStatusChanged: (status, count) => {
+          const badge = document.getElementById('voice-conn-status');
+          const label = document.getElementById('voice-conn-label');
+          const counter = document.getElementById('voice-peer-counter');
+
+          if (counter) counter.textContent = `${count || 1} người`;
+
+          if (badge && label) {
+            badge.className = `voice-conn-badge ${status}`;
+            if (status === 'connected') {
+              label.textContent = `Đã kết nối (${count} người)`;
+            } else if (status === 'connecting') {
+              label.textContent = 'Đang kết nối tín hiệu...';
+            } else {
+              label.textContent = 'Chưa tham gia';
+            }
+          }
+        }
+      });
+    }
+
+    // Hiển thị lobby và thông tin nhân vật bản thân
+    const lobby = document.getElementById('voice-lobby');
+    if (lobby) lobby.classList.remove('hidden');
+    const active = document.getElementById('voice-active-room');
+    if (active) active.classList.add('hidden');
+
+    const localName = document.getElementById('local-tile-name');
+    if (localName) {
+      const pName = currentScene?.player?.name || authService.getUser()?.displayName || 'Bạn';
+      localName.textContent = pName;
+    }
+    const localAvatar = document.getElementById('local-tile-avatar');
+    if (localAvatar) {
+      const pAvatar = currentScene?.player?.avatarId || 'male_1';
+      localAvatar.textContent = this.getAvatarEmoji(pAvatar);
+    }
+  }
+
+  async handleJoinVoiceRoom() {
+    const micCheck = document.getElementById('voice-lobby-mic');
+    const camCheck = document.getElementById('voice-lobby-cam');
+    const enableAudio = micCheck ? micCheck.checked : true;
+    const enableVideo = camCheck ? camCheck.checked : false;
+
+    const currentScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+    const meetingId = `${this.currentRoomId || 'main_hall'}_${this.currentZone?.id || 'meeting'}`;
+
+    try {
+      const res = await this.voiceService.join({
+        meetingId,
+        enableAudio,
+        enableVideo
+      });
+
+      if (res && res.success) {
+        audioManager.playSuccess();
+        const lobby = document.getElementById('voice-lobby');
+        if (lobby) lobby.classList.add('hidden');
+        const active = document.getElementById('voice-active-room');
+        if (active) active.classList.remove('hidden');
+
+        this.updateVoiceControlUI({
+          micMuted: this.voiceService.micMuted,
+          videoMuted: this.voiceService.videoMuted,
+          screenSharing: false
+        });
+        this.updateLocalVideoDisplay();
+
+        questManager.incrementProgress('meeting_connect', 1);
+      }
+    } catch (err) {
+      alert('Không thể truy cập Microphone/Camera. Vui lòng cho phép quyền truy cập trên trình duyệt để tham gia phòng đàm thoại.');
+    }
+  }
+
+  updateVoiceControlUI({ micMuted, videoMuted, screenSharing } = {}) {
+    if (typeof micMuted === 'boolean') {
+      const micBtn = document.getElementById('btn-toggle-mic');
+      const micIcon = document.getElementById('mic-icon');
+      const micText = document.getElementById('mic-text');
+      const localMicStatus = document.getElementById('local-tile-mic-status');
+
+      if (micBtn) micBtn.classList.toggle('off', micMuted);
+      if (micIcon) micIcon.textContent = micMuted ? '🔇' : '🎤';
+      if (micText) micText.textContent = micMuted ? 'Bật Mic' : 'Tắt Mic';
+      if (localMicStatus) localMicStatus.textContent = micMuted ? '🔇' : '🎤';
+    }
+
+    if (typeof videoMuted === 'boolean') {
+      const camBtn = document.getElementById('btn-toggle-cam');
+      const camIcon = document.getElementById('cam-icon');
+      const camText = document.getElementById('cam-text');
+
+      if (camBtn) camBtn.classList.toggle('off', videoMuted);
+      if (camIcon) camIcon.textContent = videoMuted ? '📷' : '📹';
+      if (camText) camText.textContent = videoMuted ? 'Bật Cam' : 'Tắt Cam';
+    }
+
+    if (typeof screenSharing === 'boolean') {
+      const screenBtn = document.getElementById('btn-toggle-screen');
+      if (screenBtn) screenBtn.classList.toggle('off', !screenSharing);
+    }
+  }
+
+  updateLocalVideoDisplay() {
+    const localVideo = document.getElementById('voice-video-local');
+    const localAvatarWrap = document.getElementById('local-avatar-wrap');
+
+    const hasVideo = (this.voiceService.isScreenSharing && this.voiceService.screenStream) ||
+                     (!this.voiceService.videoMuted && this.voiceService.localStream?.getVideoTracks()?.length > 0);
+
+    if (hasVideo) {
+      if (localVideo) {
+        localVideo.srcObject = this.voiceService.isScreenSharing
+          ? this.voiceService.screenStream
+          : this.voiceService.localStream;
+        localVideo.classList.remove('hidden');
+      }
+      if (localAvatarWrap) localAvatarWrap.classList.add('hidden');
+    } else {
+      if (localVideo) {
+        localVideo.srcObject = null;
+        localVideo.classList.add('hidden');
+      }
+      if (localAvatarWrap) localAvatarWrap.classList.remove('hidden');
+    }
+  }
+
+  renderRemotePeerTiles(peers = []) {
+    const container = document.getElementById('voice-remote-tiles');
+    const grid = document.getElementById('voice-tiles-grid');
+    if (!container || !grid) return;
+
+    // Cập nhật class số lượng ô
+    const totalCount = peers.length + 1;
+    if (totalCount === 1) grid.className = 'voice-tiles-grid count-1';
+    else if (totalCount === 2) grid.className = 'voice-tiles-grid count-2';
+    else grid.className = 'voice-tiles-grid count-many';
+
+    container.innerHTML = '';
+
+    peers.forEach(peer => {
+      const tile = document.createElement('div');
+      tile.className = 'voice-tile';
+      tile.id = `voice-tile-${peer.socketId}`;
+
+      const avatarEmoji = this.getAvatarEmoji(peer.avatarId);
+
+      tile.innerHTML = `
+        <div class="tile-video-wrap">
+          <video id="video-${peer.socketId}" autoplay playsinline class="tile-video ${peer.videoMuted ? 'hidden' : ''}"></video>
+          <div class="tile-avatar-fallback ${peer.videoMuted ? '' : 'hidden'}" id="avatar-wrap-${peer.socketId}">
+            <div class="tile-avatar-circle">${avatarEmoji}</div>
+          </div>
+        </div>
+        <div class="tile-overlay-bar">
+          <div class="tile-name-group">
+            <span class="tile-mic-icon" id="mic-${peer.socketId}">${peer.micMuted ? '🔇' : '🎤'}</span>
+            <span class="tile-user-name">${peer.name}</span>
+            <span class="tile-role-pill">${(peer.role || 'member').toUpperCase()}</span>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(tile);
+
+      // Nếu đã có video stream từ trước, gắn lại srcObject
+      const existingStream = this.voiceService.remoteStreams.get(peer.socketId);
+      if (existingStream && existingStream.getVideoTracks().length > 0) {
+        const vid = tile.querySelector('video');
+        if (vid) {
+          vid.srcObject = existingStream;
+          vid.classList.remove('hidden');
+          const wrap = tile.querySelector('.tile-avatar-fallback');
+          if (wrap) wrap.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  getAvatarEmoji(avatarId = '') {
+    const id = String(avatarId).toLowerCase();
+    if (id.includes('dev')) return '💻';
+    if (id.includes('tech')) return '⚡';
+    if (id.includes('cat') || id.includes('fur')) return '🐱';
+    if (id.includes('frog')) return '🐸';
+    if (id.includes('female')) return '👩‍💻';
+    return '🧑‍💻';
   }
 
   setupCodeView(zoneData) {
