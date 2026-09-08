@@ -422,7 +422,7 @@ export class WelcomeGate {
     const steps = [
       { progress: 20, text: 'Khởi tạo Game Engine Phaser 3 & Bộ Canvas 2D...' },
       { progress: 45, text: 'Sinh 30 bộ Tileset Pixel Art, Sân thể thao & Cóc Vàng FPTU...' },
-      { progress: 70, text: 'Nạp 7 phân khu chức năng & Cổng thông tin FU-DEVER...' },
+      { progress: 70, text: 'Nạp 9 phân khu chức năng & Cổng thông tin FU-DEVER...' },
       { progress: 90, text: 'Kết nối Realtime Socket.io & Hệ thống Túi đồ...' },
       { progress: 100, text: 'Hoàn tất! Chào mừng bạn đến với DEVER TOWN ✨' }
     ];

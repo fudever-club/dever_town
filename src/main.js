@@ -43,6 +43,7 @@ function initGame() {
     onEnterGame: ({ user, isGuest }) => {
       const scene = game.scene.getScene('WorldScene');
       if (scene && scene.player) {
+        scene.activatePlayerSession();
         let wardrobeConfig = user?.wardrobe_config || null;
         const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
         if (!wardrobeConfig && savedWardrobeRaw) {

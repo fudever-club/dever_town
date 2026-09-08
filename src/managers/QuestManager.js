@@ -67,20 +67,21 @@ export class QuestManager {
     this.visitedRooms = new Set();
     this.milestoneClaimed = false;
     this.listeners = [];
+    this.sessionActive = false;
 
-    this.loadState();
-    this.checkDailyReset();
-    // Auto check daily login
-    this.incrementProgress('daily_login', 1);
+    // Chỉ đọc snapshot để UI có thể khởi tạo. Không ghi tiến trình trước khi
+    // WelcomeGate xác định người chơi hiện tại (guest hay tài khoản).
+    this.loadState({ persistReset: false });
   }
 
-  loadState() {
+  loadState({ persistReset = this.sessionActive } = {}) {
     try {
       if (typeof localStorage === 'undefined') {
-        this.resetDailyQuests(new Date().toDateString());
+        this.resetDailyQuests(new Date().toDateString(), { persist: false });
         return;
       }
-      this.points = parseInt(localStorage.getItem('dever_points') || '0', 10);
+      const parsedPoints = parseInt(localStorage.getItem('dever_points') || '0', 10);
+      this.points = Number.isFinite(parsedPoints) ? parsedPoints : 0;
       const savedDate = localStorage.getItem('dever_quest_date');
       const today = new Date().toDateString();
 
@@ -95,7 +96,7 @@ export class QuestManager {
         }
         this.milestoneClaimed = localStorage.getItem('dever_quest_milestone') === 'true';
       } else {
-        this.resetDailyQuests(today);
+        this.resetDailyQuests(today, { persist: persistReset });
       }
 
       // Tự động đồng bộ và nạp tất cả nhiệm vụ mới nếu chưa có trong LocalStorage
@@ -108,12 +109,24 @@ export class QuestManager {
           };
         }
       });
+
+      const visitedRoomIds = this.quests.explorer_rooms?.visitedRoomIds;
+      this.visitedRooms = new Set(Array.isArray(visitedRoomIds) ? visitedRoomIds : []);
     } catch (e) {
-      this.resetDailyQuests(new Date().toDateString());
+      this.resetDailyQuests(new Date().toDateString(), { persist: persistReset });
     }
   }
 
-  resetDailyQuests(dateStr) {
+  startSession({ currentRoomId = null } = {}) {
+    this.sessionActive = true;
+    this.loadState({ persistReset: false });
+    this.checkDailyReset({ persist: false });
+    this.incrementProgress('daily_login', 1, { save: false, silent: true });
+    this.recordRoomVisit(currentRoomId, { save: false });
+    this.saveState();
+  }
+
+  resetDailyQuests(dateStr, { persist = this.sessionActive } = {}) {
     this.quests = {};
     DAILY_QUESTS_DEF.forEach(q => {
       this.quests[q.id] = {
@@ -124,22 +137,22 @@ export class QuestManager {
     });
     this.visitedRooms = new Set();
     this.milestoneClaimed = false;
-    if (typeof localStorage !== 'undefined') {
+    if (persist && typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem('dever_quest_date', dateStr);
         localStorage.setItem('dever_quest_milestone', 'false');
       } catch (e) {}
     }
-    this.saveState();
+    if (persist) this.saveState();
   }
 
-  checkDailyReset() {
+  checkDailyReset({ persist = this.sessionActive } = {}) {
     if (typeof localStorage === 'undefined') return;
     try {
       const savedDate = localStorage.getItem('dever_quest_date');
       const today = new Date().toDateString();
       if (savedDate !== today) {
-        this.resetDailyQuests(today);
+        this.resetDailyQuests(today, { persist });
       }
     } catch (e) {}
   }
@@ -147,9 +160,13 @@ export class QuestManager {
   saveState() {
     if (typeof localStorage === 'undefined') return;
     try {
+      if (this.quests.explorer_rooms) {
+        this.quests.explorer_rooms.visitedRoomIds = Array.from(this.visitedRooms);
+      }
       localStorage.setItem('dever_points', this.points.toString());
       localStorage.setItem('dever_quests_state', JSON.stringify(this.quests));
       localStorage.setItem('dever_quest_milestone', this.milestoneClaimed.toString());
+      localStorage.setItem('dever_quest_date', new Date().toDateString());
 
       // Tự động đồng bộ lên Database máy chủ khi đăng nhập
       if (authService && authService.isLoggedIn()) {
@@ -192,13 +209,88 @@ export class QuestManager {
     const completedCount = questsList.filter(q => q.completed).length;
 
     return {
+      sessionActive: this.sessionActive,
       points: this.points,
       rank: this.getRankInfo(),
       quests: questsList,
       completedCount: completedCount,
       totalCount: DAILY_QUESTS_DEF.length,
       milestoneClaimed: this.milestoneClaimed,
-      milestoneReward: 50
+      milestoneReward: 50,
+      claimableCount: questsList.filter(q => q.completed && !q.claimed).length,
+      nextGoal: this.getNextGoal(questsList, completedCount)
+    };
+  }
+
+  getNextGoal(questsList = null, completedCount = null) {
+    if (!questsList) {
+      questsList = DAILY_QUESTS_DEF.map(def => {
+        const quest = this.quests[def.id] || { progress: 0, completed: false, claimed: false };
+        return {
+          ...def,
+          progress: quest.progress,
+          completed: quest.progress >= def.target || quest.completed,
+          claimed: quest.claimed
+        };
+      });
+    }
+    const doneCount = completedCount ?? questsList.filter(q => q.completed).length;
+    const claimable = questsList.find(q => q.completed && !q.claimed);
+    if (claimable) {
+      return {
+        kind: 'claim',
+        questId: claimable.id,
+        title: claimable.title,
+        description: `Phần thưởng +${claimable.points} điểm đã sẵn sàng.`,
+        actionLabel: 'Xem và nhận',
+        progress: claimable.target,
+        target: claimable.target
+      };
+    }
+
+    if (doneCount >= 4 && !this.milestoneClaimed) {
+      return {
+        kind: 'milestone',
+        title: 'Rương thưởng ngày',
+        description: 'Bạn đã đủ điều kiện nhận thêm 50 điểm.',
+        actionLabel: 'Mở rương',
+        progress: doneCount,
+        target: 4
+      };
+    }
+
+    const priority = [
+      'daily_login',
+      'explorer_rooms',
+      'chat_connect',
+      'focus_lofi_pomo',
+      'penalty_goal',
+      'basketball_shoot',
+      'barista_coffee'
+    ];
+    const nextQuest = priority
+      .map(id => questsList.find(q => q.id === id))
+      .find(q => q && !q.completed);
+
+    if (nextQuest) {
+      return {
+        kind: 'progress',
+        questId: nextQuest.id,
+        title: nextQuest.title,
+        description: nextQuest.desc,
+        actionLabel: 'Xem nhiệm vụ',
+        progress: nextQuest.progress,
+        target: nextQuest.target
+      };
+    }
+
+    return {
+      kind: 'complete',
+      title: 'Hoàn tất mục tiêu hôm nay',
+      description: 'Tất cả phần thưởng nhiệm vụ đã được nhận.',
+      actionLabel: 'Xem thành tích',
+      progress: questsList.length,
+      target: questsList.length
     };
   }
 
@@ -209,7 +301,8 @@ export class QuestManager {
     return { title: '🌱 Tân Binh FU-DEVER', color: '#4ade80' };
   }
 
-  incrementProgress(questId, amount = 1) {
+  incrementProgress(questId, amount = 1, { save = true, silent = false } = {}) {
+    if (!this.sessionActive) return false;
     this.checkDailyReset();
     const def = DAILY_QUESTS_DEF.find(q => q.id === questId);
     if (!def) return false;
@@ -224,18 +317,27 @@ export class QuestManager {
     q.progress = Math.min(def.target, q.progress + amount);
     if (q.progress >= def.target && !q.completed) {
       q.completed = true;
-      audioManager.playVictory();
-      this.showToast(`Nhiệm vụ hoàn thành: ${def.title}`);
+      if (!silent) {
+        audioManager.playVictory();
+        this.showToast(`Nhiệm vụ hoàn thành: ${def.title}`);
+      }
     }
 
-    this.saveState();
+    if (save) this.saveState();
     return true;
   }
 
-  recordRoomVisit(roomId) {
-    if (!roomId) return;
+  recordRoomVisit(roomId, { save = true } = {}) {
+    if (!this.sessionActive || !roomId || this.visitedRooms.has(roomId)) return false;
     this.visitedRooms.add(roomId);
-    this.incrementProgress('explorer_rooms', this.visitedRooms.size - (this.quests['explorer_rooms']?.progress || 0));
+    const currentProgress = this.quests.explorer_rooms?.progress || 0;
+    const positiveDelta = Math.max(0, this.visitedRooms.size - currentProgress);
+    if (positiveDelta > 0) {
+      this.incrementProgress('explorer_rooms', positiveDelta, { save, silent: false });
+    } else if (save) {
+      this.saveState();
+    }
+    return true;
   }
 
   claimQuestReward(questId) {
@@ -250,7 +352,6 @@ export class QuestManager {
     audioManager.playVictory();
     this.showToast(`+${def.points} Dever Points`);
     this.saveState();
-    this.syncPointsToServer();
     return true;
   }
 
@@ -263,7 +364,6 @@ export class QuestManager {
     audioManager.playVictory();
     this.showToast('Mở rương thưởng ngày: +50 Dever Points');
     this.saveState();
-    this.syncPointsToServer();
     return true;
   }
 
@@ -273,13 +373,14 @@ export class QuestManager {
       this.showToast(`+${amount} Điểm (${reason})`);
     }
     this.saveState();
-    this.syncPointsToServer();
   }
 
   showToast(message) {
     if (typeof document === 'undefined') return;
     const toast = document.createElement('div');
     toast.className = 'quest-toast-banner';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     toast.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
     document.body.appendChild(toast);
 
@@ -290,19 +391,8 @@ export class QuestManager {
   }
 
   async syncPointsToServer() {
-    try {
-      const token = localStorage.getItem('dever_token');
-      if (!token) return;
-
-      await fetch('/api/auth/customization', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ deverPoints: this.points })
-      });
-    } catch (e) {}
+    if (!authService?.isLoggedIn()) return null;
+    return authService.syncFullProfile({ deverPoints: this.points });
   }
 }
 

@@ -124,7 +124,7 @@ export class InventoryManager {
   async syncToServer(equippedItemId = this.equippedItemId) {
     try {
       if (authService && authService.isLoggedIn()) {
-        await authService.syncFullProfile({
+        return await authService.syncFullProfile({
           inventoryItems: this.items,
           equippedItemId: equippedItemId
         });
@@ -132,6 +132,7 @@ export class InventoryManager {
     } catch (e) {
       // LocalStorage fallback
     }
+    return null;
   }
 
   /**

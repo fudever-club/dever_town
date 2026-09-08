@@ -1,4 +1,5 @@
 import { audioManager } from '../utils/AudioManager.js';
+import { questManager } from './QuestManager.js';
 
 export const ACHIEVEMENTS_DEFINITIONS = {
   first_arrival: {
@@ -153,16 +154,9 @@ export class AchievementManager {
   }
 
   awardPoints(points) {
-    if (typeof document === 'undefined') return;
-    const ptsDisplay = document.getElementById('header-points-display');
-    if (ptsDisplay) {
-      const current = parseInt(ptsDisplay.textContent || '0', 10) || 0;
-      const updated = current + points;
-      ptsDisplay.textContent = updated;
-
-      if (this.juiceManager) {
-        this.juiceManager.pulseDOM('#header-quests-btn');
-      }
+    questManager.addPoints(points);
+    if (this.juiceManager) {
+      this.juiceManager.pulseDOM('#header-quests-btn');
     }
   }
 
