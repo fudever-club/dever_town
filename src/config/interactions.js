@@ -291,21 +291,11 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'edunext',
-        name: '🌱 EduNext FPT',
-        desc: 'Nền tảng học tập kiến tạo xã hội, thảo luận nhóm, bài tập và slide bài giảng',
+        name: '🌱 EduNext',
+        desc: 'Nền tảng học liệu, thảo luận nhóm, nộp bài tập, slide bài giảng',
         url: 'https://fu-edunext.fpt.edu.vn/login',
         badge: 'Kiến tạo',
-        color: '#059669',
-        details: {
-          platform: 'EduNext — Nền Tảng Học Tập Kiến Tạo Xã Hội (Social Constructivism)',
-          slogan: 'Khơi nguồn tư duy, kết nối chuyên gia, bứt phá giới hạn',
-          highlights: [
-            'Câu hỏi kiến tạo xã hội giúp học viên trải nghiệm và phát triển tư duy phản biện',
-            'Dễ dàng theo dõi tiến độ học tập theo nội dung, thời gian, lớp học và buổi học',
-            'Báo cáo trực quan và đánh giá tương tác nhóm khách quan, minh bạch',
-            'Quản lý nội dung bài giảng, slide tài liệu và tích hợp phòng học trực tuyến'
-          ]
-        }
+        color: '#059669'
       },
       {
         id: 'reset_pass',

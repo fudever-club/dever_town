@@ -1444,7 +1444,7 @@ export class InteractiveModal {
         card.href = sys.url;
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
-        card.className = 'fptu-system-card' + (sys.details ? ' has-details' : '');
+        card.className = 'fptu-system-card';
         card.innerHTML = `
           <div class="fptu-card-header">
             <span class="fptu-card-badge" style="background: ${sys.color}20; color: ${sys.color}; border: 1px solid ${sys.color}40;">${sys.badge}</span>
@@ -1452,11 +1452,6 @@ export class InteractiveModal {
           </div>
           <h4 class="fptu-card-name">${sys.name}</h4>
           <p class="fptu-card-desc">${sys.desc}</p>
-          ${sys.details ? `
-            <div class="fptu-card-features">
-              <span class="fptu-feat-tag">${sys.details.slogan}</span>
-            </div>
-          ` : ''}
         `;
         card.addEventListener('click', () => audioManager.playClick());
         systemsGrid.appendChild(card);

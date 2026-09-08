@@ -88,7 +88,7 @@ Gom toàn bộ link hệ thống trường vào 1 khu vực tương tác riêng,
 | Reset mật khẩu Wifi/EOS | https://resetdn.fpt.edu.vn/ | Đổi mật khẩu |
 | LMS Đà Nẵng — Hỗ trợ IT | https://lmsdn.fpt.edu.vn/hd/ | Hướng dẫn kỹ thuật |
 | LMS Đà Nẵng — Học/kiểm tra | https://lmsdn.fpt.edu.vn/ | Một số môn giáo viên yêu cầu học qua đây |
-| EduNext — Kiến tạo xã hội | https://fu-edunext.fpt.edu.vn/login | Nền tảng học nhóm, thảo luận câu hỏi kiến tạo, bài tập & tài liệu |
+| EduNext — Học liệu & Học nhóm | https://fu-edunext.fpt.edu.vn/login | Nền tảng học liệu, thảo luận nhóm, nộp bài tập, slide bài giảng |
 | E360 — Checkout sau thi | https://e360.fpt.edu.vn/ | Xác nhận sau khi thi xong |
 
 **Nhóm B — Tải phần mềm thi:**
