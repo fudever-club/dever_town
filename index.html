@@ -1393,10 +1393,14 @@
       <div id="pane-campus-map" class="interactive-pane hidden">
         <div class="campus-map-workspace">
           <div class="campus-map-left">
+            <div id="campus-map-tabs-bar" class="campus-map-tabs-bar">
+              <button type="button" id="tab-btn-map-newbie" class="campus-tab-btn active">Bản Đồ Newbie K22</button>
+              <button type="button" id="tab-btn-map-overview" class="campus-tab-btn">Sơ Đồ 9 Phân Khu</button>
+            </div>
             <div class="campus-map-img-box">
-              <img src="/assets/campus/fuda_map.webp" alt="Bản Đồ FPTU Đà Nẵng" class="campus-map-img" />
+              <img id="campus-current-map-img" src="/assets/campus/campus_map.webp" alt="Bản Đồ FPTU Đà Nẵng" class="campus-map-img" />
               <div class="campus-map-actions">
-                <a href="/assets/campus/fuda_map.webp" target="_blank" rel="noopener noreferrer" class="btn-sm-action">
+                <a id="campus-btn-full" href="/assets/campus/campus_map.jpg" target="_blank" rel="noopener noreferrer" class="btn-sm-action">
                   Mở Bản Đồ Gốc HD
                 </a>
                 <a href="/assets/campus/fuda_mau.webp" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
@@ -1406,7 +1410,7 @@
             </div>
           </div>
           <div class="campus-map-right">
-            <h3 class="campus-map-title">Danh Mục 9 Phân Khu Campus FUDA</h3>
+            <h3 id="campus-map-section-title" class="campus-map-title">Danh Mục Địa Điểm Newbie K22 Cần Biết</h3>
             <div id="campus-locations-list" class="campus-locations-list"></div>
           </div>
         </div>
