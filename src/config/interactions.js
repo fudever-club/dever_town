@@ -290,6 +290,24 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
         color: '#10b981'
       },
       {
+        id: 'edunext',
+        name: '🌱 EduNext FPT',
+        desc: 'Nền tảng học tập kiến tạo xã hội, thảo luận nhóm, bài tập và slide bài giảng',
+        url: 'https://fu-edunext.fpt.edu.vn/login',
+        badge: 'Kiến tạo',
+        color: '#059669',
+        details: {
+          platform: 'EduNext — Nền Tảng Học Tập Kiến Tạo Xã Hội (Social Constructivism)',
+          slogan: 'Khơi nguồn tư duy, kết nối chuyên gia, bứt phá giới hạn',
+          highlights: [
+            'Câu hỏi kiến tạo xã hội giúp học viên trải nghiệm và phát triển tư duy phản biện',
+            'Dễ dàng theo dõi tiến độ học tập theo nội dung, thời gian, lớp học và buổi học',
+            'Báo cáo trực quan và đánh giá tương tác nhóm khách quan, minh bạch',
+            'Quản lý nội dung bài giảng, slide tài liệu và tích hợp phòng học trực tuyến'
+          ]
+        }
+      },
+      {
         id: 'reset_pass',
         name: '🔑 Đổi Mật Khẩu WiFi & EOS',
         desc: 'Trang đổi mật khẩu mạng WiFi trường và mật khẩu phòng thi EOS',
@@ -386,7 +404,49 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
   campus_map: {
     title: 'Sơ Đồ Bản Đồ Đại Học FPT Đà Nẵng (FUDA Campus)',
     description: 'Khu đô thị công nghệ FPT, phường Hòa Hải, quận Ngũ Hành Sơn, Đà Nẵng',
-    mapImage: '/assets/campus/fuda_map.webp',
+    maps: [
+      {
+        id: 'newbie_k22',
+        tabName: 'Bản Đồ Newbie K22',
+        title: 'Check Map Trường F Cho Newbie K22',
+        subTitle: 'Danh Mục Địa Điểm Newbie K22 Cần Biết',
+        image: '/assets/campus/campus_map.webp',
+        rawImage: '/assets/campus/campus_map.jpg',
+        locations: [
+          { num: '🏢', name: 'Tòa Nhà Alpha', desc: 'Các phòng học, Phòng Dịch vụ sinh viên, Phòng Tuyển sinh, Hệ thống phòng Lab' },
+          { num: '💻', name: 'Tòa Nhà Gamma', desc: 'Các phòng học, Thư viện, Khu vực Hỗ trợ CNTT, Hệ thống phòng Lab' },
+          { num: '📚', name: 'Tòa Nhà Beta', desc: 'Phòng học, giảng đường và không gian tự học' },
+          { num: '🛏️', name: 'Ký Túc Xá DOM A & DOM B', desc: 'Khu nội trú sinh viên FUDA hiện đại, an ninh và tiện nghi' },
+          { num: '🥋', name: 'Khu Học Võ Vovinam', desc: 'Võ đường Vovinam Việt Võ Đạo rèn luyện thể chất và tinh thần thượng võ' },
+          { num: '🍜', name: 'Căng Tin FUDA', desc: 'Khu ẩm thực 2 tầng: Căn tin Hương Vị Việt, The High Deli và F.C Canteen' },
+          { num: '⚽', name: 'Sân Thể Thao (Bóng Đá & Bóng Rổ)', desc: 'Sân bóng đá cỏ nhân tạo và sân bóng rổ ngoài trời phục vụ rèn luyện' },
+          { num: '💪', name: 'Khu Street Workout', desc: 'Khu rèn luyện thể hình, xà đơn, xà kép ngoài trời' },
+          { num: '🌿', name: 'Vườn Cây Con Cá & Hồ Sen', desc: 'Khuôn viên sinh thái xanh mát thư giãn giữa các giờ học' },
+          { num: '🏛️', name: 'Quảng Trường & Nhà Để Xe', desc: 'Không gian tổ chức sự kiện văn hóa, sinh hoạt chung và bãi đỗ xe máy' }
+        ]
+      },
+      {
+        id: 'fuda_overview',
+        tabName: 'Sơ Đồ 9 Phân Khu',
+        title: 'Sơ Đồ Bản Đồ Quy Hoạch FPTU Đà Nẵng',
+        subTitle: 'Danh Mục 9 Phân Khu Campus FUDA',
+        image: '/assets/campus/fuda_map.webp',
+        rawImage: '/assets/campus/fuda_map.webp',
+        locations: [
+          { num: 1, name: 'Tòa Alpha', desc: 'Tòa nhà biểu tượng chính, hội trường trung tâm, phòng học & sảnh chính' },
+          { num: 2, name: 'Tòa Gamma', desc: 'Khu nghiên cứu công nghệ, phòng Lab AI/Game và văn phòng' },
+          { num: 3, name: 'Tòa Beta', desc: 'Thư viện trường, khu tự học và giảng đường' },
+          { num: 4, name: 'KTX Dorm A', desc: 'Ký túc xá sinh viên khối A' },
+          { num: 5, name: 'KTX Dorm B', desc: 'Ký túc xá sinh viên khối B' },
+          { num: 6, name: 'Nhà Võ Vovinam', desc: 'Võ đường Vovinam Việt Võ Đạo trường FPT' },
+          { num: 7, name: 'Nhà Giữ Xe', desc: 'Khu vực gửi xe sinh viên và cán bộ' },
+          { num: 8, name: 'Căn Tin FUDA', desc: 'Khu ăn uống Tầng 1 Hương Vị Việt & Tầng 2 The High Deli / F.C Canteen' },
+          { num: 9, name: 'Sân Bóng Đá & Thể Thao', desc: 'Sân bóng đá cỏ nhân tạo, bóng rổ, hồ bơi' }
+        ]
+      }
+    ],
+    mapImage: '/assets/campus/campus_map.webp',
+    overviewImage: '/assets/campus/fuda_map.webp',
     campusImage: '/assets/campus/fuda_mau.webp',
     locations: [
       { num: 1, name: 'Tòa Alpha', desc: 'Tòa nhà biểu tượng chính, hội trường trung tâm, phòng học & sảnh chính' },

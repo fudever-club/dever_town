@@ -5158,6 +5158,21 @@ body {
   line-height: 1.4;
 }
 
+.fptu-card-features {
+  margin-top: 4px;
+}
+
+.fptu-feat-tag {
+  display: inline-block;
+  font-size: 10px;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 600;
+}
+
 .fptu-exam-apps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -5335,6 +5350,38 @@ body {
   grid-template-columns: 1.2fr 1fr;
   gap: 16px;
   align-items: start;
+}
+
+.campus-map-tabs-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.campus-tab-btn {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.campus-tab-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  color: #fff;
+}
+
+.campus-tab-btn.active {
+  background: rgba(242, 111, 33, 0.25);
+  border-color: #f26f21;
+  color: #ff9800;
+  box-shadow: 0 0 10px rgba(242, 111, 33, 0.2);
 }
 
 .campus-map-img-box {
