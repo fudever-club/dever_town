@@ -565,24 +565,27 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0e1526 0%,#091d2c 100%)',
         content: `
           <h2 style="color:#fbbf24;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
-            <span>🏢</span> Cơ Cấu Tổ Chức & Vận Hành
+            <span>🏢</span> Ban Chủ Nhiệm & Bộ Máy Điều Hành
           </h2>
-          <div style="display:grid;gap:8px;font-size:0.82rem">
-            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start">
+          <div style="display:grid;gap:7px;font-size:0.80rem">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
               <span style="font-size:20px;flex-shrink:0">👑</span>
-              <div><strong style="color:#fbbf24">Ban Chủ Nhiệm (BCN):</strong> <span style="color:#cbd5e1">Chủ nhiệm, Phó chủ nhiệm, Thư ký — Giám sát tổng thể, quản lý tài chính và đại diện đối ngoại.</span></div>
+              <div><strong style="color:#fbbf24">Ban Chủ Nhiệm (BCN):</strong> <span style="color:#cbd5e1">Đặng Quang Nhật (Chủ nhiệm · K20), Nguyễn Thái Hưng (Phó chủ nhiệm · K20), Nguyễn Thị Ngọc Ánh (Thư ký · K20).</span></div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
               <span style="font-size:20px;flex-shrink:0">🧠</span>
-              <div><strong style="color:#38bdf8">Ban Học Thuật (BHT):</strong> <span style="color:#cbd5e1">Nghiên cứu công nghệ, tổ chức Workshop, Coding Bootcamp, biên soạn Cẩm nang ôn thi PE/FE và Mentor 1:1.</span></div>
+              <div><strong style="color:#38bdf8">Ban Học Thuật:</strong> <span style="color:#cbd5e1">Lương Văn Tuấn Kiệt (Trưởng ban), Lưu Thành Đạt (Phó ban) · Phụ trách Bootcamp, PE/FE & Workshop.</span></div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
               <span style="font-size:20px;flex-shrink:0">🎪</span>
-              <div><strong style="color:#f26f21">Ban Sự Kiện:</strong> <span style="color:#cbd5e1">Lên kế hoạch và thực thi các cuộc thi Hackathon, Tech Day, Teambuilding dã ngoại gắn kết thành viên.</span></div>
+              <div><strong style="color:#f26f21">Ban Sự Kiện & Đối Ngoại:</strong> <span style="color:#cbd5e1">Hồ Quốc Thắng (Trưởng ban · K20), Tạ Thị Bích Loan (Phó ban), Nguyễn Thúc Hoàng Phương (Phó ban).</span></div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
               <span style="font-size:20px;flex-shrink:0">📢</span>
-              <div><strong style="color:#c084fc">Ban Truyền Thông (BTT):</strong> <span style="color:#cbd5e1">Quản lý Fanpage Facebook, Website fudever.com, thiết kế ấn phẩm đồ họa và lan tỏa văn hóa builder.</span></div>
+              <div><strong style="color:#c084fc">Ban Truyền Thông:</strong> <span style="color:#cbd5e1">Đoàn Phước Trường Hải (Trưởng ban), Nguyễn Minh Hiển (Phó ban) · Phụ trách Media & Fanpage.</span></div>
+            </div>
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #00B2FF;border-radius:0 8px 8px 0;padding:6px 12px">
+              <strong style="color:#00B2FF">Tiểu Ban Kỹ Thuật:</strong> <span style="color:#e2e8f0">Lê Đức Anh Phương (FE), Lê Đình Đăng Khoa (BE), Nguyễn Lê Đăng Thành (Game), Phạm Đức Truyền (Giải thuật).</span>
             </div>
           </div>
         `
