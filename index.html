@@ -316,13 +316,28 @@
       </div>
 
       <!-- User Profile Badge -->
-      <div class="user-profile-badge">
-        <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
-        <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
+      <div class="user-profile-badge clickable" id="header-user-badge" title="Bấm để đổi Avatar & Xem Hồ Sơ">
+        <div class="header-avatar-circle" id="header-user-avatar-wrap">
+          <span id="header-user-avatar-icon">🧑‍💻</span>
+        </div>
+        <div class="user-meta-texts">
+          <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
+          <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
+        </div>
       </div>
 
       <!-- Header Actions -->
       <div class="header-actions">
+        <!-- Nút Đổi Avatar & Mở Khóa -->
+        <button id="header-avatar-btn" class="btn-primary-sm btn-avatar" title="Đổi Avatar Cá Nhân & Mở Khóa">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="10" r="3"></circle>
+            <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+          </svg>
+          <span data-i18n="avatarBtn">Đổi Avatar</span>
+        </button>
+
         <!-- Nút Túi Đồ [I] -->
         <button id="header-inventory-btn" class="btn-primary-sm btn-inventory" title="Mở Túi Đồ [Phím I]">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
