@@ -613,6 +613,43 @@ export const ROOM_SLIDE_PRESETS = [
         `
       },
       {
+        bg: 'linear-gradient(135deg,#1c1204 0%,#2a1c04 50%,#101a2e 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            <span>🏆</span> Bảng Vàng Thành Tích & Đấu Trường
+          </h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.80rem">
+            <div style="background:rgba(251,191,36,0.09);border-left:3px solid #fbbf24;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">🥇 Quán Quân FPT Hackathon:</strong><br/>
+              <span style="color:#cbd5e1">Bảng A Đà Nẵng · Team NEUROSHIP</span>
+            </div>
+            <div style="background:rgba(242,111,33,0.09);border-left:3px solid #f26f21;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#f26f21">🎮 Quán Quân Game Craft Arena:</strong><br/>
+              <span style="color:#cbd5e1">FPT Đà Nẵng 2025 · Team ĐỘC LẬP</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.09);border-left:3px solid #38bdf8;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#38bdf8">🥈 Á Quân 1 DEVFEST AI 2023:</strong><br/>
+              <span style="color:#cbd5e1">Khu vực Miền Trung · CLB FU-DEVER</span>
+            </div>
+            <div style="background:rgba(192,132,252,0.09);border-left:3px solid #c084fc;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#c084fc">⚡ Chung Kết CodeMosaic 2025:</strong><br/>
+              <span style="color:#cbd5e1">4h thi thuật toán · Team DeverLastHope K20</span>
+            </div>
+            <div style="background:rgba(16,185,129,0.09);border-left:3px solid #10b981;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#10b981">🎖️ Giải NCKH ResConnect 2026:</strong><br/>
+              <span style="color:#cbd5e1">Giải Khuyến khích · Team Absolutely Inefficient</span>
+            </div>
+            <div style="background:rgba(244,114,182,0.09);border-left:3px solid #f472b6;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#f472b6">🏅 Giải Thưởng SHECODES Tech:</strong><br/>
+              <span style="color:#cbd5e1">Sản phẩm công nghệ nữ · Team SPOIL</span>
+            </div>
+          </div>
+          <div style="margin-top:8px;background:rgba(255,255,255,0.04);border-radius:6px;padding:6px 12px;font-size:0.75rem;text-align:center;color:#94a3b8">
+            🌟 Vinh danh các thành viên đạt danh hiệu <strong style="color:#fbbf24">Cóc Vàng FUDA</strong> qua các học kỳ
+          </div>
+        `
+      },
+      {
         bg: 'linear-gradient(135deg,#0a1224 0%,#180f28 100%)',
         content: `
           <h2 style="color:#c084fc;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
@@ -1101,7 +1138,7 @@ export const ROOM_SLIDE_PRESETS = [
     room: 'memory_room',
     roomName: 'Phòng Kỷ Niệm',
     title: 'Bảng Vàng Vinh Danh',
-    desc: '20+ giải thưởng ICPC & Hackathon qua các thế hệ',
+    desc: 'Bảng vàng thành tích & cúp vô địch các giải đấu lớn của FU-DEVER',
     url: '',
     slides: [
       {
@@ -1110,24 +1147,42 @@ export const ROOM_SLIDE_PRESETS = [
           <div style="text-align:center">
             <div style="font-size:52px">🏆</div>
             <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">BẢNG VÀNG VINH DANH</h1>
-            <p style="color:#94a3b8">FU-DEVER • Thành Tích Thi Đấu 2017–2026</p>
+            <p style="color:#94a3b8">FU-DEVER • Đấu Trường Công Nghệ & Giải Đấu Sinh Viên</p>
           </div>
         `
       },
       {
         bg: 'linear-gradient(135deg,#2a1a00 0%,#1a1000 100%)',
         content: `
-          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">🥇 Các Cuộc Thi Nổi Bật</h2>
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">🥇 Cúp Vô Địch & Quán Quân</h2>
           <div style="display:grid;gap:8px;font-size:0.85rem">
             ${[
-              {award:'🥇 ICPC Vietnam','year':'2022 & 2024','detail':'Lọc 2 khu vực, ĐN Đứng đầu'},
-              {award:'🥈 FPT Edu Hackathon','year':'2023','detail':'Top 3 Hà Nội & Đà Nẵng'},
-              {award:'🏅 ResFes FPTU','year':'2022–2024','detail':'Giải nhất khối Kỹ Thuật mọi năm'},
-              {award:'⭐ NIC Hackathon','year':'2024','detail':'Top 10 toàn quốc - AI Track'}
+              {award:'🥇 Quán Quân FPT Hackathon Đà Nẵng','team':'Team NEUROSHIP · Bảng A Đà Nẵng','year':'Quán quân','color':'#fbbf24'},
+              {award:'🎮 Quán Quân Game Craft Arena 2025','team':'Đội Game ĐỘC LẬP · FPT Đà Nẵng','year':'Vô địch','color':'#f26f21'},
+              {award:'🥈 Á Quân 1 DEVFEST AI Hackathon 2023','team':'CLB FU-DEVER · Khu Vực Miền Trung','year':'Á Quân 1','color':'#38bdf8'}
             ].map(r => `
-              <div style="display:flex;justify-content:space-between;background:rgba(251,191,36,0.07);border-radius:8px;padding:9px 14px;align-items:center">
-                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#64748b;font-size:0.78rem">${r.detail}</span></div>
-                <span style="color:#fbbf24;font-weight:700;font-size:0.82rem">${r.year}</span>
+              <div style="display:flex;justify-content:space-between;background:rgba(251,191,36,0.07);border-left:3px solid ${r.color};border-radius:0 8px 8px 0;padding:9px 14px;align-items:center">
+                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#94a3b8;font-size:0.78rem">${r.team}</span></div>
+                <span style="color:${r.color};font-weight:700;font-size:0.82rem">${r.year}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#121b2d 0%,#091220 100%)',
+        content: `
+          <h2 style="color:#38bdf8;font-size:1.2rem;font-weight:800;margin:0 0 12px">🎖️ Giải Thưởng & Dấu Ấn Chuyên Môn</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            ${[
+              {award:'⚡ Chung Kết CodeMosaic 2025','team':'Đội DeverLastHope K20 · Đấu thuật toán 4h','year':'Chung kết','color':'#c084fc'},
+              {award:'🎖️ Nghiên Cứu Khoa Học ResConnect 2026','team':'Team Absolutely Inefficient (AI) · Khuyến khích','year':'ResConnect','color':'#10b981'},
+              {award:'🏅 Giải Thưởng Sáng Tạo SHECODES','team':'SPOIL TEAM · Sản phẩm công nghệ nữ sinh','year':'SheCodes','color':'#f472b6'},
+              {award:'🐸 Danh Hiệu Cóc Vàng FUDA','team':'Thành viên tiêu biểu CLB qua các học kỳ','year':'Danh hiệu','color':'#fbbf24'}
+            ].map(r => `
+              <div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.04);border-left:3px solid ${r.color};border-radius:0 8px 8px 0;padding:8px 14px;align-items:center">
+                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#94a3b8;font-size:0.78rem">${r.team}</span></div>
+                <span style="color:${r.color};font-weight:700;font-size:0.82rem">${r.year}</span>
               </div>
             `).join('')}
           </div>
