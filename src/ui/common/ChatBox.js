@@ -1,3 +1,5 @@
+import { friendManager } from '../../managers/FriendManager.js';
+
 export class ChatBox {
   /**
    * @param {Object} options
@@ -134,7 +136,7 @@ export class ChatBox {
       const deverTab = document.createElement('button');
       deverTab.type = 'button';
       deverTab.className = `sticker-tab-btn ${this.activeStickerCategory === 'dever' ? 'active' : ''}`;
-      deverTab.textContent = '🦊 DEVER (11)';
+      deverTab.textContent = '🦊 DEVER (10)';
       deverTab.addEventListener('click', (e) => {
         e.stopPropagation();
         this.activeStickerCategory = 'dever';
@@ -158,7 +160,7 @@ export class ChatBox {
       const grid = document.createElement('div');
       grid.className = 'sticker-popover-grid';
 
-      const count = this.activeStickerCategory === 'dever' ? 11 : 20;
+      const count = this.activeStickerCategory === 'dever' ? 10 : 20;
       const cat = this.activeStickerCategory;
 
       for (let i = 1; i <= count; i++) {
@@ -201,6 +203,13 @@ export class ChatBox {
     }
   }
 
+  whisperTo(name) {
+    if (!this.chatInput) return;
+    this.openMobileChat();
+    this.chatInput.value = `@${name} `;
+    this.chatInput.focus();
+  }
+
   handleSend() {
     if (!this.chatInput) return;
     const raw = this.chatInput.value || '';
@@ -210,6 +219,15 @@ export class ChatBox {
       if (this.onSendMessage) {
         this.onSendMessage(text);
       }
+
+      // Kiểm tra nếu tin nhắn gửi đến bạn bè (@Tên), tự động duy trì chuỗi Bestie Streak
+      if (text.startsWith('@')) {
+        const targetName = text.substring(1).split(' ')[0];
+        if (targetName && friendManager.isFriend(targetName)) {
+          friendManager.recordInteraction(targetName);
+        }
+      }
+
       this.chatInput.value = '';
     }
   }
@@ -217,7 +235,7 @@ export class ChatBox {
   /**
    * Thêm tin nhắn mới vào danh sách chat
    */
-  addMessage({ senderName, message, role = 'guest', timestamp = null, isSelf = false }) {
+  addMessage({ senderId, senderName, message, role = 'guest', timestamp = null, isSelf = false }) {
     if (!this.chatMessages) return;
 
     const normalizedMsg = (message || '').normalize('NFC');
@@ -234,6 +252,28 @@ export class ChatBox {
     const authorSpan = document.createElement('span');
     authorSpan.className = 'chat-author';
     authorSpan.textContent = (senderName || 'Anonymous').normalize('NFC');
+
+    // Bấm vào tên người chơi khác để xem Hồ sơ & Kết bạn
+    if (!isSelf) {
+      authorSpan.classList.add('chat-author-clickable');
+      authorSpan.title = 'Bấm để xem hồ sơ và kết bạn';
+      authorSpan.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const worldScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+        if (worldScene && worldScene.playerProfileModal) {
+          worldScene.playerProfileModal.show({
+            id: senderId || senderName,
+            name: senderName,
+            role: role
+          });
+        }
+      });
+
+      // Tự động ghi nhận tương tác nếu người nhắn là bạn bè trong cùng phòng
+      if (friendManager.isFriend(senderName)) {
+        friendManager.recordInteraction(senderName);
+      }
+    }
 
     const timeSpan = document.createElement('span');
     timeSpan.className = 'chat-time';
@@ -263,7 +303,7 @@ export class ChatBox {
     if (catStickerMatch) {
       const cat = catStickerMatch[1];
       const stickerNum = parseInt(catStickerMatch[2], 10);
-      const maxCount = cat === 'dever' ? 11 : 20;
+      const maxCount = cat === 'dever' ? 10 : 20;
       if (stickerNum >= 1 && stickerNum <= maxCount) {
         const stickerImg = document.createElement('img');
         stickerImg.src = `/assets/stickers/${cat}/${stickerNum}.png`;
@@ -275,7 +315,7 @@ export class ChatBox {
       }
     } else if (legacyStickerMatch) {
       const stickerNum = parseInt(legacyStickerMatch[1], 10);
-      if (stickerNum >= 1 && stickerNum <= 11) {
+      if (stickerNum >= 1 && stickerNum <= 10) {
         const stickerImg = document.createElement('img');
         stickerImg.src = `/assets/stickers/dever/${stickerNum}.png`;
         stickerImg.className = 'chat-sticker-img';

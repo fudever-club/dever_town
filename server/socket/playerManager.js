@@ -59,6 +59,17 @@ class PlayerManager {
     return list.length > 0 ? list[0] : null;
   }
 
+  findPlayerByName(name) {
+    if (!name) return null;
+    const target = name.trim().toLowerCase();
+    for (const player of this.players.values()) {
+      if (player.name && player.name.toLowerCase() === target) {
+        return player;
+      }
+    }
+    return null;
+  }
+
   updateMovement(socketId, { x, y, direction, isMoving }) {
     const player = this.players.get(socketId);
     if (!player) return null;

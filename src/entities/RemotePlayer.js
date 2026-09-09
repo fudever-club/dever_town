@@ -43,6 +43,14 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.createNameTag();
     this.createEquippedItemDisplay();
     this.setDepth(this.y);
+
+    // Bật tương tác click vào nhân vật để xem Hồ sơ & Kết bạn
+    this.setInteractive({ cursor: 'pointer' });
+    this.on('pointerdown', (pointer) => {
+      if (pointer.leftButtonDown()) {
+        this.openProfile();
+      }
+    });
   }
 
   createNameTag() {
@@ -68,7 +76,28 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       padding: { x: 5, y: 2 }
     }).setOrigin(0.5, 0.5);
 
+    tagText.setInteractive({ cursor: 'pointer' });
+    tagText.on('pointerdown', (pointer) => {
+      if (pointer.leftButtonDown()) {
+        this.openProfile();
+      }
+    });
+
     this.nameTagContainer.add(tagText);
+  }
+
+  openProfile() {
+    if (this.scene && this.scene.playerProfileModal) {
+      this.scene.playerProfileModal.show({
+        id: this.id,
+        name: this.name,
+        role: this.role,
+        avatarId: this.avatarId,
+        equippedItemId: this.equippedItemId,
+        x: this.x,
+        y: this.y
+      });
+    }
   }
 
   createEquippedItemDisplay() {

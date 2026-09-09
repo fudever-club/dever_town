@@ -57,6 +57,20 @@ export const ACHIEVEMENTS_DEFINITIONS = {
     desc: 'Khám phá Bản Đồ Campus hoặc Cổng Học Vụ & Phần Mềm Thi FPTU',
     icon: '🏛️',
     rewardPoints: 25
+  },
+  bestie_streak_3: {
+    id: 'bestie_streak_3',
+    title: 'Lửa Tình Bạn 🔥',
+    desc: 'Đạt chuỗi Streak 3 ngày liên tiếp với bạn bè và ấp nở thú cưng',
+    icon: '🔥',
+    rewardPoints: 40
+  },
+  metaverse_friends_3: {
+    id: 'metaverse_friends_3',
+    title: 'Cộng Đồng Gắn Kết 🤝',
+    desc: 'Kết bạn với ít nhất 3 thành viên trong DEVER TOWN',
+    icon: '🤝',
+    rewardPoints: 35
   }
 };
 

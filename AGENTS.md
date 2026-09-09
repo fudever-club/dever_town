@@ -21,10 +21,11 @@
   `--author="qnhat1504 <dangquangnhat1504@gmail.com>"` (hoặc `--author="RaH11 <hungnguyen.190206@gmail.com>"`)
 
 
-## 5. Anti-AI-Slop & Impeccable UI Rule (Chống Lạm Dụng Emoji & Văn Phong AI Slop)
-- Tuyệt đối không lạm dụng emoji tràn lan ở tiêu đề, nút bấm (CTA), thông báo hệ thống hoặc nội dung email.
-- Emoji chỉ được dùng có chọn lọc ở những nơi thực sự cần biểu thị trực quan (như icon vật phẩm túi đồ, avatar, danh sách phòng).
-- Mọi nút bấm, thông báo lỗi/thành công và email bảo mật phải dùng văn phong tinh gọn, trang nhã, chuẩn mực kỹ thuật và chuyên nghiệp.
+## 5. Strict Emoji Control & Anti-AI-Slop Protocol (Quy Chuẩn Kiểm Soát Emoji & Văn Phong Game)
+- **Tỷ lệ sử dụng Emoji (Strict 10 - 20% Budget)**: Cả game chỉ dùng tối đa **10 – 20%** emoji cho những vị trí thực sự cần thiết để minh họa gameplay và gamification (như ngọn lửa Bestie Streak `🔥`, linh thú Buggy các cấp `🥚`, `🐞`, `⚡`, `👑`, biểu cảm emote trong chat).
+- **CẤM gắn Emoji vào tên Event / Zone khi bấm [E]**: Mọi nhãn lơ lửng trên đầu vật thể, tooltip gợi ý phím `[E]`, tiêu đề khu vực tương tác tuyệt đối 100% không dùng emoji (BẮT BUỘC: `Slide CLB`, `Bàn Hackathon Đội Alpha`, `Linh Vật Cóc Vàng FUDA`...; CẤM: `📊 Slide CLB`, `💻 Bàn Hackathon`...).
+- **CẤM rải Emoji vào Nút bấm (Buttons) & Tabs**: Mọi nút bấm (CTA) và tab chuyển đổi phải dùng text thuần túy, sạch sẽ (BẮT BUỘC: `Gửi Lời Mời Kết Bạn`, `Đồng Ý Kết Bạn`, `Từ Chối`, `Nhắn Tin`, `Tải Game`...; CẤM: `<span>🤝</span> Kết Bạn`, `<span>✅</span> Đồng Ý`...).
+- **CẤM rải Emoji vào Thông báo hệ thống (Toast & Console Logs)**: Thông báo popup và log hệ thống phải dùng văn phong tinh gọn, chuyên nghiệp theo chuẩn kỹ thuật (`[Error]`, `[Warning]`, `[Info]`), không chèn emoji đầu dòng.
 
 ## Agent skills
 
