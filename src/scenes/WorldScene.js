@@ -23,7 +23,9 @@ import {
   DailyGoalHUD,
   PlayerProfileModal,
   FriendRequestModal,
-  FriendsListModal
+  FriendsListModal,
+  AvatarSelectorModal,
+  UNLOCKABLE_AVATARS
 } from '../ui/index.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -766,7 +768,62 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
+    // 17. Modal Đổi Avatar Cá Nhân & Mở Khóa (Avatar Selector Modal)
+    this.avatarSelectorModal = new AvatarSelectorModal({
+      onAvatarChanged: (avatarData) => {
+        const avatarWrap = document.getElementById('header-user-avatar-wrap');
+        if (avatarWrap) {
+          if (avatarData.customUrl) {
+            avatarWrap.innerHTML = `<img src="${avatarData.customUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+          } else {
+            const item = UNLOCKABLE_AVATARS.find(a => a.id === avatarData.avatarId);
+            avatarWrap.innerHTML = `<span>${item?.icon || '🧑‍💻'}</span>`;
+          }
+        }
+
+        if (this.player) {
+          this.player.avatarId = avatarData.avatarId;
+          this.player.customAvatarUrl = avatarData.customUrl;
+        }
+
+        if (this.socketManager && this.socketManager.socket && this.socketManager.socket.connected) {
+          this.socketManager.socket.emit('updateProfile', {
+            avatarId: avatarData.avatarId,
+            customAvatarUrl: avatarData.customUrl
+          });
+        }
+      }
+    });
+
     // 7. Header Buttons
+    const avatarBtn = document.getElementById('header-avatar-btn');
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', () => {
+        this.avatarSelectorModal.toggle();
+      });
+    }
+
+    const userBadge = document.getElementById('header-user-badge');
+    if (userBadge) {
+      userBadge.addEventListener('click', () => {
+        if (this.playerProfileModal) {
+          const customUrl = localStorage.getItem('dever_custom_avatar_url');
+          const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+          const user = authService.getUser();
+          this.playerProfileModal.show({
+            id: 'me',
+            isMe: true,
+            name: user?.display_name || this.player?.name || 'Bạn',
+            role: user?.role || 'dev',
+            avatarId: avatarId,
+            customAvatarUrl: customUrl,
+            wardrobeConfig: this.player?.wardrobeConfig,
+            equippedItemId: this.inventoryManager?.equippedItem?.id
+          });
+        }
+      });
+    }
+
     const invBtn = document.getElementById('header-inventory-btn');
     if (invBtn) {
       invBtn.addEventListener('click', () => {
@@ -828,7 +885,22 @@ export class WorldScene extends Phaser.Scene {
     if (authBtn) {
       authBtn.addEventListener('click', () => {
         if (authService.isLoggedIn()) {
-          this.authModal.show('profile');
+          // Bấm vào Hồ Sơ ở header mở ngay Player Profile với hoạt ảnh 360 độ
+          if (this.playerProfileModal) {
+            const customUrl = localStorage.getItem('dever_custom_avatar_url');
+            const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+            const user = authService.getUser();
+            this.playerProfileModal.show({
+              id: 'me',
+              isMe: true,
+              name: user?.display_name || this.player?.name || 'Bạn',
+              role: user?.role || 'dev',
+              avatarId: avatarId,
+              customAvatarUrl: customUrl,
+              wardrobeConfig: this.player?.wardrobeConfig,
+              equippedItemId: this.inventoryManager?.equippedItem?.id
+            });
+          }
         } else {
           this.authModal.show('login');
         }
@@ -940,6 +1012,19 @@ export class WorldScene extends Phaser.Scene {
       }
       if (authBtnText) authBtnText.textContent = 'Đăng Nhập';
       if (logoutBtn) logoutBtn.classList.add('hidden');
+    }
+
+    // Cập nhật Avatar trên header badge
+    const avatarWrap = document.getElementById('header-user-avatar-wrap');
+    if (avatarWrap) {
+      const customUrl = localStorage.getItem('dever_custom_avatar_url');
+      const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+      if (customUrl) {
+        avatarWrap.innerHTML = `<img src="${customUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+      } else {
+        const item = UNLOCKABLE_AVATARS.find(a => a.id === avatarId);
+        avatarWrap.innerHTML = `<span>${item?.icon || '🧑‍💻'}</span>`;
+      }
     }
   }
 

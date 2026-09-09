@@ -60,7 +60,7 @@ export class FriendsListModal {
               autocomplete="off"
             />
           </div>
-          <button type="button" id="friends-send-req-btn" class="modal-btn btn-send-friend-req">Gửi Lời Mời</button>
+          <button type="button" id="friends-send-req-btn" class="btn-send-friend-req">Gửi Lời Mời</button>
         </div>
 
         <!-- Tabs Navigation -->
@@ -101,6 +101,15 @@ export class FriendsListModal {
   }
 
   bindEvents() {
+    // Ngăn chặn sự kiện phím lan ra canvas khi đang gõ tìm kiếm / nhập ID
+    const inputs = this.modalEl.querySelectorAll('input');
+    inputs.forEach(input => {
+      const stopProp = (e) => e.stopPropagation();
+      input.addEventListener('keydown', stopProp);
+      input.addEventListener('keyup', stopProp);
+      input.addEventListener('keypress', stopProp);
+    });
+
     // Nút đóng modal
     const closeBtn = this.modalEl.querySelector('#friends-modal-close-btn');
     if (closeBtn) {
