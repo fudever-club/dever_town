@@ -30,4 +30,6 @@ export { MinimapOverlay } from './common/MinimapOverlay.js';
 export { RoomBanner } from './common/RoomBanner.js';
 export { EmoteBar } from './common/EmoteBar.js';
 export { DailyGoalHUD } from './common/DailyGoalHUD.js';
+export { PlayerProfileModal } from './gameplay/PlayerProfileModal.js';
+
 

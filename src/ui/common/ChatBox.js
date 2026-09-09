@@ -1,3 +1,5 @@
+import { friendManager } from '../../managers/FriendManager.js';
+
 export class ChatBox {
   /**
    * @param {Object} options
@@ -201,6 +203,13 @@ export class ChatBox {
     }
   }
 
+  whisperTo(name) {
+    if (!this.chatInput) return;
+    this.openMobileChat();
+    this.chatInput.value = `@${name} `;
+    this.chatInput.focus();
+  }
+
   handleSend() {
     if (!this.chatInput) return;
     const raw = this.chatInput.value || '';
@@ -210,6 +219,15 @@ export class ChatBox {
       if (this.onSendMessage) {
         this.onSendMessage(text);
       }
+
+      // Kiểm tra nếu tin nhắn gửi đến bạn bè (@Tên), tự động duy trì chuỗi Bestie Streak
+      if (text.startsWith('@')) {
+        const targetName = text.substring(1).split(' ')[0];
+        if (targetName && friendManager.isFriend(targetName)) {
+          friendManager.recordInteraction(targetName);
+        }
+      }
+
       this.chatInput.value = '';
     }
   }
@@ -217,7 +235,7 @@ export class ChatBox {
   /**
    * Thêm tin nhắn mới vào danh sách chat
    */
-  addMessage({ senderName, message, role = 'guest', timestamp = null, isSelf = false }) {
+  addMessage({ senderId, senderName, message, role = 'guest', timestamp = null, isSelf = false }) {
     if (!this.chatMessages) return;
 
     const normalizedMsg = (message || '').normalize('NFC');
@@ -234,6 +252,28 @@ export class ChatBox {
     const authorSpan = document.createElement('span');
     authorSpan.className = 'chat-author';
     authorSpan.textContent = (senderName || 'Anonymous').normalize('NFC');
+
+    // Bấm vào tên người chơi khác để xem Hồ sơ & Kết bạn
+    if (!isSelf) {
+      authorSpan.classList.add('chat-author-clickable');
+      authorSpan.title = 'Bấm để xem hồ sơ và kết bạn';
+      authorSpan.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const worldScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+        if (worldScene && worldScene.playerProfileModal) {
+          worldScene.playerProfileModal.show({
+            id: senderId || senderName,
+            name: senderName,
+            role: role
+          });
+        }
+      });
+
+      // Tự động ghi nhận tương tác nếu người nhắn là bạn bè trong cùng phòng
+      if (friendManager.isFriend(senderName)) {
+        friendManager.recordInteraction(senderName);
+      }
+    }
 
     const timeSpan = document.createElement('span');
     timeSpan.className = 'chat-time';
