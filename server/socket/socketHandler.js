@@ -326,6 +326,56 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 4b. Xử lý Chat Riêng 1-1 Bạn Bè (Direct Private Message)
+     */
+    socket.on('sendPrivateMessage', ({ targetSocketId, targetName, message }) => {
+      const sender = playerManager.getPlayer(socket.id);
+      if (!sender) return;
+
+      const rawMsg = message || '';
+      const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
+      if (!cleanMsg) return;
+
+      let targetPlayer = null;
+      let targetSocket = null;
+
+      if (targetSocketId) {
+        targetSocket = io.sockets.sockets.get(targetSocketId);
+        targetPlayer = playerManager.getPlayer(targetSocketId);
+      }
+
+      if (!targetSocket && targetName) {
+        targetPlayer = playerManager.findPlayerByName(targetName);
+        if (targetPlayer) {
+          targetSocket = io.sockets.sockets.get(targetPlayer.id);
+        }
+      }
+
+      const timestamp = Date.now();
+      const privatePayload = {
+        senderId: socket.id,
+        senderName: sender.name,
+        senderRole: sender.role,
+        senderAvatarId: sender.avatarId,
+        targetId: targetPlayer ? targetPlayer.id : targetSocketId,
+        targetName: targetPlayer ? targetPlayer.name : targetName,
+        message: cleanMsg,
+        timestamp
+      };
+
+      if (targetSocket && targetSocket.connected) {
+        console.log(`🔒 [PrivateChat] ${sender.name} ➔ ${targetPlayer.name}: ${cleanMsg}`);
+        targetSocket.emit('newPrivateMessage', privatePayload);
+        socket.emit('privateMessageSent', privatePayload);
+      } else {
+        socket.emit('privateMessageFailed', {
+          targetName: targetName || (targetPlayer ? targetPlayer.name : 'Người chơi'),
+          message: 'Người chơi hiện không trực tuyến hoặc đã rời thế giới.'
+        });
+      }
+    });
+
+    /**
      * 5. Trang bị / Cầm tay vật phẩm
      */
     socket.on('equipItem', ({ itemId }) => {

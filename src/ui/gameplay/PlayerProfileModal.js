@@ -1,9 +1,11 @@
 /**
- * PlayerProfileModal: Modal xem hồ sơ người chơi khác, kết bạn, theo dõi thời gian kết bạn,
- * chuỗi Bestie Streak và thú cưng Buggy đồng hành.
+ * PlayerProfileModal: Modal xem hồ sơ người chơi khác, kết bạn, xem trang phục, kỉ lục minigame,
+ * thời gian kết bạn, chuỗi Bestie Streak và thú cưng Buggy đồng hành.
+ * Tuyệt đối không hiển thị email, mật khẩu hay thông tin nhạy cảm.
  */
 import { friendManager } from '../../managers/FriendManager.js';
 import { audioManager } from '../../utils/AudioManager.js';
+import { ITEMS_DATABASE } from '../../config/items.js';
 
 export class PlayerProfileModal {
   constructor({ onWhisper, onTeleportTo } = {}) {
@@ -39,7 +41,7 @@ export class PlayerProfileModal {
           </div>
         </div>
 
-        <!-- Dynamic Friendship & Streak Container -->
+        <!-- Dynamic Profile Details (Trang Phục, Kỉ Lục, Bestie Streak) -->
         <div id="profile-friendship-body" class="profile-friendship-container">
           <!-- Rendered dynamically -->
         </div>
@@ -76,6 +78,24 @@ export class PlayerProfileModal {
         this.renderFriendshipContent();
       }
     });
+  }
+
+  getOutfitName(avatarId) {
+    const map = {
+      dev_hoodie: 'Áo Hoodie Dev FPTU Cam',
+      polo_white: 'Áo Polo FPTU Trắng Lịch Lãm',
+      cyber_punk: 'Trang Phục Cyberpunk Coder',
+      event_tee: 'Áo Thun Sự Kiện Hackathon FU-DEVER',
+      tech_suit: 'Bộ Suit Công Nghệ Cao Cấp',
+      academic_robe: 'Áo Cử Nhân Tốt Nghiệp FUDA',
+      sport_jersey: 'Áo Thể Thao CLB Năng Động'
+    };
+    return map[avatarId] || 'Đồng Phục Coder FU-DEVER';
+  }
+
+  getEquippedItemInfo(itemId) {
+    if (!itemId) return null;
+    return ITEMS_DATABASE[itemId] || null;
   }
 
   show(playerData) {
@@ -122,16 +142,75 @@ export class PlayerProfileModal {
     const isFriend = !!friend;
     const isPending = friendManager.isPending(this.currentPlayer.id) || friendManager.isPending(this.currentPlayer.name);
 
+    // Trang phục & Vật phẩm cầm tay
+    const avatarId = this.currentPlayer.avatarId || friend?.avatarId || 'dev_hoodie';
+    const outfitName = this.getOutfitName(avatarId);
+    const equippedId = this.currentPlayer.equippedItemId || friend?.equippedItemId || null;
+    const equippedItem = this.getEquippedItemInfo(equippedId);
+
+    // Kỉ lục minigame (dữ liệu mô phỏng / local records)
+    const snakeHigh = localStorage.getItem('dever_snake_high') || '85';
+    const bballHigh = localStorage.getItem('dever_bball_high') || '14';
+    const penaltyHigh = localStorage.getItem('dever_penalty_high') || '4';
+
+    const wardrobeHtml = `
+      <!-- Wardrobe & Gear Section -->
+      <div class="profile-section-card profile-wardrobe-card">
+        <div class="profile-section-header">
+          <span class="section-title-label">Trang Phục & Vật Phẩm</span>
+        </div>
+        <div class="profile-wardrobe-grid">
+          <div class="profile-gear-item">
+            <span class="gear-label">Bộ Trang Phục:</span>
+            <strong class="gear-value">${outfitName}</strong>
+          </div>
+          <div class="profile-gear-item">
+            <span class="gear-label">Vật Phẩm Cầm Tay:</span>
+            <strong class="gear-value ${equippedItem ? 'highlight' : ''}">
+              ${equippedItem ? `${equippedItem.icon} ${equippedItem.name}` : 'Không cầm vật phẩm'}
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Minigame Records Section (Không hiển thị gmail / password) -->
+      <div class="profile-section-card profile-records-card">
+        <div class="profile-section-header">
+          <span class="section-title-label">Kỉ Lục & Hoạt Động Metaverse</span>
+        </div>
+        <div class="profile-records-grid">
+          <div class="record-stat-box">
+            <span class="record-num">${snakeHigh}</span>
+            <span class="record-label">Rắn Săn Mồi</span>
+          </div>
+          <div class="record-stat-box">
+            <span class="record-num">${bballHigh}</span>
+            <span class="record-label">Ném Bóng Rổ</span>
+          </div>
+          <div class="record-stat-box">
+            <span class="record-num">${penaltyHigh}</span>
+            <span class="record-label">Sút Penalty</span>
+          </div>
+          <div class="record-stat-box">
+            <span class="record-num">Active</span>
+            <span class="record-label">Trạng Thái</span>
+          </div>
+        </div>
+      </div>
+    `;
+
     if (!isFriend) {
       // 1. Chưa là bạn bè
       bodyEl.innerHTML = `
+        ${wardrobeHtml}
+
         <div class="profile-not-friend-box">
           <div class="not-friend-icon">DEVER</div>
           <h4 class="not-friend-title">${isPending ? 'Đang chờ phản hồi...' : 'Chưa kết bạn'}</h4>
           <p class="not-friend-desc">
             ${isPending
               ? 'Lời mời kết bạn đã được gửi tới người này. Hãy đợi đối phương chọn Đồng Ý nhé!'
-              : 'Gửi lời mời kết bạn để cùng trò chuyện, xây dựng chuỗi Bestie Streak 🔥 mỗi ngày và ấp nở Thú cưng Buggy đồng hành!'}
+              : 'Gửi lời mời kết bạn để cùng trò chuyện riêng, xây dựng chuỗi Bestie Streak 🔥 mỗi ngày và ấp nở Thú cưng Buggy đồng hành!'}
           </p>
         </div>
       `;
@@ -159,7 +238,6 @@ export class PlayerProfileModal {
             audioManager.playClick();
             this.renderFriendshipContent();
           } else {
-            // Không có kết nối Socket: nhắc người chơi
             if (worldScene && worldScene.showToast) {
               worldScene.showToast('Bạn cần kết nối mạng để gửi lời mời kết bạn!');
             } else {
@@ -174,7 +252,6 @@ export class PlayerProfileModal {
       const streak = friend.streak || 1;
       const pet = friendManager.getPetInfo(streak);
 
-      // Tính tiến trình thú cưng
       let progressPercent = 100;
       let progressLabel = 'Đạt cấp độ tối thượng';
       if (pet.level === 1) {
@@ -189,6 +266,8 @@ export class PlayerProfileModal {
       }
 
       bodyEl.innerHTML = `
+        ${wardrobeHtml}
+
         <div class="profile-friend-stats-card">
           <div class="friend-duration-row">
             <span class="duration-badge">${durationText}</span>
@@ -222,7 +301,6 @@ export class PlayerProfileModal {
               </div>
             </div>
 
-            <!-- Pet Evolution Progress Bar -->
             <div class="pet-progress-wrapper">
               <div class="pet-progress-bar">
                 <div class="pet-progress-fill" style="width: ${progressPercent}%"></div>
@@ -270,12 +348,8 @@ export class PlayerProfileModal {
         if (this.onWhisper) {
           this.onWhisper(this.currentPlayer);
         }
-        // Khi nhắn tin, tự động ghi nhận tương tác duy trì Streak!
         if (isFriend) {
-          const result = friendManager.recordInteraction(this.currentPlayer.id || this.currentPlayer.name);
-          if (result && result.streakIncreased) {
-            console.log(`🔥 [Bestie Streak] Chuỗi bạn thân với ${this.currentPlayer.name} tăng lên ${result.currentStreak} ngày!`);
-          }
+          friendManager.recordInteraction(this.currentPlayer.id || this.currentPlayer.name);
         }
         this.hide();
       });

@@ -220,6 +220,24 @@ export class SocketManager {
         this.scene.handleFriendRequestFailed(data);
       }
     });
+
+    this.socket.on('newPrivateMessage', (data) => {
+      if (this.scene && this.scene.handleNewPrivateMessage) {
+        this.scene.handleNewPrivateMessage(data);
+      }
+    });
+
+    this.socket.on('privateMessageSent', (data) => {
+      if (this.scene && this.scene.handlePrivateMessageSent) {
+        this.scene.handlePrivateMessageSent(data);
+      }
+    });
+
+    this.socket.on('privateMessageFailed', (data) => {
+      if (this.scene && this.scene.handlePrivateMessageFailed) {
+        this.scene.handlePrivateMessageFailed(data);
+      }
+    });
   }
 
   join(options = {}) {
@@ -301,6 +319,11 @@ export class SocketManager {
   respondFriendRequest({ fromSocketId, accepted }) {
     if (!this.socket || !this.isConnected) return;
     this.socket.emit('respondFriendRequest', { fromSocketId, accepted });
+  }
+
+  sendPrivateMessage({ targetSocketId, targetName, message }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('sendPrivateMessage', { targetSocketId, targetName, message });
   }
 
   updateConnectionStatus(online) {
