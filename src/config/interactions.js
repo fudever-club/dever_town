@@ -211,32 +211,81 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       {
         id: 'founding',
         title: 'Hành Trình 9+ Năm Phát Triển FU-DEVER',
-        date: 'Từ Năm 2017 - Nay',
+        date: 'Từ 27/10/2017 – Nay',
         tag: 'Cột mốc lịch sử',
-        accentColor: '#0066CC',
-        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FUDA, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với hơn 50+ thành viên năng động, 15+ dự án thực chiến và 20+ giải thưởng danh giá.'
+        icon: '🏛️',
+        accentColor: '#00B2FF',
+        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại ĐH FPT Đà Nẵng, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với 4 phân ban chuyên môn (Web, AI, Mobile, Game), hàng chục dự án thực chiến và bảng vàng thành tích rực rỡ.'
       },
       {
         id: 'hackathon',
-        title: '20+ Giải Thưởng ICPC & Hackathon Toàn Quốc',
-        date: '2020 - 2026',
-        tag: 'Bảng vàng vinh danh',
+        title: '🥇 Quán Quân FPT Hackathon Đà Nẵng – Team NEUROSHIP',
+        date: '2024',
+        tag: 'Vô địch Hackathon',
+        icon: '🥇',
+        accentColor: '#fbbf24',
+        story: 'Xuất sắc vượt qua hàng chục đội thi công nghệ tài năng, Team NEUROSHIP đại diện cho CLB FU-DEVER đã giành ngôi vị Quán quân Bảng A khu vực Đà Nẵng tại đấu trường lập trình danh giá FPT Hackathon.'
+      },
+      {
+        id: 'game_craft_doclap',
+        title: '🎮🏆 Quán Quân Game Craft Arena 2025 – Đội Game ĐỘC LẬP',
+        date: '2025',
+        tag: 'Vô địch Game Dev',
+        icon: '🎮',
         accentColor: '#f26f21',
-        story: 'Các thế hệ thành viên FU-DEVER liên tục ghi danh tại các kỳ thi Lập trình sinh viên Quốc tế ICPC, FPT Edu Hackathon, FPT Edu ResFes với những giải pháp công nghệ xuất sắc về AI, Web3 và Hệ thống phân tán.'
+        story: 'Sau hơn 1 tháng tranh tài gay cấn tại cuộc thi lập trình game Game Craft Arena 2025 do FPT Đà Nẵng tổ chức, đội thi ĐỘC LẬP thuộc phân ban Game Dev của FU-DEVER đã xuất sắc nâng cao cúp vô địch.'
+      },
+      {
+        id: 'devfest_ai',
+        title: '🥈 Á Quân 1 DEVFEST AI Hackathon 2023 Miền Trung',
+        date: '2023',
+        tag: 'Á quân Miền Trung',
+        icon: '🥈',
+        accentColor: '#38bdf8',
+        story: 'Đội tuyển CLB Lập trình FU-DEVER xuất sắc vượt qua các vòng code hackathon xuyên đêm để giành danh hiệu Á Quân 1 trong cuộc thi "DEVFEST - AI HACKATHON 2023" khu vực Miền Trung.'
+      },
+      {
+        id: 'codemosaic',
+        title: '⚡ Chung Kết CodeMosaic 2025 – DeverLastHope K20',
+        date: '2025',
+        tag: 'Chung kết thuật toán',
+        icon: '⚡',
+        accentColor: '#c084fc',
+        story: 'Tại Chung kết CodeMosaic 2025, sau 4 tiếng thi đấu thuật toán căng thẳng và kịch tính, đội DeverLastHope K20 đã thi đấu kiên cường và mang về niềm tự hào lớn cho đại gia đình FU-DEVER.'
       },
       {
         id: 'resconnect_2026',
-        title: 'Giải Khuyến Khích ResConnect 2026 ➔ Chung Kết ResFes 2026 Cần Thơ',
+        title: '🎖️ Giải Khuyến Khích ResConnect 2026 & FPT Edu ResFes 2026',
         date: '2026',
         tag: 'NCKH & AI Model',
+        icon: '🎖️',
+        accentColor: '#10b981',
+        story: 'Team Absolutely Inefficient (AI) của FU-DEVER xuất sắc giành trọn cú đúp Giải Khuyến khích tại cả Hội thảo Khoa học Sinh viên ResConnect 2026 và Chung kết Toàn quốc FPT Edu ResFes 2026 với đề tài nghiên cứu chuyên sâu về mô hình AI "Low-Light Image Enhancement Under Challenging Environments".'
+      },
+      {
+        id: 'shecodes',
+        title: '🏅 Giải Thưởng Sáng Tạo SHECODES – SPOIL TEAM',
+        date: '2023 - 2024',
+        tag: 'Nữ sinh công nghệ',
+        icon: '🏅',
+        accentColor: '#f472b6',
+        story: 'Tại cuộc thi phát triển sản phẩm công nghệ dành cho phái nữ SHECODES, SPOIL TEAM của FU-DEVER đã tỏa sáng rực rỡ với giải pháp sáng tạo, khẳng định bản lĩnh của các nữ kỹ sư phần mềm DEVER.'
+      },
+      {
+        id: 'coc_vang',
+        title: '🐸🌟 Vinh Danh Cóc Vàng FUDA – Sinh Viên Tiêu Biểu',
+        date: 'Thường niên mỗi kỳ',
+        tag: 'Vinh danh cá nhân',
+        icon: '🐸',
         accentColor: '#eab308',
-        story: 'Đội thi "Absolutely Inefficient" xuất sắc giành Giải Khuyến khích tại Hội thảo Khoa học Sinh viên ResConnect 2026 với đề tài "Low-Light Image Enhancement Under Challenging Environments", chính thức giành vé vào Chung Kết Toàn Quốc FPT Edu ResFes 2026 tại Cần Thơ.'
+        story: 'Vinh danh các thành viên CLB FU-DEVER đã nỗ lực không ngừng nghỉ và chạm tay tới danh hiệu Cóc Vàng danh giá — phần thưởng học thuật và phong trào cao quý nhất của Đại học FPT Đà Nẵng.'
       },
       {
         id: 'teambuilding',
         title: 'Work Hard - Play Hard: Teambuilding Gắn Kết',
         date: 'Hàng Năm',
         tag: 'Văn hóa CLB',
+        icon: '🏕️',
         accentColor: '#10b981',
         story: 'Bên cạnh những giờ code căng thẳng, FU-DEVER luôn duy trì tinh thần Work Hard - Play Hard với các chuyến dã ngoại Sơn Trà, cắm trại biển Đà Nẵng và các buổi sinh hoạt giao lưu gắn kết các thế hệ.'
       },
@@ -245,6 +294,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
         title: 'Chuỗi Workshop Tech Talk: 2D Game, Web App & AI',
         date: 'Định kỳ hàng tháng',
         tag: 'Học thuật & Đào tạo',
+        icon: '💻',
         accentColor: '#8b5cf6',
         story: 'Tổ chức các buổi chia sẻ chuyên sâu về 4 trụ cột công nghệ: 2D Game Engine (Phaser), Web/Mobile Application (Next.js, Flutter) và Mô hình Trí tuệ Nhân tạo (Machine Learning/LLMs) cho sinh viên toàn trường.'
       }
@@ -636,8 +686,8 @@ export const ROOM_SLIDE_PRESETS = [
               <span style="color:#cbd5e1">4h thi thuật toán · Team DeverLastHope K20</span>
             </div>
             <div style="background:rgba(16,185,129,0.09);border-left:3px solid #10b981;padding:8px 10px;border-radius:0 8px 8px 0">
-              <strong style="color:#10b981">🎖️ Giải NCKH ResConnect 2026:</strong><br/>
-              <span style="color:#cbd5e1">Giải Khuyến khích · Team Absolutely Inefficient</span>
+              <strong style="color:#10b981">🎖️ ResConnect & ResFes 2026:</strong><br/>
+              <span style="color:#cbd5e1">Giải Khuyến khích NCKH & Toàn quốc · Team AI</span>
             </div>
             <div style="background:rgba(244,114,182,0.09);border-left:3px solid #f472b6;padding:8px 10px;border-radius:0 8px 8px 0">
               <strong style="color:#f472b6">🏅 Giải Thưởng SHECODES Tech:</strong><br/>
@@ -1176,7 +1226,7 @@ export const ROOM_SLIDE_PRESETS = [
           <div style="display:grid;gap:8px;font-size:0.85rem">
             ${[
               {award:'⚡ Chung Kết CodeMosaic 2025','team':'Đội DeverLastHope K20 · Đấu thuật toán 4h','year':'Chung kết','color':'#c084fc'},
-              {award:'🎖️ Nghiên Cứu Khoa Học ResConnect 2026','team':'Team Absolutely Inefficient (AI) · Khuyến khích','year':'ResConnect','color':'#10b981'},
+              {award:'🎖️ ResConnect 2026 & FPT Edu ResFes 2026','team':'Team Absolutely Inefficient (AI) · Cú đúp Giải Khuyến khích','year':'ResFes 2026','color':'#10b981'},
               {award:'🏅 Giải Thưởng Sáng Tạo SHECODES','team':'SPOIL TEAM · Sản phẩm công nghệ nữ sinh','year':'SheCodes','color':'#f472b6'},
               {award:'🐸 Danh Hiệu Cóc Vàng FUDA','team':'Thành viên tiêu biểu CLB qua các học kỳ','year':'Danh hiệu','color':'#fbbf24'}
             ].map(r => `
