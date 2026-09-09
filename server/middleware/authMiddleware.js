@@ -1,8 +1,18 @@
 import jwt from 'jsonwebtoken';
 import { getDB } from '../db/index.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dever_town_super_secret_jwt_key_2026';
+let JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
+
+if (!JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('[FATAL] JWT_SECRET environment variable bắt buộc phải set trong môi trường Production!');
+    process.exit(1);
+  } else {
+    JWT_SECRET = 'dever_town_dev_secret_key_2026_super_secure_development_only';
+    console.warn('[AUTH WARNING] JWT_SECRET chưa được set trong .env. Đang dùng development secret fallback.');
+  }
+}
 
 /**
  * Loại bỏ trường password_hash trước khi trả về client

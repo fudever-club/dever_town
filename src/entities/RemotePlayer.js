@@ -105,6 +105,11 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       this.equippedContainer.destroy();
       this.equippedContainer = null;
     }
+    // Stop tween cũ trước khi tạo mới — tránh tích lũy repeat:-1 tweens
+    if (this._equippedTween) {
+      this._equippedTween.stop();
+      this._equippedTween = null;
+    }
 
     if (!this.equippedItemId || !ITEMS_DATABASE[this.equippedItemId]) return;
 
@@ -124,7 +129,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
 
     this.equippedContainer.add([bgGfx, icon]);
 
-    this.scene.tweens.add({
+    this._equippedTween = this.scene.tweens.add({
       targets: this.equippedContainer,
       y: this.y - 12,
       duration: 800,
@@ -133,6 +138,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       ease: 'Sine.easeInOut'
     });
   }
+
 
   setEquippedItem(itemId) {
     this.equippedItemId = itemId;
@@ -366,6 +372,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.equippedContainer) {
       this.equippedContainer.destroy();
     }
+    if (this._equippedTween) {
+      this._equippedTween.stop();
+      this._equippedTween = null;
+    }
     if (this.emoteContainer) {
       this.emoteContainer.destroy();
       this.emoteContainer = null;
@@ -375,4 +385,5 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     }
     super.destroy(fromScene);
   }
+
 }

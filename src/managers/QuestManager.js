@@ -389,7 +389,12 @@ export class QuestManager {
     toast.className = 'quest-toast-banner';
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
-    toast.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
+    const toastDot = document.createElement('span');
+    toastDot.className = 'toast-dot';
+    const toastMsg = document.createElement('span');
+    toastMsg.textContent = message;
+    toast.appendChild(toastDot);
+    toast.appendChild(toastMsg);
     document.body.appendChild(toast);
 
     setTimeout(() => {

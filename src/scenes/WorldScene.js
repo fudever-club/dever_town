@@ -40,6 +40,7 @@ import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
+import { TilePool } from '../utils/TilePool.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -49,6 +50,7 @@ export class WorldScene extends Phaser.Scene {
     this.isTeleporting = false;
     this.lastTeleportTime = 0;
     this.teleportGraceUntil = 0;
+    this.tilePool = null;
     this.tileSprites = [];
     this.portalLabels = [];
     this.audioManager = audioManager;
@@ -60,6 +62,7 @@ export class WorldScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
 
     // 0. Khởi tạo Juice, Môi trường hạt & Thành tựu
+    this.tilePool = new TilePool(this, 550);
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
@@ -141,10 +144,11 @@ export class WorldScene extends Phaser.Scene {
 
     this.updateCameraZoom();
 
-    window.addEventListener('resize', () => this.updateCameraZoom());
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => this.updateCameraZoom(), 150);
-    });
+    // Dùng named reference để có thể removeEventListener trong shutdown()
+    this._resizeHandler = () => this.updateCameraZoom();
+    this._orientationHandler = () => setTimeout(() => this.updateCameraZoom(), 150);
+    window.addEventListener('resize', this._resizeHandler);
+    window.addEventListener('orientationchange', this._orientationHandler);
 
     // 5. HUD & Network
     this.createHUD();
@@ -352,7 +356,9 @@ export class WorldScene extends Phaser.Scene {
       this.hudText.setText(`DEVER TOWN | ${roomName}`);
     }
 
-    if (this.tileSprites && this.tileSprites.length > 0) {
+    if (this.tilePool) {
+      this.tilePool.releaseAll();
+    } else if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
       this.tileSprites = [];
     }
@@ -388,9 +394,13 @@ export class WorldScene extends Phaser.Scene {
         const posX = c * tileSize + tileSize / 2;
         const posY = r * tileSize + tileSize / 2;
 
-        const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
-        tileSprite.setDepth(0);
-        this.tileSprites.push(tileSprite);
+        if (this.tilePool) {
+          this.tilePool.acquire(posX, posY, tileType, 0);
+        } else {
+          const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
+          tileSprite.setDepth(0);
+          this.tileSprites.push(tileSprite);
+        }
 
         if (solidTiles.has(tileType)) {
           const obstacle = this.obstacleGroup.create(posX, posY, 'town_tileset', tileType);
@@ -1183,4 +1193,26 @@ export class WorldScene extends Phaser.Scene {
       this.minimap.render();
     }
   }
+
+  shutdown() {
+    if (this._resizeHandler) {
+      window.removeEventListener('resize', this._resizeHandler);
+      this._resizeHandler = null;
+    }
+    if (this._orientationHandler) {
+      window.removeEventListener('orientationchange', this._orientationHandler);
+      this._orientationHandler = null;
+    }
+
+    if (this.tilePool) {
+      this.tilePool.destroy();
+      this.tilePool = null;
+    }
+
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+  }
 }
+

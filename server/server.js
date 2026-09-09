@@ -13,6 +13,9 @@ import { createRateLimiter } from './middleware/rateLimiter.js';
 const app = express();
 const server = http.createServer(app);
 
+// Kích hoạt trust proxy (an toàn khi chạy sau Nginx / Cloudflare)
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3001;
 
 // 1. Cấu hình CORS & Middlewares Bảo Vệ

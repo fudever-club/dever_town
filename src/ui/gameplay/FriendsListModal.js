@@ -4,6 +4,7 @@
  */
 import { friendManager } from '../../managers/FriendManager.js';
 import { audioManager } from '../../utils/AudioManager.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 export class FriendsListModal {
   /**
@@ -338,7 +339,7 @@ export class FriendsListModal {
           </div>
           <div class="friend-info-col">
             <div class="friend-name-row">
-              <strong class="friend-name">${friend.name}</strong>
+              <strong class="friend-name">${escapeHtml(friend.name)}</strong>
               <span class="friend-role-badge ${friend.role || 'dev'}">
                 ${friend.role === 'admin' ? 'Admin' : friend.role === 'leader' ? 'Leader' : 'Thành Viên CLB'}
               </span>
@@ -430,8 +431,8 @@ export class FriendsListModal {
           </div>
           <div class="friend-info-col">
             <div class="friend-name-row">
-              <strong class="friend-name">${req.fromName}</strong>
-              <span class="friend-role-badge ${req.fromRole || 'guest'}">${req.fromRole || 'Khách'}</span>
+              <strong class="friend-name">${escapeHtml(req.fromName)}</strong>
+              <span class="friend-role-badge ${req.fromRole || 'guest'}">${escapeHtml(req.fromRole || 'Khách')}</span>
             </div>
             <span class="friend-duration-label">Đã gửi lời mời kết bạn tới bạn.</span>
           </div>

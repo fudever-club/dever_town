@@ -8,6 +8,7 @@ import { RetroArcade } from '../minigames/RetroArcade.js';
 import { ROBOT_GAMES } from '../../config/robotGames.js';
 import { authService } from '../../services/AuthService.js';
 import { voiceService } from '../../services/VoiceService.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 export class InteractiveModal {
   /**
@@ -837,8 +838,8 @@ export class InteractiveModal {
         <div class="tile-overlay-bar">
           <div class="tile-name-group">
             <span class="tile-mic-icon" id="mic-${peer.socketId}">${micSvg}</span>
-            <span class="tile-user-name">${peer.name}</span>
-            <span class="tile-role-pill">${(peer.role || 'member').toUpperCase()}</span>
+            <span class="tile-user-name">${escapeHtml(peer.name)}</span>
+            <span class="tile-role-pill">${escapeHtml((peer.role || 'member').toUpperCase())}</span>
           </div>
         </div>
       `;
