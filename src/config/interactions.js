@@ -225,6 +225,14 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
         story: 'Các thế hệ thành viên FU-DEVER liên tục ghi danh tại các kỳ thi Lập trình sinh viên Quốc tế ICPC, FPT Edu Hackathon, FPT Edu ResFes với những giải pháp công nghệ xuất sắc về AI, Web3 và Hệ thống phân tán.'
       },
       {
+        id: 'resconnect_2026',
+        title: 'Giải Khuyến Khích ResConnect 2026 ➔ Chung Kết ResFes 2026 Cần Thơ',
+        date: '2026',
+        tag: 'NCKH & AI Model',
+        accentColor: '#eab308',
+        story: 'Đội thi "Absolutely Inefficient" xuất sắc giành Giải Khuyến khích tại Hội thảo Khoa học Sinh viên ResConnect 2026 với đề tài "Low-Light Image Enhancement Under Challenging Environments", chính thức giành vé vào Chung Kết Toàn Quốc FPT Edu ResFes 2026 tại Cần Thơ.'
+      },
+      {
         id: 'teambuilding',
         title: 'Work Hard - Play Hard: Teambuilding Gắn Kết',
         date: 'Hàng Năm',
@@ -622,6 +630,26 @@ export const ROOM_SLIDE_PRESETS = [
                 <div><strong style="color:#c084fc">${title}</strong><br><span style="color:#94a3b8">${desc}</span></div>
               </div>
             `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0c1a2e 0%,#1e293b 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.3rem;font-weight:800;margin:0 0 14px">⚖️ Quy Chế Học Vụ Sống Còn</h2>
+          <div style="display:grid;gap:8px;font-size:0.86rem">
+            <div style="background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#f87171">Vắng học & Điểm danh:</strong> <span style="color:#cbd5e1">Nghỉ quá 20% thời lượng là trượt môn (F). Khiếu nại điểm danh trong vòng 48h trên FAP.</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.1);border-left:3px solid #38bdf8;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#38bdf8">Điều kiện đi OJT:</strong> <span style="color:#cbd5e1">Phải tích lũy và pass tối thiểu 90% số tín chỉ khung chương trình trước kỳ thực tập.</span>
+            </div>
+            <div style="background:rgba(251,191,36,0.1);border-left:3px solid #fbbf24;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#fbbf24">Môn Coursera (đuôi "c"):</strong> <span style="color:#cbd5e1">Bắt buộc hoàn thành 100% online và thi thẩm định offline tại trường để công nhận điểm.</span>
+            </div>
+            <div style="background:rgba(168,85,247,0.1);border-left:3px solid #a855f7;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#c084fc">Học lại & Xếp loại:</strong> <span style="color:#cbd5e1">Đăng ký sớm được giảm 50% học phí. Học lại >5% tín chỉ bị hạ 1 bậc tốt nghiệp Giỏi/Xuất sắc.</span>
+            </div>
           </div>
         `
       }
