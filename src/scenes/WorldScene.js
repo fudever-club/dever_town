@@ -22,7 +22,8 @@ import {
   SpeedCodeDuel,
   DailyGoalHUD,
   PlayerProfileModal,
-  FriendRequestModal
+  FriendRequestModal,
+  FriendsListModal
 } from '../ui/index.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -247,6 +248,32 @@ export class WorldScene extends Phaser.Scene {
     if (this.playerProfileModal && this.playerProfileModal.isOpen) {
       this.playerProfileModal.renderFriendshipContent();
     }
+  }
+
+  handleNewPrivateMessage(data) {
+    if (this.chatBox) {
+      this.chatBox.addPrivateMessage({
+        senderId: data.senderId,
+        senderName: data.senderName,
+        senderRole: data.senderRole,
+        senderAvatarId: data.senderAvatarId,
+        targetName: data.targetName,
+        message: data.message,
+        timestamp: data.timestamp,
+        isSelf: false
+      });
+    }
+    if (this.audioManager && this.audioManager.playMessage) {
+      this.audioManager.playMessage();
+    }
+  }
+
+  handlePrivateMessageSent(data) {
+    // Delivery confirmed
+  }
+
+  handlePrivateMessageFailed(data) {
+    this.showToast(`${data.targetName}: ${data.message || 'Không thể gửi tin nhắn riêng.'}`);
   }
 
   showToast(message) {
@@ -548,10 +575,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   initUI() {
-    // 1. Chat Box
+    // 1. Chat Box (Kênh Phòng & Bạn Bè Riêng Tư)
     this.chatBox = new ChatBox({
       onSendMessage: (message) => {
         this.socketManager.sendChatMessage(message);
+        questManager.incrementProgress('chat_connect', 1);
+      },
+      onSendPrivateMessage: ({ targetSocketId, targetName, message }) => {
+        this.socketManager.sendPrivateMessage({ targetSocketId, targetName, message });
         questManager.incrementProgress('chat_connect', 1);
       }
     });
@@ -673,7 +704,12 @@ export class WorldScene extends Phaser.Scene {
     this.playerProfileModal = new PlayerProfileModal({
       onWhisper: (p) => {
         if (this.chatBox && p && p.name) {
-          this.chatBox.whisperTo(p.name);
+          const friend = friendManager.getFriend(p.name);
+          if (friend) {
+            this.chatBox.openPrivateChatWith(friend);
+          } else {
+            this.chatBox.openPrivateChatWith({ id: p.id, name: p.name, role: p.role, avatarId: p.avatarId });
+          }
         }
       },
       onTeleportTo: (p) => {
@@ -710,6 +746,26 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
+    // 16. Modal Danh Sách Bạn Bè (Friends List Modal)
+    this.friendsListModal = new FriendsListModal({
+      onViewProfile: (friend) => {
+        if (this.playerProfileModal) {
+          this.playerProfileModal.show({
+            id: friend.id,
+            name: friend.name,
+            role: friend.role,
+            avatarId: friend.avatarId,
+            equippedItemId: friend.equippedItemId
+          });
+        }
+      },
+      onChatWith: (friend) => {
+        if (this.chatBox) {
+          this.chatBox.openPrivateChatWith(friend);
+        }
+      }
+    });
+
     // 7. Header Buttons
     const invBtn = document.getElementById('header-inventory-btn');
     if (invBtn) {
@@ -722,6 +778,13 @@ export class WorldScene extends Phaser.Scene {
     if (wardrobeBtn) {
       wardrobeBtn.addEventListener('click', () => {
         this.wardrobeModal.show();
+      });
+    }
+
+    const friendsBtn = document.getElementById('header-friends-btn');
+    if (friendsBtn) {
+      friendsBtn.addEventListener('click', () => {
+        this.friendsListModal.toggle();
       });
     }
 

@@ -95,6 +95,12 @@ export class InventoryModal {
     const gridEl = document.getElementById('inventory-grid');
     if (!gridEl) return;
 
+    const totalDbItems = Object.keys(ITEMS_DATABASE).length;
+    const titleEl = document.querySelector('.inventory-left-panel .panel-section-title');
+    if (titleEl) {
+      titleEl.textContent = `Kho Vật Phẩm (${totalDbItems} Items)`;
+    }
+
     gridEl.innerHTML = '';
     const userItems = this.inventoryManager.getItems();
     const equipped = this.inventoryManager.getEquippedItem();
@@ -166,7 +172,7 @@ export class InventoryModal {
         equipBtn.className = 'btn-equip unequip';
       } else {
         equipBtn.disabled = false;
-        equipBtn.textContent = 'Trang Bị Cầm Tay ✨';
+        equipBtn.textContent = 'Trang Bị Cầm Tay';
         equipBtn.className = 'btn-equip equip';
       }
     }
