@@ -8,7 +8,7 @@
 
 ### Thế Giới Pixel 2D Multiplayer của CLB FU-DEVER · FPT University Đà Nẵng
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-f26f21.svg?style=for-the-badge)](./LICENSE)
+[![Status](https://img.shields.io/badge/Project-FU--DEVER%20Exclusive-f26f21.svg?style=for-the-badge)](https://www.fudever.com/)
 [![Version](https://img.shields.io/badge/version-0.4.1-0066CC.svg?style=for-the-badge)](./package.json)
 [![Phaser](https://img.shields.io/badge/Phaser-3.88-22c55e.svg?style=for-the-badge)](https://phaser.io)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
@@ -281,47 +281,15 @@ DEVER_TOWN/
 
 ---
 
-## 🚀 Cài Đặt & Chạy Thử (Local Development)
+## 📜 Bản Quyền & Quyền Sở Hữu Độc Quyền
 
-### Yêu Cầu
-- **Node.js** >= 18.0.0 &nbsp;·&nbsp; **npm** >= 9.0.0
+Dự án là sản phẩm độc quyền được sáng lập, sở hữu và phát triển nội bộ bởi tác giả và **CLB Lập trình FU-DEVER · FPT University Đà Nẵng (FUDA)**.
 
-### Khởi Chạy Nhanh
-```bash
-# 1. Clone repository
-git clone https://github.com/huanight19RaH/DEVER_TOWN.git
-cd DEVER_TOWN
-
-# 2. Cài đặt dependencies
-npm install
-
-# 3. Tạo file cấu hình môi trường
-cp .env.example .env
-
-# 4. Khởi chạy đồng thời cả Frontend và Backend
-npm run dev:all
-```
-Mở trình duyệt tại **http://localhost:3000** để tham gia thế giới DEVER TOWN! 🎮
-
----
-
-## 🌐 Triển Khai Online
-
-> Xem hướng dẫn chi tiết từng bước: [`DEPLOYMENT_GUIDE_3_HUONG.md`](./docs/deployment/DEPLOYMENT_GUIDE_3_HUONG.md)
-
-1. **Database**: Tạo PostgreSQL database miễn phí trên [Supabase](https://supabase.com).
-2. **Backend**: Triển khai lên [Render.com](https://render.com) (Node.js Service, `npm run server`).
-3. **Frontend**: Triển khai lên [Vercel](https://vercel.com) với biến môi trường `VITE_SERVER_URL`.
-
-
----
-
-## 📜 Giấy Phép & Bản Quyền
-
-Dự án được phát hành dưới giấy phép **[MIT License](./LICENSE)**.
+- Toàn bộ mã nguồn, thiết kế đồ họa pixel, bản quyền phân khu và tài nguyên dự án thuộc quyền quản trị nội bộ của CLB FU-DEVER.
+- Dự án không tiếp nhận đóng góp bên ngoài (Closed for external contributions & PRs). Mọi quyền sửa đổi, nâng cấp và phát hành thuộc độc quyền của tác giả và ban kỹ thuật CLB.
 
 © 2026 **FU-DEVER Club · FPT University Đà Nẵng (FUDA)**  
-Tác giả: [RaH11 (Nguyen Thai Hung)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
+Tác giả & Trưởng dự án: [RaH11 (Nguyen Thai Hung)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
 
 <div align="center">
 
