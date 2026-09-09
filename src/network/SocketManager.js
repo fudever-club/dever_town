@@ -321,7 +321,12 @@ export class SocketManager {
     // Cập nhật tổng online
     const onlineEl = document.getElementById('online-count-badge');
     if (onlineEl && counts.total !== undefined) {
-      onlineEl.textContent = `${counts.total} Online`;
+      const numEl = onlineEl.querySelector('.online-num');
+      if (numEl) {
+        numEl.textContent = counts.total;
+      } else {
+        onlineEl.innerHTML = `<span class="online-num">${counts.total}</span><span class="online-label">Online</span>`;
+      }
     }
 
     // Cập nhật số lượng 8 phòng
