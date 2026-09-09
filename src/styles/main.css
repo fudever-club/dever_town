@@ -2173,43 +2173,67 @@ body {
   line-height: 1.2;
 }
 
+.inventory-right-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .item-detail-card {
   background: #090d16;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .item-detail-icon-box {
-  background: rgba(15, 23, 42, 0.8);
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.08) 0%, rgba(15, 23, 42, 0.85) 75%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  height: 72px;
+  border-radius: 12px;
+  height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .item-icon-huge {
-  font-size: 40px;
+  font-size: 48px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.item-detail-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.item-detail-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .item-meta-tags {
   display: flex;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: center;
 }
 
 .rarity-badge {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 5px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .rarity-badge.common { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
@@ -2220,44 +2244,56 @@ body {
 .rarity-badge.mythic { background: rgba(236, 72, 153, 0.25); color: #f472b6; }
 
 .category-badge {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 0.1);
   color: #94a3b8;
+  letter-spacing: 0.3px;
 }
 
 .item-detail-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #ffffff;
-  margin: 0;
+  margin: 0 0 10px 0;
+  line-height: 1.35;
 }
 
 .item-detail-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
-  line-height: 1.4;
-  margin: 0;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
 }
 
 .item-detail-count {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 0 0 20px 0;
 }
 
 .btn-equip {
   width: 100%;
-  padding: 10px;
+  padding: 12px 16px;
   border: none;
   border-radius: 8px;
   font-family: 'Outfit', sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  margin-top: auto;
 }
 
 .btn-equip.equip {
@@ -8050,4 +8086,610 @@ body {
   border-color: rgba(239, 68, 68, 0.4);
   color: #fca5a5;
   transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   FRIENDS SYSTEM & PRIVATE DIRECT CHAT (DM)
+   ========================================================================== */
+
+/* Nút Bạn Bè trên Header */
+.btn-friends {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  position: relative;
+}
+
+.friends-badge-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 8px;
+  border: 1px solid #0f172a;
+}
+
+/* Chat Channel Tabs (Phòng / Bạn Bè) */
+.chat-tabs-bar {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px;
+  gap: 4px;
+}
+
+.chat-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.chat-tab-btn:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chat-tab-btn.active {
+  color: #ffffff;
+  background: rgba(242, 111, 33, 0.25);
+  border-color: rgba(242, 111, 33, 0.45);
+}
+
+.chat-unread-dot {
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ef4444;
+  display: inline-block;
+}
+
+/* Private Chat Active Bar */
+.chat-private-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(14, 165, 233, 0.08);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+  font-size: 11px;
+  position: relative;
+}
+
+.chat-private-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-private-label {
+  color: #94a3b8;
+}
+
+.chat-private-target {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.chat-private-target.empty {
+  color: #64748b;
+  font-style: italic;
+}
+
+.chat-switch-friend-btn {
+  background: rgba(14, 165, 233, 0.18);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  color: #38bdf8;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chat-switch-friend-btn:hover {
+  background: rgba(14, 165, 233, 0.35);
+}
+
+.chat-friend-picker-dropdown {
+  position: absolute;
+  top: 76px;
+  left: 10px;
+  right: 10px;
+  background: #0f172a;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.75);
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 50;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.picker-friend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.picker-friend-item:hover, .picker-friend-item.selected {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.picker-friend-streak {
+  margin-left: auto;
+  color: #f59e0b;
+  font-size: 10px;
+}
+
+.picker-empty {
+  padding: 10px;
+  text-align: center;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.chat-private-intro {
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px dashed rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #bae6fd;
+  margin-bottom: 8px;
+}
+
+.chat-private-intro .intro-title {
+  font-weight: 700;
+  color: #38bdf8;
+  margin: 0 0 3px 0;
+}
+
+.chat-private-intro .intro-desc {
+  margin: 0;
+}
+
+.chat-private-no-friend {
+  text-align: center;
+  padding: 30px 16px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.btn-select-friend-inline {
+  margin-top: 8px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-message-item.private-msg {
+  border-left: 2px solid #38bdf8;
+  padding-left: 8px;
+}
+
+.chat-message-item.private-msg.self {
+  border-left: none;
+  border-right: 2px solid #f26f21;
+  padding-right: 8px;
+}
+
+.chat-pm-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+/* Modal Danh Sách Bạn Bè (Friends List Modal) */
+.friends-modal-card {
+  max-width: 640px;
+}
+
+.friends-search-add-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.friends-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.friends-input-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.friends-add-input {
+  width: 100%;
+  padding: 9px 12px 9px 36px;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #f1f5f9;
+  font-size: 12.5px;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.2s;
+}
+
+.friends-add-input:focus {
+  border-color: #0284c7;
+  outline: none;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.25);
+}
+
+.btn-send-friend-req {
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-top: 0 !important;
+  transition: opacity 0.2s;
+}
+
+.btn-send-friend-req:hover {
+  opacity: 0.92;
+}
+
+.friends-tabs-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.friends-tab-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.friends-tab-btn.active {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.friends-filter-bar {
+  margin-bottom: 10px;
+}
+
+.friends-filter-input {
+  width: 100%;
+  padding: 7px 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 11.5px;
+}
+
+.friends-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.friend-list-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.friend-list-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.friend-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.friend-avatar-circle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: #1e293b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.friend-online-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border: 2px solid #0f172a;
+  border-radius: 50%;
+}
+
+.friend-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.friend-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.friend-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.friend-role-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.friend-role-badge.admin { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.friend-role-badge.leader { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+.friend-role-badge.dev { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+
+.friend-streak-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.friend-streak-pill {
+  color: #f59e0b;
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.friend-pet-pill {
+  color: #94a3b8;
+  font-size: 10.5px;
+}
+
+.friend-duration-label {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.friend-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-friend-action {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-friend-action.profile-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+.btn-friend-action.profile-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.btn-friend-action.chat-btn {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: white;
+}
+
+.btn-friend-action.chat-btn:hover {
+  opacity: 0.9;
+}
+
+.btn-friend-action.unfriend-btn {
+  background: transparent;
+  color: #64748b;
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.btn-friend-action.unfriend-btn:hover {
+  color: #ef4444;
+}
+
+.btn-friend-action.accept-btn {
+  background: #16a34a;
+  color: white;
+}
+
+.btn-friend-action.decline-btn {
+  background: #475569;
+  color: #cbd5e1;
+}
+
+.friends-empty-box {
+  text-align: center;
+  padding: 30px 16px;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.friends-empty-icon {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 900;
+  font-size: 20px;
+  color: #38bdf8;
+  margin-bottom: 8px;
+}
+
+.friends-empty-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 6px 0;
+}
+
+.friends-empty-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Profile Sections for Wardrobe and Records */
+.profile-section-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.profile-section-header {
+  margin-bottom: 6px;
+}
+
+.section-title-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-wardrobe-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-gear-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.profile-gear-item .gear-label {
+  color: #94a3b8;
+}
+
+.profile-gear-item .gear-value {
+  color: #f1f5f9;
+}
+
+.profile-gear-item .gear-value.highlight {
+  color: #f59e0b;
+}
+
+.profile-records-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.record-stat-box {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 6px 4px;
+}
+
+.record-stat-box .record-num {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  color: #34d399;
+}
+
+.record-stat-box .record-label {
+  font-size: 8.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
 }
