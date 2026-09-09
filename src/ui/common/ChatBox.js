@@ -134,7 +134,7 @@ export class ChatBox {
       const deverTab = document.createElement('button');
       deverTab.type = 'button';
       deverTab.className = `sticker-tab-btn ${this.activeStickerCategory === 'dever' ? 'active' : ''}`;
-      deverTab.textContent = '🦊 DEVER (11)';
+      deverTab.textContent = '🦊 DEVER (10)';
       deverTab.addEventListener('click', (e) => {
         e.stopPropagation();
         this.activeStickerCategory = 'dever';
@@ -158,7 +158,7 @@ export class ChatBox {
       const grid = document.createElement('div');
       grid.className = 'sticker-popover-grid';
 
-      const count = this.activeStickerCategory === 'dever' ? 11 : 20;
+      const count = this.activeStickerCategory === 'dever' ? 10 : 20;
       const cat = this.activeStickerCategory;
 
       for (let i = 1; i <= count; i++) {
@@ -263,7 +263,7 @@ export class ChatBox {
     if (catStickerMatch) {
       const cat = catStickerMatch[1];
       const stickerNum = parseInt(catStickerMatch[2], 10);
-      const maxCount = cat === 'dever' ? 11 : 20;
+      const maxCount = cat === 'dever' ? 10 : 20;
       if (stickerNum >= 1 && stickerNum <= maxCount) {
         const stickerImg = document.createElement('img');
         stickerImg.src = `/assets/stickers/${cat}/${stickerNum}.png`;
@@ -275,7 +275,7 @@ export class ChatBox {
       }
     } else if (legacyStickerMatch) {
       const stickerNum = parseInt(legacyStickerMatch[1], 10);
-      if (stickerNum >= 1 && stickerNum <= 11) {
+      if (stickerNum >= 1 && stickerNum <= 10) {
         const stickerImg = document.createElement('img');
         stickerImg.src = `/assets/stickers/dever/${stickerNum}.png`;
         stickerImg.className = 'chat-sticker-img';
