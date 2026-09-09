@@ -129,7 +129,7 @@ export class InteractiveModal {
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
         if (!authService.isAdmin()) {
-          alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
+          alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
           return;
         }
         const input = document.getElementById('slide-url-input');
@@ -142,8 +142,8 @@ export class InteractiveModal {
     }
 
     // 6. Memory Gallery
-    const prevMemoryBtn = document.getElementById('memory-prev-btn');
-    const nextMemoryBtn = document.getElementById('memory-next-btn');
+    const prevMemoryBtn = document.getElementById('gallery-prev-btn') || document.getElementById('memory-prev-btn');
+    const nextMemoryBtn = document.getElementById('gallery-next-btn') || document.getElementById('memory-next-btn');
 
     if (prevMemoryBtn) {
       prevMemoryBtn.addEventListener('click', () => {
@@ -160,6 +160,21 @@ export class InteractiveModal {
         this.renderMemorySlide(memories[this.currentMemoryIndex]);
       });
     }
+
+    window.addEventListener('keydown', (e) => {
+      if (!this.isOpen()) return;
+      const paneGallery = document.getElementById('pane-gallery');
+      if (paneGallery && !paneGallery.classList.contains('hidden')) {
+        const memories = INTERACTION_PRESETS.gallery_memory.memories;
+        if (e.key === 'ArrowLeft') {
+          this.currentMemoryIndex = (this.currentMemoryIndex - 1 + memories.length) % memories.length;
+          this.renderMemorySlide(memories[this.currentMemoryIndex]);
+        } else if (e.key === 'ArrowRight') {
+          this.currentMemoryIndex = (this.currentMemoryIndex + 1) % memories.length;
+          this.renderMemorySlide(memories[this.currentMemoryIndex]);
+        }
+      }
+    });
 
     // 7. Sports Game Action
     const sportActionBtn = document.getElementById('sports-action-btn');
@@ -939,7 +954,7 @@ export class InteractiveModal {
 
     const code = codeArea.value.trim();
     if (!code) {
-      outputEl.textContent = '⚠️ Vui lòng nhập mã nguồn trước khi thực thi.';
+      outputEl.textContent = 'Vui lòng nhập mã nguồn trước khi thực thi.';
       return;
     }
 
@@ -959,9 +974,9 @@ export class InteractiveModal {
       const logs = [];
       const customConsole = {
         log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-        error: (...args) => logs.push('❌ Error: ' + args.join(' ')),
-        warn: (...args) => logs.push('⚠️ Warning: ' + args.join(' ')),
-        info: (...args) => logs.push('ℹ️ Info: ' + args.join(' '))
+        error: (...args) => logs.push('[Error] ' + args.join(' ')),
+        warn: (...args) => logs.push('[Warning] ' + args.join(' ')),
+        info: (...args) => logs.push('[Info] ' + args.join(' '))
       };
 
       try {
@@ -972,7 +987,7 @@ export class InteractiveModal {
         const outText = logs.length > 0 ? logs.join('\n') : 'Chương trình thực thi thành công (Không có console output).';
         outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Engine • ${elapsed}ms) ===\n${outText}`;
       } catch (err) {
-        outputEl.textContent = `❌ Lỗi thực thi JavaScript: ${err.message}`;
+        outputEl.textContent = `Lỗi thực thi JavaScript: ${err.message}`;
       } finally {
         if (runBtn) {
           runBtn.disabled = false;
@@ -1015,16 +1030,16 @@ export class InteractiveModal {
       let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Status: ${status === '0' ? 'Thành công (0)' : 'Lỗi (' + status + ')'}) ===\n`;
 
       if (compilerError) {
-        displayText += `❌ LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
+        displayText += `LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
       } else if (compilerMsg && compilerMsg.includes('warning')) {
-        displayText += `⚠️ CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
+        displayText += `CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
       }
 
       if (stdout) {
         displayText += stdout;
       }
       if (stderr) {
-        displayText += (stdout ? '\n\n' : '') + `⚠️ RUNTIME STDERR:\n${stderr}`;
+        displayText += (stdout ? '\n\n' : '') + `RUNTIME STDERR:\n${stderr}`;
       }
       if (!stdout && !stderr && !compilerError) {
         displayText += 'Chương trình thực thi hoàn tất không có output.';
@@ -1100,7 +1115,7 @@ export class InteractiveModal {
       ? LOFI_PRESETS
       : LOFI_PRESETS.filter(p => p.genre === this.activeMusicGenre);
 
-    selectEl.innerHTML = `<option value="">🎵 Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
+    selectEl.innerHTML = `<option value="">Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
 
     filtered.forEach(preset => {
       const opt = document.createElement('option');
@@ -1140,22 +1155,45 @@ export class InteractiveModal {
     let targetIdx = 0;
     if (meta && meta.imgId) {
       const found = memories.findIndex(m => m.id === meta.imgId);
-      if (found !== -1) targetIdx = found;
+      if (found !== -1) {
+        targetIdx = found;
+      } else if (meta.imgId === 'hackathon') {
+        const hackFound = memories.findIndex(m => m.id.includes('hackathon'));
+        if (hackFound !== -1) targetIdx = hackFound;
+      }
     }
 
     this.currentMemoryIndex = targetIdx;
     this.renderMemorySlide(memories[this.currentMemoryIndex]);
+
+    // Đảm bảo nút bấm chuyển kỷ niệm hoạt động tức thì
+    const prevBtn = document.getElementById('gallery-prev-btn') || document.getElementById('memory-prev-btn');
+    const nextBtn = document.getElementById('gallery-next-btn') || document.getElementById('memory-next-btn');
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        this.currentMemoryIndex = (this.currentMemoryIndex - 1 + memories.length) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        this.currentMemoryIndex = (this.currentMemoryIndex + 1) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      };
+    }
   }
 
   renderMemorySlide(memory) {
     if (!memory) return;
 
     const titleEl = document.getElementById('memory-slide-title');
-    const dateEl = document.getElementById('memory-slide-date');
-    const tagEl = document.getElementById('memory-slide-tag');
+    const dateEl = document.getElementById('memory-date') || document.getElementById('memory-slide-date');
+    const tagEl = document.getElementById('memory-tag') || document.getElementById('memory-slide-tag');
     const storyEl = document.getElementById('memory-slide-story');
-    const counterEl = document.getElementById('memory-slide-counter');
-    const canvasArt = document.getElementById('memory-art-canvas');
+    const counterEl = document.getElementById('gallery-counter') || document.getElementById('memory-slide-counter');
+    const canvasArt = document.getElementById('gallery-canvas') || document.getElementById('memory-art-canvas');
 
     const memories = INTERACTION_PRESETS.gallery_memory.memories;
 
@@ -1163,34 +1201,120 @@ export class InteractiveModal {
     if (dateEl) dateEl.textContent = memory.date;
     if (tagEl) {
       tagEl.textContent = memory.tag;
-      tagEl.style.borderColor = memory.accentColor || '#0066CC';
-      tagEl.style.color = memory.accentColor || '#0066CC';
+      const accent = memory.accentColor || '#00B2FF';
+      tagEl.style.borderColor = accent;
+      tagEl.style.color = accent;
+      tagEl.style.backgroundColor = `${accent}1f`;
     }
     if (storyEl) storyEl.textContent = memory.story;
     if (counterEl) counterEl.textContent = `${this.currentMemoryIndex + 1} / ${memories.length}`;
 
     if (canvasArt) {
       const ctx = canvasArt.getContext('2d');
-      ctx.clearRect(0, 0, canvasArt.width, canvasArt.height);
+      const w = canvasArt.width;
+      const h = canvasArt.height;
+      ctx.clearRect(0, 0, w, h);
 
-      const grad = ctx.createLinearGradient(0, 0, canvasArt.width, canvasArt.height);
-      grad.addColorStop(0, '#002147');
-      grad.addColorStop(1, '#0f172a');
+      // 1. Cyberpunk Dark Gradient Background
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#060d1b');
+      grad.addColorStop(0.5, '#0b162c');
+      grad.addColorStop(1, '#050a14');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvasArt.width, canvasArt.height);
+      ctx.fillRect(0, 0, w, h);
 
-      ctx.strokeStyle = memory.accentColor || '#f59e0b';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(10, 10, canvasArt.width - 20, canvasArt.height - 20);
+      // 2. Subtle Tech Grid Pattern
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      const gridSize = 24;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
 
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 16px "JetBrains Mono", monospace';
+      // 3. Glowing Card Frame with Neon Glow
+      const accent = memory.accentColor || '#00B2FF';
+      ctx.save();
+      ctx.shadowColor = accent;
+      ctx.shadowBlur = 18;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(16, 16, w - 32, h - 32);
+      ctx.restore();
+
+      // Corner tech brackets
+      const bLen = 16;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      // Top-left
+      ctx.moveTo(12, 12 + bLen); ctx.lineTo(12, 12); ctx.lineTo(12 + bLen, 12);
+      // Top-right
+      ctx.moveTo(w - 12 - bLen, 12); ctx.lineTo(w - 12, 12); ctx.lineTo(w - 12, 12 + bLen);
+      // Bottom-left
+      ctx.moveTo(12, h - 12 - bLen); ctx.lineTo(12, h - 12); ctx.lineTo(12 + bLen, h - 12);
+      // Bottom-right
+      ctx.moveTo(w - 12 - bLen, h - 12); ctx.lineTo(w - 12, h - 12); ctx.lineTo(w - 12, h - 12 - bLen);
+      ctx.stroke();
+
+      // 4. Large Emblem / Mascot Icon
+      const icon = memory.icon || '🏆';
+      ctx.font = '54px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(memory.title, canvasArt.width / 2, canvasArt.height / 2 - 12);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(icon, w / 2, h / 2 - 55);
 
-      ctx.fillStyle = memory.accentColor || '#38bdf8';
-      ctx.font = 'bold 13px "Outfit", sans-serif';
-      ctx.fillText(`FU-DEVER • FPTU ĐÀ NẴNG • ${memory.date}`, canvasArt.width / 2, canvasArt.height / 2 + 18);
+      // 5. Category / Tag Badge Pill
+      const tagText = (memory.tag || 'VINH DANH').toUpperCase();
+      ctx.font = 'bold 12px "JetBrains Mono", monospace';
+      const tagWidth = ctx.measureText(tagText).width + 26;
+      const tagX = (w - tagWidth) / 2;
+      const tagY = h / 2 - 12;
+
+      ctx.fillStyle = `${accent}25`;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(tagX, tagY, tagWidth, 24, 6);
+      } else {
+        ctx.rect(tagX, tagY, tagWidth, 24);
+      }
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tagText, w / 2, tagY + 12);
+
+      // 6. Title Text
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 18px "Outfit", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      const displayTitle = memory.title;
+      if (displayTitle.length > 36) {
+        const mid = displayTitle.lastIndexOf(' ', 34);
+        const line1 = mid !== -1 ? displayTitle.substring(0, mid) : displayTitle.substring(0, 34);
+        const line2 = mid !== -1 ? displayTitle.substring(mid + 1) : displayTitle.substring(34);
+        ctx.fillText(line1, w / 2, h / 2 + 42);
+        ctx.fillText(line2, w / 2, h / 2 + 68);
+      } else {
+        ctx.fillText(displayTitle, w / 2, h / 2 + 52);
+      }
+
+      // 7. Footer Branding & Date
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px "JetBrains Mono", monospace';
+      ctx.fillText(`CLB LẬP TRÌNH FU-DEVER • ${memory.date}`, w / 2, h - 34);
     }
   }
 
@@ -1347,21 +1471,21 @@ export class InteractiveModal {
     }
 
     if (sport === 'football') {
-      if (typeBadge) typeBadge.textContent = '⚽ SÚT PHẠT ĐỀN 11M';
+      if (typeBadge) typeBadge.textContent = 'SÚT PHẠT ĐỀN 11M';
       if (descEl) descEl.textContent = 'Canh thanh ngắm qua lại và nhấn nút (hoặc phím SPACE) để sút bóng vào lưới đánh bại thủ môn!';
-      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE) ⚽';
+      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE)';
     } else if (sport === 'basketball') {
-      if (typeBadge) typeBadge.textContent = '🏀 BÓNG RỔ FLAPPY DUNK';
+      if (typeBadge) typeBadge.textContent = 'BÓNG RỔ FLAPPY DUNK';
       if (descEl) descEl.textContent = 'Bấm phím SPACE hoặc Click để nhấp bóng nảy lên, căn lực rơi lọt qua từng chiếc rổ để ghi điểm!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE) 🏀';
+      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE)';
     } else if (sport === 'volleyball') {
-      if (typeBadge) typeBadge.textContent = '🏐 BÓNG CHUYỀN SPIKE RALLY';
+      if (typeBadge) typeBadge.textContent = 'BÓNG CHUYỀN SPIKE RALLY';
       if (descEl) descEl.textContent = 'Dùng phím A/D (hoặc nút bấm) di chuyển, SPACE để nhảy đập bóng đối đầu với Bot FUDA!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE) 🏐';
+      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE)';
     } else if (sport === 'barista') {
-      if (typeBadge) typeBadge.textContent = '☕ QUẦY BARISTA DEVER';
+      if (typeBadge) typeBadge.textContent = 'QUẦY BARISTA DEVER';
       if (descEl) descEl.textContent = 'Canh con trỏ vào Vùng Xanh và bấm nút để pha chế ly Cà Phê Muối / Trà Sữa béo ngậy!';
-      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG ☕';
+      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG';
     }
 
     if (this.sportsArcade) {
@@ -1376,24 +1500,24 @@ export class InteractiveModal {
     if (sport === 'football') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Chuỗi: ${scores.footballStreak || 0}`;
+        streakBadge.textContent = `Chuỗi: ${scores.footballStreak || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.footballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.footballHigh || 0}`;
     } else if (sport === 'basketball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🏀 Điểm: ${scores.basketballScore || 0}`;
+        streakBadge.textContent = `Điểm: ${scores.basketballScore || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.basketballHigh || 0}đ`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.basketballHigh || 0}đ`;
     } else if (sport === 'volleyball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Rally: ${scores.volleyballRally || 0}`;
+        streakBadge.textContent = `Rally: ${scores.volleyballRally || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.volleyballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.volleyballHigh || 0}`;
     } else if (sport === 'barista') {
       if (streakBadge) streakBadge.classList.add('hidden');
-      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${scores.baristaScore || 0}đ`;
+      if (highBadge) highBadge.textContent = `Điểm Barista: ${scores.baristaScore || 0}đ`;
     }
   }
 
@@ -1467,9 +1591,9 @@ export class InteractiveModal {
           <div class="exam-card-badge">${app.tag}</div>
           <h4 class="exam-card-name">${app.name}</h4>
           <p class="exam-card-purpose">${app.purpose}</p>
-          <p class="exam-card-guide">💡 ${app.guide}</p>
+          <p class="exam-card-guide">${app.guide}</p>
           <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="exam-card-download-btn">
-            📥 Tải Bộ Cài Đặt / Truy Cập
+            Tải Bộ Cài Đặt / Truy Cập
           </a>
         `;
         const btn = card.querySelector('.exam-card-download-btn');
@@ -1636,9 +1760,9 @@ export class InteractiveModal {
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
             <div class="charter-info-grid">
-              <div class="charter-stat"><strong>🎯 Sứ Mệnh:</strong> ${def.mission}</div>
-              <div class="charter-stat"><strong>🌟 Tầm Nhìn:</strong> ${def.vision}</div>
-              <div class="charter-stat"><strong>💰 Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
+              <div class="charter-stat"><strong>Sứ Mệnh:</strong> ${def.mission}</div>
+              <div class="charter-stat"><strong>Tầm Nhìn:</strong> ${def.vision}</div>
+              <div class="charter-stat"><strong>Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
             </div>
             <h4 class="charter-sec-heading">Cơ Cấu Ban Chủ Nhiệm (BCN) CLB</h4>
             <div class="charter-roles-list">
@@ -1663,7 +1787,7 @@ export class InteractiveModal {
           <div class="charter-doc-card">
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
-            <div class="swe-authors-tag">✍️ Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
+            <div class="swe-authors-tag">Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
             <h4 class="charter-sec-heading">5 Chủ Đề Trọng Tâm Đề Thi PE SWE201c Thực Tế</h4>
             <div class="swe-topics-list">
               ${def.topics.map(t => `
@@ -1757,19 +1881,19 @@ export class InteractiveModal {
         <p class="robot-card-desc" style="font-size:0.85rem;color:#cbd5e1;line-height:1.5;">${game.desc}</p>
         
         <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;margin-top:auto;font-size:11.5px;color:#94a3b8;display:grid;gap:4px;">
-          <div><strong style="color:#fbbf24;">📦 Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
-          <div><strong style="color:#10b981;">🚀 File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
-          <div><strong style="color:#38bdf8;">🎮 Phím bấm:</strong> ${game.controls}</div>
-          <div><strong style="color:#c084fc;">⚙️ Yêu cầu:</strong> ${game.req}</div>
+          <div><strong style="color:#fbbf24;">Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
+          <div><strong style="color:#10b981;">File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
+          <div><strong style="color:#38bdf8;">Phím bấm:</strong> ${game.controls}</div>
+          <div><strong style="color:#c084fc;">Yêu cầu:</strong> ${game.req}</div>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button type="button" class="robot-card-btn" style="flex:1;background:linear-gradient(135deg,#f26f21,#ea580c);color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;" data-game-id="${game.id}">
-            <span>⬇️ Tải Game (.exe)</span>
+            <span>Tải Game (.exe)</span>
           </button>
           ${isAdmin ? `
             <button type="button" class="robot-edit-link-btn" title="[Admin] Cập nhật link tải của CLB" style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);color:#f26f21;border-radius:8px;padding:0 10px;cursor:pointer;font-size:12px;font-weight:700;" data-game-id="${game.id}">
-              ✏️ Admin
+              Admin
             </button>
           ` : ''}
         </div>
@@ -1788,14 +1912,14 @@ export class InteractiveModal {
       if (editBtn) {
         editBtn.addEventListener('click', () => {
           if (!authService.isAdmin()) {
-            alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
+            alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
             return;
           }
           const currentUrl = localStorage.getItem(`dever_robot_link_${game.id}`) || game.link;
           const newUrl = prompt(`[Admin] Nhập link tải Google Drive / GitHub / Mediafire cho game "${game.name}":`, currentUrl);
           if (newUrl !== null && newUrl.trim()) {
             localStorage.setItem(`dever_robot_link_${game.id}`, newUrl.trim());
-            alert(`✅ [Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
+            alert(`[Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
           }
         });
       }

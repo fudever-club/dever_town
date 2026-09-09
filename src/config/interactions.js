@@ -28,7 +28,7 @@ export const INTERACTION_PRESETS = {
         name: 'JavaScript (Node.js)',
         badge: 'JS',
         wandboxCompiler: 'nodejs-20.17.0',
-        sample: `// 🚀 FU-DEVER Code Sandbox - JavaScript
+        sample: `// FU-DEVER Code Sandbox - JavaScript
 const club = {
   name: 'FU-DEVER',
   campus: 'FPT University Da Nang (FUDA)',
@@ -48,7 +48,7 @@ console.log("Slogan:", club.slogan);`
         name: 'Python 3',
         badge: 'Python',
         wandboxCompiler: 'cpython-3.12.7',
-        sample: `# 🐍 FU-DEVER Code Sandbox - Python 3
+        sample: `# FU-DEVER Code Sandbox - Python 3
 club = {
     "name": "FU-DEVER",
     "campus": "FPT University Da Nang",
@@ -68,7 +68,7 @@ print(f"Tôn chỉ hoạt động: {club['slogan']}")`
         name: 'C (GCC)',
         badge: 'C',
         wandboxCompiler: 'gcc-13.2.0-c',
-        sample: `// 🇨 FU-DEVER Code Sandbox - Ngôn ngữ C
+        sample: `// FU-DEVER Code Sandbox - Ngôn ngữ C
 #include <stdio.h>
 
 int main() {
@@ -86,7 +86,7 @@ int main() {
         name: 'C++ (G++)',
         badge: 'C++',
         wandboxCompiler: 'gcc-13.2.0',
-        sample: `// ⚡ FU-DEVER Code Sandbox - C++ (ICPC & Competitive Programming)
+        sample: `// FU-DEVER Code Sandbox - C++ (ICPC & Competitive Programming)
 #include <iostream>
 #include <vector>
 #include <string>
@@ -110,7 +110,7 @@ int main() {
         name: 'Java (OpenJDK)',
         badge: 'Java',
         wandboxCompiler: 'openjdk-jdk-22+36',
-        sample: `// ☕ FU-DEVER Code Sandbox - Java (SWE201c & OOP)
+        sample: `// FU-DEVER Code Sandbox - Java (SWE201c & OOP)
 class Main {
     public static void main(String[] args) {
         System.out.println("=== FU-DEVER JAVA SANDBOX ===");
@@ -125,7 +125,7 @@ class Main {
         name: 'Pascal (Free Pascal)',
         badge: 'Pascal',
         wandboxCompiler: 'fpc-3.2.2',
-        sample: `// 📜 FU-DEVER Code Sandbox - Pascal (Free Pascal Compiler)
+        sample: `// FU-DEVER Code Sandbox - Pascal (Free Pascal Compiler)
 program FUDeverPascal;
 
 begin
@@ -141,7 +141,7 @@ end.`
         name: 'Go (Golang)',
         badge: 'Go',
         wandboxCompiler: 'go-1.23.2',
-        sample: `// 🔷 FU-DEVER Code Sandbox - Go
+        sample: `// FU-DEVER Code Sandbox - Go
 package main
 
 import "fmt"
@@ -157,11 +157,11 @@ func main() {
         name: 'Rust',
         badge: 'Rust',
         wandboxCompiler: 'rust-1.82.0',
-        sample: `// 🦀 FU-DEVER Code Sandbox - Rust
+        sample: `// FU-DEVER Code Sandbox - Rust
 fn main() {
     println!("=== FU-DEVER RUST SANDBOX ===");
     println!("Safe, Concurrent & Ultra-fast Systems Programming");
-    println!("CLB FU-DEVER • WORK HARD - PLAY HARD 🚀");
+    println!("CLB FU-DEVER • WORK HARD - PLAY HARD");
 }`
       },
       {
@@ -169,7 +169,7 @@ fn main() {
         name: 'C# (.NET / Mono)',
         badge: 'C#',
         wandboxCompiler: 'mono-6.12.0.199',
-        sample: `// 🟣 FU-DEVER Code Sandbox - C#
+        sample: `// FU-DEVER Code Sandbox - C#
 using System;
 
 class Program {
@@ -186,14 +186,14 @@ class Program {
         badge: 'PHP',
         wandboxCompiler: 'php-8.3.12',
         sample: `<?php
-// 🐘 FU-DEVER Code Sandbox - PHP
+// FU-DEVER Code Sandbox - PHP
 echo "=== FU-DEVER PHP RUNNER ===\\n";
 echo "Web Development & Backend Services\\n";
 echo "Slogan: WORK HARD - PLAY HARD\\n";
 ?>`
       }
     ],
-    defaultNotes: `# 📝 SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FUDA\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
+    defaultNotes: `# SỔ TAY HỌC TẬP FU-DEVER\n\n- **CLB:** FU-DEVER - FUDA\n- **Slogan:** WORK HARD - PLAY HARD\n- **Địa chỉ:** Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng\n- **Hotline:** +84 828 828 497\n- **Email:** club.dever@gmail.com\n\n## Mục tiêu tuần này:\n1. Hoàn thiện đồ họa 2D Pixel Town.\n2. Thực hành WebSockets & Phaser 3 Game Engine.\n3. Chuẩn bị sự kiện Tech Talk & Workshop sắp tới.`
   },
 
   // 4. Quầy Cà phê Lofi & Pomodoro Timer
@@ -211,32 +211,81 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       {
         id: 'founding',
         title: 'Hành Trình 9+ Năm Phát Triển FU-DEVER',
-        date: 'Từ Năm 2017 - Nay',
+        date: 'Từ 27/10/2017 – Nay',
         tag: 'Cột mốc lịch sử',
-        accentColor: '#0066CC',
-        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại FUDA, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với hơn 50+ thành viên năng động, 15+ dự án thực chiến và 20+ giải thưởng danh giá.'
+        icon: '🏛️',
+        accentColor: '#00B2FF',
+        story: 'Khởi đầu từ một nhóm sinh viên đam mê lập trình tại ĐH FPT Đà Nẵng, FU-DEVER đã vươn mình trở thành câu lạc bộ học thuật công nghệ hàng đầu với 4 phân ban chuyên môn (Web, AI, Mobile, Game), hàng chục dự án thực chiến và bảng vàng thành tích rực rỡ.'
       },
       {
         id: 'hackathon',
-        title: '20+ Giải Thưởng ICPC & Hackathon Toàn Quốc',
-        date: '2020 - 2026',
-        tag: 'Bảng vàng vinh danh',
+        title: 'Quán Quân FPT Hackathon Đà Nẵng – Team NEUROSHIP',
+        date: '2024',
+        tag: 'Vô địch Hackathon',
+        icon: '🥇',
+        accentColor: '#fbbf24',
+        story: 'Xuất sắc vượt qua hàng chục đội thi công nghệ tài năng, Team NEUROSHIP đại diện cho CLB FU-DEVER đã giành ngôi vị Quán quân Bảng A khu vực Đà Nẵng tại đấu trường lập trình danh giá FPT Hackathon.'
+      },
+      {
+        id: 'game_craft_doclap',
+        title: 'Quán Quân Game Craft Arena 2025 – Đội Game ĐỘC LẬP',
+        date: '2025',
+        tag: 'Vô địch Game Dev',
+        icon: '🎮',
         accentColor: '#f26f21',
-        story: 'Các thế hệ thành viên FU-DEVER liên tục ghi danh tại các kỳ thi Lập trình sinh viên Quốc tế ICPC, FPT Edu Hackathon, FPT Edu ResFes với những giải pháp công nghệ xuất sắc về AI, Web3 và Hệ thống phân tán.'
+        story: 'Sau hơn 1 tháng tranh tài gay cấn tại cuộc thi lập trình game Game Craft Arena 2025 do FPT Đà Nẵng tổ chức, đội thi ĐỘC LẬP thuộc phân ban Game Dev của FU-DEVER đã xuất sắc nâng cao cúp vô địch.'
+      },
+      {
+        id: 'devfest_ai',
+        title: 'Á Quân 1 DEVFEST AI Hackathon 2023 Miền Trung',
+        date: '2023',
+        tag: 'Á quân Miền Trung',
+        icon: '🥈',
+        accentColor: '#38bdf8',
+        story: 'Đội tuyển CLB Lập trình FU-DEVER xuất sắc vượt qua các vòng code hackathon xuyên đêm để giành danh hiệu Á Quân 1 trong cuộc thi "DEVFEST - AI HACKATHON 2023" khu vực Miền Trung.'
+      },
+      {
+        id: 'codemosaic',
+        title: 'Chung Kết CodeMosaic 2025 – DeverLastHope K20',
+        date: '2025',
+        tag: 'Chung kết thuật toán',
+        icon: '⚡',
+        accentColor: '#c084fc',
+        story: 'Tại Chung kết CodeMosaic 2025, sau 4 tiếng thi đấu thuật toán căng thẳng và kịch tính, đội DeverLastHope K20 đã thi đấu kiên cường và mang về niềm tự hào lớn cho đại gia đình FU-DEVER.'
       },
       {
         id: 'resconnect_2026',
-        title: 'Giải Khuyến Khích ResConnect 2026 ➔ Chung Kết ResFes 2026 Cần Thơ',
+        title: 'Giải Khuyến Khích ResConnect 2026 & FPT Edu ResFes 2026',
         date: '2026',
         tag: 'NCKH & AI Model',
+        icon: '🎖️',
+        accentColor: '#10b981',
+        story: 'Team Absolutely Inefficient (AI) của FU-DEVER xuất sắc giành trọn cú đúp Giải Khuyến khích tại cả Hội thảo Khoa học Sinh viên ResConnect 2026 và Chung kết Toàn quốc FPT Edu ResFes 2026 với đề tài nghiên cứu chuyên sâu về mô hình AI "Low-Light Image Enhancement Under Challenging Environments".'
+      },
+      {
+        id: 'shecodes',
+        title: 'Giải Thưởng Sáng Tạo SHECODES – SPOIL TEAM',
+        date: '2023 - 2024',
+        tag: 'Nữ sinh công nghệ',
+        icon: '🏅',
+        accentColor: '#f472b6',
+        story: 'Tại cuộc thi phát triển sản phẩm công nghệ dành cho phái nữ SHECODES, SPOIL TEAM của FU-DEVER đã tỏa sáng rực rỡ với giải pháp sáng tạo, khẳng định bản lĩnh của các nữ kỹ sư phần mềm DEVER.'
+      },
+      {
+        id: 'coc_vang',
+        title: 'Vinh Danh Cóc Vàng FUDA – Sinh Viên Tiêu Biểu',
+        date: 'Thường niên mỗi kỳ',
+        tag: 'Vinh danh cá nhân',
+        icon: '🐸',
         accentColor: '#eab308',
-        story: 'Đội thi "Absolutely Inefficient" xuất sắc giành Giải Khuyến khích tại Hội thảo Khoa học Sinh viên ResConnect 2026 với đề tài "Low-Light Image Enhancement Under Challenging Environments", chính thức giành vé vào Chung Kết Toàn Quốc FPT Edu ResFes 2026 tại Cần Thơ.'
+        story: 'Vinh danh các thành viên CLB FU-DEVER đã nỗ lực không ngừng nghỉ và chạm tay tới danh hiệu Cóc Vàng danh giá — phần thưởng học thuật và phong trào cao quý nhất của Đại học FPT Đà Nẵng.'
       },
       {
         id: 'teambuilding',
         title: 'Work Hard - Play Hard: Teambuilding Gắn Kết',
         date: 'Hàng Năm',
         tag: 'Văn hóa CLB',
+        icon: '🏕️',
         accentColor: '#10b981',
         story: 'Bên cạnh những giờ code căng thẳng, FU-DEVER luôn duy trì tinh thần Work Hard - Play Hard với các chuyến dã ngoại Sơn Trà, cắm trại biển Đà Nẵng và các buổi sinh hoạt giao lưu gắn kết các thế hệ.'
       },
@@ -245,6 +294,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
         title: 'Chuỗi Workshop Tech Talk: 2D Game, Web App & AI',
         date: 'Định kỳ hàng tháng',
         tag: 'Học thuật & Đào tạo',
+        icon: '💻',
         accentColor: '#8b5cf6',
         story: 'Tổ chức các buổi chia sẻ chuyên sâu về 4 trụ cột công nghệ: 2D Game Engine (Phaser), Web/Mobile Application (Next.js, Flutter) và Mô hình Trí tuệ Nhân tạo (Machine Learning/LLMs) cho sinh viên toàn trường.'
       }
@@ -257,14 +307,14 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
     description: 'Khám phá Landing Page, Member Portal, Admin Portal và Kho dự án của CLB.',
     defaultUrl: 'https://www.fudever.com/',
     portals: [
-      { name: '🌐 Landing Page Chính Thức', url: 'https://www.fudever.com/' },
-      { name: '📝 Đơn Đăng Ký Thành Viên', url: 'https://forms.gle/2us1yB5Qp2HYejj28' },
-      { name: '📘 Fanpage FU-DEVER', url: 'https://www.facebook.com/FPTUDever' },
-      { name: '🏛️ Fanpage FUDA', url: 'https://www.facebook.com/daihocfptdanang' },
-      { name: '🎵 TikTok FUDA', url: 'https://www.tiktok.com/@daihocfptdanang' },
-      { name: '🐙 GitHub FU-DEVER', url: 'https://github.com/fudever-club' },
-      { name: '👤 Member Portal', url: 'https://client.fudever.com' },
-      { name: '🛡️ Admin Portal', url: 'https://admin.fudever.com' }
+      { name: 'Landing Page Chính Thức', url: 'https://www.fudever.com/' },
+      { name: 'Đơn Đăng Ký Thành Viên', url: 'https://forms.gle/2us1yB5Qp2HYejj28' },
+      { name: 'Fanpage FU-DEVER', url: 'https://www.facebook.com/FPTUDever' },
+      { name: 'Fanpage FUDA', url: 'https://www.facebook.com/daihocfptdanang' },
+      { name: 'TikTok FUDA', url: 'https://www.tiktok.com/@daihocfptdanang' },
+      { name: 'GitHub FU-DEVER', url: 'https://github.com/fudever-club' },
+      { name: 'Member Portal', url: 'https://client.fudever.com' },
+      { name: 'Admin Portal', url: 'https://admin.fudever.com' }
     ]
   },
 
@@ -275,7 +325,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
     systems: [
       {
         id: 'fap',
-        name: '🌐 FAP Portal',
+        name: 'FAP Portal',
         desc: 'Cổng thông tin sinh viên, thời khóa biểu, bảng điểm & học vụ',
         url: 'https://fap.fpt.edu.vn/',
         badge: 'Cổng chính',
@@ -283,7 +333,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'flm',
-        name: '📖 FLM Portal',
+        name: 'FLM Portal',
         desc: 'Tra cứu Syllabus, đề cương chi tiết & tài liệu học phần',
         url: 'https://flm.fpt.edu.vn/',
         badge: 'Học tập',
@@ -291,7 +341,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'lms',
-        name: '🎓 LMS Đà Nẵng',
+        name: 'LMS Đà Nẵng',
         desc: 'Hệ thống nộp bài tập, tài liệu bài giảng & kiểm tra online',
         url: 'https://lmsdn.fpt.edu.vn/',
         badge: 'Khóa học',
@@ -299,7 +349,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'edunext',
-        name: '🌱 EduNext',
+        name: 'EduNext',
         desc: 'Nền tảng học liệu, thảo luận nhóm, nộp bài tập, slide bài giảng',
         url: 'https://fu-edunext.fpt.edu.vn/login',
         badge: 'Kiến tạo',
@@ -307,7 +357,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'reset_pass',
-        name: '🔑 Đổi Mật Khẩu WiFi & EOS',
+        name: 'Đổi Mật Khẩu WiFi & EOS',
         desc: 'Trang đổi mật khẩu mạng WiFi trường và mật khẩu phòng thi EOS',
         url: 'https://resetdn.fpt.edu.vn/',
         badge: 'Bảo mật',
@@ -315,7 +365,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'it_helpdesk',
-        name: '🛠️ Hướng Dẫn & Hỗ Trợ IT',
+        name: 'Hướng Dẫn & Hỗ Trợ IT',
         desc: 'Trang hỗ trợ kỹ thuật, xử lý sự cố máy tính và mạng trường',
         url: 'https://lmsdn.fpt.edu.vn/hd/',
         badge: 'IT Support',
@@ -323,7 +373,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'e360',
-        name: '✅ E360 Portal',
+        name: 'E360 Portal',
         desc: 'Trang web checkout & khảo sát chất lượng sau khi hoàn thành bài thi',
         url: 'https://e360.fpt.edu.vn/',
         badge: 'Khảo sát',
@@ -333,7 +383,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
     examApps: [
       {
         id: 'seb',
-        name: '📥 Safe Exam Browser (SEB)',
+        name: 'Safe Exam Browser (SEB)',
         purpose: 'Phần mềm thi Progress Test (Điểm thành phần các môn)',
         url: 'https://drive.google.com/drive/u/0/folders/1RmjeKAvef6BXg_qlAl6JnZx2ZkY3qj_3',
         tag: 'Thi Progress Test',
@@ -341,7 +391,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'eos',
-        name: '📥 EOS Client (Exam on Online Server)',
+        name: 'EOS Client (Exam on Online Server)',
         purpose: 'Phần mềm thi Final Exam (Cuối môn)',
         url: 'https://lmsdn.fpt.edu.vn/hd/eos/',
         tag: 'Thi Final Exam',
@@ -349,7 +399,7 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       },
       {
         id: 'pea',
-        name: '📥 PEA Client (Practical Exam App)',
+        name: 'PEA Client (Practical Exam App)',
         purpose: 'Phần mềm thi Practical Exam (Thực hành Code)',
         url: 'https://lmsdn.fpt.edu.vn/hd/pea/',
         tag: 'Thi Thực Hành PE',
@@ -365,34 +415,34 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
     tabs: [
       {
         id: 'huong_vi_viet',
-        name: '🍱 Căn Tin Hương Vị Việt (Tầng 1)',
+        name: 'Căn Tin Hương Vị Việt (Tầng 1)',
         image: '/assets/canteen/canteen_menu1.jpg',
         desc: 'Thực đơn tuần từ Thứ 2 đến Thứ 6',
         highlights: [
-          '☀️ Bữa Sáng: Bún chả cá, bún thịt nướng, cao lầu, mì quảng, xôi gà, bánh bột lọc, bánh mì, hotdog...',
-          '🍚 Bữa Trưa: Cá mực chiên mắm, sườn non rim me, cánh gà chiên mắm, cơm gà rôti, cơm cuộn kimbap, canh bí đao...',
-          '🌙 Bữa Tối: Bánh mì que, mì tôm các loại, cơm cuộn kimbap...'
+          'Bữa Sáng: Bún chả cá, bún thịt nướng, cao lầu, mì quảng, xôi gà, bánh bột lọc, bánh mì, hotdog...',
+          'Bữa Trưa: Cá mực chiên mắm, sườn non rim me, cánh gà chiên mắm, cơm gà rôti, cơm cuộn kimbap, canh bí đao...',
+          'Bữa Tối: Bánh mì que, mì tôm các loại, cơm cuộn kimbap...'
         ]
       },
       {
         id: 'high_deli',
-        name: '🍜 The High Deli (Tầng 2)',
+        name: 'The High Deli (Tầng 2)',
         image: '/assets/canteen/canteen_menu2.jpg',
         desc: 'Thực đơn món nước & cơm phần tầng 2',
         highlights: [
-          '☀️ Bữa Sáng: Mì xào xá xíu, phở bò, phở gà, mì quảng tôm thịt, bún bò, mì Ý...',
-          '🍚 Bữa Trưa: Gà sốt bơ tỏi, thịt kho tôm, tôm chiên xù, xíu mại viên, sườn nướng, khổ qua xào trứng...',
-          '🌙 Bữa Tối: Sườn hầm, đùi gà chiên xù, bánh tôm, mì xào thịt, canh cải ngọt...'
+          'Bữa Sáng: Mì xào xá xíu, phở bò, phở gà, mì quảng tôm thịt, bún bò, mì Ý...',
+          'Bữa Trưa: Gà sốt bơ tỏi, thịt kho tôm, tôm chiên xù, xíu mại viên, sườn nướng, khổ qua xào trứng...',
+          'Bữa Tối: Sườn hầm, đùi gà chiên xù, bánh tôm, mì xào thịt, canh cải ngọt...'
         ]
       },
       {
         id: 'fc_canteen',
-        name: '🍛 F.C Canteen (Tầng 2)',
+        name: 'F.C Canteen (Tầng 2)',
         image: '/assets/canteen/canteen_menu3.jpg',
         desc: 'Thực đơn cơm trưa & bún phở sinh viên',
         highlights: [
-          '☀️ Bữa Sáng: Bún bò, phở bò, phở gà, mì xá xíu, mì Ý, bánh canh...',
-          '🍚 Bữa Trưa: Đùi gà sốt cay, cánh gà chiên mắm, đùi gà chiên xù, sườn non rim, cá rim ngọt, đậu khuôn sốt cà...'
+          'Bữa Sáng: Bún bò, phở bò, phở gà, mì xá xíu, mì Ý, bánh canh...',
+          'Bữa Trưa: Đùi gà sốt cay, cánh gà chiên mắm, đùi gà chiên xù, sườn non rim, cá rim ngọt, đậu khuôn sốt cà...'
         ]
       }
     ]
@@ -411,16 +461,16 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
         image: '/assets/campus/campus_map.webp',
         rawImage: '/assets/campus/campus_map.jpg',
         locations: [
-          { num: '🏢', name: 'Tòa Nhà Alpha', desc: 'Các phòng học, Phòng Dịch vụ sinh viên, Phòng Tuyển sinh, Hệ thống phòng Lab' },
-          { num: '💻', name: 'Tòa Nhà Gamma', desc: 'Các phòng học, Thư viện, Khu vực Hỗ trợ CNTT, Hệ thống phòng Lab' },
-          { num: '📚', name: 'Tòa Nhà Beta', desc: 'Phòng học, giảng đường và không gian tự học' },
-          { num: '🛏️', name: 'Ký Túc Xá DOM A & DOM B', desc: 'Khu nội trú sinh viên FUDA hiện đại, an ninh và tiện nghi' },
-          { num: '🥋', name: 'Khu Học Võ Vovinam', desc: 'Võ đường Vovinam Việt Võ Đạo rèn luyện thể chất và tinh thần thượng võ' },
-          { num: '🍜', name: 'Căng Tin FUDA', desc: 'Khu ẩm thực 2 tầng: Căn tin Hương Vị Việt, The High Deli và F.C Canteen' },
-          { num: '⚽', name: 'Sân Thể Thao (Bóng Đá & Bóng Rổ)', desc: 'Sân bóng đá cỏ nhân tạo và sân bóng rổ ngoài trời phục vụ rèn luyện' },
-          { num: '💪', name: 'Khu Street Workout', desc: 'Khu rèn luyện thể hình, xà đơn, xà kép ngoài trời' },
-          { num: '🌿', name: 'Vườn Cây Con Cá & Hồ Sen', desc: 'Khuôn viên sinh thái xanh mát thư giãn giữa các giờ học' },
-          { num: '🏛️', name: 'Quảng Trường & Nhà Để Xe', desc: 'Không gian tổ chức sự kiện văn hóa, sinh hoạt chung và bãi đỗ xe máy' }
+          { num: '1', name: 'Tòa Nhà Alpha', desc: 'Các phòng học, Phòng Dịch vụ sinh viên, Phòng Tuyển sinh, Hệ thống phòng Lab' },
+          { num: '2', name: 'Tòa Nhà Gamma', desc: 'Các phòng học, Thư viện, Khu vực Hỗ trợ CNTT, Hệ thống phòng Lab' },
+          { num: '3', name: 'Tòa Nhà Beta', desc: 'Phòng học, giảng đường và không gian tự học' },
+          { num: '4', name: 'Ký Túc Xá DOM A & DOM B', desc: 'Khu nội trú sinh viên FUDA hiện đại, an ninh và tiện nghi' },
+          { num: '5', name: 'Khu Học Võ Vovinam', desc: 'Võ đường Vovinam Việt Võ Đạo rèn luyện thể chất và tinh thần thượng võ' },
+          { num: '6', name: 'Căng Tin FUDA', desc: 'Khu ẩm thực 2 tầng: Căn tin Hương Vị Việt, The High Deli và F.C Canteen' },
+          { num: '7', name: 'Sân Thể Thao (Bóng Đá & Bóng Rổ)', desc: 'Sân bóng đá cỏ nhân tạo và sân bóng rổ ngoài trời phục vụ rèn luyện' },
+          { num: '8', name: 'Khu Street Workout', desc: 'Khu rèn luyện thể hình, xà đơn, xà kép ngoài trời' },
+          { num: '9', name: 'Vườn Cây Con Cá & Hồ Sen', desc: 'Khuôn viên sinh thái xanh mát thư giãn giữa các giờ học' },
+          { num: '10', name: 'Quảng Trường & Nhà Để Xe', desc: 'Không gian tổ chức sự kiện văn hóa, sinh hoạt chung và bãi đỗ xe máy' }
         ]
       },
       {
@@ -499,78 +549,174 @@ export const ROOM_SLIDE_PRESETS = [
     room: 'main_hall',
     roomName: 'Tòa Alpha',
     title: 'Giới Thiệu Tổng Quan FU-DEVER',
-    desc: 'Lịch sử, Sứ mệnh, 4 Trụ cột và Cơ cấu CLB',
+    desc: 'Lịch sử, Sứ mệnh, 4 Phân ban chuyên môn và Cơ cấu CLB',
     url: '',
     slides: [
       {
-        bg: 'linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)',
+        bg: 'linear-gradient(135deg,#070c18 0%,#0f2240 50%,#081226 100%)',
         content: `
-          <div style="text-align:center;padding:20px 0">
-            <div style="font-size:56px;margin-bottom:12px">🦊</div>
-            <h1 style="font-size:2rem;font-weight:900;color:#f26f21;margin:0 0 8px">FU-DEVER</h1>
-            <p style="font-size:1.1rem;color:#38bdf8;font-weight:700;margin:0 0 16px">CLB Lập trình FPT University Đà Nẵng</p>
-            <div style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);border-radius:12px;padding:16px 24px;display:inline-block">
-              <p style="color:#fbbf24;font-size:0.95rem;font-weight:700;margin:0">&ldquo;WORK HARD — PLAY HARD&rdquo;</p>
+          <div style="text-align:center;padding:12px 0">
+            <img src="/assets/logos/dever_logo_nontext.png" style="width:68px;height:68px;object-fit:contain;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(0,180,255,0.45))" alt="DEVER Logo" />
+            <h1 style="font-size:1.85rem;font-weight:900;color:#00B2FF;margin:0 0 4px;letter-spacing:1px">FU-DEVER</h1>
+            <p style="font-size:1.02rem;color:#e2e8f0;font-weight:700;margin:0 0 12px">CLB Lập Trình · Đại học FPT Đà Nẵng</p>
+            <div style="background:rgba(0,178,255,0.12);border:1px solid rgba(0,178,255,0.35);border-radius:12px;padding:12px 24px;display:inline-block">
+              <p style="color:#FFB800;font-size:0.92rem;font-weight:800;margin:0;letter-spacing:0.5px">&ldquo;WORK HARD — PLAY HARD&rdquo;</p>
+              <p style="color:#94a3b8;font-size:0.75rem;margin:4px 0 0">Nghiên Cứu · Xây Dựng Dự Án · Tổ Chức Sự Kiện CNTT</p>
             </div>
           </div>
         `
       },
       {
-        bg: 'linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%)',
+        bg: 'linear-gradient(135deg,#0d172e 0%,#0a1020 100%)',
         content: `
-          <h2 style="color:#38bdf8;font-size:1.4rem;font-weight:800;margin:0 0 16px">📅 Lịch Sử Hình Thành</h2>
-          <div style="display:grid;gap:10px">
-            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #38bdf8;padding:12px 16px;border-radius:0 8px 8px 0">
-              <strong style="color:#fbbf24">2017</strong> <span style="color:#e2e8f0">&#8212; Thành lập tại FPT University Hà Nội, tiền thân là &ldquo;Dev Club&rdquo;</span>
+          <h2 style="color:#00B2FF;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Lịch Sử & Tôn Chỉ Hoạt Động
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.83rem">
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #00B2FF;padding:10px 14px;border-radius:0 8px 8px 0">
+              <strong style="color:#FFB800">27/10 Hằng Năm:</strong> <span style="color:#e2e8f0">Ngày kỷ niệm thành lập chính thức của FU-DEVER (FPT University Developer).</span>
             </div>
-            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #f26f21;padding:12px 16px;border-radius:0 8px 8px 0">
-              <strong style="color:#fbbf24">2020</strong> <span style="color:#e2e8f0">&#8212; Mở rộng ra FPT Đà Nẵng (FUDA) với tên chính thức FU-DEVER</span>
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #10b981;padding:10px 14px;border-radius:0 8px 8px 0">
+              <strong style="color:#10b981">Đơn Vị Trực Thuộc:</strong> <span style="color:#e2e8f0">Cộng đồng sinh viên ĐH FPT Đà Nẵng, hoạt động dưới sự bảo trợ của Phòng IC-PDC.</span>
             </div>
-            <div style="background:rgba(56,189,248,0.1);border-left:4px solid #10b981;padding:12px 16px;border-radius:0 8px 8px 0">
-              <strong style="color:#fbbf24">2024+</strong> <span style="color:#e2e8f0">&#8212; 50+ thành viên, 20+ giải thưởng quốc gia và quốc tế</span>
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #f26f21;padding:10px 14px;border-radius:0 8px 8px 0">
+              <strong style="color:#f26f21">Mục Đích Cốt Lõi:</strong> <span style="color:#cbd5e1">Xây dựng môi trường học thuật mở, hỗ trợ dự án thực chiến và tổ chức các sự kiện lập trình quy mô toàn trường.</span>
             </div>
           </div>
         `
       },
       {
-        bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
+        bg: 'linear-gradient(135deg,#070d1e 0%,#151030 100%)',
         content: `
-          <h2 style="color:#c084fc;font-size:1.4rem;font-weight:800;margin:0 0 16px">🎯 4 Trụ Cột Chuyên Môn</h2>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div style="background:rgba(242,111,33,0.12);border:1px solid rgba(242,111,33,0.3);border-radius:10px;padding:14px;text-align:center">
-              <div style="font-size:28px">🎮</div>
-              <strong style="color:#f26f21;font-size:0.9rem">2D Game Dev</strong>
-              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Phaser 3, Unity, Godot</p>
+          <h2 style="color:#c084fc;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            4 Phân Ban Chuyên Môn Cốt Lõi
+          </h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:rgba(0,178,255,0.1);border:1px solid rgba(0,178,255,0.25);border-radius:10px;padding:12px;text-align:left">
+              <strong style="color:#00B2FF;font-size:0.86rem;display:flex;align-items:center;gap:6px">Web Development</strong>
+              <p style="color:#94a3b8;font-size:0.75rem;margin:4px 0 0">React, Next.js, Node.js, Express, Cloud & REST API kiến trúc phân tán.</p>
             </div>
-            <div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:14px;text-align:center">
-              <div style="font-size:28px">🌐</div>
-              <strong style="color:#38bdf8;font-size:0.9rem">Web App</strong>
-              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">React, Next.js, Node.js</p>
+            <div style="background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.25);border-radius:10px;padding:12px;text-align:left">
+              <strong style="color:#c084fc;font-size:0.86rem;display:flex;align-items:center;gap:6px">AI & Data Science</strong>
+              <p style="color:#94a3b8;font-size:0.75rem;margin:4px 0 0">Python, Machine Learning, Deep Learning, Computer Vision, GenAI & LLMs.</p>
             </div>
-            <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:14px;text-align:center">
-              <div style="font-size:28px">📱</div>
-              <strong style="color:#10b981;font-size:0.9rem">Mobile App</strong>
-              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Flutter, React Native</p>
+            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px;text-align:left">
+              <strong style="color:#10b981;font-size:0.86rem;display:flex;align-items:center;gap:6px">Mobile Development</strong>
+              <p style="color:#94a3b8;font-size:0.75rem;margin:4px 0 0">Flutter, React Native, Mobile Architecture & tối ưu giao diện di động.</p>
             </div>
-            <div style="background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);border-radius:10px;padding:14px;text-align:center">
-              <div style="font-size:28px">🤖</div>
-              <strong style="color:#c084fc;font-size:0.9rem">Model AI</strong>
-              <p style="color:#94a3b8;font-size:0.78rem;margin:4px 0 0">Python, TensorFlow, ML</p>
+            <div style="background:rgba(255,140,0,0.1);border:1px solid rgba(255,140,0,0.25);border-radius:10px;padding:12px;text-align:left">
+              <strong style="color:#fb923c;font-size:0.86rem;display:flex;align-items:center;gap:6px">Game Development</strong>
+              <p style="color:#94a3b8;font-size:0.75rem;margin:4px 0 0">Phaser 3, Unity, Godot, 2D Pixel Metaverse & Realtime Socket.io.</p>
             </div>
           </div>
         `
       },
       {
-        bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
+        bg: 'linear-gradient(135deg,#0e1526 0%,#091d2c 100%)',
         content: `
-          <h2 style="color:#fbbf24;font-size:1.4rem;font-weight:800;margin:0 0 16px">🏢 Cơ Cấu Tổ Chức</h2>
-          <div style="display:grid;gap:10px">
-            ${['Ban Khọng Số (Content & Creative)', 'Ban Kỹ Thuật (Dev & Engineer)', 'Ban Truyền Thông (Media & PR)', 'Ban Hành Chính (Admin & HR)'].map((b,i) => `
-              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 14px">
-                <span style="font-size:20px">${['\ud83e\udde0','\ud83d\udcbb','\ud83d\udce3','\ud83d\udcc1'][i]}</span>
-                <span style="color:#e2e8f0;font-size:0.9rem;font-weight:600">${b}</span>
-              </div>
-            `).join('')}
+          <h2 style="color:#fbbf24;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Ban Chủ Nhiệm & Bộ Máy Điều Hành
+          </h2>
+          <div style="display:grid;gap:7px;font-size:0.80rem">
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
+              
+              <div><strong style="color:#fbbf24">Ban Chủ Nhiệm (BCN):</strong> <span style="color:#cbd5e1">Đặng Quang Nhật (Chủ nhiệm · K20), Nguyễn Thái Hưng (Phó chủ nhiệm · K20), Nguyễn Thị Ngọc Ánh (Thư ký · K20).</span></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
+              
+              <div><strong style="color:#38bdf8">Ban Học Thuật:</strong> <span style="color:#cbd5e1">Lương Văn Tuấn Kiệt (Trưởng ban), Lưu Thành Đạt (Phó ban) · Phụ trách Bootcamp, PE/FE & Workshop.</span></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
+              
+              <div><strong style="color:#f26f21">Ban Sự Kiện & Đối Ngoại:</strong> <span style="color:#cbd5e1">Hồ Quốc Thắng (Trưởng ban · K20), Tạ Thị Bích Loan (Phó ban), Nguyễn Thúc Hoàng Phương (Phó ban).</span></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start">
+              
+              <div><strong style="color:#c084fc">Ban Truyền Thông:</strong> <span style="color:#cbd5e1">Đoàn Phước Trường Hải (Trưởng ban), Nguyễn Minh Hiển (Phó ban) · Phụ trách Media & Fanpage.</span></div>
+            </div>
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #00B2FF;border-radius:0 8px 8px 0;padding:6px 12px">
+              <strong style="color:#00B2FF">Tiểu Ban Kỹ Thuật:</strong> <span style="color:#e2e8f0">Lê Đức Anh Phương (FE), Lê Đình Đăng Khoa (BE), Nguyễn Lê Đăng Thành (Game), Phạm Đức Truyền (Giải thuật).</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0f1a2e 0%,#0a2228 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Dự Án Thực Chiến Nổi Bật
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.83rem">
+            <div style="background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#10b981">DEVER TOWN:</strong> <span style="color:#e2e8f0">Nền tảng Gather.town 2D kết nối cộng đồng FUDA, 9 phân khu chức năng, minigame realtime.</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.08);border-left:3px solid #38bdf8;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#38bdf8">Bộ Cẩm Nang Ôn Thi PE SWE201c:</strong> <span style="color:#e2e8f0">Học liệu thực hành độc quyền hướng dẫn chi tiết bài tập, lý thuyết và cấu trúc đề thi.</span>
+            </div>
+            <div style="background:rgba(251,191,36,0.08);border-left:3px solid #fbbf24;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">Căn Tin Số & Cổng Tiện Ích:</strong> <span style="color:#e2e8f0">Hệ sinh thái web tra cứu thực đơn, IT Helpdesk, hỗ trợ đời sống sinh viên FPTU Đà Nẵng.</span>
+            </div>
+            <div style="background:rgba(242,111,33,0.08);border-left:3px solid #f26f21;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#f26f21">Đấu Trường Hackathon & ICPC:</strong> <span style="color:#e2e8f0">Đào tạo đội tuyển tham gia các giải thuật toán, lập trình sinh viên quy mô quốc gia.</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#1c1204 0%,#2a1c04 50%,#101a2e 100%)',
+        content: `
+          <h2 style="color:#fbbf24;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Bảng Vàng Thành Tích & Đấu Trường
+          </h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.80rem">
+            <div style="background:rgba(251,191,36,0.09);border-left:3px solid #fbbf24;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">Quán Quân FPT Hackathon:</strong><br/>
+              <span style="color:#cbd5e1">Bảng A Đà Nẵng · Team NEUROSHIP</span>
+            </div>
+            <div style="background:rgba(242,111,33,0.09);border-left:3px solid #f26f21;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#f26f21">Quán Quân Game Craft Arena:</strong><br/>
+              <span style="color:#cbd5e1">FPT Đà Nẵng 2025 · Team ĐỘC LẬP</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.09);border-left:3px solid #38bdf8;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#38bdf8">Á Quân 1 DEVFEST AI 2023:</strong><br/>
+              <span style="color:#cbd5e1">Khu vực Miền Trung · CLB FU-DEVER</span>
+            </div>
+            <div style="background:rgba(192,132,252,0.09);border-left:3px solid #c084fc;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#c084fc">Chung Kết CodeMosaic 2025:</strong><br/>
+              <span style="color:#cbd5e1">4h thi thuật toán · Team DeverLastHope K20</span>
+            </div>
+            <div style="background:rgba(16,185,129,0.09);border-left:3px solid #10b981;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#10b981">ResConnect & ResFes 2026:</strong><br/>
+              <span style="color:#cbd5e1">Giải Khuyến khích NCKH & Toàn quốc · Team AI</span>
+            </div>
+            <div style="background:rgba(244,114,182,0.09);border-left:3px solid #f472b6;padding:8px 10px;border-radius:0 8px 8px 0">
+              <strong style="color:#f472b6">Giải Thưởng SHECODES Tech:</strong><br/>
+              <span style="color:#cbd5e1">Sản phẩm công nghệ nữ · Team SPOIL</span>
+            </div>
+          </div>
+          <div style="margin-top:8px;background:rgba(255,255,255,0.04);border-radius:6px;padding:6px 12px;font-size:0.75rem;text-align:center;color:#94a3b8">
+            Vinh danh các thành viên đạt danh hiệu <strong style="color:#fbbf24">Cóc Vàng FUDA</strong> qua các học kỳ
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0a1224 0%,#180f28 100%)',
+        content: `
+          <h2 style="color:#c084fc;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Quyền Lợi & Gia Nhập CLB
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.83rem">
+            <div style="background:rgba(192,132,252,0.08);border-left:3px solid #c084fc;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#c084fc">Quyền Lợi Thành Viên:</strong> <span style="color:#e2e8f0">Học tập theo nhóm chuyên sâu, được mentor kèm 1:1, code dự án thật theo Git Flow và CI/CD.</span>
+            </div>
+            <div style="background:rgba(0,178,255,0.08);border-left:3px solid #00B2FF;padding:9px 13px;border-radius:0 8px 8px 0">
+              <strong style="color:#00B2FF">Đợt Tuyển Quân:</strong> <span style="color:#e2e8f0">Mở đơn vào đầu mỗi học kỳ (Fall, Spring, Summer) dành cho toàn thể sinh viên đam mê CNTT tại FUDA.</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:8px;display:flex;justify-content:space-around;text-align:center;margin-top:4px">
+              <div><strong style="color:#00B2FF;display:block">Fanpage</strong><span style="color:#94a3b8;font-size:0.75rem">fb.com/FPTUDever</span></div>
+              <div><strong style="color:#10b981;display:block">Website</strong><span style="color:#94a3b8;font-size:0.75rem">fudever.com</span></div>
+              <div><strong style="color:#f26f21;display:block">Email</strong><span style="color:#94a3b8;font-size:0.75rem">club.dever@gmail.com</span></div>
+            </div>
           </div>
         `
       }
@@ -585,31 +731,83 @@ export const ROOM_SLIDE_PRESETS = [
     url: '',
     slides: [
       {
-        bg: 'linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)',
+        bg: 'linear-gradient(135deg,#081020 0%,#162a45 50%,#0c1a2e 100%)',
         content: `
-          <div style="text-align:center;padding:16px 0">
-            <div style="font-size:52px">📖</div>
-            <h1 style="color:#38bdf8;font-size:1.7rem;font-weight:900;margin:12px 0 8px">CẨM NANG TÂN BINH</h1>
-            <p style="color:#94a3b8">FPT University Đà Nẵng • FUDA</p>
+          <div style="text-align:center;padding:12px 0">
+            <img src="/assets/stickers/buggy/1.png" style="width:70px;height:70px;object-fit:contain;margin-bottom:6px;filter:drop-shadow(0 0 10px rgba(255,184,0,0.4))" alt="Buggy Mascot" />
+            <h1 style="color:#38bdf8;font-size:1.7rem;font-weight:900;margin:6px 0 4px">CẨM NANG TÂN BINH</h1>
+            <p style="color:#94a3b8;font-size:0.92rem;margin:0 0 10px">FPT University Đà Nẵng • Khóa K18 - K22</p>
+            <div style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:8px 18px;display:inline-block">
+              <span style="color:#fbbf24;font-size:0.82rem;font-weight:700">Tất cả bí kíp học vụ, đồ án & cổng thông tin cần nằm lòng</span>
+            </div>
           </div>
         `
       },
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#1a2744 100%)',
         content: `
-          <h2 style="color:#f26f21;font-size:1.3rem;font-weight:800;margin:0 0 14px">🎢 Thời Khóa Biểu FPTU</h2>
-          <div style="display:grid;gap:8px;font-size:0.88rem">
+          <h2 style="color:#f26f21;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            <span>⏰</span> Thời Khóa Biểu & 3 Ca Học FPTU
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.84rem">
             <div style="background:rgba(56,189,248,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
-              <span style="font-size:22px">⏰</span><div><strong style="color:#38bdf8">Ca 1:</strong> <span style="color:#e2e8f0">07:30 – 09:00 | 09:15 – 10:45 | 11:00 – 12:30</span></div>
+              <div><strong style="color:#38bdf8">Ca Sáng (Ca 1):</strong> <span style="color:#e2e8f0">Slot 1: 07:30–09:00 | Slot 2: 09:15–10:45 | Slot 3: 11:00–12:30</span></div>
             </div>
             <div style="background:rgba(242,111,33,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
-              <span style="font-size:22px">☀️</span><div><strong style="color:#f26f21">Ca 2:</strong> <span style="color:#e2e8f0">13:00 – 14:30 | 14:45 – 16:15 | 16:30 – 18:00</span></div>
+              <div><strong style="color:#f26f21">Ca Chiều (Ca 2):</strong> <span style="color:#e2e8f0">Slot 4: 13:00–14:30 | Slot 5: 14:45–16:15 | Slot 6: 16:30–18:00</span></div>
             </div>
             <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
-              <span style="font-size:22px">🌙</span><div><strong style="color:#10b981">Ca 3:</strong> <span style="color:#e2e8f0">18:15 – 19:45 | 20:00 – 21:30</span></div>
+              <div><strong style="color:#10b981">Ca Tối (Ca 3):</strong> <span style="color:#e2e8f0">Slot 7: 18:15–19:45 | Slot 8: 20:00–21:30 (Thường dành cho ngoại ngữ/ôn thi)</span></div>
             </div>
             <div style="background:rgba(251,191,36,0.1);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center">
-              <span style="font-size:22px">📌</span><div><strong style="color:#fbbf24">Lưu ý:</strong> <span style="color:#e2e8f0">Thi PE: Online + Offline tại cơ sở. Thi FE: Offline bắt buộc</span></div>
+              <div><strong style="color:#fbbf24">Lưu ý Thi Cử:</strong> <span style="color:#e2e8f0">Thi PE thực hành code phòng máy. Thi FE lý thuyết offline bắt buộc đúng giờ.</span></div>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0c1a2e 0%,#132438 100%)',
+        content: `
+          <h2 style="color:#38bdf8;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            5 Cổng Thông Tin Bắt Buộc Cần Nằm Lòng
+          </h2>
+          <div style="display:grid;gap:7px;font-size:0.82rem">
+            <div style="background:rgba(255,255,255,0.04);border-left:3px solid #38bdf8;padding:8px 12px;border-radius:0 8px 8px 0">
+              <strong style="color:#38bdf8">FAP / myFAP:</strong> <span style="color:#e2e8f0">Tra cứu Thời khóa biểu, điểm danh từng slot, bảng điểm tổng kết và nộp đơn từ trực tuyến.</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-left:3px solid #10b981;padding:8px 12px;border-radius:0 8px 8px 0">
+              <strong style="color:#10b981">CMS / LMS:</strong> <span style="color:#e2e8f0">Tải tài liệu bài giảng hàng tuần, nộp Assignment và Lab thực hành theo hạn deadline.</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-left:3px solid #fbbf24;padding:8px 12px;border-radius:0 8px 8px 0">
+              <strong style="color:#fbbf24">FLM (Curriculum):</strong> <span style="color:#e2e8f0">Tra cứu khung chương trình toàn khóa, đề cương môn học (Syllabus) và môn tiên quyết.</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-left:3px solid #c084fc;padding:8px 12px;border-radius:0 8px 8px 0">
+              <strong style="color:#c084fc">Coursera (Môn đuôi "c"):</strong> <span style="color:#e2e8f0">Học trực tuyến qua tài khoản trường cấp; bắt buộc pass 100% để đủ điều kiện thi thẩm định.</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border-left:3px solid #f26f21;padding:8px 12px;border-radius:0 8px 8px 0">
+              <strong style="color:#f26f21">EduNext:</strong> <span style="color:#e2e8f0">Nền tảng học nhóm, trả lời câu hỏi phản biện và chấm điểm chéo bạn cùng lớp.</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#0c1a2e 0%,#1e293b 100%)',
+        content: `
+          <h2 style="color:#10b981;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            4 Quy Chế Đào Tạo Sống Còn
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.83rem">
+            <div style="background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#f87171">Chuyên Cần 20%:</strong> <span style="color:#cbd5e1">Nghỉ quá 20% thời lượng slot môn học vì bất kỳ lý do gì sẽ bị đánh trượt (F). Khiếu nại điểm danh trong vòng 48h.</span>
+            </div>
+            <div style="background:rgba(56,189,248,0.1);border-left:3px solid #38bdf8;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#38bdf8">Điều Kiện Đi OJT:</strong> <span style="color:#cbd5e1">Sinh viên phải tích lũy và hoàn thành tối thiểu 90% số tín chỉ khung chương trình trước kỳ thực tập.</span>
+            </div>
+            <div style="background:rgba(168,85,247,0.1);border-left:3px solid #a855f7;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#c084fc">Hạ Bậc Xếp Loại Tốt Nghiệp:</strong> <span style="color:#cbd5e1">Nếu học lại quá 5% tổng số tín chỉ, sinh viên xếp loại Giỏi/Xuất sắc sẽ bị giảm 1 bậc tốt nghiệp.</span>
+            </div>
+            <div style="background:rgba(251,191,36,0.1);border-left:3px solid #fbbf24;padding:8px 12px;border-radius:0 6px 6px 0">
+              <strong style="color:#fbbf24">Thẩm Định Môn Coursera:</strong> <span style="color:#cbd5e1">Bắt buộc tham gia kỳ thi thẩm định offline tại cơ sở trường mới được công nhận điểm chính thức.</span>
             </div>
           </div>
         `
@@ -617,39 +815,21 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#c084fc;font-size:1.3rem;font-weight:800;margin:0 0 14px">🛡️ Bí Kíp Sống Sót Đồ Án</h2>
-          <div style="display:grid;gap:9px;font-size:0.87rem">
+          <h2 style="color:#c084fc;font-size:1.25rem;font-weight:800;margin:0 0 12px;display:flex;align-items:center;gap:8px">
+            Bí Kíp Sống Sót Đồ Án & Làm Việc Nhóm
+          </h2>
+          <div style="display:grid;gap:8px;font-size:0.84rem">
             ${[
-              ['\ud83d\udc40', 'Bắt đầu từ Tuần 1', 'Không chờ deadline mới làm. Plan ngay từ ngày 1.'],
-              ['\ud83e\udd1d', 'Phân công rõ ràng', 'Dùng Trello/Notion. Mỗi người 1 task cụ thể.'],
-              ['\ud83d\udd17', 'Git Flow chuẩn', 'main > develop > feature/... Commit tiếng Anh.'],
-              ['\ud83d\udcac', 'Học từ Mentor', 'CLB có mentor free. Hỏi sớm, hỏi đúng, ghi lại.']
+              ['1', 'Khởi Động Ngay Từ Tuần 1', 'Không chờ deadline mới lập trình. Lập Backlog và phân công công việc từ ngày đầu tiên.'],
+              ['2', 'Phân Chia Trách Nhiệm Minh Bạch', 'Sử dụng Trello/Notion/Jira. Mỗi thành viên chịu trách nhiệm độc lập từng User Story.'],
+              ['3', 'Quy Chuẩn Git Flow', 'Phân nhánh feature/..., tuyệt đối không push thẳng main. Viết commit message rõ ràng.'],
+              ['4', 'Kết Nối Mentor FU-DEVER', 'Thành viên CLB được mentor 1:1, hỗ trợ tháo gỡ bug hóc búa tại Tòa Gamma Tech Lab.']
             ].map(([icon, title, desc]) => `
-              <div style="display:flex;gap:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 14px">
-                <span style="font-size:22px;flex-shrink:0">${icon}</span>
-                <div><strong style="color:#c084fc">${title}</strong><br><span style="color:#94a3b8">${desc}</span></div>
+              <div style="display:flex;gap:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:9px 12px;align-items:flex-start">
+                <span style="font-size:20px;flex-shrink:0">${icon}</span>
+                <div><strong style="color:#c084fc">${title}:</strong> <span style="color:#94a3b8">${desc}</span></div>
               </div>
             `).join('')}
-          </div>
-        `
-      },
-      {
-        bg: 'linear-gradient(135deg,#0c1a2e 0%,#1e293b 100%)',
-        content: `
-          <h2 style="color:#10b981;font-size:1.3rem;font-weight:800;margin:0 0 14px">⚖️ Quy Chế Học Vụ Sống Còn</h2>
-          <div style="display:grid;gap:8px;font-size:0.86rem">
-            <div style="background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;padding:8px 12px;border-radius:0 6px 6px 0">
-              <strong style="color:#f87171">Vắng học & Điểm danh:</strong> <span style="color:#cbd5e1">Nghỉ quá 20% thời lượng là trượt môn (F). Khiếu nại điểm danh trong vòng 48h trên FAP.</span>
-            </div>
-            <div style="background:rgba(56,189,248,0.1);border-left:3px solid #38bdf8;padding:8px 12px;border-radius:0 6px 6px 0">
-              <strong style="color:#38bdf8">Điều kiện đi OJT:</strong> <span style="color:#cbd5e1">Phải tích lũy và pass tối thiểu 90% số tín chỉ khung chương trình trước kỳ thực tập.</span>
-            </div>
-            <div style="background:rgba(251,191,36,0.1);border-left:3px solid #fbbf24;padding:8px 12px;border-radius:0 6px 6px 0">
-              <strong style="color:#fbbf24">Môn Coursera (đuôi "c"):</strong> <span style="color:#cbd5e1">Bắt buộc hoàn thành 100% online và thi thẩm định offline tại trường để công nhận điểm.</span>
-            </div>
-            <div style="background:rgba(168,85,247,0.1);border-left:3px solid #a855f7;padding:8px 12px;border-radius:0 6px 6px 0">
-              <strong style="color:#c084fc">Học lại & Xếp loại:</strong> <span style="color:#cbd5e1">Đăng ký sớm được giảm 50% học phí. Học lại >5% tín chỉ bị hạ 1 bậc tốt nghiệp Giỏi/Xuất sắc.</span>
-            </div>
           </div>
         `
       }
@@ -667,7 +847,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a2e 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:52px">🚀</div>
+            
             <h1 style="color:#38bdf8;font-size:1.6rem;font-weight:900;margin:12px 0 6px">TECH ROADMAP 2026</h1>
             <p style="color:#94a3b8">FU-DEVER • FUDA</p>
             <div style="display:inline-flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center">
@@ -679,7 +859,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0c1a2e 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🌐 Lộ Trình Web Fullstack</h2>
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">Lộ Trình Web Fullstack</h2>
           <div style="display:grid;gap:6px;font-size:0.82rem">
             ${[
               {phase:'Tháng 1-2', items:['HTML/CSS/JS cơ bản','Git & GitHub','Responsive Design'], color:'#38bdf8'},
@@ -697,7 +877,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#1a0f2e 100%)',
         content: `
-          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">🎮 Lộ Trình 2D Game Dev</h2>
+          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">Lộ Trình 2D Game Dev</h2>
           <div style="display:grid;gap:6px;font-size:0.82rem">
             ${[
               {phase:'Cơ bản', items:['JavaScript ES6+', 'Canvas 2D API', 'Vật lý tưới'], color:'#fbbf24'},
@@ -726,7 +906,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0f172a 0%,#1f1a09 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:52px">🔥</div>
+            
             <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">HACKATHON GUIDE</h1>
             <p style="color:#94a3b8">Quy trình 24h • Từ Ý Tưởng → Sản Phẩm</p>
           </div>
@@ -755,7 +935,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a0a 100%)',
         content: `
-          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🔗 Git Flow Chuẩn CLB</h2>
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">Git Flow Chuẩn CLB</h2>
           <div style="background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:0.82rem;line-height:1.8;color:#e2e8f0;border:1px solid rgba(255,255,255,0.08)">
             <span style="color:#fbbf24"># Khởi tạo dự án</span><br>
             git checkout -b <span style="color:#10b981">develop</span><br>
@@ -782,7 +962,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0f172a 0%,#1a2744 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:48px">📚</div>
+            
             <h1 style="color:#38bdf8;font-size:1.6rem;font-weight:900;margin:12px 0 6px">ÔN THI PE & FE</h1>
             <p style="color:#94a3b8">PRF192 • PRO192 • CSD201 • SWE201c</p>
           </div>
@@ -791,7 +971,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#1a2744 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">📝 Cấu Trúc Thi</h2>
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">Cấu Trúc Thi</h2>
           <div style="display:grid;gap:8px;font-size:0.85rem">
             ${[
               {mon:'PRF192 (C cơ bản)',pe:'15 MCQ (30p)',fe:'Code thực hành 90p',c:'#38bdf8'},
@@ -810,7 +990,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
         content: `
-          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">💡 Tips Ôn Thi Hiệu Quả</h2>
+          <h2 style="color:#c084fc;font-size:1.2rem;font-weight:800;margin:0 0 12px">Tips Ôn Thi Hiệu Quả</h2>
           <div style="display:grid;gap:9px;font-size:0.85rem">
             ${[
               ['\ud83d\udcdd','Làm lại đề cu lầu x3','Không xem đáp án làm lại từ đầu'],
@@ -840,7 +1020,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0f172a 0%,#1a1040 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:48px">🧠</div>
+            
             <h1 style="color:#c084fc;font-size:1.6rem;font-weight:900;margin:12px 0 6px">100 BÀI CODE</h1>
             <p style="color:#94a3b8">Thuật toán luyện thi ICPC & Competitive Programming</p>
           </div>
@@ -849,7 +1029,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#1a1040 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">📈 Lộ Trình 100 Bài</h2>
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">Lộ Trình 100 Bài</h2>
           <div style="display:grid;gap:8px;font-size:0.83rem">
             ${[
               {cat:'Bài 1–20: Nền Tảng', items:['Array/String','Sorting cơ bản','Two Pointers','Binary Search'], c:'#38bdf8'},
@@ -868,7 +1048,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#0c1a0a 100%)',
         content: `
-          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 10px">💻 Mẫu Code: Binary Search</h2>
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 10px">Mẫu Code: Binary Search</h2>
           <div style="background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:0.8rem;line-height:1.8;color:#e2e8f0;border:1px solid rgba(255,255,255,0.08);overflow:auto">
             <span style="color:#c084fc">function</span> <span style="color:#38bdf8">binarySearch</span>(arr, target) {<br>
             &nbsp;&nbsp;<span style="color:#c084fc">let</span> lo = <span style="color:#fbbf24">0</span>, hi = arr.length - <span style="color:#fbbf24">1</span>;<br>
@@ -897,7 +1077,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#1a0c04 0%,#2d1a08 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:48px">🍱</div>
+            
             <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">CĂN TIN FUDA</h1>
             <p style="color:#94a3b8">Cơm sinh viên tờ mỏ • Cà phê giữ tiểu tinh</p>
           </div>
@@ -906,7 +1086,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#2d1a08 0%,#1a0c04 100%)',
         content: `
-          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">🍽️ Menu Hôm Nay</h2>
+          <h2 style="color:#f26f21;font-size:1.2rem;font-weight:800;margin:0 0 12px">Menu Hôm Nay</h2>
           <div style="display:grid;gap:8px;font-size:0.85rem">
             ${[
               {name:'Cơm Gà Rán sạch',price:'25.000đ',note:'Best seller • Được cả CLB yêu',e:'\ud83c\udf57'},
@@ -925,16 +1105,16 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#1a0c04 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">☕ Công Thức Cà Phê Muối</h2>
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">Công Thức Cà Phê Muối</h2>
           <div style="display:grid;gap:8px;font-size:0.85rem">
             <div style="background:#0d1117;border-radius:10px;padding:14px;border:1px solid rgba(242,111,33,0.2)">
-              <p style="color:#94a3b8;font-size:0.8rem;margin:0 0 10px">📌 Nguyên liệu cho 1 ly:</p>
+              <p style="color:#94a3b8;font-size:0.8rem;margin:0 0 10px">Nguyên liệu cho 1 ly:</p>
               ${['Cà phê đầu 15ml (espresso mạnh)','Muối biển 1/4 muỗng cà phê','Whipped cream (kem tươi đánh bông)','Condensed milk 2 muỗng + đá viên'].map(i => `
                 <div style="display:flex;gap:8px;align-items:center;margin:6px 0">
                   <span style="color:#f26f21">•</span><span style="color:#e2e8f0">${i}</span>
                 </div>
               `).join('')}
-              <p style="color:#64748b;font-size:0.78rem;margin:12px 0 0">💡 <em>Muối triệt tiêu vị đắng → hương cà phê nổi rõ và trộn hơn!</em></p>
+              <p style="color:#64748b;font-size:0.78rem;margin:12px 0 0"><em>Muối triệt tiêu vị đắng → hương cà phê nổi rõ và trộn hơn!</em></p>
             </div>
           </div>
         `
@@ -953,7 +1133,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0a1f0a 0%,#112211 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:48px">🌿</div>
+            
             <h1 style="color:#10b981;font-size:1.5rem;font-weight:900;margin:12px 0 6px">HEALTHY CODING LIFE</h1>
             <p style="color:#94a3b8">Dinh dưỡng khoa học cho Developer FUDA</p>
           </div>
@@ -962,7 +1142,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#112211 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">🍚 Thực Phẩm Giữ Tỉnh</h2>
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">Thực Phẩm Giữ Tỉnh</h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem">
             ${[
               {e:'\ud83e\uddd0',name:'Quả óc chó',desc:'Tăng tập trung, tốt cho não',c:'#fbbf24'},
@@ -983,8 +1163,8 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#0f172a 0%,#112211 100%)',
         content: `
-          <h2 style="color:#38bdf8;font-size:1.2rem;font-weight:800;margin:0 0 12px">🧘 Bài Tập Giãn Cơ Cho Dev</h2>
-          <p style="color:#64748b;font-size:0.8rem;margin:0 0 10px">▶️ Thực hiện mỗi 2 tiếng ngồi code (5 phút)</p>
+          <h2 style="color:#38bdf8;font-size:1.2rem;font-weight:800;margin:0 0 12px">Bài Tập Giãn Cơ Cho Dev</h2>
+          <p style="color:#64748b;font-size:0.8rem;margin:0 0 10px">Thực hiện mỗi 2 tiếng ngồi code (5 phút)</p>
           <div style="display:grid;gap:7px;font-size:0.83rem">
             ${[
               ['\ud83d\udc40','Mắt','Nhìn xa 6m trong 20 giây. Lặp 3 lần (Quy tắc 20-20-20)'],
@@ -1008,33 +1188,51 @@ export const ROOM_SLIDE_PRESETS = [
     room: 'memory_room',
     roomName: 'Phòng Kỷ Niệm',
     title: 'Bảng Vàng Vinh Danh',
-    desc: '20+ giải thưởng ICPC & Hackathon qua các thế hệ',
+    desc: 'Bảng vàng thành tích & cúp vô địch các giải đấu lớn của FU-DEVER',
     url: '',
     slides: [
       {
         bg: 'linear-gradient(135deg,#1a1000 0%,#2a1a00 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:52px">🏆</div>
+            
             <h1 style="color:#fbbf24;font-size:1.6rem;font-weight:900;margin:12px 0 6px">BẢNG VÀNG VINH DANH</h1>
-            <p style="color:#94a3b8">FU-DEVER • Thành Tích Thi Đấu 2017–2026</p>
+            <p style="color:#94a3b8">FU-DEVER • Đấu Trường Công Nghệ & Giải Đấu Sinh Viên</p>
           </div>
         `
       },
       {
         bg: 'linear-gradient(135deg,#2a1a00 0%,#1a1000 100%)',
         content: `
-          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">🥇 Các Cuộc Thi Nổi Bật</h2>
+          <h2 style="color:#fbbf24;font-size:1.2rem;font-weight:800;margin:0 0 12px">Cúp Vô Địch & Quán Quân</h2>
           <div style="display:grid;gap:8px;font-size:0.85rem">
             ${[
-              {award:'🥇 ICPC Vietnam','year':'2022 & 2024','detail':'Lọc 2 khu vực, ĐN Đứng đầu'},
-              {award:'🥈 FPT Edu Hackathon','year':'2023','detail':'Top 3 Hà Nội & Đà Nẵng'},
-              {award:'🏅 ResFes FPTU','year':'2022–2024','detail':'Giải nhất khối Kỹ Thuật mọi năm'},
-              {award:'⭐ NIC Hackathon','year':'2024','detail':'Top 10 toàn quốc - AI Track'}
+              {award:'Quán Quân FPT Hackathon Đà Nẵng','team':'Team NEUROSHIP · Bảng A Đà Nẵng','year':'Quán quân','color':'#fbbf24'},
+              {award:'Quán Quân Game Craft Arena 2025','team':'Đội Game ĐỘC LẬP · FPT Đà Nẵng','year':'Vô địch','color':'#f26f21'},
+              {award:'Á Quân 1 DEVFEST AI Hackathon 2023','team':'CLB FU-DEVER · Khu Vực Miền Trung','year':'Á Quân 1','color':'#38bdf8'}
             ].map(r => `
-              <div style="display:flex;justify-content:space-between;background:rgba(251,191,36,0.07);border-radius:8px;padding:9px 14px;align-items:center">
-                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#64748b;font-size:0.78rem">${r.detail}</span></div>
-                <span style="color:#fbbf24;font-weight:700;font-size:0.82rem">${r.year}</span>
+              <div style="display:flex;justify-content:space-between;background:rgba(251,191,36,0.07);border-left:3px solid ${r.color};border-radius:0 8px 8px 0;padding:9px 14px;align-items:center">
+                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#94a3b8;font-size:0.78rem">${r.team}</span></div>
+                <span style="color:${r.color};font-weight:700;font-size:0.82rem">${r.year}</span>
+              </div>
+            `).join('')}
+          </div>
+        `
+      },
+      {
+        bg: 'linear-gradient(135deg,#121b2d 0%,#091220 100%)',
+        content: `
+          <h2 style="color:#38bdf8;font-size:1.2rem;font-weight:800;margin:0 0 12px">Giải Thưởng & Dấu Ấn Chuyên Môn</h2>
+          <div style="display:grid;gap:8px;font-size:0.85rem">
+            ${[
+              {award:'Chung Kết CodeMosaic 2025','team':'Đội DeverLastHope K20 · Đấu thuật toán 4h','year':'Chung kết','color':'#c084fc'},
+              {award:'ResConnect 2026 & FPT Edu ResFes 2026','team':'Team Absolutely Inefficient (AI) · Cú đúp Giải Khuyến khích','year':'ResFes 2026','color':'#10b981'},
+              {award:'Giải Thưởng Sáng Tạo SHECODES','team':'SPOIL TEAM · Sản phẩm công nghệ nữ sinh','year':'SheCodes','color':'#f472b6'},
+              {award:'Danh Hiệu Cóc Vàng FUDA','team':'Thành viên tiêu biểu CLB qua các học kỳ','year':'Danh hiệu','color':'#fbbf24'}
+            ].map(r => `
+              <div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.04);border-left:3px solid ${r.color};border-radius:0 8px 8px 0;padding:8px 14px;align-items:center">
+                <div><strong style="color:#e2e8f0">${r.award}</strong><br><span style="color:#94a3b8;font-size:0.78rem">${r.team}</span></div>
+                <span style="color:${r.color};font-weight:700;font-size:0.82rem">${r.year}</span>
               </div>
             `).join('')}
           </div>
@@ -1054,7 +1252,7 @@ export const ROOM_SLIDE_PRESETS = [
         bg: 'linear-gradient(135deg,#0a1f0a 0%,#112211 100%)',
         content: `
           <div style="text-align:center">
-            <div style="font-size:48px">⚽</div>
+            
             <h1 style="color:#10b981;font-size:1.6rem;font-weight:900;margin:12px 0 6px">DEVER CUP 2026</h1>
             <p style="color:#94a3b8">Điều lệ giải bóng đá giao hữu sinh viên FUDA</p>
           </div>
@@ -1063,7 +1261,7 @@ export const ROOM_SLIDE_PRESETS = [
       {
         bg: 'linear-gradient(135deg,#112211 0%,#0f172a 100%)',
         content: `
-          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">📜 Điều Lệ Thi Đấu</h2>
+          <h2 style="color:#10b981;font-size:1.2rem;font-weight:800;margin:0 0 12px">Điều Lệ Thi Đấu</h2>
           <div style="display:grid;gap:8px;font-size:0.84rem">
             ${[
               ['\ud83d\udc65','Thành Phần','5 người/đội. Tối đa 8 đội/giải. Mỗi người chỉ đăng ký 1 đội.'],
