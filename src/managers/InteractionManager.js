@@ -144,36 +144,28 @@ export class InteractionManager {
 
       // 1. Màu nhận diện theo loại zone
       let color = 0x38bdf8; // Default Cyan
-      let icon = '⚡';
 
       switch (zone.type) {
         case 'whiteboard_slides':
           color = 0x3b82f6; // Blue
-          icon = '📊';
           break;
         case 'meeting_stage':
           color = 0x10b981; // Emerald
-          icon = '🎤';
           break;
         case 'code_editor':
           color = 0x8b5cf6; // Purple
-          icon = '💻';
           break;
         case 'coffee_lofi':
           color = 0xf26f21; // FPT Orange
-          icon = '☕';
           break;
         case 'gallery_memory':
           color = 0xfbbf24; // Gold
-          icon = '🖼️';
           break;
         case 'club_website':
           color = 0x06b6d4; // Cyan Neon
-          icon = '🌐';
           break;
         case 'sports_activity':
           color = 0x22c55e; // Green
-          icon = '⚽';
           break;
         default:
           break;
@@ -205,14 +197,14 @@ export class InteractionManager {
       const isStaggered = (zone.tileX + zone.tileY) % 2 === 1;
       const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
-      const badgeText = this.scene.add.text(0, 0, `${icon} ${zoneName}`, {
+      const badgeText = this.scene.add.text(0, 0, zoneName, {
         fontFamily: "'Outfit', sans-serif",
         fontSize: '9px',
         fontWeight: '700',
         color: '#ffffff'
       }).setOrigin(0.5, 0.5);
 
-      const fullText = `${icon} ${zoneName}`;
+      const fullText = zoneName;
       const estTextWidth = Math.max(badgeText.width || 0, fullText.length * 8 + 14);
       const badgeWidth = Math.max(72, Math.round(estTextWidth + 16));
       const halfW = badgeWidth / 2;

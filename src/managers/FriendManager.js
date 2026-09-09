@@ -45,7 +45,7 @@ class FriendManager {
         }
       }
     } catch (e) {
-      console.warn('⚠️ [FriendManager] Lỗi đọc dữ liệu bạn bè:', e);
+      console.warn('[FriendManager] Lỗi đọc dữ liệu bạn bè:', e);
       this.friends.clear();
     }
   }
@@ -62,7 +62,7 @@ class FriendManager {
 
       this.notifyListeners();
     } catch (e) {
-      console.warn('⚠️ [FriendManager] Lỗi lưu dữ liệu bạn bè:', e);
+      console.warn('[FriendManager] Lỗi lưu dữ liệu bạn bè:', e);
     }
   }
 
@@ -272,9 +272,9 @@ class FriendManager {
     const dateStr = new Date(friend.friendedAt).toLocaleDateString('vi-VN');
 
     if (diffDays <= 0) {
-      return `Vừa trở thành bạn bè hôm nay 💕 (Từ ${dateStr})`;
+      return `Vừa trở thành bạn bè hôm nay (Từ ${dateStr})`;
     }
-    return `Đã là bạn bè được ${diffDays} ngày 🤝 (Từ ${dateStr})`;
+    return `Đã là bạn bè được ${diffDays} ngày (Từ ${dateStr})`;
   }
 
   getTodayDateString() {

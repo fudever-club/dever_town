@@ -35,7 +35,7 @@ export class PlayerProfileModal {
               <h3 id="target-player-name" class="profile-player-name">Tên người chơi</h3>
               <span id="target-player-role" class="profile-role-badge">Dev</span>
             </div>
-            <p id="target-player-status" class="profile-player-status">🟢 Đang cùng phòng với bạn</p>
+            <p id="target-player-status" class="profile-player-status">Đang cùng phòng với bạn</p>
           </div>
         </div>
 
@@ -126,7 +126,7 @@ export class PlayerProfileModal {
       // 1. Chưa là bạn bè
       bodyEl.innerHTML = `
         <div class="profile-not-friend-box">
-          <div class="not-friend-icon">${isPending ? '⏳' : '🤝'}</div>
+          <div class="not-friend-icon">DEVER</div>
           <h4 class="not-friend-title">${isPending ? 'Đang chờ phản hồi...' : 'Chưa kết bạn'}</h4>
           <p class="not-friend-desc">
             ${isPending
@@ -138,10 +138,10 @@ export class PlayerProfileModal {
 
       actionsEl.innerHTML = `
         <button type="button" class="btn-profile-action add-friend ${isPending ? 'pending' : ''}" id="btn-add-friend" ${isPending ? 'disabled style="opacity:0.65;cursor:not-allowed;"' : ''}>
-          <span>${isPending ? '⏳' : '🤝'}</span> ${isPending ? 'Đã Gửi Lời Mời...' : 'Gửi Lời Mời Kết Bạn'}
+          ${isPending ? 'Đã Gửi Lời Mời...' : 'Gửi Lời Mời Kết Bạn'}
         </button>
         <button type="button" class="btn-profile-action whisper" id="btn-whisper-player">
-          <span>💬</span> Nhắn Tin
+          Nhắn Tin
         </button>
       `;
 
@@ -161,7 +161,7 @@ export class PlayerProfileModal {
           } else {
             // Không có kết nối Socket: nhắc người chơi
             if (worldScene && worldScene.showToast) {
-              worldScene.showToast('⚠️ Bạn cần kết nối mạng để gửi lời mời kết bạn!');
+              worldScene.showToast('Bạn cần kết nối mạng để gửi lời mời kết bạn!');
             } else {
               alert('Bạn cần kết nối mạng để gửi lời mời kết bạn!');
             }
@@ -176,22 +176,22 @@ export class PlayerProfileModal {
 
       // Tính tiến trình thú cưng
       let progressPercent = 100;
-      let progressLabel = 'Đạt cấp độ tối thượng 🌟';
+      let progressLabel = 'Đạt cấp độ tối thượng';
       if (pet.level === 1) {
         progressPercent = Math.min(100, Math.round((streak / 3) * 100));
-        progressLabel = `${streak} / 3 ngày để nở Trứng thành Buggy Chibi 🐞`;
+        progressLabel = `${streak} / 3 ngày để nở Trứng thành Buggy Chibi`;
       } else if (pet.level === 2) {
         progressPercent = Math.min(100, Math.round(((streak - 3) / (7 - 3)) * 100));
-        progressLabel = `${streak} / 7 ngày để lên Buggy Kỹ Sư ⚡`;
+        progressLabel = `${streak} / 7 ngày để lên Buggy Kỹ Sư`;
       } else if (pet.level === 3) {
         progressPercent = Math.min(100, Math.round(((streak - 7) / (14 - 7)) * 100));
-        progressLabel = `${streak} / 14 ngày để lên Buggy Cầm Cúp 👑`;
+        progressLabel = `${streak} / 14 ngày để lên Buggy Cầm Cúp`;
       }
 
       bodyEl.innerHTML = `
         <div class="profile-friend-stats-card">
           <div class="friend-duration-row">
-            <span class="duration-badge">📅 ${durationText}</span>
+            <span class="duration-badge">${durationText}</span>
           </div>
 
           <!-- Bestie Streak Box -->
@@ -203,7 +203,7 @@ export class PlayerProfileModal {
                 <span class="streak-text-label">Ngày Streak</span>
               </div>
               <div class="streak-status-tag">
-                ${friend.lastStreakDate === friendManager.getTodayDateString() ? '✅ Hôm nay đã duy trì' : '⚡ Nhắn tin để giữ chuỗi!'}
+                ${friend.lastStreakDate === friendManager.getTodayDateString() ? 'Đã duy trì hôm nay' : 'Nhắn tin để giữ chuỗi'}
               </div>
             </div>
             <p class="streak-hint">Nhắn tin trò chuyện mỗi ngày để duy trì lửa tình bạn và nâng cấp thú cưng!</p>
@@ -235,13 +235,13 @@ export class PlayerProfileModal {
 
       actionsEl.innerHTML = `
         <button type="button" class="btn-profile-action whisper" id="btn-whisper-player">
-          <span>💬</span> Nhắn Tin
+          Nhắn Tin
         </button>
         <button type="button" class="btn-profile-action teleport" id="btn-teleport-player">
-          <span>📍</span> Đi Tới Gần
+          Đi Tới Gần
         </button>
         <button type="button" class="btn-profile-action unfriend" id="btn-unfriend-player" title="Hủy kết bạn">
-          <span>💔</span> Hủy Bạn
+          Hủy Bạn
         </button>
       `;
 

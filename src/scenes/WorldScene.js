@@ -227,10 +227,10 @@ export class WorldScene extends Phaser.Scene {
       if (this.audioManager && this.audioManager.playFanfare) {
         this.audioManager.playFanfare();
       }
-      this.showToast(`🎉 ${data.fromName} đã đồng ý kết bạn! Chuỗi Streak ngày 1 đã bắt đầu!`);
+      this.showToast(`${data.fromName} đã đồng ý kết bạn! Chuỗi Streak ngày 1 đã bắt đầu.`);
     } else {
       // Đối phương từ chối
-      this.showToast(`ℹ️ ${data.fromName} đã từ chối lời mời kết bạn.`);
+      this.showToast(`${data.fromName} đã từ chối lời mời kết bạn.`);
     }
 
     if (this.playerProfileModal && this.playerProfileModal.isOpen) {
@@ -239,11 +239,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   handleFriendRequestSent(data) {
-    this.showToast(`📨 Đã gửi lời mời kết bạn tới ${data.targetName}. Đang chờ phản hồi...`);
+    this.showToast(`Đã gửi lời mời kết bạn tới ${data.targetName}. Đang chờ phản hồi...`);
   }
 
   handleFriendRequestFailed(data) {
-    this.showToast(`⚠️ ${data.message || 'Không thể gửi lời mời kết bạn.'}`);
+    this.showToast(`${data.message || 'Không thể gửi lời mời kết bạn.'}`);
     if (this.playerProfileModal && this.playerProfileModal.isOpen) {
       this.playerProfileModal.renderFriendshipContent();
     }
@@ -700,7 +700,7 @@ export class WorldScene extends Phaser.Scene {
         if (this.audioManager && this.audioManager.playFanfare) {
           this.audioManager.playFanfare();
         }
-        this.showToast(`🎉 Bạn và ${req.fromName} đã trở thành bạn bè! Chuỗi Streak ngày 1 đã bắt đầu!`);
+        this.showToast(`Bạn và ${req.fromName} đã trở thành bạn bè! Chuỗi Streak ngày 1 đã bắt đầu.`);
       },
       onDecline: (req) => {
         if (this.socketManager) {

@@ -25,7 +25,7 @@ export class FriendRequestModal {
     this.modalEl.innerHTML = `
       <div class="friend-request-card">
         <div class="friend-request-header">
-          <div class="request-tag">🤝 LỜI MỜI KẾT BẠN</div>
+          <div class="request-tag">LỜI MỜI KẾT BẠN</div>
           <span class="request-timer-badge" id="request-timer-badge">45s</span>
         </div>
 
@@ -50,10 +50,10 @@ export class FriendRequestModal {
 
         <div class="friend-request-actions">
           <button type="button" class="btn-friend-accept" id="btn-friend-accept">
-            <span>✅</span> Đồng Ý Kết Bạn
+            Đồng Ý Kết Bạn
           </button>
           <button type="button" class="btn-friend-decline" id="btn-friend-decline">
-            <span>❌</span> Từ Chối
+            Từ Chối
           </button>
         </div>
       </div>

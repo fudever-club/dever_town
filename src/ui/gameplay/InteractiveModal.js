@@ -129,7 +129,7 @@ export class InteractiveModal {
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
         if (!authService.isAdmin()) {
-          alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
+          alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
           return;
         }
         const input = document.getElementById('slide-url-input');
@@ -954,7 +954,7 @@ export class InteractiveModal {
 
     const code = codeArea.value.trim();
     if (!code) {
-      outputEl.textContent = '⚠️ Vui lòng nhập mã nguồn trước khi thực thi.';
+      outputEl.textContent = 'Vui lòng nhập mã nguồn trước khi thực thi.';
       return;
     }
 
@@ -974,9 +974,9 @@ export class InteractiveModal {
       const logs = [];
       const customConsole = {
         log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-        error: (...args) => logs.push('❌ Error: ' + args.join(' ')),
-        warn: (...args) => logs.push('⚠️ Warning: ' + args.join(' ')),
-        info: (...args) => logs.push('ℹ️ Info: ' + args.join(' '))
+        error: (...args) => logs.push('[Error] ' + args.join(' ')),
+        warn: (...args) => logs.push('[Warning] ' + args.join(' ')),
+        info: (...args) => logs.push('[Info] ' + args.join(' '))
       };
 
       try {
@@ -987,7 +987,7 @@ export class InteractiveModal {
         const outText = logs.length > 0 ? logs.join('\n') : 'Chương trình thực thi thành công (Không có console output).';
         outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Engine • ${elapsed}ms) ===\n${outText}`;
       } catch (err) {
-        outputEl.textContent = `❌ Lỗi thực thi JavaScript: ${err.message}`;
+        outputEl.textContent = `Lỗi thực thi JavaScript: ${err.message}`;
       } finally {
         if (runBtn) {
           runBtn.disabled = false;
@@ -1030,16 +1030,16 @@ export class InteractiveModal {
       let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Status: ${status === '0' ? 'Thành công (0)' : 'Lỗi (' + status + ')'}) ===\n`;
 
       if (compilerError) {
-        displayText += `❌ LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
+        displayText += `LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
       } else if (compilerMsg && compilerMsg.includes('warning')) {
-        displayText += `⚠️ CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
+        displayText += `CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
       }
 
       if (stdout) {
         displayText += stdout;
       }
       if (stderr) {
-        displayText += (stdout ? '\n\n' : '') + `⚠️ RUNTIME STDERR:\n${stderr}`;
+        displayText += (stdout ? '\n\n' : '') + `RUNTIME STDERR:\n${stderr}`;
       }
       if (!stdout && !stderr && !compilerError) {
         displayText += 'Chương trình thực thi hoàn tất không có output.';
@@ -1115,7 +1115,7 @@ export class InteractiveModal {
       ? LOFI_PRESETS
       : LOFI_PRESETS.filter(p => p.genre === this.activeMusicGenre);
 
-    selectEl.innerHTML = `<option value="">🎵 Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
+    selectEl.innerHTML = `<option value="">Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
 
     filtered.forEach(preset => {
       const opt = document.createElement('option');
@@ -1471,21 +1471,21 @@ export class InteractiveModal {
     }
 
     if (sport === 'football') {
-      if (typeBadge) typeBadge.textContent = '⚽ SÚT PHẠT ĐỀN 11M';
+      if (typeBadge) typeBadge.textContent = 'SÚT PHẠT ĐỀN 11M';
       if (descEl) descEl.textContent = 'Canh thanh ngắm qua lại và nhấn nút (hoặc phím SPACE) để sút bóng vào lưới đánh bại thủ môn!';
-      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE) ⚽';
+      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE)';
     } else if (sport === 'basketball') {
-      if (typeBadge) typeBadge.textContent = '🏀 BÓNG RỔ FLAPPY DUNK';
+      if (typeBadge) typeBadge.textContent = 'BÓNG RỔ FLAPPY DUNK';
       if (descEl) descEl.textContent = 'Bấm phím SPACE hoặc Click để nhấp bóng nảy lên, căn lực rơi lọt qua từng chiếc rổ để ghi điểm!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE) 🏀';
+      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE)';
     } else if (sport === 'volleyball') {
-      if (typeBadge) typeBadge.textContent = '🏐 BÓNG CHUYỀN SPIKE RALLY';
+      if (typeBadge) typeBadge.textContent = 'BÓNG CHUYỀN SPIKE RALLY';
       if (descEl) descEl.textContent = 'Dùng phím A/D (hoặc nút bấm) di chuyển, SPACE để nhảy đập bóng đối đầu với Bot FUDA!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE) 🏐';
+      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE)';
     } else if (sport === 'barista') {
-      if (typeBadge) typeBadge.textContent = '☕ QUẦY BARISTA DEVER';
+      if (typeBadge) typeBadge.textContent = 'QUẦY BARISTA DEVER';
       if (descEl) descEl.textContent = 'Canh con trỏ vào Vùng Xanh và bấm nút để pha chế ly Cà Phê Muối / Trà Sữa béo ngậy!';
-      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG ☕';
+      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG';
     }
 
     if (this.sportsArcade) {
@@ -1500,24 +1500,24 @@ export class InteractiveModal {
     if (sport === 'football') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Chuỗi: ${scores.footballStreak || 0}`;
+        streakBadge.textContent = `Chuỗi: ${scores.footballStreak || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.footballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.footballHigh || 0}`;
     } else if (sport === 'basketball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🏀 Điểm: ${scores.basketballScore || 0}`;
+        streakBadge.textContent = `Điểm: ${scores.basketballScore || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.basketballHigh || 0}đ`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.basketballHigh || 0}đ`;
     } else if (sport === 'volleyball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Rally: ${scores.volleyballRally || 0}`;
+        streakBadge.textContent = `Rally: ${scores.volleyballRally || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.volleyballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.volleyballHigh || 0}`;
     } else if (sport === 'barista') {
       if (streakBadge) streakBadge.classList.add('hidden');
-      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${scores.baristaScore || 0}đ`;
+      if (highBadge) highBadge.textContent = `Điểm Barista: ${scores.baristaScore || 0}đ`;
     }
   }
 
@@ -1591,9 +1591,9 @@ export class InteractiveModal {
           <div class="exam-card-badge">${app.tag}</div>
           <h4 class="exam-card-name">${app.name}</h4>
           <p class="exam-card-purpose">${app.purpose}</p>
-          <p class="exam-card-guide">💡 ${app.guide}</p>
+          <p class="exam-card-guide">${app.guide}</p>
           <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="exam-card-download-btn">
-            📥 Tải Bộ Cài Đặt / Truy Cập
+            Tải Bộ Cài Đặt / Truy Cập
           </a>
         `;
         const btn = card.querySelector('.exam-card-download-btn');
@@ -1760,9 +1760,9 @@ export class InteractiveModal {
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
             <div class="charter-info-grid">
-              <div class="charter-stat"><strong>🎯 Sứ Mệnh:</strong> ${def.mission}</div>
-              <div class="charter-stat"><strong>🌟 Tầm Nhìn:</strong> ${def.vision}</div>
-              <div class="charter-stat"><strong>💰 Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
+              <div class="charter-stat"><strong>Sứ Mệnh:</strong> ${def.mission}</div>
+              <div class="charter-stat"><strong>Tầm Nhìn:</strong> ${def.vision}</div>
+              <div class="charter-stat"><strong>Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
             </div>
             <h4 class="charter-sec-heading">Cơ Cấu Ban Chủ Nhiệm (BCN) CLB</h4>
             <div class="charter-roles-list">
@@ -1787,7 +1787,7 @@ export class InteractiveModal {
           <div class="charter-doc-card">
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
-            <div class="swe-authors-tag">✍️ Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
+            <div class="swe-authors-tag">Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
             <h4 class="charter-sec-heading">5 Chủ Đề Trọng Tâm Đề Thi PE SWE201c Thực Tế</h4>
             <div class="swe-topics-list">
               ${def.topics.map(t => `
@@ -1881,19 +1881,19 @@ export class InteractiveModal {
         <p class="robot-card-desc" style="font-size:0.85rem;color:#cbd5e1;line-height:1.5;">${game.desc}</p>
         
         <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;margin-top:auto;font-size:11.5px;color:#94a3b8;display:grid;gap:4px;">
-          <div><strong style="color:#fbbf24;">📦 Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
-          <div><strong style="color:#10b981;">🚀 File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
-          <div><strong style="color:#38bdf8;">🎮 Phím bấm:</strong> ${game.controls}</div>
-          <div><strong style="color:#c084fc;">⚙️ Yêu cầu:</strong> ${game.req}</div>
+          <div><strong style="color:#fbbf24;">Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
+          <div><strong style="color:#10b981;">File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
+          <div><strong style="color:#38bdf8;">Phím bấm:</strong> ${game.controls}</div>
+          <div><strong style="color:#c084fc;">Yêu cầu:</strong> ${game.req}</div>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button type="button" class="robot-card-btn" style="flex:1;background:linear-gradient(135deg,#f26f21,#ea580c);color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;" data-game-id="${game.id}">
-            <span>⬇️ Tải Game (.exe)</span>
+            <span>Tải Game (.exe)</span>
           </button>
           ${isAdmin ? `
             <button type="button" class="robot-edit-link-btn" title="[Admin] Cập nhật link tải của CLB" style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);color:#f26f21;border-radius:8px;padding:0 10px;cursor:pointer;font-size:12px;font-weight:700;" data-game-id="${game.id}">
-              ✏️ Admin
+              Admin
             </button>
           ` : ''}
         </div>
@@ -1912,14 +1912,14 @@ export class InteractiveModal {
       if (editBtn) {
         editBtn.addEventListener('click', () => {
           if (!authService.isAdmin()) {
-            alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
+            alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
             return;
           }
           const currentUrl = localStorage.getItem(`dever_robot_link_${game.id}`) || game.link;
           const newUrl = prompt(`[Admin] Nhập link tải Google Drive / GitHub / Mediafire cho game "${game.name}":`, currentUrl);
           if (newUrl !== null && newUrl.trim()) {
             localStorage.setItem(`dever_robot_link_${game.id}`, newUrl.trim());
-            alert(`✅ [Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
+            alert(`[Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
           }
         });
       }
