@@ -1,0 +1,21 @@
+{
+  "name": "DEVER TOWN - FU-DEVER",
+  "short_name": "DEVER TOWN",
+  "description": "Thế giới ảo Pixel 2D Gather.town style của CLB FU-DEVER · FPT University Đà Nẵng",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0d172e",
+  "background_color": "#0a0e1a",
+  "display": "standalone",
+  "start_url": "/"
+}
