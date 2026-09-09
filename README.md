@@ -281,6 +281,19 @@ DEVER_TOWN/
 
 ---
 
+## 💡 Nguồn Cảm Hứng & Tri Ân (Inspirations & Credits)
+
+DEVER TOWN là dự án sinh thái kỹ thuật số nội bộ, phi thương mại phục vụ sinh viên và thành viên CLB Lập trình FU-DEVER. Dự án được phát triển from scratch dựa trên nguồn cảm hứng từ các tựa game và nền tảng kinh điển:
+
+- **Gather.town** — Cảm hứng về mô hình không gian số 2D tương tác cộng đồng, hội họp và kết nối trực tuyến theo khoảng cách lân cận (*proximity video/voice interaction*).
+- **Pokémon GBA Series (Game Freak / Nintendo)** — Cảm hứng về phong cách nghệ thuật Pixel Art Top-down overworld, cơ chế di chuyển theo lưới ô vuông và các hiệu ứng tương tác sinh động với môi trường.
+- **Stardew Valley (ConcernedApe)** — Cảm hứng về phối cảnh Oblique 2.5D, sắp xếp chiều sâu layer hiển thị (*Y-sort depth*), không gian ấm cúng và trải nghiệm đa tầng.
+- **Phaser 3 Game Engine (Photon Storm)** — Nền tảng game engine 2D mã nguồn mở mạnh mẽ vận hành thế giới WebGL / Canvas của DEVER TOWN.
+
+> ⚖️ **Tuyên bố sở hữu trí tuệ & miễn trừ trách nhiệm**: Mọi thương hiệu, tên thương mại, phong cách nghệ thuật gợi nhớ và quyền sở hữu trí tuệ của các tựa game/nền tảng kể trên đều thuộc quyền sở hữu của các tác giả và đơn vị phát hành tương ứng. DEVER TOWN được xây dựng hoàn toàn từ đầu bởi đội ngũ kỹ thuật CLB FU-DEVER phục vụ học thuật, rèn luyện kỹ năng và phong trào sinh viên Đại học FPT Đà Nẵng.
+
+---
+
 ## 📜 Bản Quyền & Quyền Sở Hữu Độc Quyền
 
 Dự án là sản phẩm độc quyền được sáng lập, sở hữu và phát triển nội bộ bởi tác giả và **CLB Lập trình FU-DEVER · FPT University Đà Nẵng (FUDA)**.
