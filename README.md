@@ -313,13 +313,6 @@ Mở trình duyệt tại **http://localhost:3000** để tham gia thế giới 
 2. **Backend**: Triển khai lên [Render.com](https://render.com) (Node.js Service, `npm run server`).
 3. **Frontend**: Triển khai lên [Vercel](https://vercel.com) với biến môi trường `VITE_SERVER_URL`.
 
----
-
-## 🤝 Đóng Góp & Quy Chuẩn (Zero-Regression)
-
-Mọi đóng góp từ cộng đồng đều được hoan nghênh! Vui lòng tuân thủ quy chuẩn trong [`AGENTS.md`](./AGENTS.md):
-- **Zero-Regression & Scope Isolation**: Chỉ chỉnh sửa đúng phạm vi mục tiêu, không làm ảnh hưởng các map layout, colliders, spawn points và portals của 8 phòng đang hoạt động.
-- **Git Commit Author**: Gắn cờ author khi commit: `--author="RaH11 <hungnguyen.190206@gmail.com>"`.
 
 ---
 
