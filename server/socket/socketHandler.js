@@ -386,6 +386,78 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 7c. Gửi Lời Mời Kết Bạn Realtime (2-Way Friend Request Handshake)
+     */
+    socket.on('sendFriendRequest', ({ targetSocketId, targetName }) => {
+      const sender = playerManager.getPlayer(socket.id);
+      if (!sender) return;
+
+      let targetPlayer = null;
+      let targetSocket = null;
+
+      if (targetSocketId) {
+        targetSocket = io.sockets.sockets.get(targetSocketId);
+        targetPlayer = playerManager.getPlayer(targetSocketId);
+      }
+
+      if (!targetSocket && targetName) {
+        targetPlayer = playerManager.findPlayerByName(targetName);
+        if (targetPlayer) {
+          targetSocket = io.sockets.sockets.get(targetPlayer.id);
+        }
+      }
+
+      if (targetSocket && targetSocket.connected && targetPlayer) {
+        if (targetSocket.id === socket.id) {
+          socket.emit('friendRequestFailed', { message: 'Bạn không thể tự kết bạn với chính mình!' });
+          return;
+        }
+
+        console.log(`🤝 [Friend Request] ${sender.name} (${socket.id}) ➔ ${targetPlayer.name} (${targetSocket.id})`);
+        targetSocket.emit('friendRequestReceived', {
+          fromSocketId: socket.id,
+          fromUserId: sender.userId || null,
+          fromName: sender.name,
+          fromAvatarId: sender.avatarId,
+          fromRole: sender.role
+        });
+
+        socket.emit('friendRequestSent', {
+          targetSocketId: targetSocket.id,
+          targetName: targetPlayer.name
+        });
+      } else {
+        socket.emit('friendRequestFailed', {
+          message: 'Người chơi hiện không trực tuyến hoặc đã rời thế giới.'
+        });
+      }
+    });
+
+    /**
+     * 7d. Phản Hồi Lời Mời Kết Bạn (Đồng Ý / Từ Chối)
+     */
+    socket.on('respondFriendRequest', ({ fromSocketId, accepted }) => {
+      const responder = playerManager.getPlayer(socket.id);
+      if (!responder) return;
+
+      const requesterSocket = io.sockets.sockets.get(fromSocketId);
+      const requester = playerManager.getPlayer(fromSocketId);
+
+      console.log(`🤝 [Friend Request Response] ${responder.name} đã ${accepted ? 'ĐỒNG Ý' : 'TỪ CHỐI'} lời mời của ${requester ? requester.name : fromSocketId}`);
+
+      if (requesterSocket && requesterSocket.connected) {
+        requesterSocket.emit('friendRequestResponse', {
+          fromSocketId: socket.id,
+          fromUserId: responder.userId || null,
+          fromName: responder.name,
+          fromAvatarId: responder.avatarId,
+          fromRole: responder.role,
+          accepted: !!accepted
+        });
+      }
+    });
+
+    /**
      * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {

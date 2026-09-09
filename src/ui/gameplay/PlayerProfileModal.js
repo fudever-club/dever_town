@@ -70,6 +70,12 @@ export class PlayerProfileModal {
         this.hide();
       }
     });
+
+    friendManager.subscribe(() => {
+      if (this.isOpen && this.currentPlayer) {
+        this.renderFriendshipContent();
+      }
+    });
   }
 
   show(playerData) {
@@ -114,20 +120,25 @@ export class PlayerProfileModal {
 
     const friend = friendManager.getFriend(this.currentPlayer.id || this.currentPlayer.name);
     const isFriend = !!friend;
+    const isPending = friendManager.isPending(this.currentPlayer.id) || friendManager.isPending(this.currentPlayer.name);
 
     if (!isFriend) {
       // 1. Chưa là bạn bè
       bodyEl.innerHTML = `
         <div class="profile-not-friend-box">
-          <div class="not-friend-icon">🤝</div>
-          <h4 class="not-friend-title">Chưa kết bạn</h4>
-          <p class="not-friend-desc">Hãy kết bạn để cùng trò chuyện, xây dựng chuỗi Bestie Streak 🔥 mỗi ngày và ấp nở Thú cưng Buggy đồng hành!</p>
+          <div class="not-friend-icon">${isPending ? '⏳' : '🤝'}</div>
+          <h4 class="not-friend-title">${isPending ? 'Đang chờ phản hồi...' : 'Chưa kết bạn'}</h4>
+          <p class="not-friend-desc">
+            ${isPending
+              ? 'Lời mời kết bạn đã được gửi tới người này. Hãy đợi đối phương chọn Đồng Ý nhé!'
+              : 'Gửi lời mời kết bạn để cùng trò chuyện, xây dựng chuỗi Bestie Streak 🔥 mỗi ngày và ấp nở Thú cưng Buggy đồng hành!'}
+          </p>
         </div>
       `;
 
       actionsEl.innerHTML = `
-        <button type="button" class="btn-profile-action add-friend" id="btn-add-friend">
-          <span>🤝</span> Kết Bạn Ngay
+        <button type="button" class="btn-profile-action add-friend ${isPending ? 'pending' : ''}" id="btn-add-friend" ${isPending ? 'disabled style="opacity:0.65;cursor:not-allowed;"' : ''}>
+          <span>${isPending ? '⏳' : '🤝'}</span> ${isPending ? 'Đã Gửi Lời Mời...' : 'Gửi Lời Mời Kết Bạn'}
         </button>
         <button type="button" class="btn-profile-action whisper" id="btn-whisper-player">
           <span>💬</span> Nhắn Tin
@@ -135,11 +146,26 @@ export class PlayerProfileModal {
       `;
 
       const addBtn = actionsEl.querySelector('#btn-add-friend');
-      if (addBtn) {
+      if (addBtn && !isPending) {
         addBtn.addEventListener('click', () => {
-          friendManager.addFriend(this.currentPlayer);
-          audioManager.playFanfare ? audioManager.playFanfare() : audioManager.playClick();
-          this.renderFriendshipContent();
+          const worldScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+          if (worldScene && worldScene.socketManager && worldScene.socketManager.isConnected) {
+            worldScene.socketManager.sendFriendRequest({
+              targetSocketId: this.currentPlayer.id,
+              targetName: this.currentPlayer.name
+            });
+            friendManager.setPending(this.currentPlayer.name);
+            if (this.currentPlayer.id) friendManager.setPending(this.currentPlayer.id);
+            audioManager.playClick();
+            this.renderFriendshipContent();
+          } else {
+            // Không có kết nối Socket: nhắc người chơi
+            if (worldScene && worldScene.showToast) {
+              worldScene.showToast('⚠️ Bạn cần kết nối mạng để gửi lời mời kết bạn!');
+            } else {
+              alert('Bạn cần kết nối mạng để gửi lời mời kết bạn!');
+            }
+          }
         });
       }
     } else {

@@ -21,7 +21,8 @@ import {
   EmoteBar,
   SpeedCodeDuel,
   DailyGoalHUD,
-  PlayerProfileModal
+  PlayerProfileModal,
+  FriendRequestModal
 } from '../ui/index.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -203,6 +204,65 @@ export class WorldScene extends Phaser.Scene {
     if (this.audioManager) {
       this.audioManager.playClick();
     }
+  }
+
+  handleFriendRequestReceived(data) {
+    if (this.friendRequestModal) {
+      this.friendRequestModal.show(data);
+    }
+  }
+
+  handleFriendRequestResponse(data) {
+    friendManager.clearPending(data.fromName);
+    if (data.fromSocketId) friendManager.clearPending(data.fromSocketId);
+
+    if (data.accepted) {
+      // Đối phương đã đồng ý kết bạn
+      friendManager.addFriend({
+        id: data.fromSocketId,
+        name: data.fromName,
+        role: data.fromRole,
+        avatarId: data.fromAvatarId
+      });
+      if (this.audioManager && this.audioManager.playFanfare) {
+        this.audioManager.playFanfare();
+      }
+      this.showToast(`🎉 ${data.fromName} đã đồng ý kết bạn! Chuỗi Streak ngày 1 đã bắt đầu!`);
+    } else {
+      // Đối phương từ chối
+      this.showToast(`ℹ️ ${data.fromName} đã từ chối lời mời kết bạn.`);
+    }
+
+    if (this.playerProfileModal && this.playerProfileModal.isOpen) {
+      this.playerProfileModal.renderFriendshipContent();
+    }
+  }
+
+  handleFriendRequestSent(data) {
+    this.showToast(`📨 Đã gửi lời mời kết bạn tới ${data.targetName}. Đang chờ phản hồi...`);
+  }
+
+  handleFriendRequestFailed(data) {
+    this.showToast(`⚠️ ${data.message || 'Không thể gửi lời mời kết bạn.'}`);
+    if (this.playerProfileModal && this.playerProfileModal.isOpen) {
+      this.playerProfileModal.renderFriendshipContent();
+    }
+  }
+
+  showToast(message) {
+    let toast = document.getElementById('dever-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'dever-toast';
+      toast.className = 'dever-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
   }
 
   updateCameraZoom() {
@@ -622,6 +682,31 @@ export class WorldScene extends Phaser.Scene {
           if (this.player.body) this.player.body.reset(p.x + 24, p.y);
           if (this.audioManager) this.audioManager.playTeleport();
         }
+      }
+    });
+
+    // 15. Modal Duyệt Lời Mời Kết Bạn Realtime (2-Way Handshake)
+    this.friendRequestModal = new FriendRequestModal({
+      onAccept: (req) => {
+        if (this.socketManager) {
+          this.socketManager.respondFriendRequest({ fromSocketId: req.fromSocketId, accepted: true });
+        }
+        friendManager.addFriend({
+          id: req.fromSocketId,
+          name: req.fromName,
+          role: req.fromRole,
+          avatarId: req.fromAvatarId
+        });
+        if (this.audioManager && this.audioManager.playFanfare) {
+          this.audioManager.playFanfare();
+        }
+        this.showToast(`🎉 Bạn và ${req.fromName} đã trở thành bạn bè! Chuỗi Streak ngày 1 đã bắt đầu!`);
+      },
+      onDecline: (req) => {
+        if (this.socketManager) {
+          this.socketManager.respondFriendRequest({ fromSocketId: req.fromSocketId, accepted: false });
+        }
+        this.showToast(`Đã từ chối lời mời kết bạn từ ${req.fromName}.`);
       }
     });
 

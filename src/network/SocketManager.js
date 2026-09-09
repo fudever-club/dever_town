@@ -193,6 +193,33 @@ export class SocketManager {
       authService.logout();
       window.location.reload();
     });
+
+    // 15. Lời mời kết bạn Realtime (2-Way Handshake)
+    this.socket.on('friendRequestReceived', (data) => {
+      console.log('🤝 [Socket] Nhận lời mời kết bạn từ:', data);
+      if (this.scene && this.scene.handleFriendRequestReceived) {
+        this.scene.handleFriendRequestReceived(data);
+      }
+    });
+
+    this.socket.on('friendRequestResponse', (data) => {
+      console.log('🤝 [Socket] Nhận phản hồi kết bạn:', data);
+      if (this.scene && this.scene.handleFriendRequestResponse) {
+        this.scene.handleFriendRequestResponse(data);
+      }
+    });
+
+    this.socket.on('friendRequestSent', (data) => {
+      if (this.scene && this.scene.handleFriendRequestSent) {
+        this.scene.handleFriendRequestSent(data);
+      }
+    });
+
+    this.socket.on('friendRequestFailed', (data) => {
+      if (this.scene && this.scene.handleFriendRequestFailed) {
+        this.scene.handleFriendRequestFailed(data);
+      }
+    });
   }
 
   join(options = {}) {
@@ -264,6 +291,16 @@ export class SocketManager {
   updateProfile({ name, avatarId }) {
     if (!this.socket || !this.isConnected) return;
     this.socket.emit('updateProfile', { name, avatarId });
+  }
+
+  sendFriendRequest({ targetSocketId, targetName }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('sendFriendRequest', { targetSocketId, targetName });
+  }
+
+  respondFriendRequest({ fromSocketId, accepted }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('respondFriendRequest', { fromSocketId, accepted });
   }
 
   updateConnectionStatus(online) {

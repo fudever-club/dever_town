@@ -31,5 +31,6 @@ export { RoomBanner } from './common/RoomBanner.js';
 export { EmoteBar } from './common/EmoteBar.js';
 export { DailyGoalHUD } from './common/DailyGoalHUD.js';
 export { PlayerProfileModal } from './gameplay/PlayerProfileModal.js';
+export { FriendRequestModal } from './gameplay/FriendRequestModal.js';
 
 

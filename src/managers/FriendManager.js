@@ -8,8 +8,26 @@ import { questManager } from './QuestManager.js';
 class FriendManager {
   constructor() {
     this.friends = new Map(); // key: friendId, value: FriendData
+    this.pendingRequests = new Set(); // key: friendId or name
     this.listeners = new Set();
     this.loadState();
+  }
+
+  isPending(idOrName) {
+    if (!idOrName) return false;
+    return this.pendingRequests.has(idOrName);
+  }
+
+  setPending(idOrName) {
+    if (!idOrName) return;
+    this.pendingRequests.add(idOrName);
+    this.notifyListeners();
+  }
+
+  clearPending(idOrName) {
+    if (!idOrName) return;
+    this.pendingRequests.delete(idOrName);
+    this.notifyListeners();
   }
 
   loadState() {
