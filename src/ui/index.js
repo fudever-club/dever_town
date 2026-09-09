@@ -30,4 +30,9 @@ export { MinimapOverlay } from './common/MinimapOverlay.js';
 export { RoomBanner } from './common/RoomBanner.js';
 export { EmoteBar } from './common/EmoteBar.js';
 export { DailyGoalHUD } from './common/DailyGoalHUD.js';
+export { PlayerProfileModal } from './gameplay/PlayerProfileModal.js';
+export { FriendRequestModal } from './gameplay/FriendRequestModal.js';
+export { FriendsListModal } from './gameplay/FriendsListModal.js';
+export { AvatarSelectorModal, UNLOCKABLE_AVATARS } from './gameplay/AvatarSelectorModal.js';
+
 

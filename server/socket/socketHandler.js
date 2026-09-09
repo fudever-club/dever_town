@@ -1,6 +1,7 @@
 import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
+import { setupVoiceHandler } from './voiceHandler.js';
 
 // Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
 const ipConnectionCounts = new Map();
@@ -45,6 +46,9 @@ export function setupSocketHandler(io) {
     const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
     const userAgent = socket.handshake.headers['user-agent'] || 'Web Browser';
     console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
+
+    // Khởi tạo Voice/Video Signaling cho socket
+    const { handleVoiceLeave } = setupVoiceHandler(io, socket);
 
     /**
      * 1. Tham gia thế giới (Join Game) - Chế độ 1 Nhân Vật Duy Nhất & Xác Nhận Thiết Bị Mới Thông Minh
@@ -247,6 +251,8 @@ export function setupSocketHandler(io) {
       const { player, oldRoomId, newRoomId } = result;
       console.log(`🚪 [Switch Room] ${player.name} chuyển từ [${oldRoomId}] ➔ [${newRoomId}]`);
 
+      if (handleVoiceLeave) handleVoiceLeave();
+
       socket.leave(oldRoomId);
       socket.to(oldRoomId).emit('playerDisconnected', socket.id);
 
@@ -320,6 +326,56 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 4b. Xử lý Chat Riêng 1-1 Bạn Bè (Direct Private Message)
+     */
+    socket.on('sendPrivateMessage', ({ targetSocketId, targetName, message }) => {
+      const sender = playerManager.getPlayer(socket.id);
+      if (!sender) return;
+
+      const rawMsg = message || '';
+      const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
+      if (!cleanMsg) return;
+
+      let targetPlayer = null;
+      let targetSocket = null;
+
+      if (targetSocketId) {
+        targetSocket = io.sockets.sockets.get(targetSocketId);
+        targetPlayer = playerManager.getPlayer(targetSocketId);
+      }
+
+      if (!targetSocket && targetName) {
+        targetPlayer = playerManager.findPlayerByName(targetName);
+        if (targetPlayer) {
+          targetSocket = io.sockets.sockets.get(targetPlayer.id);
+        }
+      }
+
+      const timestamp = Date.now();
+      const privatePayload = {
+        senderId: socket.id,
+        senderName: sender.name,
+        senderRole: sender.role,
+        senderAvatarId: sender.avatarId,
+        targetId: targetPlayer ? targetPlayer.id : targetSocketId,
+        targetName: targetPlayer ? targetPlayer.name : targetName,
+        message: cleanMsg,
+        timestamp
+      };
+
+      if (targetSocket && targetSocket.connected) {
+        console.log(`🔒 [PrivateChat] ${sender.name} ➔ ${targetPlayer.name}: ${cleanMsg}`);
+        targetSocket.emit('newPrivateMessage', privatePayload);
+        socket.emit('privateMessageSent', privatePayload);
+      } else {
+        socket.emit('privateMessageFailed', {
+          targetName: targetName || (targetPlayer ? targetPlayer.name : 'Người chơi'),
+          message: 'Người chơi hiện không trực tuyến hoặc đã rời thế giới.'
+        });
+      }
+    });
+
+    /**
      * 5. Trang bị / Cầm tay vật phẩm
      */
     socket.on('equipItem', ({ itemId }) => {
@@ -380,9 +436,83 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 7c. Gửi Lời Mời Kết Bạn Realtime (2-Way Friend Request Handshake)
+     */
+    socket.on('sendFriendRequest', ({ targetSocketId, targetName }) => {
+      const sender = playerManager.getPlayer(socket.id);
+      if (!sender) return;
+
+      let targetPlayer = null;
+      let targetSocket = null;
+
+      if (targetSocketId) {
+        targetSocket = io.sockets.sockets.get(targetSocketId);
+        targetPlayer = playerManager.getPlayer(targetSocketId);
+      }
+
+      if (!targetSocket && targetName) {
+        targetPlayer = playerManager.findPlayerByName(targetName);
+        if (targetPlayer) {
+          targetSocket = io.sockets.sockets.get(targetPlayer.id);
+        }
+      }
+
+      if (targetSocket && targetSocket.connected && targetPlayer) {
+        if (targetSocket.id === socket.id) {
+          socket.emit('friendRequestFailed', { message: 'Bạn không thể tự kết bạn với chính mình!' });
+          return;
+        }
+
+        console.log(`🤝 [Friend Request] ${sender.name} (${socket.id}) ➔ ${targetPlayer.name} (${targetSocket.id})`);
+        targetSocket.emit('friendRequestReceived', {
+          fromSocketId: socket.id,
+          fromUserId: sender.userId || null,
+          fromName: sender.name,
+          fromAvatarId: sender.avatarId,
+          fromRole: sender.role
+        });
+
+        socket.emit('friendRequestSent', {
+          targetSocketId: targetSocket.id,
+          targetName: targetPlayer.name
+        });
+      } else {
+        socket.emit('friendRequestFailed', {
+          message: 'Người chơi hiện không trực tuyến hoặc đã rời thế giới.'
+        });
+      }
+    });
+
+    /**
+     * 7d. Phản Hồi Lời Mời Kết Bạn (Đồng Ý / Từ Chối)
+     */
+    socket.on('respondFriendRequest', ({ fromSocketId, accepted }) => {
+      const responder = playerManager.getPlayer(socket.id);
+      if (!responder) return;
+
+      const requesterSocket = io.sockets.sockets.get(fromSocketId);
+      const requester = playerManager.getPlayer(fromSocketId);
+
+      console.log(`🤝 [Friend Request Response] ${responder.name} đã ${accepted ? 'ĐỒNG Ý' : 'TỪ CHỐI'} lời mời của ${requester ? requester.name : fromSocketId}`);
+
+      if (requesterSocket && requesterSocket.connected) {
+        requesterSocket.emit('friendRequestResponse', {
+          fromSocketId: socket.id,
+          fromUserId: responder.userId || null,
+          fromName: responder.name,
+          fromAvatarId: responder.avatarId,
+          fromRole: responder.role,
+          accepted: !!accepted
+        });
+      }
+    });
+
+    /**
      * 8. Ngắt kết nối
      */
     socket.on('disconnect', () => {
+      if (handleVoiceLeave) handleVoiceLeave();
+
       // Giảm bộ đếm kết nối IP khi client ngắt kết nối
       const current = ipConnectionCounts.get(clientIp) || 1;
       if (current <= 1) ipConnectionCounts.delete(clientIp);

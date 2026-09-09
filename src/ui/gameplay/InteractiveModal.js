@@ -7,6 +7,7 @@ import { SportsArcade } from '../minigames/SportsArcade.js';
 import { RetroArcade } from '../minigames/RetroArcade.js';
 import { ROBOT_GAMES } from '../../config/robotGames.js';
 import { authService } from '../../services/AuthService.js';
+import { voiceService } from '../../services/VoiceService.js';
 
 export class InteractiveModal {
   /**
@@ -20,6 +21,7 @@ export class InteractiveModal {
     this.onClose = onClose;
     this.onAchievement = onAchievement;
     this.modalEl = document.getElementById('interactive-modal');
+    this.voiceService = voiceService;
     this.currentZone = null;
     this.currentMemoryIndex = 0;
     this.currentSlideSet = null;
@@ -27,6 +29,7 @@ export class InteractiveModal {
 
     this.initPomodoro();
     this.initSportsEngine();
+    this.initVoiceEngine();
     this.initEvents();
   }
 
@@ -126,7 +129,7 @@ export class InteractiveModal {
     if (loadSlideBtn) {
       loadSlideBtn.addEventListener('click', () => {
         if (!authService.isAdmin()) {
-          alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
+          alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi URL Slide bài giảng CLB.');
           return;
         }
         const input = document.getElementById('slide-url-input');
@@ -139,8 +142,8 @@ export class InteractiveModal {
     }
 
     // 6. Memory Gallery
-    const prevMemoryBtn = document.getElementById('memory-prev-btn');
-    const nextMemoryBtn = document.getElementById('memory-next-btn');
+    const prevMemoryBtn = document.getElementById('gallery-prev-btn') || document.getElementById('memory-prev-btn');
+    const nextMemoryBtn = document.getElementById('gallery-next-btn') || document.getElementById('memory-next-btn');
 
     if (prevMemoryBtn) {
       prevMemoryBtn.addEventListener('click', () => {
@@ -157,6 +160,21 @@ export class InteractiveModal {
         this.renderMemorySlide(memories[this.currentMemoryIndex]);
       });
     }
+
+    window.addEventListener('keydown', (e) => {
+      if (!this.isOpen()) return;
+      const paneGallery = document.getElementById('pane-gallery');
+      if (paneGallery && !paneGallery.classList.contains('hidden')) {
+        const memories = INTERACTION_PRESETS.gallery_memory.memories;
+        if (e.key === 'ArrowLeft') {
+          this.currentMemoryIndex = (this.currentMemoryIndex - 1 + memories.length) % memories.length;
+          this.renderMemorySlide(memories[this.currentMemoryIndex]);
+        } else if (e.key === 'ArrowRight') {
+          this.currentMemoryIndex = (this.currentMemoryIndex + 1) % memories.length;
+          this.renderMemorySlide(memories[this.currentMemoryIndex]);
+        }
+      }
+    });
 
     // 7. Sports Game Action
     const sportActionBtn = document.getElementById('sports-action-btn');
@@ -271,6 +289,14 @@ export class InteractiveModal {
 
     const meetingIframe = document.getElementById('meeting-iframe');
     if (meetingIframe) meetingIframe.src = 'about:blank';
+
+    if (this.voiceService) {
+      this.voiceService.leave();
+    }
+    const voiceLobby = document.getElementById('voice-lobby');
+    if (voiceLobby) voiceLobby.classList.remove('hidden');
+    const voiceActiveRoom = document.getElementById('voice-active-room');
+    if (voiceActiveRoom) voiceActiveRoom.classList.add('hidden');
 
     const lofiIframe = document.getElementById('lofi-iframe');
     if (lofiIframe) lofiIframe.src = 'about:blank';
@@ -420,19 +446,426 @@ export class InteractiveModal {
     iframe.src = targetUrl;
   }
 
+  handleMediaErrorNotification(err, type = 'audio') {
+    if (!err) return;
+    const isAudio = type === 'audio';
+    const deviceName = isAudio ? 'Microphone' : 'Webcam / Camera';
+    if (err.name === 'NotFoundError') {
+      alert(`Quyền trình duyệt đã được cấp, nhưng máy tính không tìm thấy thiết bị ${deviceName} phần cứng. Bạn hãy cắm tai nghe có mic hoặc webcam vào máy tính rồi bấm thử lại.`);
+    } else if (err.name === 'NotAllowedError') {
+      alert(`Quyền ${deviceName} đang bị chặn trên trình duyệt. Bạn hãy bật quyền trong biểu tượng Cài đặt bên cạnh URL và tải lại trang.`);
+    } else {
+      alert(`Không thể kích hoạt ${deviceName} (${err.name || err.message}). Vui lòng kiểm tra lại thiết bị.`);
+    }
+  }
+
+  initVoiceEngine() {
+    // 1. Phím tắt M để toggle Mute nhanh
+    window.addEventListener('keydown', async (e) => {
+      if (e.key === 'm' || e.key === 'M') {
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+        if (this.isOpen() && this.voiceService?.isJoined) {
+          const res = await this.voiceService.toggleMic();
+          const isMuted = typeof res === 'object' ? res.isMuted : res;
+          this.updateVoiceControlUI({ micMuted: isMuted });
+          if (!isMuted) {
+            document.getElementById('voice-listen-notice')?.classList.add('hidden');
+          } else if (res?.error) {
+            this.handleMediaErrorNotification(res.error, 'audio');
+          }
+          audioManager.playClick();
+        }
+      }
+    });
+
+    // 2. Nút Tham gia Voice từ Lobby
+    const joinBtn = document.getElementById('btn-join-voice');
+    if (joinBtn && !joinBtn.dataset.initialized) {
+      joinBtn.dataset.initialized = 'true';
+      joinBtn.addEventListener('click', () => this.handleJoinVoiceRoom());
+    }
+
+    // 3. Nút Toggle Micro
+    const micBtn = document.getElementById('btn-toggle-mic');
+    if (micBtn && !micBtn.dataset.initialized) {
+      micBtn.dataset.initialized = 'true';
+      micBtn.addEventListener('click', async () => {
+        const res = await this.voiceService.toggleMic();
+        const isMuted = typeof res === 'object' ? res.isMuted : res;
+        this.updateVoiceControlUI({ micMuted: isMuted });
+        if (!isMuted) {
+          document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        } else if (res?.error) {
+          this.handleMediaErrorNotification(res.error, 'audio');
+        }
+        audioManager.playClick();
+      });
+    }
+
+    // 4. Nút Toggle Camera
+    const camBtn = document.getElementById('btn-toggle-cam');
+    if (camBtn && !camBtn.dataset.initialized) {
+      camBtn.dataset.initialized = 'true';
+      camBtn.addEventListener('click', async () => {
+        const res = await this.voiceService.toggleCamera();
+        const isVideoMuted = typeof res === 'object' ? res.isVideoMuted : res;
+        this.updateVoiceControlUI({ videoMuted: isVideoMuted });
+        this.updateLocalVideoDisplay();
+        if (!isVideoMuted) {
+          document.getElementById('voice-listen-notice')?.classList.add('hidden');
+        } else if (res?.error) {
+          this.handleMediaErrorNotification(res.error, 'video');
+        }
+        audioManager.playClick();
+      });
+    }
+
+    // 5. Nút Toggle Screen Share
+    const screenBtn = document.getElementById('btn-toggle-screen');
+    if (screenBtn && !screenBtn.dataset.initialized) {
+      screenBtn.dataset.initialized = 'true';
+      screenBtn.addEventListener('click', async () => {
+        const isSharing = await this.voiceService.toggleScreenShare();
+        this.updateVoiceControlUI({ screenSharing: isSharing });
+        this.updateLocalVideoDisplay();
+        audioManager.playClick();
+      });
+    }
+
+    // 6. Nút Rời Voice Room
+    const leaveBtn = document.getElementById('btn-leave-voice');
+    if (leaveBtn && !leaveBtn.dataset.initialized) {
+      leaveBtn.dataset.initialized = 'true';
+      leaveBtn.addEventListener('click', () => {
+        this.voiceService.leave();
+        const lobby = document.getElementById('voice-lobby');
+        if (lobby) lobby.classList.remove('hidden');
+        const active = document.getElementById('voice-active-room');
+        if (active) active.classList.add('hidden');
+        audioManager.playClick();
+      });
+    }
+  }
+
   setupMeetingView(zoneData) {
     const pane = document.getElementById('pane-meeting');
     if (!pane) return;
     pane.classList.remove('hidden');
 
-    const roomName = `FU_DEVER_${zoneData.id || 'Alpha'}`;
-    const jitsiUrl = INTERACTION_PRESETS.meeting_stage.getJitsiUrl(roomName);
+    const titleEl = document.getElementById('voice-room-title');
+    if (titleEl) {
+      titleEl.textContent = `Sync Lounge • ${zoneData.name || 'Kênh Đàm Thoại'}`;
+    }
 
-    const iframe = document.getElementById('meeting-iframe');
-    if (iframe) iframe.src = jitsiUrl;
+    // Lấy socket hiện tại từ WorldScene
+    const currentScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+    const socket = currentScene?.socketManager?.socket;
 
-    const gmeetBtn = document.getElementById('gmeet-open-btn');
-    if (gmeetBtn) gmeetBtn.href = `https://meet.google.com/new`;
+    if (socket && !this.voiceInitialized) {
+      this.voiceInitialized = true;
+      this.voiceService.init(socket, {
+        onPeersUpdated: (peers) => this.renderRemotePeerTiles(peers),
+        onTrackReceived: (socketId, stream, kind) => {
+          if (kind === 'video') {
+            const vid = document.getElementById(`video-${socketId}`);
+            if (vid) {
+              vid.srcObject = stream;
+              vid.classList.remove('hidden');
+              const avatarWrap = document.getElementById(`avatar-wrap-${socketId}`);
+              if (avatarWrap) avatarWrap.classList.add('hidden');
+            }
+          }
+        },
+        onSpeakingChanged: (id, isSpeaking) => {
+          if (id === 'local') {
+            const localTile = document.getElementById('voice-tile-local');
+            if (localTile) localTile.classList.toggle('is-speaking', isSpeaking);
+          } else {
+            const peerTile = document.getElementById(`voice-tile-${id}`);
+            if (peerTile) peerTile.classList.toggle('is-speaking', isSpeaking);
+          }
+        },
+        onStatusChanged: (status, count) => {
+          const badge = document.getElementById('voice-conn-status');
+          const label = document.getElementById('voice-conn-label');
+          const counter = document.getElementById('voice-peer-counter');
+
+          if (counter) counter.textContent = `${count || 1} người`;
+
+          if (badge && label) {
+            badge.className = `voice-conn-badge ${status}`;
+            if (status === 'connected') {
+              label.textContent = `Đã kết nối (${count} người)`;
+            } else if (status === 'connecting') {
+              label.textContent = 'Đang kết nối tín hiệu...';
+            } else {
+              label.textContent = 'Chưa tham gia';
+            }
+          }
+        },
+        onMediaUpgraded: ({ micMuted, videoMuted }) => {
+          const notice = document.getElementById('voice-listen-notice');
+          if (notice) notice.classList.add('hidden');
+          this.updateVoiceControlUI({ micMuted, videoMuted });
+          this.updateLocalVideoDisplay();
+        }
+      });
+    }
+
+    // Hiển thị trạng thái phù hợp (Đang ở trong phòng hay đang ở Lobby)
+    const lobby = document.getElementById('voice-lobby');
+    const active = document.getElementById('voice-active-room');
+    if (this.voiceService.isJoined) {
+      if (lobby) lobby.classList.add('hidden');
+      if (active) active.classList.remove('hidden');
+      if (!this.voiceService.isListenOnly) {
+        const notice = document.getElementById('voice-listen-notice');
+        if (notice) notice.classList.add('hidden');
+      }
+      this.updateVoiceControlUI({
+        micMuted: this.voiceService.micMuted,
+        videoMuted: this.voiceService.videoMuted,
+        screenSharing: this.voiceService.isScreenSharing
+      });
+      this.updateLocalVideoDisplay();
+    } else {
+      if (lobby) lobby.classList.remove('hidden');
+      if (active) active.classList.add('hidden');
+    }
+
+    const localName = document.getElementById('local-tile-name');
+    if (localName) {
+      const pName = currentScene?.player?.name || authService.getUser()?.displayName || 'Bạn';
+      localName.textContent = pName;
+    }
+    const localAvatar = document.getElementById('local-tile-avatar');
+    if (localAvatar) {
+      const pName = currentScene?.player?.name || authService.getUser()?.displayName || 'Bạn';
+      localAvatar.innerHTML = `<span class="avatar-initials">${this.getAvatarInitials(pName)}</span>`;
+    }
+  }
+
+  async handleJoinVoiceRoom() {
+    const micCheck = document.getElementById('voice-lobby-mic');
+    const camCheck = document.getElementById('voice-lobby-cam');
+    const enableAudio = micCheck ? micCheck.checked : true;
+    const enableVideo = camCheck ? camCheck.checked : false;
+
+    const currentScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+    const meetingId = `${this.currentRoomId || 'main_hall'}_${this.currentZone?.id || 'meeting'}`;
+
+    try {
+      const res = await this.voiceService.join({
+        meetingId,
+        enableAudio,
+        enableVideo
+      });
+
+      // Ẩn lobby card và hiển thị phòng đàm thoại ngay lập tức
+      const lobby = document.getElementById('voice-lobby');
+      if (lobby) lobby.classList.add('hidden');
+      const active = document.getElementById('voice-active-room');
+      if (active) active.classList.remove('hidden');
+
+      // Hiển thị thanh thông báo Thính giả nếu chưa có micro / quyền bị chặn
+      if (res) {
+        this.updateListenOnlyNotice(res.isListenOnly, res.reason);
+      }
+
+      this.updateVoiceControlUI({
+        micMuted: this.voiceService.micMuted,
+        videoMuted: this.voiceService.videoMuted,
+        screenSharing: false
+      });
+      this.updateLocalVideoDisplay();
+
+      try {
+        if (typeof audioManager.playSuccess === 'function') {
+          audioManager.playSuccess();
+        } else {
+          audioManager.playClick?.();
+        }
+      } catch (audioErr) {}
+
+      questManager.incrementProgress('meeting_connect', 1);
+    } catch (err) {
+      console.warn('Lỗi kết nối phòng đàm thoại:', err);
+      const lobby = document.getElementById('voice-lobby');
+      if (lobby) lobby.classList.add('hidden');
+      const active = document.getElementById('voice-active-room');
+      if (active) active.classList.remove('hidden');
+      this.updateListenOnlyNotice(true, err?.name || 'Error');
+    }
+  }
+
+  updateListenOnlyNotice(isListenOnly, reason = '') {
+    const notice = document.getElementById('voice-listen-notice');
+    if (!notice) return;
+
+    if (!isListenOnly) {
+      notice.classList.add('hidden');
+      return;
+    }
+
+    notice.classList.remove('hidden');
+    const titleEl = document.getElementById('voice-notice-title');
+    const descEl = document.getElementById('voice-notice-desc');
+    const retryBtn = document.getElementById('btn-retry-media');
+
+    if (reason === 'NotAllowedError') {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Quyền Micro đang bị chặn)';
+      if (descEl) descEl.textContent = 'Trình duyệt đang chặn Micro. Bạn hãy bật quyền trong biểu tượng Cài đặt bên cạnh URL rồi nhấn [Cấp quyền Micro] (hoặc tải lại F5).';
+      if (retryBtn) retryBtn.textContent = 'Cấp quyền Micro';
+    } else if (reason === 'NotFoundError') {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Không tìm thấy Microphone)';
+      if (descEl) descEl.textContent = 'Trình duyệt đã được cấp quyền, nhưng máy tính chưa có Microphone phần cứng. Bạn hãy cắm tai nghe có mic vào máy tính để nói chuyện, hoặc tiếp tục lắng nghe mọi người và chia sẻ màn hình.';
+      if (retryBtn) retryBtn.textContent = 'Kiểm tra lại thiết bị';
+    } else {
+      if (titleEl) titleEl.textContent = 'Chế độ Thính giả (Chỉ nghe)';
+      if (descEl) descEl.textContent = 'Chưa thể kết nối Microphone. Bạn vẫn có thể lắng nghe mọi người trong phòng và chia sẻ màn hình.';
+      if (retryBtn) retryBtn.textContent = 'Thử kết nối lại';
+    }
+
+    if (retryBtn && !retryBtn.dataset.initialized) {
+      retryBtn.dataset.initialized = 'true';
+      retryBtn.addEventListener('click', async () => {
+        try {
+          await this.voiceService.requestMediaAccess({ audio: true, video: false });
+          notice.classList.add('hidden');
+          this.updateVoiceControlUI({
+            micMuted: false,
+            videoMuted: this.voiceService.videoMuted
+          });
+          audioManager.playSuccess();
+        } catch (e) {
+          console.warn('Cấp quyền lại chưa thành công:', e);
+          this.handleMediaErrorNotification(e, 'audio');
+        }
+      });
+    }
+  }
+
+  updateVoiceControlUI({ micMuted, videoMuted, screenSharing } = {}) {
+    const SVG_MIC_ON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_MIC_OFF = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_CAM_ON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
+    const SVG_CAM_OFF = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L23 7v10"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z"/></svg>`;
+
+    if (typeof micMuted === 'boolean') {
+      const micBtn = document.getElementById('btn-toggle-mic');
+      const micIcon = document.getElementById('mic-icon');
+      const micText = document.getElementById('mic-text');
+      const localMicStatus = document.getElementById('local-tile-mic-status');
+
+      if (micBtn) micBtn.classList.toggle('off', micMuted);
+      if (micIcon) micIcon.innerHTML = micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
+      if (micText) micText.textContent = micMuted ? 'Bật Mic' : 'Tắt Mic';
+      if (localMicStatus) localMicStatus.innerHTML = micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
+    }
+
+    if (typeof videoMuted === 'boolean') {
+      const camBtn = document.getElementById('btn-toggle-cam');
+      const camIcon = document.getElementById('cam-icon');
+      const camText = document.getElementById('cam-text');
+
+      if (camBtn) camBtn.classList.toggle('off', videoMuted);
+      if (camIcon) camIcon.innerHTML = videoMuted ? SVG_CAM_OFF : SVG_CAM_ON;
+      if (camText) camText.textContent = videoMuted ? 'Bật Cam' : 'Tắt Cam';
+    }
+
+    if (typeof screenSharing === 'boolean') {
+      const screenBtn = document.getElementById('btn-toggle-screen');
+      if (screenBtn) screenBtn.classList.toggle('off', !screenSharing);
+    }
+  }
+
+  updateLocalVideoDisplay() {
+    const localVideo = document.getElementById('voice-video-local');
+    const localAvatarWrap = document.getElementById('local-avatar-wrap');
+
+    const hasVideo = (this.voiceService.isScreenSharing && this.voiceService.screenStream) ||
+                     (!this.voiceService.videoMuted && this.voiceService.localStream?.getVideoTracks()?.length > 0);
+
+    if (hasVideo) {
+      if (localVideo) {
+        localVideo.srcObject = this.voiceService.isScreenSharing
+          ? this.voiceService.screenStream
+          : this.voiceService.localStream;
+        localVideo.classList.remove('hidden');
+      }
+      if (localAvatarWrap) localAvatarWrap.classList.add('hidden');
+    } else {
+      if (localVideo) {
+        localVideo.srcObject = null;
+        localVideo.classList.add('hidden');
+      }
+      if (localAvatarWrap) localAvatarWrap.classList.remove('hidden');
+    }
+  }
+
+  renderRemotePeerTiles(peers = []) {
+    const container = document.getElementById('voice-remote-tiles');
+    const grid = document.getElementById('voice-tiles-grid');
+    if (!container || !grid) return;
+
+    const SVG_MIC_ON = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+    const SVG_MIC_OFF = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`;
+
+    // Cập nhật class số lượng ô
+    const totalCount = peers.length + 1;
+    if (totalCount === 1) grid.className = 'voice-tiles-grid count-1';
+    else if (totalCount === 2) grid.className = 'voice-tiles-grid count-2';
+    else grid.className = 'voice-tiles-grid count-many';
+
+    container.innerHTML = '';
+
+    peers.forEach(peer => {
+      const tile = document.createElement('div');
+      tile.className = 'voice-tile';
+      tile.id = `voice-tile-${peer.socketId}`;
+
+      const initials = this.getAvatarInitials(peer.name);
+      const micSvg = peer.micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
+
+      tile.innerHTML = `
+        <div class="tile-video-wrap">
+          <video id="video-${peer.socketId}" autoplay playsinline class="tile-video ${peer.videoMuted ? 'hidden' : ''}"></video>
+          <div class="tile-avatar-fallback ${peer.videoMuted ? '' : 'hidden'}" id="avatar-wrap-${peer.socketId}">
+            <div class="tile-avatar-circle"><span class="avatar-initials">${initials}</span></div>
+          </div>
+        </div>
+        <div class="tile-overlay-bar">
+          <div class="tile-name-group">
+            <span class="tile-mic-icon" id="mic-${peer.socketId}">${micSvg}</span>
+            <span class="tile-user-name">${peer.name}</span>
+            <span class="tile-role-pill">${(peer.role || 'member').toUpperCase()}</span>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(tile);
+
+      // Nếu đã có video stream từ trước, gắn lại srcObject
+      const existingStream = this.voiceService.remoteStreams.get(peer.socketId);
+      if (existingStream && existingStream.getVideoTracks().length > 0) {
+        const vid = tile.querySelector('video');
+        if (vid) {
+          vid.srcObject = existingStream;
+          vid.classList.remove('hidden');
+          const wrap = tile.querySelector('.tile-avatar-fallback');
+          if (wrap) wrap.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  getAvatarInitials(name = '') {
+    if (!name) return 'DE';
+    const words = name.trim().split(/\s+/);
+    if (words.length >= 2) {
+      return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 
   setupCodeView(zoneData) {
@@ -521,7 +954,7 @@ export class InteractiveModal {
 
     const code = codeArea.value.trim();
     if (!code) {
-      outputEl.textContent = '⚠️ Vui lòng nhập mã nguồn trước khi thực thi.';
+      outputEl.textContent = 'Vui lòng nhập mã nguồn trước khi thực thi.';
       return;
     }
 
@@ -541,9 +974,9 @@ export class InteractiveModal {
       const logs = [];
       const customConsole = {
         log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-        error: (...args) => logs.push('❌ Error: ' + args.join(' ')),
-        warn: (...args) => logs.push('⚠️ Warning: ' + args.join(' ')),
-        info: (...args) => logs.push('ℹ️ Info: ' + args.join(' '))
+        error: (...args) => logs.push('[Error] ' + args.join(' ')),
+        warn: (...args) => logs.push('[Warning] ' + args.join(' ')),
+        info: (...args) => logs.push('[Info] ' + args.join(' '))
       };
 
       try {
@@ -554,7 +987,7 @@ export class InteractiveModal {
         const outText = logs.length > 0 ? logs.join('\n') : 'Chương trình thực thi thành công (Không có console output).';
         outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Engine • ${elapsed}ms) ===\n${outText}`;
       } catch (err) {
-        outputEl.textContent = `❌ Lỗi thực thi JavaScript: ${err.message}`;
+        outputEl.textContent = `Lỗi thực thi JavaScript: ${err.message}`;
       } finally {
         if (runBtn) {
           runBtn.disabled = false;
@@ -597,16 +1030,16 @@ export class InteractiveModal {
       let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Status: ${status === '0' ? 'Thành công (0)' : 'Lỗi (' + status + ')'}) ===\n`;
 
       if (compilerError) {
-        displayText += `❌ LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
+        displayText += `LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
       } else if (compilerMsg && compilerMsg.includes('warning')) {
-        displayText += `⚠️ CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
+        displayText += `CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
       }
 
       if (stdout) {
         displayText += stdout;
       }
       if (stderr) {
-        displayText += (stdout ? '\n\n' : '') + `⚠️ RUNTIME STDERR:\n${stderr}`;
+        displayText += (stdout ? '\n\n' : '') + `RUNTIME STDERR:\n${stderr}`;
       }
       if (!stdout && !stderr && !compilerError) {
         displayText += 'Chương trình thực thi hoàn tất không có output.';
@@ -682,7 +1115,7 @@ export class InteractiveModal {
       ? LOFI_PRESETS
       : LOFI_PRESETS.filter(p => p.genre === this.activeMusicGenre);
 
-    selectEl.innerHTML = `<option value="">🎵 Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
+    selectEl.innerHTML = `<option value="">Chọn bài hát gợi ý có sẵn (${filtered.length} bài)...</option>`;
 
     filtered.forEach(preset => {
       const opt = document.createElement('option');
@@ -722,22 +1155,45 @@ export class InteractiveModal {
     let targetIdx = 0;
     if (meta && meta.imgId) {
       const found = memories.findIndex(m => m.id === meta.imgId);
-      if (found !== -1) targetIdx = found;
+      if (found !== -1) {
+        targetIdx = found;
+      } else if (meta.imgId === 'hackathon') {
+        const hackFound = memories.findIndex(m => m.id.includes('hackathon'));
+        if (hackFound !== -1) targetIdx = hackFound;
+      }
     }
 
     this.currentMemoryIndex = targetIdx;
     this.renderMemorySlide(memories[this.currentMemoryIndex]);
+
+    // Đảm bảo nút bấm chuyển kỷ niệm hoạt động tức thì
+    const prevBtn = document.getElementById('gallery-prev-btn') || document.getElementById('memory-prev-btn');
+    const nextBtn = document.getElementById('gallery-next-btn') || document.getElementById('memory-next-btn');
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        this.currentMemoryIndex = (this.currentMemoryIndex - 1 + memories.length) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        this.currentMemoryIndex = (this.currentMemoryIndex + 1) % memories.length;
+        this.renderMemorySlide(memories[this.currentMemoryIndex]);
+      };
+    }
   }
 
   renderMemorySlide(memory) {
     if (!memory) return;
 
     const titleEl = document.getElementById('memory-slide-title');
-    const dateEl = document.getElementById('memory-slide-date');
-    const tagEl = document.getElementById('memory-slide-tag');
+    const dateEl = document.getElementById('memory-date') || document.getElementById('memory-slide-date');
+    const tagEl = document.getElementById('memory-tag') || document.getElementById('memory-slide-tag');
     const storyEl = document.getElementById('memory-slide-story');
-    const counterEl = document.getElementById('memory-slide-counter');
-    const canvasArt = document.getElementById('memory-art-canvas');
+    const counterEl = document.getElementById('gallery-counter') || document.getElementById('memory-slide-counter');
+    const canvasArt = document.getElementById('gallery-canvas') || document.getElementById('memory-art-canvas');
 
     const memories = INTERACTION_PRESETS.gallery_memory.memories;
 
@@ -745,34 +1201,120 @@ export class InteractiveModal {
     if (dateEl) dateEl.textContent = memory.date;
     if (tagEl) {
       tagEl.textContent = memory.tag;
-      tagEl.style.borderColor = memory.accentColor || '#0066CC';
-      tagEl.style.color = memory.accentColor || '#0066CC';
+      const accent = memory.accentColor || '#00B2FF';
+      tagEl.style.borderColor = accent;
+      tagEl.style.color = accent;
+      tagEl.style.backgroundColor = `${accent}1f`;
     }
     if (storyEl) storyEl.textContent = memory.story;
     if (counterEl) counterEl.textContent = `${this.currentMemoryIndex + 1} / ${memories.length}`;
 
     if (canvasArt) {
       const ctx = canvasArt.getContext('2d');
-      ctx.clearRect(0, 0, canvasArt.width, canvasArt.height);
+      const w = canvasArt.width;
+      const h = canvasArt.height;
+      ctx.clearRect(0, 0, w, h);
 
-      const grad = ctx.createLinearGradient(0, 0, canvasArt.width, canvasArt.height);
-      grad.addColorStop(0, '#002147');
-      grad.addColorStop(1, '#0f172a');
+      // 1. Cyberpunk Dark Gradient Background
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#060d1b');
+      grad.addColorStop(0.5, '#0b162c');
+      grad.addColorStop(1, '#050a14');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvasArt.width, canvasArt.height);
+      ctx.fillRect(0, 0, w, h);
 
-      ctx.strokeStyle = memory.accentColor || '#f59e0b';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(10, 10, canvasArt.width - 20, canvasArt.height - 20);
+      // 2. Subtle Tech Grid Pattern
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      const gridSize = 24;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
 
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 16px "JetBrains Mono", monospace';
+      // 3. Glowing Card Frame with Neon Glow
+      const accent = memory.accentColor || '#00B2FF';
+      ctx.save();
+      ctx.shadowColor = accent;
+      ctx.shadowBlur = 18;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(16, 16, w - 32, h - 32);
+      ctx.restore();
+
+      // Corner tech brackets
+      const bLen = 16;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      // Top-left
+      ctx.moveTo(12, 12 + bLen); ctx.lineTo(12, 12); ctx.lineTo(12 + bLen, 12);
+      // Top-right
+      ctx.moveTo(w - 12 - bLen, 12); ctx.lineTo(w - 12, 12); ctx.lineTo(w - 12, 12 + bLen);
+      // Bottom-left
+      ctx.moveTo(12, h - 12 - bLen); ctx.lineTo(12, h - 12); ctx.lineTo(12 + bLen, h - 12);
+      // Bottom-right
+      ctx.moveTo(w - 12 - bLen, h - 12); ctx.lineTo(w - 12, h - 12); ctx.lineTo(w - 12, h - 12 - bLen);
+      ctx.stroke();
+
+      // 4. Large Emblem / Mascot Icon
+      const icon = memory.icon || '🏆';
+      ctx.font = '54px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(memory.title, canvasArt.width / 2, canvasArt.height / 2 - 12);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(icon, w / 2, h / 2 - 55);
 
-      ctx.fillStyle = memory.accentColor || '#38bdf8';
-      ctx.font = 'bold 13px "Outfit", sans-serif';
-      ctx.fillText(`FU-DEVER • FPTU ĐÀ NẴNG • ${memory.date}`, canvasArt.width / 2, canvasArt.height / 2 + 18);
+      // 5. Category / Tag Badge Pill
+      const tagText = (memory.tag || 'VINH DANH').toUpperCase();
+      ctx.font = 'bold 12px "JetBrains Mono", monospace';
+      const tagWidth = ctx.measureText(tagText).width + 26;
+      const tagX = (w - tagWidth) / 2;
+      const tagY = h / 2 - 12;
+
+      ctx.fillStyle = `${accent}25`;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(tagX, tagY, tagWidth, 24, 6);
+      } else {
+        ctx.rect(tagX, tagY, tagWidth, 24);
+      }
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tagText, w / 2, tagY + 12);
+
+      // 6. Title Text
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 18px "Outfit", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      const displayTitle = memory.title;
+      if (displayTitle.length > 36) {
+        const mid = displayTitle.lastIndexOf(' ', 34);
+        const line1 = mid !== -1 ? displayTitle.substring(0, mid) : displayTitle.substring(0, 34);
+        const line2 = mid !== -1 ? displayTitle.substring(mid + 1) : displayTitle.substring(34);
+        ctx.fillText(line1, w / 2, h / 2 + 42);
+        ctx.fillText(line2, w / 2, h / 2 + 68);
+      } else {
+        ctx.fillText(displayTitle, w / 2, h / 2 + 52);
+      }
+
+      // 7. Footer Branding & Date
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px "JetBrains Mono", monospace';
+      ctx.fillText(`CLB LẬP TRÌNH FU-DEVER • ${memory.date}`, w / 2, h - 34);
     }
   }
 
@@ -929,21 +1471,21 @@ export class InteractiveModal {
     }
 
     if (sport === 'football') {
-      if (typeBadge) typeBadge.textContent = '⚽ SÚT PHẠT ĐỀN 11M';
+      if (typeBadge) typeBadge.textContent = 'SÚT PHẠT ĐỀN 11M';
       if (descEl) descEl.textContent = 'Canh thanh ngắm qua lại và nhấn nút (hoặc phím SPACE) để sút bóng vào lưới đánh bại thủ môn!';
-      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE) ⚽';
+      if (actionBtn) actionBtn.textContent = 'SÚT BÓNG NGAY (SPACE)';
     } else if (sport === 'basketball') {
-      if (typeBadge) typeBadge.textContent = '🏀 BÓNG RỔ FLAPPY DUNK';
+      if (typeBadge) typeBadge.textContent = 'BÓNG RỔ FLAPPY DUNK';
       if (descEl) descEl.textContent = 'Bấm phím SPACE hoặc Click để nhấp bóng nảy lên, căn lực rơi lọt qua từng chiếc rổ để ghi điểm!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE) 🏀';
+      if (actionBtn) actionBtn.textContent = 'NHẢY BÓNG (SPACE)';
     } else if (sport === 'volleyball') {
-      if (typeBadge) typeBadge.textContent = '🏐 BÓNG CHUYỀN SPIKE RALLY';
+      if (typeBadge) typeBadge.textContent = 'BÓNG CHUYỀN SPIKE RALLY';
       if (descEl) descEl.textContent = 'Dùng phím A/D (hoặc nút bấm) di chuyển, SPACE để nhảy đập bóng đối đầu với Bot FUDA!';
-      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE) 🏐';
+      if (actionBtn) actionBtn.textContent = 'NHẢY & ĐẬP BÓNG (SPACE)';
     } else if (sport === 'barista') {
-      if (typeBadge) typeBadge.textContent = '☕ QUẦY BARISTA DEVER';
+      if (typeBadge) typeBadge.textContent = 'QUẦY BARISTA DEVER';
       if (descEl) descEl.textContent = 'Canh con trỏ vào Vùng Xanh và bấm nút để pha chế ly Cà Phê Muối / Trà Sữa béo ngậy!';
-      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG ☕';
+      if (actionBtn) actionBtn.textContent = 'PHA CHẾ ĐỒ UỐNG';
     }
 
     if (this.sportsArcade) {
@@ -958,24 +1500,24 @@ export class InteractiveModal {
     if (sport === 'football') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Chuỗi: ${scores.footballStreak || 0}`;
+        streakBadge.textContent = `Chuỗi: ${scores.footballStreak || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.footballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.footballHigh || 0}`;
     } else if (sport === 'basketball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🏀 Điểm: ${scores.basketballScore || 0}`;
+        streakBadge.textContent = `Điểm: ${scores.basketballScore || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.basketballHigh || 0}đ`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.basketballHigh || 0}đ`;
     } else if (sport === 'volleyball') {
       if (streakBadge) {
         streakBadge.classList.remove('hidden');
-        streakBadge.textContent = `🔥 Rally: ${scores.volleyballRally || 0}`;
+        streakBadge.textContent = `Rally: ${scores.volleyballRally || 0}`;
       }
-      if (highBadge) highBadge.textContent = `🏆 Kỷ lục: ${scores.volleyballHigh || 0}`;
+      if (highBadge) highBadge.textContent = `Kỷ lục: ${scores.volleyballHigh || 0}`;
     } else if (sport === 'barista') {
       if (streakBadge) streakBadge.classList.add('hidden');
-      if (highBadge) highBadge.textContent = `🏆 Điểm Barista: ${scores.baristaScore || 0}đ`;
+      if (highBadge) highBadge.textContent = `Điểm Barista: ${scores.baristaScore || 0}đ`;
     }
   }
 
@@ -1049,9 +1591,9 @@ export class InteractiveModal {
           <div class="exam-card-badge">${app.tag}</div>
           <h4 class="exam-card-name">${app.name}</h4>
           <p class="exam-card-purpose">${app.purpose}</p>
-          <p class="exam-card-guide">💡 ${app.guide}</p>
+          <p class="exam-card-guide">${app.guide}</p>
           <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="exam-card-download-btn">
-            📥 Tải Bộ Cài Đặt / Truy Cập
+            Tải Bộ Cài Đặt / Truy Cập
           </a>
         `;
         const btn = card.querySelector('.exam-card-download-btn');
@@ -1125,22 +1667,77 @@ export class InteractiveModal {
 
     const mapDef = INTERACTION_PRESETS.campus_map;
     const listEl = document.getElementById('campus-locations-list');
+    const imgEl = document.getElementById('campus-current-map-img') || pane.querySelector('.campus-map-img');
+    const fullBtn = document.getElementById('campus-btn-full');
+    const titleEl = document.getElementById('campus-map-section-title');
+    const tabNewbie = document.getElementById('tab-btn-map-newbie');
+    const tabOverview = document.getElementById('tab-btn-map-overview');
 
-    if (listEl) {
-      listEl.innerHTML = '';
-      mapDef.locations.forEach(loc => {
-        const item = document.createElement('div');
-        item.className = 'campus-loc-item';
-        item.innerHTML = `
-          <span class="loc-num">${loc.num}</span>
-          <div class="loc-details">
-            <h4 class="loc-name">${loc.name}</h4>
-            <p class="loc-desc">${loc.desc}</p>
-          </div>
-        `;
-        listEl.appendChild(item);
-      });
+    const maps = mapDef.maps || [
+      {
+        id: 'newbie_k22',
+        tabName: 'Bản Đồ Newbie K22',
+        title: mapDef.title,
+        subTitle: 'Danh Mục Địa Điểm Newbie K22 Cần Biết',
+        image: mapDef.mapImage,
+        rawImage: mapDef.mapImage,
+        locations: mapDef.locations
+      }
+    ];
+
+    const renderMap = (index) => {
+      const current = maps[index] || maps[0];
+      if (imgEl) {
+        imgEl.src = current.image;
+        imgEl.alt = current.title;
+      }
+      if (fullBtn) {
+        fullBtn.href = current.rawImage || current.image;
+      }
+      if (titleEl) {
+        titleEl.textContent = current.subTitle || current.title;
+      }
+      if (tabNewbie && tabOverview) {
+        if (index === 0) {
+          tabNewbie.classList.add('active');
+          tabOverview.classList.remove('active');
+        } else {
+          tabNewbie.classList.remove('active');
+          tabOverview.classList.add('active');
+        }
+      }
+
+      if (listEl) {
+        listEl.innerHTML = '';
+        (current.locations || []).forEach(loc => {
+          const item = document.createElement('div');
+          item.className = 'campus-loc-item';
+          item.innerHTML = `
+            <span class="loc-num">${loc.num}</span>
+            <div class="loc-details">
+              <h4 class="loc-name">${loc.name}</h4>
+              <p class="loc-desc">${loc.desc}</p>
+            </div>
+          `;
+          listEl.appendChild(item);
+        });
+      }
+    };
+
+    if (tabNewbie) {
+      tabNewbie.onclick = () => {
+        audioManager.playClick();
+        renderMap(0);
+      };
     }
+    if (tabOverview) {
+      tabOverview.onclick = () => {
+        audioManager.playClick();
+        renderMap(1);
+      };
+    }
+
+    renderMap(0);
   }
 
   setupCharterGuideView(zoneData) {
@@ -1163,9 +1760,9 @@ export class InteractiveModal {
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
             <div class="charter-info-grid">
-              <div class="charter-stat"><strong>🎯 Sứ Mệnh:</strong> ${def.mission}</div>
-              <div class="charter-stat"><strong>🌟 Tầm Nhìn:</strong> ${def.vision}</div>
-              <div class="charter-stat"><strong>💰 Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
+              <div class="charter-stat"><strong>Sứ Mệnh:</strong> ${def.mission}</div>
+              <div class="charter-stat"><strong>Tầm Nhìn:</strong> ${def.vision}</div>
+              <div class="charter-stat"><strong>Lệ Phí Hoạt Động:</strong> ${def.fee}</div>
             </div>
             <h4 class="charter-sec-heading">Cơ Cấu Ban Chủ Nhiệm (BCN) CLB</h4>
             <div class="charter-roles-list">
@@ -1190,7 +1787,7 @@ export class InteractiveModal {
           <div class="charter-doc-card">
             <h3 class="charter-doc-title">${def.title}</h3>
             <p class="charter-doc-sub">${def.description}</p>
-            <div class="swe-authors-tag">✍️ Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
+            <div class="swe-authors-tag">Tác giả: <strong>${def.authors}</strong> (FU-DEVER Special Edition)</div>
             <h4 class="charter-sec-heading">5 Chủ Đề Trọng Tâm Đề Thi PE SWE201c Thực Tế</h4>
             <div class="swe-topics-list">
               ${def.topics.map(t => `
@@ -1284,19 +1881,19 @@ export class InteractiveModal {
         <p class="robot-card-desc" style="font-size:0.85rem;color:#cbd5e1;line-height:1.5;">${game.desc}</p>
         
         <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px;margin-top:auto;font-size:11.5px;color:#94a3b8;display:grid;gap:4px;">
-          <div><strong style="color:#fbbf24;">📦 Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
-          <div><strong style="color:#10b981;">🚀 File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
-          <div><strong style="color:#38bdf8;">🎮 Phím bấm:</strong> ${game.controls}</div>
-          <div><strong style="color:#c084fc;">⚙️ Yêu cầu:</strong> ${game.req}</div>
+          <div><strong style="color:#fbbf24;">Gói cài đặt:</strong> ${game.fileName} (${game.fileSize || 'Zip'})</div>
+          <div><strong style="color:#10b981;">File chạy:</strong> <code style="color:#34d399;background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;">${game.exeName || 'Game.exe'}</code></div>
+          <div><strong style="color:#38bdf8;">Phím bấm:</strong> ${game.controls}</div>
+          <div><strong style="color:#c084fc;">Yêu cầu:</strong> ${game.req}</div>
         </div>
 
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button type="button" class="robot-card-btn" style="flex:1;background:linear-gradient(135deg,#f26f21,#ea580c);color:#fff;font-weight:700;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;" data-game-id="${game.id}">
-            <span>⬇️ Tải Game (.exe)</span>
+            <span>Tải Game (.exe)</span>
           </button>
           ${isAdmin ? `
             <button type="button" class="robot-edit-link-btn" title="[Admin] Cập nhật link tải của CLB" style="background:rgba(242,111,33,0.15);border:1px solid rgba(242,111,33,0.4);color:#f26f21;border-radius:8px;padding:0 10px;cursor:pointer;font-size:12px;font-weight:700;" data-game-id="${game.id}">
-              ✏️ Admin
+              Admin
             </button>
           ` : ''}
         </div>
@@ -1315,14 +1912,14 @@ export class InteractiveModal {
       if (editBtn) {
         editBtn.addEventListener('click', () => {
           if (!authService.isAdmin()) {
-            alert('🔒 Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
+            alert('Chỉ Quản trị viên (Admin / Leader) mới có quyền đổi link tải game.');
             return;
           }
           const currentUrl = localStorage.getItem(`dever_robot_link_${game.id}`) || game.link;
           const newUrl = prompt(`[Admin] Nhập link tải Google Drive / GitHub / Mediafire cho game "${game.name}":`, currentUrl);
           if (newUrl !== null && newUrl.trim()) {
             localStorage.setItem(`dever_robot_link_${game.id}`, newUrl.trim());
-            alert(`✅ [Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
+            alert(`[Admin] Đã cập nhật link tải thành công cho "${game.name}"!`);
           }
         });
       }

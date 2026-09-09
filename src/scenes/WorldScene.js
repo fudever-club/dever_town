@@ -20,8 +20,15 @@ import {
   RoomBanner,
   EmoteBar,
   SpeedCodeDuel,
-  DailyGoalHUD
+  DailyGoalHUD,
+  PlayerProfileModal,
+  FriendRequestModal,
+  FriendsListModal,
+  AvatarSelectorModal,
+  UNLOCKABLE_AVATARS
 } from '../ui/index.js';
+import { BestiePetFollower } from '../entities/BestiePetFollower.js';
+import { friendManager } from '../managers/FriendManager.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
 import { InventoryManager } from '../managers/InventoryManager.js';
 import { questManager } from '../managers/QuestManager.js';
@@ -153,6 +160,138 @@ export class WorldScene extends Phaser.Scene {
     if (this.i18n) {
       this.i18n.subscribe(() => this.refreshSceneLanguage());
     }
+
+    // 9. Bestie Pet Follower & Global Scene Ref
+    window.__WORLD_SCENE__ = this;
+    this.initBestiePetFollower();
+  }
+
+  initBestiePetFollower() {
+    const highestPet = friendManager.getHighestStreakPet();
+    if (highestPet && highestPet.level >= 2 && this.player) {
+      if (!this.bestiePetFollower) {
+        this.bestiePetFollower = new BestiePetFollower(this, this.player, highestPet);
+      } else {
+        this.bestiePetFollower.setPetData(highestPet);
+      }
+    }
+
+    // Tự động cập nhật linh thú đồng hành khi kết bạn mới hoặc streak thay đổi
+    friendManager.subscribe(() => {
+      const pet = friendManager.getHighestStreakPet();
+      if (pet && pet.level >= 2 && this.player) {
+        if (!this.bestiePetFollower) {
+          this.bestiePetFollower = new BestiePetFollower(this, this.player, pet);
+        } else {
+          this.bestiePetFollower.setPetData(pet);
+        }
+      } else if (this.bestiePetFollower && (!pet || pet.level < 2)) {
+        this.bestiePetFollower.destroy();
+        this.bestiePetFollower = null;
+      }
+    });
+  }
+
+  openPlayerProfile(playerData) {
+    if (!this.playerProfileModal || !playerData) return;
+    const data = {
+      id: playerData.id || playerData.socketId || playerData.name,
+      name: playerData.name || 'Người chơi',
+      role: playerData.role || 'dev',
+      avatarId: playerData.avatarId || 'dev_hoodie',
+      x: playerData.x,
+      y: playerData.y,
+      isOnline: true
+    };
+    this.playerProfileModal.show(data);
+    if (this.audioManager) {
+      this.audioManager.playClick();
+    }
+  }
+
+  handleFriendRequestReceived(data) {
+    if (this.friendRequestModal) {
+      this.friendRequestModal.show(data);
+    }
+  }
+
+  handleFriendRequestResponse(data) {
+    friendManager.clearPending(data.fromName);
+    if (data.fromSocketId) friendManager.clearPending(data.fromSocketId);
+
+    if (data.accepted) {
+      // Đối phương đã đồng ý kết bạn
+      friendManager.addFriend({
+        id: data.fromSocketId,
+        name: data.fromName,
+        role: data.fromRole,
+        avatarId: data.fromAvatarId
+      });
+      if (this.audioManager && this.audioManager.playFanfare) {
+        this.audioManager.playFanfare();
+      }
+      this.showToast(`${data.fromName} đã đồng ý kết bạn! Chuỗi Streak ngày 1 đã bắt đầu.`);
+    } else {
+      // Đối phương từ chối
+      this.showToast(`${data.fromName} đã từ chối lời mời kết bạn.`);
+    }
+
+    if (this.playerProfileModal && this.playerProfileModal.isOpen) {
+      this.playerProfileModal.renderFriendshipContent();
+    }
+  }
+
+  handleFriendRequestSent(data) {
+    this.showToast(`Đã gửi lời mời kết bạn tới ${data.targetName}. Đang chờ phản hồi...`);
+  }
+
+  handleFriendRequestFailed(data) {
+    this.showToast(`${data.message || 'Không thể gửi lời mời kết bạn.'}`);
+    if (this.playerProfileModal && this.playerProfileModal.isOpen) {
+      this.playerProfileModal.renderFriendshipContent();
+    }
+  }
+
+  handleNewPrivateMessage(data) {
+    if (this.chatBox) {
+      this.chatBox.addPrivateMessage({
+        senderId: data.senderId,
+        senderName: data.senderName,
+        senderRole: data.senderRole,
+        senderAvatarId: data.senderAvatarId,
+        targetName: data.targetName,
+        message: data.message,
+        timestamp: data.timestamp,
+        isSelf: false
+      });
+    }
+    if (this.audioManager && this.audioManager.playMessage) {
+      this.audioManager.playMessage();
+    }
+  }
+
+  handlePrivateMessageSent(data) {
+    // Delivery confirmed
+  }
+
+  handlePrivateMessageFailed(data) {
+    this.showToast(`${data.targetName}: ${data.message || 'Không thể gửi tin nhắn riêng.'}`);
+  }
+
+  showToast(message) {
+    let toast = document.getElementById('dever-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'dever-toast';
+      toast.className = 'dever-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
   }
 
   updateCameraZoom() {
@@ -343,6 +482,9 @@ export class WorldScene extends Phaser.Scene {
     if (spawnX !== undefined && spawnY !== undefined) {
       this.player.setPosition(spawnX, spawnY);
       this.player.body.reset(spawnX, spawnY);
+      if (this.bestiePetFollower) {
+        this.bestiePetFollower.setPosition(spawnX, spawnY);
+      }
     }
 
     this.teleportGraceUntil = performance.now() + 2000;
@@ -435,10 +577,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   initUI() {
-    // 1. Chat Box
+    // 1. Chat Box (Kênh Phòng & Bạn Bè Riêng Tư)
     this.chatBox = new ChatBox({
       onSendMessage: (message) => {
         this.socketManager.sendChatMessage(message);
+        questManager.incrementProgress('chat_connect', 1);
+      },
+      onSendPrivateMessage: ({ targetSocketId, targetName, message }) => {
+        this.socketManager.sendPrivateMessage({ targetSocketId, targetName, message });
         questManager.incrementProgress('chat_connect', 1);
       }
     });
@@ -556,7 +702,128 @@ export class WorldScene extends Phaser.Scene {
     // 13. Minigame Đấu Trí Siêu Tốc (Speed Code Duel)
     this.speedCodeDuel = new SpeedCodeDuel({ scene: this });
 
+    // 14. Hồ Sơ Bạn Bè & Thú Cưng Đồng Hành (Player Profile Modal)
+    this.playerProfileModal = new PlayerProfileModal({
+      onWhisper: (p) => {
+        if (this.chatBox && p && p.name) {
+          const friend = friendManager.getFriend(p.name);
+          if (friend) {
+            this.chatBox.openPrivateChatWith(friend);
+          } else {
+            this.chatBox.openPrivateChatWith({ id: p.id, name: p.name, role: p.role, avatarId: p.avatarId });
+          }
+        }
+      },
+      onTeleportTo: (p) => {
+        if (this.player && p && p.x !== undefined && p.y !== undefined) {
+          this.player.setPosition(p.x + 24, p.y);
+          if (this.player.body) this.player.body.reset(p.x + 24, p.y);
+          if (this.audioManager) this.audioManager.playTeleport();
+        }
+      }
+    });
+
+    // 15. Modal Duyệt Lời Mời Kết Bạn Realtime (2-Way Handshake)
+    this.friendRequestModal = new FriendRequestModal({
+      onAccept: (req) => {
+        if (this.socketManager) {
+          this.socketManager.respondFriendRequest({ fromSocketId: req.fromSocketId, accepted: true });
+        }
+        friendManager.addFriend({
+          id: req.fromSocketId,
+          name: req.fromName,
+          role: req.fromRole,
+          avatarId: req.fromAvatarId
+        });
+        if (this.audioManager && this.audioManager.playFanfare) {
+          this.audioManager.playFanfare();
+        }
+        this.showToast(`Bạn và ${req.fromName} đã trở thành bạn bè! Chuỗi Streak ngày 1 đã bắt đầu.`);
+      },
+      onDecline: (req) => {
+        if (this.socketManager) {
+          this.socketManager.respondFriendRequest({ fromSocketId: req.fromSocketId, accepted: false });
+        }
+        this.showToast(`Đã từ chối lời mời kết bạn từ ${req.fromName}.`);
+      }
+    });
+
+    // 16. Modal Danh Sách Bạn Bè (Friends List Modal)
+    this.friendsListModal = new FriendsListModal({
+      onViewProfile: (friend) => {
+        if (this.playerProfileModal) {
+          this.playerProfileModal.show({
+            id: friend.id,
+            name: friend.name,
+            role: friend.role,
+            avatarId: friend.avatarId,
+            equippedItemId: friend.equippedItemId
+          });
+        }
+      },
+      onChatWith: (friend) => {
+        if (this.chatBox) {
+          this.chatBox.openPrivateChatWith(friend);
+        }
+      }
+    });
+
+    // 17. Modal Đổi Avatar Cá Nhân & Mở Khóa (Avatar Selector Modal)
+    this.avatarSelectorModal = new AvatarSelectorModal({
+      onAvatarChanged: (avatarData) => {
+        const avatarWrap = document.getElementById('header-user-avatar-wrap');
+        if (avatarWrap) {
+          if (avatarData.customUrl) {
+            avatarWrap.innerHTML = `<img src="${avatarData.customUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+          } else {
+            const item = UNLOCKABLE_AVATARS.find(a => a.id === avatarData.avatarId);
+            avatarWrap.innerHTML = `<span>${item?.icon || '🧑‍💻'}</span>`;
+          }
+        }
+
+        if (this.player) {
+          this.player.avatarId = avatarData.avatarId;
+          this.player.customAvatarUrl = avatarData.customUrl;
+        }
+
+        if (this.socketManager && this.socketManager.socket && this.socketManager.socket.connected) {
+          this.socketManager.socket.emit('updateProfile', {
+            avatarId: avatarData.avatarId,
+            customAvatarUrl: avatarData.customUrl
+          });
+        }
+      }
+    });
+
     // 7. Header Buttons
+    const avatarBtn = document.getElementById('header-avatar-btn');
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', () => {
+        this.avatarSelectorModal.toggle();
+      });
+    }
+
+    const userBadge = document.getElementById('header-user-badge');
+    if (userBadge) {
+      userBadge.addEventListener('click', () => {
+        if (this.playerProfileModal) {
+          const customUrl = localStorage.getItem('dever_custom_avatar_url');
+          const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+          const user = authService.getUser();
+          this.playerProfileModal.show({
+            id: 'me',
+            isMe: true,
+            name: user?.display_name || this.player?.name || 'Bạn',
+            role: user?.role || 'dev',
+            avatarId: avatarId,
+            customAvatarUrl: customUrl,
+            wardrobeConfig: this.player?.wardrobeConfig,
+            equippedItemId: this.inventoryManager?.equippedItem?.id
+          });
+        }
+      });
+    }
+
     const invBtn = document.getElementById('header-inventory-btn');
     if (invBtn) {
       invBtn.addEventListener('click', () => {
@@ -568,6 +835,13 @@ export class WorldScene extends Phaser.Scene {
     if (wardrobeBtn) {
       wardrobeBtn.addEventListener('click', () => {
         this.wardrobeModal.show();
+      });
+    }
+
+    const friendsBtn = document.getElementById('header-friends-btn');
+    if (friendsBtn) {
+      friendsBtn.addEventListener('click', () => {
+        this.friendsListModal.toggle();
       });
     }
 
@@ -611,7 +885,22 @@ export class WorldScene extends Phaser.Scene {
     if (authBtn) {
       authBtn.addEventListener('click', () => {
         if (authService.isLoggedIn()) {
-          this.authModal.show('profile');
+          // Bấm vào Hồ Sơ ở header mở ngay Player Profile với hoạt ảnh 360 độ
+          if (this.playerProfileModal) {
+            const customUrl = localStorage.getItem('dever_custom_avatar_url');
+            const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+            const user = authService.getUser();
+            this.playerProfileModal.show({
+              id: 'me',
+              isMe: true,
+              name: user?.display_name || this.player?.name || 'Bạn',
+              role: user?.role || 'dev',
+              avatarId: avatarId,
+              customAvatarUrl: customUrl,
+              wardrobeConfig: this.player?.wardrobeConfig,
+              equippedItemId: this.inventoryManager?.equippedItem?.id
+            });
+          }
         } else {
           this.authModal.show('login');
         }
@@ -723,6 +1012,19 @@ export class WorldScene extends Phaser.Scene {
       }
       if (authBtnText) authBtnText.textContent = 'Đăng Nhập';
       if (logoutBtn) logoutBtn.classList.add('hidden');
+    }
+
+    // Cập nhật Avatar trên header badge
+    const avatarWrap = document.getElementById('header-user-avatar-wrap');
+    if (avatarWrap) {
+      const customUrl = localStorage.getItem('dever_custom_avatar_url');
+      const avatarId = localStorage.getItem('dever_current_avatar') || 'avatar_dev_hoodie';
+      if (customUrl) {
+        avatarWrap.innerHTML = `<img src="${customUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+      } else {
+        const item = UNLOCKABLE_AVATARS.find(a => a.id === avatarId);
+        avatarWrap.innerHTML = `<span>${item?.icon || '🧑‍💻'}</span>`;
+      }
     }
   }
 
@@ -871,6 +1173,10 @@ export class WorldScene extends Phaser.Scene {
 
     for (const remote of this.remotePlayers.values()) {
       remote.update(time, delta);
+    }
+
+    if (this.bestiePetFollower) {
+      this.bestiePetFollower.update();
     }
 
     if (this.minimap) {

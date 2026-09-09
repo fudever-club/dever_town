@@ -57,6 +57,14 @@ export const DAILY_QUESTS_DEF = [
     icon: '☕',
     target: 1,
     points: 25
+  },
+  {
+    id: 'bestie_streak',
+    title: 'Duy Trì Streak Bạn Thân 🔥',
+    desc: 'Tương tác hoặc nhắn tin với bạn bè để duy trì chuỗi streak & nuôi Pet',
+    icon: '🔥',
+    target: 1,
+    points: 30
   }
 ];
 

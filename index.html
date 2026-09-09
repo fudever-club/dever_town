@@ -4,6 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>DEVER TOWN - FU-DEVER • FUDA</title>
+
+  <!-- Favicon / Domain & Search Bar Icon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#0d172e" />
+
+  <!-- Open Graph / Meta for Social & Search Engine Domain Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DEVER TOWN - Thế Giới Pixel 2D • CLB FU-DEVER" />
+  <meta property="og:description" content="Không gian kỹ thuật số Gather.town style kết nối cộng đồng lập trình viên FU-DEVER Đại học FPT Đà Nẵng: 9 phân khu 2D, Hackathon, PE Exam Sandbox và Arcade." />
+  <meta property="og:image" content="/assets/logos/dever_town_social_preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DEVER TOWN - Thế Giới Pixel 2D • CLB FU-DEVER" />
+  <meta name="twitter:description" content="Không gian kỹ thuật số Gather.town style kết nối cộng đồng lập trình viên FU-DEVER Đại học FPT Đà Nẵng: 9 phân khu 2D, Hackathon, PE Exam Sandbox và Arcade." />
+  <meta name="twitter:image" content="/assets/logos/dever_town_social_preview.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -296,13 +316,28 @@
       </div>
 
       <!-- User Profile Badge -->
-      <div class="user-profile-badge">
-        <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
-        <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
+      <div class="user-profile-badge clickable" id="header-user-badge" title="Bấm để đổi Avatar & Xem Hồ Sơ">
+        <div class="header-avatar-circle" id="header-user-avatar-wrap">
+          <span id="header-user-avatar-icon">🧑‍💻</span>
+        </div>
+        <div class="user-meta-texts">
+          <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
+          <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
+        </div>
       </div>
 
       <!-- Header Actions -->
       <div class="header-actions">
+        <!-- Nút Đổi Avatar & Mở Khóa -->
+        <button id="header-avatar-btn" class="btn-primary-sm btn-avatar" title="Đổi Avatar Cá Nhân & Mở Khóa">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="10" r="3"></circle>
+            <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+          </svg>
+          <span data-i18n="avatarBtn">Đổi Avatar</span>
+        </button>
+
         <!-- Nút Túi Đồ [I] -->
         <button id="header-inventory-btn" class="btn-primary-sm btn-inventory" title="Mở Túi Đồ [Phím I]">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -319,6 +354,18 @@
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
           <span data-i18n="wardrobeBtn">Tủ Đồ</span>
+        </button>
+
+        <!-- Nút Bạn Bè & Kết Bạn [Phím F] -->
+        <button id="header-friends-btn" class="btn-primary-sm btn-friends" title="Danh Sách Bạn Bè & Kết Bạn [Phím F]">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span data-i18n="friendsBtn">Bạn Bè</span>
+          <span id="friends-badge-count" class="friends-badge-count hidden">0</span>
         </button>
 
         <!-- Nút Cổng Tiện Ích FPTU & Tải Phần Mềm Thi -->
@@ -394,7 +441,10 @@
           <span class="ping-dot green"></span> 35ms
         </span>
 
-        <span id="online-count-badge" class="badge-online">1 Online</span>
+        <span id="online-count-badge" class="badge-online" title="Số lượng người chơi trực tuyến">
+          <span class="online-num">1</span>
+          <span class="online-label">Online</span>
+        </span>
         <div class="status-indicator">
           <span class="dot online"></span>
           <span class="status-text" data-i18n="onlineText">Online</span>
@@ -549,10 +599,41 @@
           </div>
         </div>
 
+        <!-- Chat Channel Tabs (Phòng / Bạn Bè) -->
+        <div class="chat-tabs-bar">
+          <button type="button" id="chat-tab-room" class="chat-tab-btn active" data-chat-tab="room">
+            Phòng Chung
+          </button>
+          <button type="button" id="chat-tab-friends" class="chat-tab-btn" data-chat-tab="friends">
+            Bạn Bè
+            <span id="chat-unread-dot" class="chat-unread-dot hidden"></span>
+          </button>
+        </div>
+
+        <!-- Private Chat Active Bar (Hiển thị khi ở tab Bạn Bè) -->
+        <div id="chat-private-bar" class="chat-private-bar hidden">
+          <div class="chat-private-info">
+            <span class="chat-private-label">Đang chat:</span>
+            <strong id="chat-private-target-name" class="chat-private-target">Chưa chọn bạn</strong>
+          </div>
+          <div class="chat-private-actions">
+            <button type="button" id="chat-switch-friend-btn" class="chat-switch-friend-btn" title="Chọn bạn bè khác">Đổi Bạn</button>
+          </div>
+        </div>
+        <div id="chat-friend-picker-dropdown" class="chat-friend-picker-dropdown hidden"></div>
+
         <div id="chat-messages" class="chat-messages-box">
           <div class="chat-welcome">
             <p class="welcome-title">Chào mừng đến với DEVER TOWN!</p>
             <p class="welcome-desc">Di chuyển nhân vật bằng <strong>Arrow keys / WASD</strong>, nhấn <strong>[E]</strong> để tương tác, nhấn <strong>[I]</strong> mở Túi đồ. Chat tự do tiếng Việt có dấu!</p>
+          </div>
+        </div>
+
+        <!-- Private Chat Messages Box (1-1 Direct Messages) -->
+        <div id="chat-private-messages" class="chat-messages-box hidden">
+          <div class="chat-private-intro">
+            <p class="intro-title">Trò Chuyện Riêng Tư 1-1</p>
+            <p id="chat-private-intro-desc" class="intro-desc">Tin nhắn chỉ hiển thị riêng giữa hai người bạn. Nhắn tin mỗi ngày để giữ ngọn lửa Bestie Streak và tiến hóa thú cưng Buggy!</p>
           </div>
         </div>
 
@@ -622,9 +703,9 @@
 
       <!-- Segmented Tabs (Hiển thị khi đăng nhập/đăng ký/khách) -->
       <div id="auth-modal-tabs" class="modal-tabs">
-        <button type="button" class="tab-btn active" data-tab="guest">🎮 Chơi Nhanh (Khách)</button>
-        <button type="button" class="tab-btn" data-tab="login">🔐 Đăng Nhập</button>
-        <button type="button" class="tab-btn" data-tab="register">✨ Đăng Ký Thành Viên</button>
+        <button type="button" class="tab-btn active" data-tab="guest">Chơi Nhanh (Khách)</button>
+        <button type="button" class="tab-btn" data-tab="login">Đăng Nhập</button>
+        <button type="button" class="tab-btn" data-tab="register">Đăng Ký Thành Viên</button>
       </div>
 
       <div id="auth-error-msg" class="auth-error-box hidden"></div>
@@ -905,7 +986,7 @@
 
       <div class="inventory-workspace">
         <div class="inventory-left-panel">
-          <div class="panel-section-title">Kho Vật Phẩm (7 Items)</div>
+          <div class="panel-section-title">Kho Vật Phẩm (9 Items)</div>
           <div id="inventory-grid" class="inventory-grid"></div>
         </div>
 
@@ -915,13 +996,15 @@
               <span id="inv-detail-icon-big" class="item-icon-huge">🎒</span>
             </div>
             <div class="item-detail-body">
-              <div class="item-meta-tags">
-                <span id="inv-detail-rarity" class="rarity-badge">COMMON</span>
-                <span id="inv-detail-tag" class="category-badge">Vật phẩm</span>
+              <div class="item-detail-info">
+                <div class="item-meta-tags">
+                  <span id="inv-detail-rarity" class="rarity-badge">COMMON</span>
+                  <span id="inv-detail-tag" class="category-badge">Vật phẩm</span>
+                </div>
+                <h3 id="inv-detail-name" class="item-detail-title">Tên Vật Phẩm</h3>
+                <p id="inv-detail-desc" class="item-detail-desc">Mô tả câu chuyện và công dụng của vật phẩm.</p>
+                <div id="inv-detail-count" class="item-detail-count">Số lượng sở hữu: 1</div>
               </div>
-              <h3 id="inv-detail-name" class="item-detail-title">Tên Vật Phẩm</h3>
-              <p id="inv-detail-desc" class="item-detail-desc">Mô tả câu chuyện và công dụng của vật phẩm.</p>
-              <div id="inv-detail-count" class="item-detail-count">Số lượng sở hữu: 1</div>
               <button type="button" id="inventory-equip-btn" class="btn-equip equip">Trang Bị Cầm Tay</button>
             </div>
           </div>
@@ -1025,20 +1108,134 @@
         </div>
       </div>
 
-      <!-- View 2: Video Call Meeting View -->
+      <!-- View 2: Video Call Meeting View (Discord-Style WebRTC Sync Lounge) -->
       <div id="pane-meeting" class="interactive-pane hidden">
-        <div class="meeting-topbar">
-          <span class="meeting-status">Phòng họp trực tuyến đang mở</span>
-          <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
-            Mở Google Meet Tab Mới
-          </a>
-        </div>
-        <div class="iframe-container">
-          <iframe
-            id="meeting-iframe"
-            src="about:blank"
-            allow="camera; microphone; fullscreen; display-capture"
-          ></iframe>
+        <div class="voice-pane-wrapper">
+          <!-- Voice Top Bar -->
+          <div class="voice-header-bar">
+            <div class="voice-room-info">
+              <span class="voice-room-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
+              </span>
+              <h3 id="voice-room-title" class="voice-room-title">Sync Lounge • Kênh Đàm Thoại</h3>
+              <span id="voice-peer-counter" class="voice-peer-counter">1 người</span>
+            </div>
+            <div class="voice-status-badges">
+              <div id="voice-conn-status" class="voice-conn-badge idle">
+                <span class="status-dot"></span>
+                <span id="voice-conn-label">Chưa tham gia</span>
+              </div>
+              <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent" style="padding: 4px 10px; font-size: 11px;">
+                Mở Google Meet ngoài
+              </a>
+            </div>
+          </div>
+
+          <!-- 1. Lobby Screen (Shown when not connected yet) -->
+          <div id="voice-lobby" class="voice-lobby-card">
+            <div class="voice-lobby-icon-box">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </div>
+            <h4 class="voice-lobby-title">Kênh Đàm Thoại Trực Tiếp</h4>
+            <p class="voice-lobby-desc">
+              Kết nối âm thanh và hình ảnh P2P trực tiếp với các thành viên trong phòng. Hệ thống tự động kích hoạt chế độ Thính giả nếu chưa có quyền microphone.
+            </p>
+            <div class="voice-lobby-options">
+              <label class="voice-checkbox-label">
+                <input type="checkbox" id="voice-lobby-mic" checked />
+                <span>Bật Micro khi tham gia</span>
+              </label>
+              <label class="voice-checkbox-label">
+                <input type="checkbox" id="voice-lobby-cam" />
+                <span>Bật Camera khi tham gia</span>
+              </label>
+            </div>
+            <button type="button" id="btn-join-voice" class="voice-btn-join-room">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <span>Tham gia phòng</span>
+            </button>
+          </div>
+
+          <!-- 2. Active Room Workspace (Shown when connected) -->
+          <div id="voice-active-room" class="voice-active-workspace hidden">
+            <!-- Listen-Only / Device Warning Banner -->
+            <div id="voice-listen-notice" class="voice-listen-notice hidden">
+              <div class="voice-notice-left">
+                <svg class="voice-notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div class="voice-notice-text">
+                  <span class="voice-notice-title" id="voice-notice-title">Chế độ Thính giả (Chỉ nghe)</span>
+                  <span class="voice-notice-desc" id="voice-notice-desc">Chưa thể kết nối Microphone. Bạn vẫn có thể nghe mọi người nói và chia sẻ màn hình.</span>
+                </div>
+              </div>
+              <div class="voice-notice-right">
+                <button type="button" id="btn-retry-media" class="voice-btn-retry">Cấp quyền Micro</button>
+              </div>
+            </div>
+
+            <div id="voice-tiles-grid" class="voice-tiles-grid count-1">
+              <!-- Local Tile -->
+              <div class="voice-tile is-local" id="voice-tile-local">
+                <div class="tile-video-wrap">
+                  <video id="voice-video-local" autoplay muted playsinline class="tile-video hidden"></video>
+                  <div class="tile-avatar-fallback" id="local-avatar-wrap">
+                    <div class="tile-avatar-circle" id="local-tile-avatar"><span class="avatar-initials" id="local-initials">BẠN</span></div>
+                  </div>
+                </div>
+                <div class="tile-overlay-bar">
+                  <div class="tile-name-group">
+                    <span class="tile-mic-icon" id="local-tile-mic-status"></span>
+                    <span class="tile-user-name" id="local-tile-name">Bạn</span>
+                    <span class="tile-role-pill">BẠN</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Remote Tiles injected dynamically -->
+              <div id="voice-remote-tiles" style="display:contents;"></div>
+            </div>
+
+            <!-- Discord-style Bottom Dock -->
+            <div class="voice-controls-bar">
+              <button type="button" id="btn-toggle-mic" class="voice-btn" title="Bật/Tắt Micro (Phím tắt: M)">
+                <span class="btn-icon" id="mic-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                </span>
+                <span class="btn-text" id="mic-text">Micro</span>
+              </button>
+              <button type="button" id="btn-toggle-cam" class="voice-btn off" title="Bật/Tắt Camera">
+                <span class="btn-icon" id="cam-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L23 7v10"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z"/></svg>
+                </span>
+                <span class="btn-text" id="cam-text">Camera</span>
+              </button>
+              <button type="button" id="btn-toggle-screen" class="voice-btn off" title="Chia sẻ màn hình">
+                <span class="btn-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                </span>
+                <span class="btn-text">Chia Sẻ</span>
+              </button>
+              <div class="voice-btn-divider"></div>
+              <button type="button" id="btn-leave-voice" class="voice-btn voice-btn-leave" title="Rời khỏi phòng đàm thoại">
+                <span class="btn-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                </span>
+                <span class="btn-text">Rời Kênh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hidden fallback iframe to prevent any legacy breakage -->
+          <iframe id="meeting-iframe" src="about:blank" style="display:none;" tabindex="-1" aria-hidden="true"></iframe>
         </div>
       </div>
 
@@ -1279,10 +1476,14 @@
       <div id="pane-campus-map" class="interactive-pane hidden">
         <div class="campus-map-workspace">
           <div class="campus-map-left">
+            <div id="campus-map-tabs-bar" class="campus-map-tabs-bar">
+              <button type="button" id="tab-btn-map-newbie" class="campus-tab-btn active">Bản Đồ Newbie K22</button>
+              <button type="button" id="tab-btn-map-overview" class="campus-tab-btn">Sơ Đồ 9 Phân Khu</button>
+            </div>
             <div class="campus-map-img-box">
-              <img src="/assets/campus/fuda_map.webp" alt="Bản Đồ FPTU Đà Nẵng" class="campus-map-img" />
+              <img id="campus-current-map-img" src="/assets/campus/campus_map.webp" alt="Bản Đồ FPTU Đà Nẵng" class="campus-map-img" />
               <div class="campus-map-actions">
-                <a href="/assets/campus/fuda_map.webp" target="_blank" rel="noopener noreferrer" class="btn-sm-action">
+                <a id="campus-btn-full" href="/assets/campus/campus_map.jpg" target="_blank" rel="noopener noreferrer" class="btn-sm-action">
                   Mở Bản Đồ Gốc HD
                 </a>
                 <a href="/assets/campus/fuda_mau.webp" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent">
@@ -1292,7 +1493,7 @@
             </div>
           </div>
           <div class="campus-map-right">
-            <h3 class="campus-map-title">Danh Mục 9 Phân Khu Campus FUDA</h3>
+            <h3 id="campus-map-section-title" class="campus-map-title">Danh Mục Địa Điểm Newbie K22 Cần Biết</h3>
             <div id="campus-locations-list" class="campus-locations-list"></div>
           </div>
         </div>

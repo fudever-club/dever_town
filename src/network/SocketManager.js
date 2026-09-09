@@ -193,6 +193,51 @@ export class SocketManager {
       authService.logout();
       window.location.reload();
     });
+
+    // 15. Lời mời kết bạn Realtime (2-Way Handshake)
+    this.socket.on('friendRequestReceived', (data) => {
+      console.log('🤝 [Socket] Nhận lời mời kết bạn từ:', data);
+      if (this.scene && this.scene.handleFriendRequestReceived) {
+        this.scene.handleFriendRequestReceived(data);
+      }
+    });
+
+    this.socket.on('friendRequestResponse', (data) => {
+      console.log('🤝 [Socket] Nhận phản hồi kết bạn:', data);
+      if (this.scene && this.scene.handleFriendRequestResponse) {
+        this.scene.handleFriendRequestResponse(data);
+      }
+    });
+
+    this.socket.on('friendRequestSent', (data) => {
+      if (this.scene && this.scene.handleFriendRequestSent) {
+        this.scene.handleFriendRequestSent(data);
+      }
+    });
+
+    this.socket.on('friendRequestFailed', (data) => {
+      if (this.scene && this.scene.handleFriendRequestFailed) {
+        this.scene.handleFriendRequestFailed(data);
+      }
+    });
+
+    this.socket.on('newPrivateMessage', (data) => {
+      if (this.scene && this.scene.handleNewPrivateMessage) {
+        this.scene.handleNewPrivateMessage(data);
+      }
+    });
+
+    this.socket.on('privateMessageSent', (data) => {
+      if (this.scene && this.scene.handlePrivateMessageSent) {
+        this.scene.handlePrivateMessageSent(data);
+      }
+    });
+
+    this.socket.on('privateMessageFailed', (data) => {
+      if (this.scene && this.scene.handlePrivateMessageFailed) {
+        this.scene.handlePrivateMessageFailed(data);
+      }
+    });
   }
 
   join(options = {}) {
@@ -266,6 +311,21 @@ export class SocketManager {
     this.socket.emit('updateProfile', { name, avatarId });
   }
 
+  sendFriendRequest({ targetSocketId, targetName }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('sendFriendRequest', { targetSocketId, targetName });
+  }
+
+  respondFriendRequest({ fromSocketId, accepted }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('respondFriendRequest', { fromSocketId, accepted });
+  }
+
+  sendPrivateMessage({ targetSocketId, targetName, message }) {
+    if (!this.socket || !this.isConnected) return;
+    this.socket.emit('sendPrivateMessage', { targetSocketId, targetName, message });
+  }
+
   updateConnectionStatus(online) {
     const statusText = document.querySelector('.status-text');
     const dot = document.querySelector('.dot');
@@ -284,7 +344,12 @@ export class SocketManager {
     // Cập nhật tổng online
     const onlineEl = document.getElementById('online-count-badge');
     if (onlineEl && counts.total !== undefined) {
-      onlineEl.textContent = `${counts.total} Online`;
+      const numEl = onlineEl.querySelector('.online-num');
+      if (numEl) {
+        numEl.textContent = counts.total;
+      } else {
+        onlineEl.innerHTML = `<span class="online-num">${counts.total}</span><span class="online-label">Online</span>`;
+      }
     }
 
     // Cập nhật số lượng 8 phòng

@@ -171,10 +171,15 @@ export class MinimapOverlay {
         const rx = (remote.x / 800) * this.width;
         const ry = (remote.y / 608) * this.height;
 
-        ctx.fillStyle = '#a855f7';
+        // Vẽ chấm màu xanh ngọc bích nổi bật (khác biệt hoàn toàn với Cổng màu tím)
+        ctx.fillStyle = '#10b981';
         ctx.beginPath();
         ctx.arc(rx, ry, 2.5, 0, Math.PI * 2);
         ctx.fill();
+
+        ctx.strokeStyle = '#34d399';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
       }
     }
 

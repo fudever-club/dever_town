@@ -1,5 +1,9 @@
 <div align="center">
 
+<a href="https://github.com/huanight19RaH/DEVER_TOWN">
+  <img src="./public/assets/logos/dever_logo_nontext.png" alt="FU-DEVER Logo" width="110" height="110" />
+</a>
+
 # 🎮 DEVER TOWN
 
 ### Thế Giới Pixel 2D Multiplayer của CLB FU-DEVER · FPT University Đà Nẵng
@@ -11,6 +15,10 @@
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8-010101.svg?style=for-the-badge&logo=socketdotio&logoColor=white)](https://socket.io)
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![i18n](https://img.shields.io/badge/i18n-VN%20%7C%20EN-purple.svg?style=for-the-badge)](./src/config/i18n.js)
+
+<p align="center">
+  <img src="./.github/assets/social-preview.png" alt="DEVER TOWN Preview Banner" width="780" />
+</p>
 
 > **WORK HARD - PLAY HARD** · Không gian sinh hoạt kỹ thuật số Gather.town style dành riêng cho cộng đồng lập trình viên FUDA.  
 > Gặp gỡ, học tập chuyên sâu, giải trí arcade, thi đấu thể thao ảo và khám phá 9 phân khu chức năng sống động!
