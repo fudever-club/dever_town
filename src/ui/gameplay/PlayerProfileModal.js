@@ -39,41 +39,49 @@ export class PlayerProfileModal {
       <div class="player-profile-card">
         <button type="button" class="player-profile-close" id="profile-modal-close-btn" title="Đóng">&times;</button>
         
-        <div class="profile-card-header">
-          <div class="profile-card-avatar-wrapper">
-            <div class="profile-card-avatar" id="target-player-avatar">🧑‍💻</div>
-            <span class="profile-card-online-dot" title="Đang trực tuyến"></span>
-          </div>
-          <div class="profile-card-titles">
-            <div class="profile-name-badge-row">
-              <h3 id="target-player-name" class="profile-player-name">Tên người chơi</h3>
-              <span id="target-player-role" class="profile-role-badge">Dev</span>
+        <div class="profile-layout-grid">
+          <!-- Cột Trái: Thông tin người chơi, Hoạt ảnh 360 độ và Nút hành động -->
+          <div class="profile-left-col">
+            <div class="profile-card-header">
+              <div class="profile-card-avatar-wrapper">
+                <div class="profile-card-avatar" id="target-player-avatar">🧑‍💻</div>
+                <span class="profile-card-online-dot" title="Đang trực tuyến"></span>
+              </div>
+              <div class="profile-card-titles">
+                <div class="profile-name-badge-row">
+                  <h3 id="target-player-name" class="profile-player-name">Tên người chơi</h3>
+                  <span id="target-player-role" class="profile-role-badge">Dev</span>
+                </div>
+                <p id="target-player-status" class="profile-player-status">Đang cùng phòng với bạn</p>
+              </div>
             </div>
-            <p id="target-player-status" class="profile-player-status">Đang cùng phòng với bạn</p>
-          </div>
-        </div>
 
-        <!-- 360° Interactive Character Showcase -->
-        <div class="profile-character-showcase">
-          <div class="character-preview-stage">
-            <canvas id="profile-character-canvas" width="160" height="160" title="Kéo chuột sang trái/phải để xoay 360°"></canvas>
-            <div class="character-action-tag">Đang Nhảy Vui Vẻ</div>
-          </div>
-          <div class="character-rotation-bar">
-            <button type="button" class="btn-rotate" id="btn-profile-rot-left" title="Xoay 90° sang trái">◀ Xoay Trái</button>
-            <span class="rotate-angle-label" id="profile-rot-angle-text">Chính Diện (0°)</span>
-            <button type="button" class="btn-rotate" id="btn-profile-rot-right" title="Xoay 90° sang phải">Xoay Phải ▶</button>
-          </div>
-          <p class="rotate-hint-sub">Có thể kéo chuột trên nhân vật để xoay 360 độ</p>
-        </div>
+            <!-- 360° Interactive Character Showcase -->
+            <div class="profile-character-showcase">
+              <div class="character-preview-stage">
+                <canvas id="profile-character-canvas" width="160" height="160" title="Kéo chuột sang trái/phải để xoay 360°"></canvas>
+                <div class="character-action-tag">Đang Nhảy Vui Vẻ</div>
+              </div>
+              <div class="character-rotation-bar">
+                <button type="button" class="btn-rotate" id="btn-profile-rot-left" title="Xoay 90° sang trái">◀ Xoay Trái</button>
+                <span class="rotate-angle-label" id="profile-rot-angle-text">Chính Diện (0°)</span>
+                <button type="button" class="btn-rotate" id="btn-profile-rot-right" title="Xoay 90° sang phải">Xoay Phải ▶</button>
+              </div>
+              <p class="rotate-hint-sub">Kéo chuột trên nhân vật để xoay 360 độ</p>
+            </div>
 
-        <!-- Dynamic Details (Trang Phục, Kỉ Lục, Bestie Streak) -->
-        <div id="profile-friendship-body" class="profile-friendship-container">
-          <!-- Rendered dynamically -->
-        </div>
+            <!-- Nút hành động (Nhắn Tin, Đi Tới Gần, Hủy Bạn / Kết Bạn) -->
+            <div class="profile-card-actions" id="profile-card-actions">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
 
-        <div class="profile-card-actions" id="profile-card-actions">
-          <!-- Dynamic action buttons -->
+          <!-- Cột Phải: Trang Phục, Kỉ Lục Minigames, Bestie Streak & Thú Cưng Buggy -->
+          <div class="profile-right-col">
+            <div id="profile-friendship-body" class="profile-friendship-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
         </div>
       </div>
     `;
