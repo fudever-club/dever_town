@@ -9,6 +9,7 @@ import { ROBOT_GAMES } from '../../config/robotGames.js';
 import { authService } from '../../services/AuthService.js';
 import { voiceService } from '../../services/VoiceService.js';
 import { escapeHtml } from '../../utils/sanitize.js';
+import { FPTU_CLUBS } from '../../config/fptuClubs.js';
 
 export class InteractiveModal {
   /**
@@ -256,6 +257,9 @@ export class InteractiveModal {
         case 'golden_frog_fortune':
           this.setupGoldenFrogFortuneView(zoneData);
           window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('golden_frog');
+          break;
+        case 'club_booth':
+          this.setupClubBoothView(zoneData);
           break;
         default:
           break;
@@ -1999,6 +2003,115 @@ export class InteractiveModal {
         questManager.addPoints(picked.reward, 'Bái Cóc Vàng');
         renderFortune(picked, true);
       };
+    }
+  }
+
+  /**
+   * Thiết lập giao diện Gian Hàng Câu Lạc Bộ FPTU (Club Booth Showcase)
+   * @param {Object} zoneData
+   */
+  setupClubBoothView(zoneData) {
+    const pane = document.getElementById('pane-club-booth');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const club = FPTU_CLUBS[zoneData.clubId] || {
+      prefix: zoneData.name || 'FPTU Club',
+      nameEn: zoneData.name || 'FPT University Club',
+      nameVi: zoneData.label || 'Câu Lạc Bộ Sinh Viên',
+      group: 'Học thuật',
+      subgroup: 'Sinh viên',
+      boothNumber: 0,
+      floor: 2,
+      themeColor: '#38bdf8',
+      icon: '🏛️',
+      slogan: 'Năng Động - Sáng Tạo - Gắn Kết',
+      description: 'Không gian sinh hoạt, rèn luyện kỹ năng và giao lưu học hỏi của sinh viên Đại học FPT Đà Nẵng.',
+      activities: ['Sinh hoạt chuyên đề hàng tuần', 'Workshop kỹ năng thực tế', 'Hoạt động giao lưu teambuilding'],
+      roles: 'Thành viên thế hệ mới'
+    };
+
+    const headerEl = document.getElementById('club-booth-header');
+    const bodyEl = document.getElementById('club-booth-body');
+    const footerEl = document.getElementById('club-booth-footer');
+
+    if (headerEl) {
+      headerEl.innerHTML = `
+        <div class="club-card-badge-row">
+          <span class="club-booth-tag" style="background: ${club.themeColor}22; color: ${club.themeColor}; border: 1px solid ${club.themeColor}55;">
+            Gian Hàng #${club.boothNumber}
+          </span>
+          <span class="club-group-tag">${escapeHtml(club.group)} • ${escapeHtml(club.subgroup || '')}</span>
+          <span class="club-floor-tag">Tòa Alpha — Tầng ${club.floor || 2}</span>
+        </div>
+        <div class="club-hero-title-row">
+          <span class="club-avatar-badge" style="background: ${club.themeColor}22; border: 2px solid ${club.themeColor};">
+            ${club.icon || '🏛️'}
+          </span>
+          <div>
+            <h2 class="club-hero-name" style="color: ${club.themeColor};">[${escapeHtml(club.prefix)}] ${escapeHtml(club.nameVi)}</h2>
+            <p class="club-hero-en">${escapeHtml(club.nameEn)}</p>
+          </div>
+        </div>
+        <p class="club-slogan">"${escapeHtml(club.slogan || '')}"</p>
+      `;
+    }
+
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <div class="club-detail-section">
+          <h4 class="club-section-title">Giới Thiệu & Định Hướng</h4>
+          <p class="club-section-desc">${escapeHtml(club.description)}</p>
+        </div>
+
+        <div class="club-detail-section">
+          <h4 class="club-section-title">Hoạt Động Tiêu Biểu</h4>
+          <ul class="club-activities-list">
+            ${(club.activities || []).map(act => `
+              <li class="club-act-item">
+                <span class="club-act-bullet" style="background: ${club.themeColor};"></span>
+                <span>${escapeHtml(act)}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <div class="club-detail-section">
+          <h4 class="club-section-title">Chiêu Mộ & Tuyển Quân</h4>
+          <p class="club-section-desc"><strong>Đối tượng & Vị trí ứng tuyển:</strong> ${escapeHtml(club.roles || 'Tất cả sinh viên FPTU đam mê học hỏi')}</p>
+        </div>
+      `;
+    }
+
+    if (footerEl) {
+      footerEl.innerHTML = `
+        <div class="club-actions-row">
+          <button type="button" class="btn-primary-sm btn-club-register" id="btn-club-interest" style="background: ${club.themeColor};">
+            Đăng Ký Quan Tâm Gian Hàng #${club.boothNumber}
+          </button>
+          <button type="button" class="btn-secondary-sm" id="btn-club-visit-web">
+            Đóng
+          </button>
+        </div>
+      `;
+
+      const interestBtn = document.getElementById('btn-club-interest');
+      if (interestBtn) {
+        interestBtn.onclick = () => {
+          audioManager.playSuccess();
+          interestBtn.textContent = 'Đã Lưu Vào Danh Sách Quan Tâm';
+          interestBtn.disabled = true;
+          questManager.incrementProgress('explorer_rooms', 1);
+        };
+      }
+
+      const visitBtn = document.getElementById('btn-club-visit-web');
+      if (visitBtn) {
+        visitBtn.onclick = () => {
+          audioManager.playClick();
+          this.hide();
+        };
+      }
     }
   }
 }

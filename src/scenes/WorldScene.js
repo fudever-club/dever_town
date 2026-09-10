@@ -42,6 +42,7 @@ import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
 import { TilePool } from '../utils/TilePool.js';
 import { telemetry } from '../utils/Telemetry.js';
+import { FloorManager } from '../managers/FloorManager.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -68,10 +69,11 @@ export class WorldScene extends Phaser.Scene {
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
+    this.floorManager = new FloorManager(this);
 
     // 1. Khởi tạo Local Player
     const user = authService.getUser();
-    const mapData = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    const mapData = this.floorManager.getCurrentFloorData(this.currentRoomId) || MAPS_CONFIG.main_hall;
     const spawnX = mapData.spawnPoint.x;
     const spawnY = mapData.spawnPoint.y;
 
@@ -102,6 +104,15 @@ export class WorldScene extends Phaser.Scene {
 
     this.interactionManager = new InteractionManager(this, {
       onInteract: (zoneData) => {
+        if (zoneData.type === 'stair_transition') {
+          if (this.floorManager) {
+            const targetFloor = zoneData.targetFloor;
+            const spawnX = targetFloor === 0 ? 112 : (targetFloor === 1 ? 112 : 680);
+            const spawnY = targetFloor === 0 ? 100 : 80;
+            this.floorManager.transitionToFloor(targetFloor, { spawnX, spawnY });
+          }
+          return;
+        }
         if (this.interactiveModal) {
           this.interactiveModal.show({ ...zoneData, roomId: this.currentRoomId });
         }
@@ -346,15 +357,23 @@ export class WorldScene extends Phaser.Scene {
   }
 
   loadRoom(roomId, spawnX, spawnY, notifySocket = true) {
-    const mapData = MAPS_CONFIG[roomId];
+    if (this.currentRoomId !== roomId && this.floorManager) {
+      this.floorManager.resetFloor();
+    }
+
+    const mapData = this.floorManager ? this.floorManager.getCurrentFloorData(roomId) : MAPS_CONFIG[roomId];
     if (!mapData) return;
 
     this.currentRoomId = roomId;
+    this.mapData = mapData;
     questManager.recordRoomVisit(roomId);
 
     if (this.hudText) {
       const roomName = this.i18n ? (this.i18n.get(`rooms.${roomId}`) || mapData.name) : mapData.name;
-      this.hudText.setText(`DEVER TOWN | ${roomName}`);
+      const floorCount = this.floorManager ? this.floorManager.getFloorCount(roomId) : 1;
+      const floorIdx = this.floorManager ? this.floorManager.currentFloor : 0;
+      const floorSuffix = floorCount > 1 ? ` — Tầng ${floorIdx + 1}/${floorCount}` : '';
+      this.hudText.setText(`DEVER TOWN | ${roomName}${floorSuffix}`);
     }
 
     if (this.tilePool) {
