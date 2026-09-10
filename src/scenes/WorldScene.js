@@ -41,6 +41,7 @@ import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
 import { TilePool } from '../utils/TilePool.js';
+import { telemetry } from '../utils/Telemetry.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -545,6 +546,8 @@ export class WorldScene extends Phaser.Scene {
       this.audioManager.playTeleport();
     }
 
+    telemetry.track('room_visit', { room_id: portalData.targetRoomId });
+
     this.cameras.main.fadeOut(200, 11, 15, 25);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.loadRoom(
@@ -968,6 +971,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.currentRoomId === 'main_hall' && this.achievementManager) {
       this.achievementManager.unlock('first_arrival');
     }
+
+    const isGuest = !authService.isLoggedIn();
+    telemetry.init({ isGuest });
+    telemetry.track('world_entered', { room_id: this.currentRoomId });
   }
 
   toggleFullscreen() {

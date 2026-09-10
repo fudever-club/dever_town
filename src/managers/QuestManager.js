@@ -329,6 +329,11 @@ export class QuestManager {
         audioManager.playVictory();
         this.showToast(`Nhiệm vụ hoàn thành: ${def.title}`);
       }
+      
+      // Track meaningful action when quest is completed
+      import('../utils/Telemetry.js').then(({ telemetry }) => {
+        telemetry.track('meaningful_action', { action_type: questId });
+      });
     }
 
     if (save) this.saveState();
@@ -359,6 +364,12 @@ export class QuestManager {
     this.points += def.points;
     audioManager.playVictory();
     this.showToast(`+${def.points} Dever Points`);
+    
+    // Track quest_claimed
+    import('../utils/Telemetry.js').then(({ telemetry }) => {
+      telemetry.track('quest_claimed', { quest_id: questId });
+    });
+
     this.saveState();
     return true;
   }
