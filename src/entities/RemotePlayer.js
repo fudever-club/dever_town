@@ -40,9 +40,12 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
+    this.shadowEllipse = scene.add.ellipse(x, y + 14, 20, 7, 0x000000, 0.28);
+    this.shadowEllipse.setDepth(this.y - 0.1);
+
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y);
+    this.setDepth(this.y + 14);
 
     // Bật tương tác click vào nhân vật để xem Hồ sơ & Kết bạn
     this.setInteractive({ cursor: 'pointer' });
@@ -58,8 +61,18 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       this.nameTagContainer.destroy();
     }
 
-    this.nameTagContainer = this.scene.add.container(this.x, this.y - 28);
+    this.nameTagContainer = this.scene.add.container(this.x, this.y - 38);
     this.nameTagContainer.setDepth(1000001);
+    this.nameTagContainer.setAlpha(0);
+
+    // Hiệu ứng nảy vào êm ái khi người chơi khác xuất hiện
+    this.scene.tweens.add({
+      targets: this.nameTagContainer,
+      y: this.y - 28,
+      alpha: 1,
+      duration: 320,
+      ease: 'Back.easeOut'
+    });
 
     const rolePrefix = this.role === 'admin' ? '[Admin] ' :
                        this.role === 'leader' ? '[Leader] ' :
@@ -343,10 +356,18 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       this.scaleX = 1.0;
     }
 
+    // Cập nhật vị trí bóng chân và co giãn nhẹ theo nhịp bước
+    if (this.shadowEllipse) {
+      this.shadowEllipse.setPosition(this.x, this.y + 14);
+      this.shadowEllipse.setDepth(this.y - 0.1);
+      const shadowBob = isVisiblyMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
+      this.shadowEllipse.setScale(shadowBob, 1.0);
+    }
+
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y);
+      this.setDepth(this.y + 14);
 
       if (this.nameTagContainer) {
         this.nameTagContainer.setPosition(this.x, this.y - 28);
@@ -363,6 +384,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
   }
 
   destroy(fromScene) {
+    if (this.shadowEllipse) {
+      this.shadowEllipse.destroy();
+      this.shadowEllipse = null;
+    }
     if (this.nameTagContainer) {
       this.nameTagContainer.destroy();
     }

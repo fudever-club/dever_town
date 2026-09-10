@@ -454,11 +454,14 @@ export class WorldScene extends Phaser.Scene {
 
         const label = this.add.text(avgX, clampedY, portalText, {
           fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
-          fontSize: '10px',
+          fontSize: '11px',
           fontWeight: '700',
-          color: '#c084fc',
-          backgroundColor: 'rgba(15, 23, 42, 0.88)',
-          padding: { x: 6, y: 2 }
+          color: '#e9d5ff',
+          stroke: '#1e1b4b',
+          strokeThickness: 3,
+          backgroundColor: 'rgba(15, 23, 42, 0.92)',
+          padding: { x: 8, y: 3 },
+          resolution: typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2
         }).setOrigin(0.5, 0.5).setDepth(99999);
 
         // Kẹp tọa độ X động theo bề rộng thực tế + fallback độ dài ký tự (phòng khi webfont chưa tải xong)
@@ -548,18 +551,22 @@ export class WorldScene extends Phaser.Scene {
 
     telemetry.track('room_visit', { room_id: portalData.targetRoomId });
 
-    this.cameras.main.fadeOut(200, 11, 15, 25);
-    this.cameras.main.once('camerafadeoutcomplete', () => {
-      this.loadRoom(
-        portalData.targetRoomId,
-        portalData.targetSpawn.x,
-        portalData.targetSpawn.y,
-        true
-      );
-      this.cameras.main.fadeIn(250, 11, 15, 25);
-      this.cameras.main.once('camerafadeincomplete', () => {
-        this.isTeleporting = false;
-        this.teleportGraceUntil = performance.now() + 2000;
+    // Hiệu ứng chớp sáng trắng nhanh (Pokemon GBA flash) trước khi fade to black
+    this.cameras.main.flash(70, 255, 255, 255, false);
+    this.time.delayedCall(70, () => {
+      this.cameras.main.fadeOut(180, 11, 15, 25);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.loadRoom(
+          portalData.targetRoomId,
+          portalData.targetSpawn.x,
+          portalData.targetSpawn.y,
+          true
+        );
+        this.cameras.main.fadeIn(250, 11, 15, 25);
+        this.cameras.main.once('camerafadeincomplete', () => {
+          this.isTeleporting = false;
+          this.teleportGraceUntil = performance.now() + 2000;
+        });
       });
     });
   }
