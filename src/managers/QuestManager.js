@@ -329,6 +329,11 @@ export class QuestManager {
         audioManager.playVictory();
         this.showToast(`Nhiệm vụ hoàn thành: ${def.title}`);
       }
+      
+      // Track meaningful action when quest is completed
+      import('../utils/Telemetry.js').then(({ telemetry }) => {
+        telemetry.track('meaningful_action', { action_type: questId });
+      });
     }
 
     if (save) this.saveState();
@@ -359,6 +364,12 @@ export class QuestManager {
     this.points += def.points;
     audioManager.playVictory();
     this.showToast(`+${def.points} Dever Points`);
+    
+    // Track quest_claimed
+    import('../utils/Telemetry.js').then(({ telemetry }) => {
+      telemetry.track('quest_claimed', { quest_id: questId });
+    });
+
     this.saveState();
     return true;
   }
@@ -389,7 +400,12 @@ export class QuestManager {
     toast.className = 'quest-toast-banner';
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
-    toast.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
+    const toastDot = document.createElement('span');
+    toastDot.className = 'toast-dot';
+    const toastMsg = document.createElement('span');
+    toastMsg.textContent = message;
+    toast.appendChild(toastDot);
+    toast.appendChild(toastMsg);
     document.body.appendChild(toast);
 
     setTimeout(() => {

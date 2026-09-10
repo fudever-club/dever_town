@@ -40,6 +40,9 @@ import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
+import { TilePool } from '../utils/TilePool.js';
+import { telemetry } from '../utils/Telemetry.js';
+import { FloorManager } from '../managers/FloorManager.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -49,8 +52,10 @@ export class WorldScene extends Phaser.Scene {
     this.isTeleporting = false;
     this.lastTeleportTime = 0;
     this.teleportGraceUntil = 0;
+    this.tilePool = null;
     this.tileSprites = [];
     this.portalLabels = [];
+    this.obstacleShadows = [];
     this.audioManager = audioManager;
     this.i18n = i18n;
     this.playerSessionActive = false;
@@ -60,14 +65,16 @@ export class WorldScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, GAME_CONFIG.MAP_WIDTH, GAME_CONFIG.MAP_HEIGHT);
 
     // 0. Khởi tạo Juice, Môi trường hạt & Thành tựu
+    this.tilePool = new TilePool(this, 550);
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
+    this.floorManager = new FloorManager(this);
 
     // 1. Khởi tạo Local Player
     const user = authService.getUser();
-    const mapData = MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    const mapData = this.floorManager.getCurrentFloorData(this.currentRoomId) || MAPS_CONFIG.main_hall;
     const spawnX = mapData.spawnPoint.x;
     const spawnY = mapData.spawnPoint.y;
 
@@ -98,6 +105,15 @@ export class WorldScene extends Phaser.Scene {
 
     this.interactionManager = new InteractionManager(this, {
       onInteract: (zoneData) => {
+        if (zoneData.type === 'stair_transition') {
+          if (this.floorManager) {
+            const targetFloor = zoneData.targetFloor;
+            const spawnX = targetFloor === 0 ? 112 : (targetFloor === 1 ? 112 : 680);
+            const spawnY = targetFloor === 0 ? 100 : 80;
+            this.floorManager.transitionToFloor(targetFloor, { spawnX, spawnY });
+          }
+          return;
+        }
         if (this.interactiveModal) {
           this.interactiveModal.show({ ...zoneData, roomId: this.currentRoomId });
         }
@@ -141,10 +157,11 @@ export class WorldScene extends Phaser.Scene {
 
     this.updateCameraZoom();
 
-    window.addEventListener('resize', () => this.updateCameraZoom());
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => this.updateCameraZoom(), 150);
-    });
+    // Dùng named reference để có thể removeEventListener trong shutdown()
+    this._resizeHandler = () => this.updateCameraZoom();
+    this._orientationHandler = () => setTimeout(() => this.updateCameraZoom(), 150);
+    window.addEventListener('resize', this._resizeHandler);
+    window.addEventListener('orientationchange', this._orientationHandler);
 
     // 5. HUD & Network
     this.createHUD();
@@ -341,24 +358,38 @@ export class WorldScene extends Phaser.Scene {
   }
 
   loadRoom(roomId, spawnX, spawnY, notifySocket = true) {
-    const mapData = MAPS_CONFIG[roomId];
+    if (this.currentRoomId !== roomId && this.floorManager) {
+      this.floorManager.resetFloor();
+    }
+
+    const mapData = this.floorManager ? this.floorManager.getCurrentFloorData(roomId) : MAPS_CONFIG[roomId];
     if (!mapData) return;
 
     this.currentRoomId = roomId;
+    this.mapData = mapData;
     questManager.recordRoomVisit(roomId);
 
     if (this.hudText) {
       const roomName = this.i18n ? (this.i18n.get(`rooms.${roomId}`) || mapData.name) : mapData.name;
-      this.hudText.setText(`DEVER TOWN | ${roomName}`);
+      const floorCount = this.floorManager ? this.floorManager.getFloorCount(roomId) : 1;
+      const floorIdx = this.floorManager ? this.floorManager.currentFloor : 0;
+      const floorSuffix = floorCount > 1 ? ` — Tầng ${floorIdx + 1}/${floorCount}` : '';
+      this.hudText.setText(`DEVER TOWN | ${roomName}${floorSuffix}`);
     }
 
-    if (this.tileSprites && this.tileSprites.length > 0) {
+    if (this.tilePool) {
+      this.tilePool.releaseAll();
+    } else if (this.tileSprites && this.tileSprites.length > 0) {
       this.tileSprites.forEach(t => t.destroy());
       this.tileSprites = [];
     }
     if (this.portalLabels && this.portalLabels.length > 0) {
       this.portalLabels.forEach(lbl => lbl.destroy());
       this.portalLabels = [];
+    }
+    if (this.obstacleShadows && this.obstacleShadows.length > 0) {
+      this.obstacleShadows.forEach(s => s.destroy());
+      this.obstacleShadows = [];
     }
     if (this.obstacleGroup) {
       this.obstacleGroup.clear(true, true);
@@ -387,15 +418,37 @@ export class WorldScene extends Phaser.Scene {
         const tileType = mapData.layout[r][c];
         const posX = c * tileSize + tileSize / 2;
         const posY = r * tileSize + tileSize / 2;
+        const isSolid = solidTiles.has(tileType);
 
-        const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
-        tileSprite.setDepth(0);
-        this.tileSprites.push(tileSprite);
+        // S2.D: Y-sort depth system (Floor = 0; Obstacles = posY + 15)
+        const tileDepth = isSolid ? (posY + (tileSize / 2) - 1) : 0;
 
-        if (solidTiles.has(tileType)) {
+        if (this.tilePool) {
+          this.tilePool.acquire(posX, posY, tileType, tileDepth);
+        } else {
+          const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
+          tileSprite.setDepth(tileDepth);
+          this.tileSprites.push(tileSprite);
+        }
+
+        if (isSolid) {
           const obstacle = this.obstacleGroup.create(posX, posY, 'town_tileset', tileType);
           obstacle.setVisible(false);
           obstacle.refreshBody();
+
+          // S2.D: Drop shadow mềm mại dưới chân các vật thể đứng trên sàn (trừ tường phẳng 2 và 15)
+          if (tileType !== 2 && tileType !== 15) {
+            const shadow = this.add.ellipse(
+              posX,
+              posY + tileSize * 0.38,
+              tileSize * 0.72,
+              tileSize * 0.24,
+              0x000000,
+              0.22
+            );
+            shadow.setDepth(1); // Trên mặt sàn (0), dưới chân người chơi và obstacle
+            this.obstacleShadows.push(shadow);
+          }
         }
       }
     }
@@ -443,11 +496,14 @@ export class WorldScene extends Phaser.Scene {
 
         const label = this.add.text(avgX, clampedY, portalText, {
           fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
-          fontSize: '10px',
+          fontSize: '11px',
           fontWeight: '700',
-          color: '#c084fc',
-          backgroundColor: 'rgba(15, 23, 42, 0.88)',
-          padding: { x: 6, y: 2 }
+          color: '#e9d5ff',
+          stroke: '#1e1b4b',
+          strokeThickness: 3,
+          backgroundColor: 'rgba(15, 23, 42, 0.92)',
+          padding: { x: 8, y: 3 },
+          resolution: typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2
         }).setOrigin(0.5, 0.5).setDepth(99999);
 
         // Kẹp tọa độ X động theo bề rộng thực tế + fallback độ dài ký tự (phòng khi webfont chưa tải xong)
@@ -535,18 +591,24 @@ export class WorldScene extends Phaser.Scene {
       this.audioManager.playTeleport();
     }
 
-    this.cameras.main.fadeOut(200, 11, 15, 25);
-    this.cameras.main.once('camerafadeoutcomplete', () => {
-      this.loadRoom(
-        portalData.targetRoomId,
-        portalData.targetSpawn.x,
-        portalData.targetSpawn.y,
-        true
-      );
-      this.cameras.main.fadeIn(250, 11, 15, 25);
-      this.cameras.main.once('camerafadeincomplete', () => {
-        this.isTeleporting = false;
-        this.teleportGraceUntil = performance.now() + 2000;
+    telemetry.track('room_visit', { room_id: portalData.targetRoomId });
+
+    // Hiệu ứng chớp sáng trắng nhanh (Pokemon GBA flash) trước khi fade to black
+    this.cameras.main.flash(70, 255, 255, 255, false);
+    this.time.delayedCall(70, () => {
+      this.cameras.main.fadeOut(180, 11, 15, 25);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.loadRoom(
+          portalData.targetRoomId,
+          portalData.targetSpawn.x,
+          portalData.targetSpawn.y,
+          true
+        );
+        this.cameras.main.fadeIn(250, 11, 15, 25);
+        this.cameras.main.once('camerafadeincomplete', () => {
+          this.isTeleporting = false;
+          this.teleportGraceUntil = performance.now() + 2000;
+        });
       });
     });
   }
@@ -958,6 +1020,10 @@ export class WorldScene extends Phaser.Scene {
     if (this.currentRoomId === 'main_hall' && this.achievementManager) {
       this.achievementManager.unlock('first_arrival');
     }
+
+    const isGuest = !authService.isLoggedIn();
+    telemetry.init({ isGuest });
+    telemetry.track('world_entered', { room_id: this.currentRoomId });
   }
 
   toggleFullscreen() {
@@ -1183,4 +1249,31 @@ export class WorldScene extends Phaser.Scene {
       this.minimap.render();
     }
   }
+
+  shutdown() {
+    if (this._resizeHandler) {
+      window.removeEventListener('resize', this._resizeHandler);
+      this._resizeHandler = null;
+    }
+    if (this._orientationHandler) {
+      window.removeEventListener('orientationchange', this._orientationHandler);
+      this._orientationHandler = null;
+    }
+
+    if (this.tilePool) {
+      this.tilePool.destroy();
+      this.tilePool = null;
+    }
+
+    if (this.obstacleShadows && this.obstacleShadows.length > 0) {
+      this.obstacleShadows.forEach(s => s.destroy());
+      this.obstacleShadows = [];
+    }
+
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+  }
 }
+

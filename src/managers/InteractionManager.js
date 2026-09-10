@@ -33,12 +33,16 @@ export class InteractionManager {
     this.hudContainer.add(this.bgGraphics);
 
     // Text Tooltip
+    const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2;
     this.tooltipText = this.scene.add.text(0, 0, '[E] Tương tác', {
       fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '700',
       color: '#ffffff',
-      padding: { left: 8, right: 8, top: 4, bottom: 4 }
+      stroke: '#0f172a',
+      strokeThickness: 2,
+      padding: { left: 8, right: 8, top: 4, bottom: 4 },
+      resolution: dpr
     }).setOrigin(0.5, 0.5);
 
     this.hudContainer.add(this.tooltipText);
@@ -199,9 +203,12 @@ export class InteractionManager {
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
       const badgeText = this.scene.add.text(0, 0, zoneName, {
         fontFamily: "'Outfit', sans-serif",
-        fontSize: '9px',
+        fontSize: '9.5px',
         fontWeight: '700',
-        color: '#ffffff'
+        color: '#ffffff',
+        stroke: '#0f172a',
+        strokeThickness: 2,
+        resolution: typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2
       }).setOrigin(0.5, 0.5);
 
       const fullText = zoneName;

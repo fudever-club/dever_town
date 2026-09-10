@@ -67,9 +67,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
+    this.shadowEllipse = scene.add.ellipse(x, y + 14, 20, 7, 0x000000, 0.28);
+    this.shadowEllipse.setDepth(this.y - 0.1);
+
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y);
+    this.setDepth(this.y + 14);
   }
 
   createNameTag() {
@@ -382,15 +385,51 @@ export class Player extends Phaser.GameObjects.Sprite {
       const bob = Math.sin(performance.now() / 85) * 0.05;
       this.scaleY = 1.0 + bob;
       this.scaleX = 1.0 - bob * 0.7;
+
+      // Xác định chất liệu mặt sàn dưới chân (cỏ, gỗ, đá, cyber)
+      const tileX = Math.floor(this.x / 32);
+      const tileY = Math.floor((this.y + 12) / 32);
+      const mapLayout = this.scene?.mapData?.layout;
+      const tileType = mapLayout?.[tileY]?.[tileX];
+
+      const grassTiles = new Set([0, 7, 24]);
+      const woodTiles = new Set([1, 31]);
+      const cyberTiles = new Set([9, 18, 6]);
+
+      // Hiệu ứng lá cỏ xòe phong cách Pokemon GBA
+      if (grassTiles.has(tileType) && this.scene?.juiceManager) {
+        if (!this._lastGrassRustle || performance.now() - this._lastGrassRustle > 230) {
+          this._lastGrassRustle = performance.now();
+          this.scene.juiceManager.spawnGrassRustle(this.x, this.y + 12);
+        }
+      }
+
+      // Phát tiếng bước chân theo chất liệu mặt sàn
+      if (this.scene?.audioManager) {
+        let surface = 'stone';
+        if (grassTiles.has(tileType)) surface = 'grass';
+        else if (woodTiles.has(tileType)) surface = 'wood';
+        else if (cyberTiles.has(tileType)) surface = 'cyber';
+
+        this.scene.audioManager.playFootstep(surface);
+      }
     } else {
       this.scaleY = 1.0;
       this.scaleX = 1.0;
     }
 
+    // Cập nhật vị trí bóng chân và độ co giãn nhẹ theo nhịp bước
+    if (this.shadowEllipse) {
+      this.shadowEllipse.setPosition(this.x, this.y + 14);
+      this.shadowEllipse.setDepth(this.y - 0.1);
+      const shadowBob = isMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
+      this.shadowEllipse.setScale(shadowBob, 1.0);
+    }
+
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y);
+      this.setDepth(this.y + 14);
 
       if (this.nameTagContainer) {
         this.nameTagContainer.setPosition(this.x, this.y - 28);
@@ -407,6 +446,10 @@ export class Player extends Phaser.GameObjects.Sprite {
   }
 
   destroy(fromScene) {
+    if (this.shadowEllipse) {
+      this.shadowEllipse.destroy();
+      this.shadowEllipse = null;
+    }
     if (this.nameTagContainer) {
       this.nameTagContainer.destroy();
     }

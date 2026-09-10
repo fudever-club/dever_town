@@ -7,11 +7,15 @@ import { setupSocketHandler } from './socket/socketHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
 import gameRoutes from './routes/gameRoutes.js';
+import telemetryRoutes from './routes/telemetryRoutes.js';
 import { initDatabase, getDB } from './db/index.js';
 import { createRateLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 const server = http.createServer(app);
+
+// Kích hoạt trust proxy (an toàn khi chạy sau Nginx / Cloudflare)
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 3001;
 
@@ -56,6 +60,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', globalApiLimiter, authRoutes);
 app.use('/api/rooms', globalApiLimiter, roomRoutes);
 app.use('/api/game', globalApiLimiter, gameRoutes);
+app.use('/api/telemetry', globalApiLimiter, telemetryRoutes);
 
 // 4. Cấu hình Socket.io với Giới hạn Buffer & Timeout chống DDoS
 const io = new Server(server, {

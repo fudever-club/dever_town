@@ -104,6 +104,7 @@ export class AmbientEnvironmentManager {
   setRoom(roomId) {
     this.clearEmitters();
     this.currentRoomId = roomId;
+    this.applyAmbientLight(roomId);
 
     const mapW = 800;
     const mapH = 608;
@@ -277,7 +278,47 @@ export class AmbientEnvironmentManager {
     this.activeEmitters = [];
   }
 
+  /**
+   * Áp dụng ánh sáng môi trường (Ambient Tint) theo phòng kiểu Stardew Valley
+   * @param {string} roomId
+   */
+  applyAmbientLight(roomId) {
+    if (!this.scene || !this.scene.add) return;
+
+    const lightingConfig = {
+      main_hall: { ambientTint: 0xffffff, alpha: 0 },         // Sảnh Alpha sáng trong trẻo
+      dever_lab: { ambientTint: 0x0f172a, alpha: 0.08 },      // Cyber Lab xanh thẫm công nghệ
+      library_lounge: { ambientTint: 0xfef3c7, alpha: 0.06 }, // Thư viện đèn vàng đọc sách
+      memory_room: { ambientTint: 0x1e1b4b, alpha: 0.10 },    // Phòng truyền thống tím sẫm trang trọng
+      canteen_cafe: { ambientTint: 0xfef9c3, alpha: 0.05 },   // Căn tin ấm cúng cafe
+      sports_complex: { ambientTint: 0xd1fae5, alpha: 0.04 }, // Thể thao ngoài trời tươi mát
+      tea_garden: { ambientTint: 0xecfdf5, alpha: 0.04 },     // Vườn trà dịu mát
+      game_arcade: { ambientTint: 0x3b0764, alpha: 0.08 },    // Arcade tím neon
+      academic_hub: { ambientTint: 0xffffff, alpha: 0 }
+    };
+
+    const cfg = lightingConfig[roomId] || { ambientTint: 0xffffff, alpha: 0 };
+    if (!this.lightOverlay) {
+      if (cfg.alpha > 0) {
+        this.lightOverlay = this.scene.add.rectangle(
+          400, 304, 800, 608, cfg.ambientTint, cfg.alpha
+        ).setDepth(999990).setScrollFactor(0);
+      }
+    } else {
+      if (cfg.alpha > 0) {
+        this.lightOverlay.setFillStyle(cfg.ambientTint, cfg.alpha);
+        this.lightOverlay.setVisible(true);
+      } else {
+        this.lightOverlay.setVisible(false);
+      }
+    }
+  }
+
   destroy() {
     this.clearEmitters();
+    if (this.lightOverlay) {
+      this.lightOverlay.destroy();
+      this.lightOverlay = null;
+    }
   }
 }
