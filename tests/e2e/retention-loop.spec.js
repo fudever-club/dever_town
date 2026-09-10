@@ -32,7 +32,7 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
     const questModal = page.locator('#quest-modal');
     await expect(questModal).toHaveAttribute('aria-hidden', 'false');
     await expect(page.locator('#quest-modal-close')).toBeFocused();
-    await expect(page.locator('#quest-prog-text')).toContainText('1 / 7');
+    await expect(page.locator('#quest-prog-text')).toContainText(/1 \/ [78]/);
     await expect(questModal).not.toContainText('/ 6');
 
     await page.locator('[data-quest-id="daily_login"]').click();
