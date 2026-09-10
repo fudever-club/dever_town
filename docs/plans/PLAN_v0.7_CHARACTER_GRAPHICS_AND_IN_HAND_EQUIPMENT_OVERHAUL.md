@@ -1,231 +1,186 @@
-# DEVER TOWN v0.7 — Kế Hoạch Nâng Cấp Toàn Diện Đồ Họa Nhân Vật 2D, Trang Bị Cầm Tay Thực Tế & Đồng Bộ Hồ Sơ
+# DEVER TOWN v0.7 — Kế Hoạch Nâng Cấp Toàn Diện Đồ Họa Nhân Vật HD 48x48, Trang Bị Cầm Tay Thực Tế & Đồng Bộ Hồ Sơ
 
-> **Nhánh phát triển:** `develop_hung` (hoặc `feature/v0.7-character-visual-upgrade`)  
-> **Tài liệu & Hình ảnh tham chiếu:**  
-> - Video & Sprite Sheet tham khảo: `https://www.facebook.com/reel/4410934335826489` (Hình ảnh Sprite Sheet 4x4 chuyển động võ thuật Đấm/Đá có vệt khí chém, nhân vật có kính cận, đầu hói giáo sư, râu quai nón, nếp gấp quần áo chi tiết).  
-> - Các tựa game 2D kinh điển benchmark: *Stardew Valley* (Layered Paperdoll Clothes), *Terraria* (In-Hand Weapon & Tool Hold), *The Spike - Volleyball Story* (Wind Arc Slash FX), *MapleStory* (Expressions & Facial Features).  
-> **Mục tiêu cốt lõi:**  
-> 1. Đại tu toàn diện diện mạo nhân vật 2D: Thêm **màu da**, **râu**, **biểu cảm khuôn mặt**, **kiểu tóc giáo sư/senior dev** như ảnh tham khảo.  
-> 2. **Xóa bỏ hoàn toàn bong bóng lơ lửng** của vật phẩm cầm tay $\rightarrow$ Chuyển thành **Vật Phẩm Cầm Trên Tay Thật (In-Hand Real Equipment)** với hành động gõ phím laptop, cầm ly cafe muối bốc khói, kẹp bóng, cầm cờ.  
-> 3. Bổ sung **hoạt ảnh võ thuật & hành động tương tác** (Đấm & Đá có vệt khí chém Wind Slash Arc FX, Ngồi ghế, Gõ code).  
-> 4. Đồng bộ hóa 100% thời gian thực giữa **Tủ Đồ (Wardrobe)**, **Hồ Sơ Cá Nhân (Player Profile 360°)** và **Thế Giới Game (In-Game World)** qua Socket.io & Database.
-
----
-
-## 1. Phân Tích Hình Ảnh Tham Khảo & Benchmark Thị Trường
-
-### 1.1. Giải Mã Hình Ảnh Tham Khảo (GPT-Image 2.5 Motion Sprite Sheet)
-Từ 3 hình ảnh người dùng cung cấp:
-- **Tạo hình nhân vật đặc trưng**:
-  - Tóc: Đầu hói trên đỉnh, tóc xoăn ôm hai bên tai (kiểu Senior Dev / Giáo Sư công nghệ).
-  - Phụ kiện mặt: Kính cận đen gọng vuông, râu quai nón rậm quanh cằm và ria mép.
-  - Trang phục: Áo polo xanh đậm có cổ bẻ gọn gàng, thắt lưng da nâu có khóa kim loại, quần tây xám có nếp gấp vải co giãn theo bước chuyển động, giày da nâu đậm.
-- **Hoạt ảnh võ thuật & Vệt khí (Wind Slash Arc FX)**:
-  - *Tư thế Idle & Thủ Thế (Combat Stance)*: Hai chân mở rộng ngang vai, hạ thấp trọng tâm, hai tay nắm đấm co trước ngực.
-  - *Cú Đấm Trực Diện (Straight Punch)*: Thân người xoay trục, cánh tay vung thẳng về phía trước, xuất hiện **vệt khí chém hình vòng cung màu xanh bán nguyệt (Wind Arc Particle)** tăng cảm giác uy lực.
-  - *Cú Đá Chân Cao (High Kick)*: Một chân trụ vững, chân kia co gối rồi phóng thẳng lên cao, tạo đường vòng cung vệt gió chém sắc lẹm.
-
-### 1.2. Hạn Chế Của Hệ Thống Cũ Trong DEVER TOWN
-- **Vật phẩm cầm tay lỏ**: Đang dùng một container bong bóng tròn gắn icon emoji lơ lửng bên cạnh đầu nhân vật (`Player.js:113-136`). Không có cảm giác cầm nắm thật, nhìn rời rạc và thiếu tự nhiên.
-- **Diện mạo nhân vật thiếu chiều sâu**: Màu da bị cố định 1 tông màu vàng duy nhất (`skin: '#fbd1a2'`), không có râu, không có biểu cảm mắt thay đổi, không có kiểu tóc hói trí thức.
-- **Hoạt ảnh nghèo nàn**: Chỉ có 3 frame đi bộ đơn giản cho 4 hướng, thiếu các động tác võ thuật, gõ máy tính, uống nước, ngồi nghỉ.
+> **Nhánh phát triển:** `develop_hung` (hoặc `feature/v0.7-hd-character-overhaul`)  
+> **Hình ảnh & Tài liệu tham chiếu:**  
+> - Facebook Reel & Motion Sprite Sheet: `https://www.facebook.com/reel/4410934335826489` (Hình mẫu chuyển động đấm/đá võ thuật có vệt khí chém Wind Arc, chi tiết nếp gấp quần áo, thắt lưng và giải phẫu).  
+> - Tựa game tham chiếu phong cách đồ họa: *Stardew Valley* (Layered Clothes), *Pokemon GBA Remastered* (Student Proportions), *MapleStory* (Expressive Eyes & Poses), *Terraria* (In-Hand Weapon/Prop Grip).  
+> **Định hướng mỹ thuật cốt lõi:**  
+> 1. **Giữ vững bản sắc Sinh Viên FPTU hiện tại (Nam Sinh & Nữ Sinh FUDA)**, không biến thành ông già/giáo sư như meme; chỉ bổ sung kiểu râu và tóc giáo sư như một tùy chọn phụ vui nhộn trong tủ đồ.  
+> 2. **Nâng cấp độ phân giải từ 32x32 lên chuẩn HD 48x48 Pixel Grid** (tăng gấp 2.25 lần mật độ pixel) để khắc họa rõ nét giải phẫu cơ thể, mắt long lanh, tóc bồng bềnh, nếp nhăn vải và bàn tay cầm đồ vật thật.  
+> 3. **Không cần cài đặt hay phụ thuộc vào Blender**: Ứng dụng **Procedural Canvas Layered Compositor 2.0** thuần Web, cho phép người chơi phối hàng triệu biến thể trang phục và tải ngay tức thì 0ms trên cả Desktop lẫn Mobile.  
+> 4. **Xóa bỏ triệt để bong bóng lơ lửng** $\rightarrow$ Nhân vật trực tiếp cầm laptop, ly cafe muối bốc khói, quả bóng, cờ CLB trên tay thật.
 
 ---
 
-## 2. Thiết Kế Kiến Trúc Hệ Thống: Modular Layered Paperdoll 2.0
+## 1. Phân Tích Kỹ Thuật: Có Cần Sử Dụng Blender Không?
 
-Nhân vật không còn là một khối vẽ dính liền mà được cấu trúc thành **7 Lớp Đồ Họa Độc Lập (Layered Sprite Compositor)**:
+### 1.1. So Sánh Hai Phương Pháp Kỹ Thuật
+
+| Tiêu chí | Phương án A: Dựng & Render bằng Blender | Phương án B: HD 48x48 Procedural Canvas Compositor (Đề Xuất) |
+|---|---|---|
+| **Cài đặt & Môi trường** | **Bắt buộc** cài Blender, Python, bake texture và render thủ công từng frame. Máy người dùng/server phải có GPU. | **Không cần Blender**. Chạy 100% bằng JavaScript Canvas trên trình duyệt, không cần cài đặt thêm phần mềm nào. |
+| **Khả năng Tùy Biến Realtime** | **Rất kém**: Nếu người chơi đổi màu da, đổi 32 loại áo, 20 kiểu tóc, 6 kiểu râu $\rightarrow$ Cần render trước hơn **2.000.000 file sprite sheet** (bất khả thi về dung lượng lưu trữ trên web). | **Vô hạn (Realtime 0ms)**: Ghép 7 lớp đồ họa ngay trong bộ nhớ canvas chỉ mất **2ms**, người chơi đổi màu áo hay da là hiển thị tức thì. |
+| **Hiệu năng & Dung lượng** | Tải hàng chục MB file ảnh pre-rendered, tốn băng thông đường truyền. | Dung lượng 0KB ảnh tải thêm; toàn bộ sprite được tổng hợp procedural siêu nhẹ, mượt mà 60fps trên cả iPhone và laptop yếu. |
+| **Độ Sắc Nét Pixel Art** | Dễ bị mờ (blur) do thuật toán khử răng cưa 3D thu nhỏ. | Chuẩn **Pixel-Perfect**: từng pixel được vẽ sắc nét, viền stroke tương phản cao chuẩn phong cách Stardew Valley. |
+
+> **KẾT LUẬN:** **KHÔNG CẦN DÙNG BLENDER.**  
+> Việc nâng cấp Canvas Sprite Compositor lên **chuẩn HD 48x48 Pixel Grid** là giải pháp tối ưu nhất: vừa tăng gấp đôi độ chi tiết, vừa giữ vững khả năng tùy biến triệu bộ đồ realtime mà không làm nặng game.
+
+---
+
+## 2. Nâng Cấp Độ Chi Tiết Nhân Vật 2D Dựa Trên Nam Sinh & Nữ Sinh FUDA
+
+Nâng cấp kích thước khung từ **32x32** lên **48x48 pixel** (tăng vùng vẽ từ 1.024 pixels lên **2.304 pixels**), cho phép phân bổ tỷ lệ cơ thể theo chuẩn Chibi Hoàng Gia 1:2.2:
 
 ```
-                          CẤU TRÚC 7 LỚP NHÂN VẬT v0.7
-                                       │
-  Layer 7: Handheld Held Item  ─── (Laptop gõ phím / Ly cafe bốc khói / Bóng kẹp hông)
-  Layer 6: Accessories & Beard ─── (Kính cận / Râu quai nón / Tai nghe RGB)
-  Layer 5: Hairstyle & Color   ─── (Tóc hói giáo sư / Undercut / Đuôi ngựa)
-  Layer 4: Facial Expressions  ─── (Mắt chớp / Mắt kính / Lông mày tập trung)
-  Layer 3: Top Clothing        ─── (Áo polo gập cổ / Hoodie / Thắt lưng)
-  Layer 2: Bottom Clothing     ─── (Quần tây nếp gấp / Quần jean / Giày da)
-  Layer 1: Base Body & Skin    ─── (6 Tông màu da / Dáng người / Giải phẫu bàn tay)
-                                       │
-                              BÓNG ĐỔ ELIP SÀN (Depth 0)
+                      GIẢI PHẪU CHI TIẾT KHUNG HÌNH 48x48 PIXEL
+                                         │
+     ┌───────────────────────────────────┴───────────────────────────────────┐
+     ▼                                                                       ▼
+NAM SINH FUDA (Male Student)                           NỮ SINH FUDA (Female Student)
+- Chiều cao: 38px, vai rộng 14px                      - Chiều cao: 36px, thắt eo mềm mại 10px
+- Khung vai vuông vức, dáng đứng vững chãi            - Vai thon, bước chân thanh thoát
+- Áo Polo FPTU / Hoodie có gập cổ & thắt lưng da      - Váy xếp ly nữ sinh / Áo Dài xẻ tà lụa
+- Quần tây/jean có nếp nhăn 3D ở đầu gối              - Chân thon gọn, giày búp bê / sneaker nữ
+- Giày Sneaker đế trắng thể thao năng động            - Mắt to long lanh 2 tầng có lông mi, má hồng
+- Khuôn mặt nam tính, mắt sáng, tùy chọn râu tỉa       - Tóc uốn sóng nước có highlight bóng mượt
 ```
 
 ---
 
-### 2.1. Danh Mục Mới: Màu Da, Biểu Cảm, Râu & Kiểu Tóc
+### 2.1. Hệ Thống 7 Lớp Đồ Họa Độc Lập (Layered Compositor 2.0)
 
-#### A. 🎨 6 Tông Màu Da Đa Dạng (Skin Tones)
-| ID | Tên màu da | Mã Hex chính | Highlight | Shadow | Ý nghĩa |
-|---|---|---|---|---|---|
-| `skin_fair` | Trắng Sáng Tinh Khôi | `#fed7aa` | `#ffedd5` | `#fdba74` | Làn da trắng hồng thanh tú |
-| `skin_natural` | Vàng Tự Nhiên Á Đông | `#fbd1a2` | `#fde68a` | `#f59e0b` | Tông da chuẩn sinh viên Việt Nam |
-| `skin_tan` | Bánh Mật Khỏe Khoắn | `#d97706` | `#f59e0b` | `#b45309` | Làn da phơi nắng thể thao năng động |
-| `skin_deep` | Nâu Rám Nắng | `#92400e` | `#b45309` | `#78350f` | Tông da rám nắng cá tính, mạnh mẽ |
-| `skin_ebony` | Ngăm Đậm Phong Cách | `#573016` | `#78350f` | `#3b1d08` | Làn da ngăm đậm khỏe khoắn |
-| `skin_cyber` | Cyborg Android Xanh | `#bae6fd` | `#e0f2fe` | `#7dd3fc` | Người máy sinh học tương lai |
-
-#### B. 🧔 Bộ Sưu Tập Râu & Chi Tiết Khuôn Mặt (Facial Hair)
-1. `none`: Không râu (Mặt nhẵn nhụi, thư sinh).
-2. `full_beard`: **Râu Quai Nón Senior Dev** (Đúng chuẩn nhân vật trong hình tham khảo: râu quai nón rậm viền quanh quai hàm và cằm, phong thái lập trình viên kỳ cựu).
-3. `mustache`: **Ria Mép Lịch Lãm** (Hàng ria mép tỉa gọn gàng phong cách quý ông).
-4. `goatee`: **Râu Dê / Râu Cằm Ngắn** (Chòm râu nhỏ dưới môi dưới và đỉnh cằm sắc sảo).
-5. `stubble`: **Râu Lún Phún Đêm Deadline** (Bụi râu xanh lún phún của dev cày cuốc qua đêm).
-6. `grey_beard`: **Râu Bạc Giáo Sư** (Râu quai nón pha bạc thông thái của giảng viên trường).
-
-#### C. 👀 Biểu Cảm Khuôn Mặt & Chớp Mắt (Facial Expressions)
-- **Hoạt ảnh chớp mắt tự nhiên (Blink Animation)**: Mỗi 3.5 giây, mắt nhân vật nhắm lại 1 frame rồi mở ra, tạo cảm giác nhân vật "có linh hồn".
-- **5 Trạng thái biểu cảm**:
-  1. `expr_focus`: Mắt tập trung cao độ, lông mày nghiêm nghị khi đang di chuyển hoặc gõ code.
-  2. `expr_smile`: Mắt cười hình trăng khuyết vui tươi, má ửng hồng.
-  3. `expr_cool`: Nháy một bên mắt (Wink) tinh nghịch, tự tin.
-  4. `expr_shock`: Mắt mở to tròn khi phát hiện bug hoặc thua minigame.
-  5. `expr_chill`: Mắt nhắm thư thái khi đang cầm ly cà phê muối hoặc ngồi thiền.
-
-#### D. ✂️ Bổ Sung Kiểu Tóc Mới
-- `bald_professor`: **Tóc Hói Giáo Sư / Senior Dev** (Đỉnh đầu hói bóng loáng, hai bên tai có tóc xoăn dày màu đen/xám — Tái hiện 100% nguyên mẫu trong hình tham khảo).
+```
+                            7 LỚP ĐỒ HỌA HD 48x48
+                                     │
+  Layer 7: In-Hand Equipment  ─── (Laptop gõ phím / Ly cafe bốc khói / Bóng kẹp hông)
+  Layer 6: Accessories & Beard ── (Kính cận viền đen / Râu quai nón tỉa / Tai nghe RGB)
+  Layer 5: Hair & Highlights  ─── (Tóc nhiều lớp: Lọn tóc chính + Dải sáng bóng mượt)
+  Layer 4: Eyes & Expressions ─── (Mắt 2 tầng tròng + Chớp mắt Blink + Má hồng đào)
+  Layer 3: Top Clothing       ─── (Áo Polo gập cổ / Hoodie / Nếp gấp vải / Thắt lưng)
+  Layer 2: Bottom Clothing    ─── (Quần tây xếp nếp / Váy xếp ly / Sneaker đế cao su)
+  Layer 1: Base Anatomy Body  ─── (6 Tông màu da / Khớp tay cầm nắm / Dáng Nam & Nữ)
+                                     │
+                         BÓNG ĐỔ ELIP SÀN (Depth 0)
+```
 
 ---
 
-### 2.2. Đồ Cầm Tay Thật Sự (In-Hand Real Equipment — XÓA BỎ BONG BÓNG)
+### 2.2. Chi Tiết Từng Lớp Đồ Họa Nâng Cấp
 
-Không còn hiển thị bong bóng tròn lơ lửng cạnh đầu. Vật phẩm được vẽ **trực tiếp lên bàn tay nhân vật** với tư thế và hoạt ảnh tương tác riêng:
+#### A. Tầng 1: Base Body & 6 Tông Màu Da (Skin Tones)
+Mỗi màu da được tô với 3 sắc độ (Màu sáng highlight, Màu gốc, Màu bóng tối shadow) tạo khối nổi 3D:
+1. `skin_fair`: **Trắng Sáng Tinh Khôi** (Sáng tuyết thanh tú của nữ sinh).
+2. `skin_natural`: **Vàng Tự Nhiên Á Đông** (Chuẩn sinh viên Việt Nam FPTU).
+3. `skin_tan`: **Bánh Mật Năng Động** (Làn da rám nắng thể thao).
+4. `skin_deep`: **Nâu Khỏe Khoắn** (Cá tính, phong trần).
+5. `skin_ebony`: **Ngăm Đậm Nổi Bật** (Tông da ngăm thời thượng).
+6. `skin_cyber`: **Cyborg Android** (Xanh lam nhạt vi mạch công nghệ cao).
+
+#### B. Tầng 2: Khuôn Mặt, Đôi Mắt Long Lanh & Chớp Mắt Tự Nhiên
+- **Cấu trúc mắt HD**: Không còn là chấm vuông 1 pixel thô sơ.
+  - Đôi mắt kích thước 3x3 pixel: Tròng đen/nâu + Đốm sáng phản quang màu trắng ở góc trên (Catchlight).
+  - Nhân vật Nữ: Có thêm lông mi mảnh ở đuôi mắt và 2 vệt má hồng đào (`#f472b6`) dễ thương.
+- **Hoạt ảnh chớp mắt (Blink Loop)**: Mỗi 3.5s, mi mắt khép lại trong 120ms rồi mở to, giúp nhân vật luôn sống động.
+- **5 Biểu cảm khuôn mặt**:
+  - `expr_focus`: Lông mày nhíu nhẹ, mắt sáng tập trung khi gõ code hoặc thi đấu.
+  - `expr_smile`: Khóe mắt cong hình trăng khuyết, khóe miệng cười tươi.
+  - `expr_cool`: Nháy một bên mắt (Wink) tự tin.
+  - `expr_shock`: Mắt mở to tròn khi code gặp bug hoặc sút trượt bóng.
+  - `expr_chill`: Mắt khép hờ thư thái khi nhâm nhi cà phê muối.
+
+#### C. Tầng 3: Râu & Chi Tiết Khuôn Mặt (Dành Cho Ai Thích Style Trưởng Thành)
+- `none`: Mặt nhẵn nhụi, trẻ trung (Mặc định cho sinh viên).
+- `full_beard`: **Râu Quai Nón Senior Dev** (Đúng như ảnh tham khảo: viền râu ôm sát quai hàm và cằm, tạo vẻ ngoài đàn anh coder dày dặn kinh nghiệm).
+- `mustache`: **Ria Mép Lịch Lãm** (Hàng ria mép tỉa gọn gàng).
+- `goatee`: **Râu Cằm / Râu Dê** (Chòm râu cằm cá tính).
+- `stubble`: **Râu Lún Phún Đêm Deadline** (Bụi râu xanh mờ của dev cày đêm).
+- `grey_beard`: **Râu Bạc Giáo Sư** (Tùy chọn vui cho bạn nào thích đóng vai giảng viên).
+
+#### D. Tầng 4: Bộ Tóc HD 3 Lớp Sáng Tối
+- Bổ sung dải sáng bóng mượt (Hair Highlights) trên đỉnh đầu và đuôi tóc.
+- Thêm kiểu tóc `bald_professor` (Tóc hói giáo sư: đỉnh đầu hói bóng, hai bên tai tóc xoăn dày như hình mẫu tham khảo).
+- Nâng cấp 20 kiểu tóc cũ (Side part 7/3, Undercut, Tóc uốn sóng nước, Đuôi ngựa, Twintails) với độ bồng bềnh chân thực.
+
+#### E. Tầng 5: Trang Phục Chi Tiết & Nếp Gấp Vải 3D
+- **Nam Sinh**: Áo Polo FPTU có cổ bẻ rõ 2 lá cổ, thắt lưng da nâu có mặt khóa kim loại vàng sáng, nếp nhăn vải ở khuỷu tay và khớp gối quần tây, đế giày sneaker trắng có rãnh cao su.
+- **Nữ Sinh**: Áo Dài có độ thướt tha xẻ tà hai bên hông lộ quần lụa trắng bên trong; Váy xếp ly có bóng đổ từng nếp gấp; Áo croptop thể thao lộ eo thon gọn.
+
+---
+
+## 3. Xóa Bỏ Bong Bóng $\rightarrow$ Cầm Đồ Trên Tay Thật (In-Hand Real Equipment)
+
+Toàn bộ các vật phẩm trang bị được vẽ **trực tiếp vào bàn tay nhân vật** với tư thế cầm nắm giải phẫu chính xác:
 
 ```
-               BẢNG TƯ TẾ CẦM VẬT PHẨM TRÊN TAY THẬT
+               MINH HỌA VẬT PHẨM CẦM TAY TRỰC TIẾP v0.7
                                  │
      ┌───────────────────────────┼───────────────────────────┐
      ▼                           ▼                           ▼
-💻 MACBOOK PRO M-SERIES     ☕ LY CÀ PHÊ MUỐI           ⚽ QUẢ BÓNG ĐÁ / RỔ
-- Di chuyển: Kẹp ngang hông - Cầm chắc trên tay         - Cầm kẹp bên nách
-- Đứng yên: Mở máy gõ phím  - Có khói ấm bốc lên        - Đứng yên: Xoay tròn bóng
-  với màn hình phát sáng      nghi ngút; thỉnh thoảng     trên đầu ngón tay
-  và đèn bàn phím lách cách   nhấp ngụm cafe
+💻 MACBOOK PRO CÔNG NGHỆ    ☕ LY CÀ PHÊ MUỐI ĐÀ NẴNG   ⚽ QUẢ BÓNG ĐÁ / RỔ
+- Di chuyển: Kẹp ngang hông - Cầm chắc trên tay phải    - Cầm kẹp bên nách
+- Đứng yên: Mở nắp gõ phím  - Bốc làn khói ấm ASMR      - Đứng yên: Tâng bóng nhẹ
+  với màn hình phát sáng      và hoạt ảnh nhấp ngụm       hoặc xoay tròn đầu ngón
 ```
 
 1. 💻 **MacBook Pro M-Series (`macbook_dev`)**:
-   - Khi di chuyển: Cầm ngang hông như một chiếc laptop gập màu xám không gian (Space Grey) có logo phát sáng.
-   - Khi đứng yên (Idle > 2s): Nhân vật nâng hai tay lên trước ngực, mở nắp laptop 90 độ, màn hình hắt ánh sáng xanh cyber lên mặt nhân vật, hai bàn tay cử động gõ phím nhẹ nhàng!
+   - Khi di chuyển: Cầm kẹp ngang hông như sinh viên IT lên giảng đường.
+   - Khi đứng yên (Idle): Hai tay nâng máy tính trước ngực, nắp máy mở 90°, màn hình hắt ánh sáng xanh cyber lên khuôn mặt, ngón tay cử động gõ phím lách cách.
 2. ☕ **Ly Cà Phê Muối / Trà Sữa (`cafe_cup`)**:
-   - Nhân vật cầm chắc chắn chiếc ly thủy tinh hoặc ly giữ nhiệt trên tay phải.
-   - Lớp hơi nước ấm (`spawnSteam`) bốc nhẹ lên từng đợt.
-   - Khi đứng yên mỗi 6 giây: Nhân vật có hoạt ảnh nâng ly lên miệng nhấp một ngụm, kèm icon biểu cảm thư thái.
+   - Cầm chắc chắn ly thủy tinh trên tay phải, thấy rõ phân tầng 3 màu nước và ống hút.
+   - Làn khói ấm bốc lên nhẹ nhàng; thỉnh thoảng có hoạt ảnh nâng ly lên miệng uống.
 3. ⚽ **Quả Bóng Đá 11M (`football_ball`)**:
-   - Cầm kẹp quả bóng đen trắng chắc chắn bên mạn sườn.
-   - Khi đứng yên: Nhân vật tâng nhẹ quả bóng hoặc xoay tròn quả bóng trên đầu ngón tay.
+   - Kẹp quả bóng bên sườn; khi đứng yên tâng bóng nhịp nhàng trên mũi giày.
 4. 🏀 **Quả Bóng Rổ FPTU (`basketball_ball`)**:
-   - Cầm bóng rổ màu cam rãnh đen. Khi đứng yên, bóng nhấp nháy nhịp đập bóng (Dribble) nhẹ xuống sàn.
-5. 🏸 **Vợt Cầu Lông / Kiếm Gỗ Vovinam (`badminton_racket`)**:
-   - Cầm cán vợt vát chéo 45 độ sẵn sàng trong tư thế chuẩn bị thi đấu.
+   - Đập bóng nảy nhẹ trên mặt sàn (Dribble idle).
+5. 🏸 **Vợt Cầu Lông / Kiếm Vovinam (`badminton_racket`)**:
+   - Cầm cán vợt vát chéo 45° sẵn sàng trong tư thế chuẩn bị thi đấu.
 6. 🚩 **Cờ CLB FU-DEVER (`dever_flag`)**:
-   - Tay nắm cán cờ gỗ, lá cờ xanh mang logo CLB phấp phới gợn sóng theo hướng di chuyển.
+   - Tay nắm cán cờ gỗ cao qua đầu, lá cờ xanh bay phấp phới theo hướng gió.
 7. 🎒 **Balo Lập Trình Viên (`dev_backpack`)**:
-   - Vẽ trực tiếp 2 quai đeo qua vai nhân vật; khi nhân vật quay lưng (hướng Up), hiển thị trọn vẹn chiếc balo chống gù công nghệ màu xám đậm có logo DEVER phản quang.
+   - Đeo trực tiếp 2 quai trên vai nhân vật (hiển thị rõ khi quay lưng).
 
 ---
 
-### 2.3. Hoạt Ảnh Hành Động Mới (Punch, Kick & Wind Slash Arc FX)
-Lấy cảm hứng trực tiếp từ video & sprite sheet tham khảo:
+## 4. Hoạt Ảnh Võ Thuật & Hiệu Ứng Vệt Khí Chém (Punch, Kick & Wind Slash Arc FX)
 
-1. **Cú Đấm Quyền Thuật (Punch Strike — Phím `J` hoặc Nút Action)**:
-   - Thân người xoay trục ngang, nắm đấm vung mạnh về phía trước 12px.
-   - Xuất hiện **Vệt Khí Chém Vòng Cung (Wind Slash Arc FX)** màu trắng xanh bán nguyệt phía trước nắm đấm kéo dài 120ms.
-   - Âm thanh: Tiếng vút gió "WHOOSH!" + tiếng đấm dứt khoát `playKick(1.2)`.
-2. **Cú Đá Chân Cao (High Kick — Phím `K`)**:
-   - Chân trụ hơi chùng xuống, chân kia vung quét một góc 90 độ lên cao.
-   - Vệt khí hình lưỡi liềm (Crescent Arc FX) chém dọc theo đường đá.
-   - Camera rung nhẹ 2px (`juiceFX.shake(3, 0.1)`).
+Áp dụng đúng tinh thần võ thuật và hoạt ảnh từ video tham khảo:
+
+1. **Cú Đấm Quyền Thuật (Punch Strike — Phím `J` / Nút Cảm Ứng Đấm)**:
+   - Nhân vật hạ thấp trọng tâm, xoay hông và vung mạnh nắm đấm về phía trước.
+   - Xuất hiện **Vệt Khí Chém Bán Nguyệt (Wind Slash Arc FX)** màu trắng xanh phát sáng trước nắm đấm kéo dài 140ms.
+   - Âm thanh vút gió uy lực `playKick(1.2)` và micro-camera shake 2px.
+2. **Cú Đá Chân Cao (High Kick — Phím `K` / Nút Cảm Ứng Đá)**:
+   - Bật xoay người quét một cú đá vòng cung 90° lên cao.
+   - Vệt gió lưỡi liềm (Crescent Arc FX) chém dọc theo đường quét của bàn chân.
 3. **Tư Thế Ngồi Thư Giãn (Sit Action — Phím `X`)**:
-   - Nhân vật gập chân ngồi bệt xếp bằng trên sàn hoặc ngồi ngay ngắn khi đứng gần ghế/bàn làm việc.
-   - Tự động chuyển biểu cảm sang thư giãn, lơ lửng nốt nhạc chill lofi.
+   - Nhân vật gập chân ngồi bệt xếp bằng trên sàn hoặc ngồi ngay ngắn vào ghế làm việc / ghế cafe.
 
 ---
 
-## 3. Nâng Cấp Giao Diện: Wardrobe Modal & Profile Modal 2.0
+## 5. Đồng Bộ Hóa Toàn Diện Với Hồ Sơ Cá Nhân (Profile & Wardrobe 360°)
 
-### 3.1. Tủ Đồ Nâng Cấp (Wardrobe Modal 2.0)
-Giao diện Tủ đồ được mở rộng hệ thống Tab chọn khoa học:
-- **Tab 1: Màu Da (Skin Tone)**: 6 ô màu tròn chọn nhanh sắc thái da.
-- **Tab 2: Khuôn Mặt & Râu**: Chọn Biểu cảm (Focus, Smile, Wink...) và Kiểu râu (Quai nón, Ria mép, Râu dê...).
-- **Tab 3: Tóc & Màu Tóc**: 21 kiểu tóc (bổ sung *Tóc Hói Giáo Sư*) và 11 màu nhuộm.
-- **Tab 4: Trang Phục (Outfits)**: 32 bộ trang phục học đường, thể thao, streetwear, công sở.
-- **Tab 5: Đồ Cầm Tay (In-Hand Equipment)**: Chọn laptop, ly cafe, quả bóng, cờ, balo.
-- **Bảng Trình Diễn Live 360° Preview**:
-  - 4 nút xoay hướng: `Nhìn Trước`, `Nhìn Sau`, `Nhìn Trái`, `Nhìn Phải`.
-  - 4 nút thử nghiệm hoạt ảnh sống động: `Đi Bộ`, `Thủ Thế`, `Đấm (Punch)`, `Đá (Kick)`, `Mở Laptop`.
+### 5.1. Tủ Đồ Nâng Cấp (Wardrobe Modal 2.0)
+- **6 Tab Chọn Khoa Học**:
+  1. `Màu Da`: 6 ô màu tròn chọn nhanh sắc thái da.
+  2. `Gương Mặt & Râu`: Chọn biểu cảm mắt và 6 kiểu râu (Quai nón, Ria mép, Râu cằm...).
+  3. `Kiểu Tóc`: 21 kiểu tóc thời thượng (có Tóc hói giáo sư) & 11 màu nhuộm.
+  4. `Trang Phục`: 32 bộ quần áo Nam/Nữ học đường, thể thao, streetwear, công sở.
+  5. `Đồ Cầm Tay`: Laptop, ly cafe, quả bóng, cờ, balo.
+- **Khung Preview 360° Sống Động**:
+  - Nút xoay 4 hướng: `Trước`, `Sau`, `Trái`, `Phải`.
+  - Nút thử nghiệm động tác: `Đi Bộ`, `Thủ Thế`, `Đấm (Punch)`, `Đá (Kick)`, `Mở Laptop`.
 
-### 3.2. Hồ Sơ Cá Nhân (Player Profile Modal 2.0)
-- Khung nhân vật bên trái nâng cấp độ phân giải HiDPI, hiển thị đầy đủ 100% các chi tiết mới: Màu da, Râu quai nón, Mắt kính, Trang phục và Đồ cầm tay đang trang bị.
-- Đồng bộ tự động 1:1: Mọi thay đổi trong Tủ đồ sẽ cập nhật tức thời sang Profile Modal, hiển thị lên đầu nhân vật trong phòng và đồng bộ qua Socket.io tới tất cả người chơi khác.
-
----
-
-## 4. Cấu Trúc File & Kỹ Thuật Triển Khai
-
-```
-src/
-├── config/
-│   ├── wardrobe.js              <-- [NÂNG CẤP] Thêm skinTones, facialHairs, expressions, inHandProps
-│   └── items.js                 <-- [NÂNG CẤP] Định nghĩa tọa độ Hand Socket & sprite cho từng item
-├── utils/
-│   ├── TextureGenerator.js      <-- [ĐẠI TU] Modular Layered Compositor (vẽ da, râu, biểu cảm, đồ cầm tay)
-│   └── WindSlashFX.js           <-- [MỚI] Render vệt khí chém vòng cung khi đấm/đá
-├── entities/
-│   ├── Player.js                <-- [NÂNG CẤP] Xóa bong bóng, tích hợp In-Hand Layer, phím J/K đấm đá
-│   └── RemotePlayer.js          <-- [NÂNG CẤP] Đồng bộ hoạt ảnh đấm đá và đồ cầm tay qua mạng
-└── ui/
-    └── gameplay/
-        ├── WardrobeModal.js     <-- [NÂNG CẤP] Thêm tab Da, Râu, Biểu cảm, Đồ cầm tay & Preview action
-        └── PlayerProfileModal.js<-- [NÂNG CẤP] Hiển thị nhân vật toàn diện chuẩn HiDPI
-```
+### 5.2. Hồ Sơ Cá Nhân (Player Profile Modal 2.0)
+- Mô hình nhân vật hiển thị lớn ở khung bên trái với độ phân giải cao HD, thể hiện trọn vẹn từng đường nét da, râu, kính, trang phục và đồ cầm tay thật.
+- Đồng bộ Realtime 100%: Lưu vào `wardrobe_config` trên database và broadcast qua Socket.io để tất cả bạn bè trong phòng nhìn thấy ngay lập tức.
 
 ---
 
-## 5. Lộ Trình Triển Khai 5 Sprint (Roadmap)
+## 6. Lộ Trình Triển Khai 5 Sprint (Roadmap)
 
-### Sprint 1: Mở Rộng Cấu Hình Dữ Liệu (`wardrobe.js` & `items.js`)
-- [ ] Thêm 6 `skinTones` vào `WARDROBE_CONFIG`.
-- [ ] Thêm 6 `facialHairs` (Full beard, Mustache, Goatee, Stubble, Grey beard).
-- [ ] Thêm 5 `expressions` (Focus, Smile, Wink, Shock, Chill).
-- [ ] Thêm kiểu tóc `bald_professor` (Tóc hói giáo sư / Senior Dev).
-- [ ] Mở rộng `items.js` với các thuộc tính vẽ In-Hand: `inHandSprite`, `holdOffset`, `actionType`.
-
-### Sprint 2: Đại Tu Engine Đồ Họa Nhân Vật (`TextureGenerator.js` & `WindSlashFX.js`)
-- [ ] Refactor `drawCharacterFrame` thành chuỗi 7 hàm thành phần:
-  - `drawBaseBody(ctx, x, y, dir, frame, skin)`
-  - `drawLegsAndPants(ctx, x, y, dir, frame, pants, outfitType)`
-  - `drawTorsoAndTop(ctx, x, y, dir, frame, shirt, collarColor, outfitType)`
-  - `drawFaceAndEyes(ctx, x, y, dir, skin, expression)`
-  - `drawFacialHair(ctx, x, y, dir, beard, hairColor)`
-  - `drawHairstyle(ctx, x, y, dir, hairstyle, hairColor)`
-  - `drawInHandEquipment(ctx, x, y, dir, frame, equippedItem)`
-- [ ] Xây dựng `WindSlashFX.js`: Render vệt khí vòng cung bán nguyệt phát sáng khi tung đòn đấm/đá.
-- [ ] Mở rộng Sprite Sheet từ 3x4 lên 6x4 (hỗ trợ frame thủ thế, đấm và đá).
-
-### Sprint 3: Loại Bỏ Bong Bóng & Triển Khai Cầm Tay Thật Trong `Player.js` & `RemotePlayer.js`
-- [ ] Xóa bỏ hoàn toàn `equippedContainer` bóng tròn lơ lửng.
-- [ ] Tích hợp đồ cầm tay trực tiếp vào sprite nhân vật hoặc container bàn tay bám sát chuyển động cơ thể.
-- [ ] Đăng ký sự kiện phím `KeyJ` (Đấm) và `KeyK` (Đá) kích hoạt animation võ thuật và vệt khí Wind Slash.
-- [ ] Đồng bộ hóa trạng thái hành động đấm/đá qua socket event `playerAction`.
-
-### Sprint 4: Nâng Cấp Giao Diện Tủ Đồ & Hồ Sơ Cá Nhân (`WardrobeModal.js` & `PlayerProfileModal.js`)
-- [ ] Thiết kế lại `WardrobeModal.js` với 6 Tabs: `Màu Da`, `Khuôn Mặt & Râu`, `Kiểu Tóc`, `Trang Phục`, `Đồ Cầm Tay`.
-- [ ] Thêm các nút tương tác xoay 360° và nút thử nghiệm hoạt ảnh: *Đi Bộ*, *Đấm*, *Đá*, *Gõ Laptop*.
-- [ ] Cập nhật `PlayerProfileModal.js` hiển thị nhân vật toàn thân với đầy đủ râu, kính, màu da và đồ cầm tay thật.
-
-### Sprint 5: Kiểm Thử Tự Động, Tối Ưu Mobile & Nghiệm Thu
-- [ ] Kiểm tra tương thích lưu trữ: LocalStorage `dever_wardrobe_config` và Supabase DB `users.wardrobe_config`.
-- [ ] Chạy kiểm thử tự động Playwright xác nhận Zero-Regression cho toàn bộ test suite.
-- [ ] Kiểm tra hiển thị nút đấm/đá trên giao diện cảm ứng điện thoại (Virtual Touch Controls).
-- [ ] Chạy `npm run build` xác nhận 0 lỗi biên dịch.
-
----
-
-## 6. Tiêu Chuẩn Nghiệm Thu (Acceptance Criteria)
-
-| Tiêu chí | Mô tả đạt chuẩn |
-|---|---|
-| **Màu Da & Râu** | Người chơi có thể tự do chọn 6 màu da và 6 kiểu râu (đặc biệt có Râu quai nón và Tóc hói giáo sư chuẩn hình tham khảo). |
-| **Đồ Cầm Tay Thật** | 100% không còn bong bóng lơ lửng; Laptop, ly cafe muối, quả bóng, cờ được cầm chắc chắn trên tay nhân vật với hoạt ảnh gõ phím / bốc khói. |
-| **Hoạt Ảnh Võ Thuật** | Nhấn phím J đấm hoặc phím K đá hiển thị vệt chém khí vòng cung (Wind Slash Arc FX) mượt mà có âm thanh dứt khoát. |
-| **Đồng Bộ Hồ Sơ** | Tủ Đồ 2.0 có 6 Tabs và nút xoay 360°; Hồ sơ cá nhân và thế giới game hiển thị đồng nhất 100%. |
-| **Bảo Toàn Hệ Thống** | 100% test Playwright pass, `npm run build` thành công 0 lỗi cú pháp, 0% emoji trên buttons/tabs theo chuẩn `AGENTS.md`. |
+- **Sprint 1 (Dữ liệu cấu hình):** Mở rộng `src/config/wardrobe.js` (6 màu da, 6 kiểu râu, 5 biểu cảm, kiểu tóc mới) và `src/config/items.js` (Hand Socket data).
+- **Sprint 2 (Engine HD 48x48 & Wind Slash FX):** Nâng cấp `TextureGenerator.js` lên canvas 48x48 với 7 lớp đồ họa độc lập và xây dựng `src/ui/common/WindSlashFX.js`.
+- **Sprint 3 (Đồ cầm tay thật & Hoạt ảnh võ thuật):** Xóa bỏ bong bóng lơ lửng trong `Player.js` & `RemotePlayer.js`, gắn đồ lên tay thật, tích hợp phím `J` (đấm) và `K` (đá).
+- **Sprint 4 (Nâng cấp giao diện Tủ đồ & Hồ sơ):** Nâng cấp `WardrobeModal.js` 6 tabs và `PlayerProfileModal.js` hiển thị nhân vật HD 360°.
+- **Sprint 5 (Kiểm thử & Nghiệm thu):** Chạy `npm run build`, pass 100% Playwright test suite, tối ưu giao diện cảm ứng Mobile và đồng bộ database Supabase.
