@@ -43,7 +43,6 @@ import { CampusTicker } from '../ui/common/CampusTicker.js';
 import { TilePool } from '../utils/TilePool.js';
 import { telemetry } from '../utils/Telemetry.js';
 import { FloorManager } from '../managers/FloorManager.js';
-import { WindSlashFX } from '../ui/common/WindSlashFX.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -138,7 +137,6 @@ export class WorldScene extends Phaser.Scene {
     });
 
     // 3. Xây dựng bản đồ phòng
-    this.windSlashFX = new WindSlashFX(this);
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
     // 4. Camera Follow với vùng đệm rộng rãi (Headroom Padding)
@@ -1210,15 +1208,6 @@ export class WorldScene extends Phaser.Scene {
       const inputData = this.inputController.getMovementVector();
       this.player.update(inputData);
 
-      // Kích hoạt hoạt ảnh võ thuật & hành động tương tác (Phím J: Đấm, Phím K: Đá, Phím X: Ngồi)
-      if (this.inputController.isPunchJustDown()) {
-        this.player.punch();
-      } else if (this.inputController.isKickJustDown()) {
-        this.player.kick();
-      } else if (this.inputController.isSitJustDown()) {
-        this.player.sit();
-      }
-
       if (inputData.isMoving) {
         if (this.audioManager) {
           this.audioManager.playFootstep();
@@ -1236,10 +1225,6 @@ export class WorldScene extends Phaser.Scene {
           inputData.isMoving
         );
       }
-    }
-
-    if (this.windSlashFX) {
-      this.windSlashFX.update(delta / 1000);
     }
 
     if (this.interactionManager && this.player) {
@@ -1264,10 +1249,6 @@ export class WorldScene extends Phaser.Scene {
   }
 
   shutdown() {
-    if (this.windSlashFX) {
-      this.windSlashFX.destroy();
-      this.windSlashFX = null;
-    }
     if (this._resizeHandler) {
       window.removeEventListener('resize', this._resizeHandler);
       this._resizeHandler = null;

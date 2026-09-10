@@ -339,111 +339,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
-  /**
-   * Cú đấm quyền thuật (Punch Strike - Phím J)
-   * Visual Squash & Stretch siêu nhẹ, 100% an toàn vật lý, không lag camera
-   */
-  punch() {
-    const now = performance.now();
-    if (this._combatCooldown && now < this._combatCooldown) return;
-    this._combatCooldown = now + 160;
-
-    if (this.isSitting) {
-      this.isSitting = false;
-      this.scaleY = 1.0;
-    }
-
-    const slashOffsetX = this.currentDirection === 'right' ? 20 : (this.currentDirection === 'left' ? -20 : 0);
-    const slashOffsetY = this.currentDirection === 'down' ? 18 : (this.currentDirection === 'up' ? -18 : 0);
-
-    audioManager.playKick(1.2);
-    if (this.scene?.windSlashFX) {
-      this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'punch');
-    }
-
-    // Hiệu ứng vung nắm đấm bằng co giãn sprite tức thời (Zero-Lag, không đụng chạm this.x/y)
-    if (this.currentDirection === 'left' || this.currentDirection === 'right') {
-      this.scaleX = 1.22;
-      this.scaleY = 0.92;
-    } else {
-      this.scaleY = 1.2;
-      this.scaleX = 0.92;
-    }
-
-    this.scene?.time.delayedCall(80, () => {
-      if (!this.isSitting) {
-        this.scaleX = 1.0;
-        this.scaleY = 1.0;
-      }
-    });
-  }
-
-  /**
-   * Cú đá chân cao (High Kick - Phím K)
-   */
-  kick() {
-    const now = performance.now();
-    if (this._combatCooldown && now < this._combatCooldown) return;
-    this._combatCooldown = now + 180;
-
-    if (this.isSitting) {
-      this.isSitting = false;
-      this.scaleY = 1.0;
-    }
-
-    const slashOffsetX = this.currentDirection === 'right' ? 24 : (this.currentDirection === 'left' ? -24 : 0);
-    const slashOffsetY = this.currentDirection === 'down' ? 22 : (this.currentDirection === 'up' ? -22 : 0);
-
-    audioManager.playSpikeSmash();
-    if (this.scene?.windSlashFX) {
-      this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'kick');
-    }
-
-    // Nghiêng nhẹ góc quét chân rồi đàn hồi về 0
-    this.angle = this.currentDirection === 'left' ? -15 : 15;
-    this.scaleY = 1.15;
-    this.scene?.time.delayedCall(100, () => {
-      this.angle = 0;
-      if (!this.isSitting) {
-        this.scaleY = 1.0;
-      }
-    });
-  }
-
-  /**
-   * Tư thế ngồi thư giãn (Sit - Phím X)
-   */
-  sit() {
-    this.isSitting = !this.isSitting;
-    if (this.isSitting) {
-      this.stopMovement();
-      this.scaleY = 0.82;
-      audioManager.playClick();
-      if (this.scene?.juiceManager) {
-        this.scene.juiceManager.spawnScorePopup(this.x, this.y - 28, 'Đang Nghỉ Ngơi', '#38bdf8');
-      }
-    } else {
-      this.scaleY = 1.0;
-    }
-  }
-
   update(inputData) {
     if (!inputData) return;
 
     const speed = 160;
     const { vector, left, right, up, down, isMoving } = inputData;
-
-    // Tự động đứng dậy nếu người chơi bắt đầu di chuyển
-    if (isMoving && this.isSitting) {
-      this.isSitting = false;
-      this.scaleY = 1.0;
-    }
-
-    if (this.isSitting) {
-      this.body.setVelocity(0, 0);
-      this.scaleY = 0.82;
-      return;
-    }
 
     this.body.setVelocity(vector.x * speed, vector.y * speed);
 

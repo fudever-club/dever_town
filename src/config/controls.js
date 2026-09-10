@@ -21,9 +21,6 @@ export class InputController {
     });
 
     this.keyE = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-    this.keyJ = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
-    this.keyK = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K);
-    this.keyX = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
     // Trạng thái Touch D-Pad dành cho Mobile
     this.touchInput = {
@@ -31,9 +28,7 @@ export class InputController {
       down: false,
       left: false,
       right: false,
-      interactE: false,
-      actionPunch: false,
-      actionKick: false
+      interactE: false
     };
 
     if (scene.input && scene.input.keyboard) {
@@ -164,29 +159,6 @@ export class InputController {
       return true;
     }
     return Phaser.Input.Keyboard.JustDown(this.keyE);
-  }
-
-  isPunchJustDown() {
-    if (this.isInputBlocked()) return false;
-    if (this.touchInput.actionPunch) {
-      this.touchInput.actionPunch = false;
-      return true;
-    }
-    return Phaser.Input.Keyboard.JustDown(this.keyJ);
-  }
-
-  isKickJustDown() {
-    if (this.isInputBlocked()) return false;
-    if (this.touchInput.actionKick) {
-      this.touchInput.actionKick = false;
-      return true;
-    }
-    return Phaser.Input.Keyboard.JustDown(this.keyK);
-  }
-
-  isSitJustDown() {
-    if (this.isInputBlocked()) return false;
-    return Phaser.Input.Keyboard.JustDown(this.keyX);
   }
 
   getMovementVector() {
