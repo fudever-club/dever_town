@@ -2035,6 +2035,21 @@ export class InteractiveModal {
     const bodyEl = document.getElementById('club-booth-body');
     const footerEl = document.getElementById('club-booth-footer');
 
+    const logoHtml = club.logoId ? `
+      <div class="club-avatar-badge club-logo-box" style="border: 2px solid ${club.themeColor}; background: ${club.themeColor}1a;">
+        <img src="https://lh3.googleusercontent.com/d/${club.logoId}=w400" 
+             class="club-real-logo" 
+             alt="${escapeHtml(club.prefix)} Logo" 
+             loading="lazy"
+             onerror="this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+        <span class="club-fallback-icon" style="display: none;">${club.icon || '🏛️'}</span>
+      </div>
+    ` : `
+      <div class="club-avatar-badge club-logo-box" style="border: 2px solid ${club.themeColor}; background: ${club.themeColor}1a;">
+        <span class="club-fallback-icon">${club.icon || '🏛️'}</span>
+      </div>
+    `;
+
     if (headerEl) {
       headerEl.innerHTML = `
         <div class="club-card-badge-row">
@@ -2043,12 +2058,11 @@ export class InteractiveModal {
           </span>
           <span class="club-group-tag">${escapeHtml(club.group)} • ${escapeHtml(club.subgroup || '')}</span>
           <span class="club-floor-tag">Tòa Alpha — Tầng ${club.floor || 2}</span>
+          ${club.memberCount ? `<span class="club-members-tag">${club.memberCount} Thành viên</span>` : ''}
         </div>
         <div class="club-hero-title-row">
-          <span class="club-avatar-badge" style="background: ${club.themeColor}22; border: 2px solid ${club.themeColor};">
-            ${club.icon || '🏛️'}
-          </span>
-          <div>
+          ${logoHtml}
+          <div class="club-hero-info">
             <h2 class="club-hero-name" style="color: ${club.themeColor};">[${escapeHtml(club.prefix)}] ${escapeHtml(club.nameVi)}</h2>
             <p class="club-hero-en">${escapeHtml(club.nameEn)}</p>
           </div>
@@ -2058,11 +2072,90 @@ export class InteractiveModal {
     }
 
     if (bodyEl) {
+      // Khối Backdrop Gian hàng 3x3m
+      const backdropSection = club.backdropId ? `
+        <div class="club-detail-section club-backdrop-section">
+          <div class="club-backdrop-header-row">
+            <h4 class="club-section-title">Backdrop Gian Hàng 3x3m Chính Thức</h4>
+            <span class="club-backdrop-badge">Tiêu Chuẩn Ngày Hội CLB</span>
+          </div>
+          <div class="club-backdrop-preview-wrap" id="club-backdrop-wrap">
+            <img src="https://lh3.googleusercontent.com/d/${club.backdropId}=w800" 
+                 class="club-backdrop-img" 
+                 alt="Backdrop 3x3m ${escapeHtml(club.prefix)}" 
+                 loading="lazy"
+                 id="img-club-backdrop" />
+            <div class="club-backdrop-overlay">
+              <span class="club-backdrop-hint">Bấm để phóng to toàn màn hình</span>
+            </div>
+          </div>
+          ${club.backdropUrl ? `
+            <div class="club-backdrop-meta">
+              <a href="${escapeHtml(club.backdropUrl)}" target="_blank" rel="noopener noreferrer" class="club-backdrop-link">
+                Tải file gốc trên Google Drive
+              </a>
+            </div>
+          ` : ''}
+        </div>
+      ` : '';
+
+      // Khối Đạo Cụ & Thiết Kế Gian Hàng
+      const propsSection = (club.props || club.costume || club.videoConcept) ? `
+        <div class="club-detail-section">
+          <h4 class="club-section-title">Nhận Diện & Thiết Kế Gian Hàng</h4>
+          <div class="club-specs-grid">
+            ${club.props ? `
+              <div class="club-spec-item">
+                <span class="club-spec-label">Đạo Cụ Trưng Bày</span>
+                <span class="club-spec-value">${escapeHtml(club.props)}</span>
+              </div>
+            ` : ''}
+            ${club.costume ? `
+              <div class="club-spec-item">
+                <span class="club-spec-label">Trang Phục Đại Diện</span>
+                <span class="club-spec-value">${escapeHtml(club.costume)}</span>
+              </div>
+            ` : ''}
+            ${club.videoConcept ? `
+              <div class="club-spec-item full-width">
+                <span class="club-spec-label">Ý Tưởng / Concept Video</span>
+                <span class="club-spec-value">${escapeHtml(club.videoConcept)}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      ` : '';
+
+      // Khối Ban Quản Lý & Đại Diện
+      const managementSection = (club.officer || club.leads) ? `
+        <div class="club-detail-section">
+          <h4 class="club-section-title">Ban Đại Diện & Liên Hệ</h4>
+          <div class="club-specs-grid">
+            ${club.officer ? `
+              <div class="club-spec-item">
+                <span class="club-spec-label">Cán Bộ Phụ Trách</span>
+                <span class="club-spec-value">${escapeHtml(club.officer)}</span>
+              </div>
+            ` : ''}
+            ${club.leads ? `
+              <div class="club-spec-item full-width">
+                <span class="club-spec-label">Đại Diện Gian Hàng / Hotline</span>
+                <span class="club-spec-value">${escapeHtml(club.leads)}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      ` : '';
+
       bodyEl.innerHTML = `
         <div class="club-detail-section">
           <h4 class="club-section-title">Giới Thiệu & Định Hướng</h4>
           <p class="club-section-desc">${escapeHtml(club.description)}</p>
         </div>
+
+        ${backdropSection}
+
+        ${propsSection}
 
         <div class="club-detail-section">
           <h4 class="club-section-title">Hoạt Động Tiêu Biểu</h4>
@@ -2078,9 +2171,23 @@ export class InteractiveModal {
 
         <div class="club-detail-section">
           <h4 class="club-section-title">Chiêu Mộ & Tuyển Quân</h4>
-          <p class="club-section-desc"><strong>Đối tượng & Vị trí ứng tuyển:</strong> ${escapeHtml(club.roles || 'Tất cả sinh viên FPTU đam mê học hỏi')}</p>
+          <p class="club-section-desc"><strong>Vị trí & Cơ hội phát triển:</strong> ${escapeHtml(club.roles || 'Tất cả sinh viên FPTU đam mê học hỏi và cống hiến')}</p>
         </div>
+
+        ${managementSection}
       `;
+
+      // Thiết lập sự kiện phóng to Backdrop Lightbox
+      const backdropWrap = document.getElementById('club-backdrop-wrap');
+      if (backdropWrap && club.backdropId) {
+        backdropWrap.onclick = () => {
+          this.showBackdropLightbox(
+            `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600`,
+            `Backdrop Gian Hàng 3x3m — [${club.prefix}] ${club.nameVi}`,
+            club.backdropUrl
+          );
+        };
+      }
     }
 
     if (footerEl) {
@@ -2089,6 +2196,11 @@ export class InteractiveModal {
           <button type="button" class="btn-primary-sm btn-club-register" id="btn-club-interest" style="background: ${club.themeColor};">
             Đăng Ký Quan Tâm Gian Hàng #${club.boothNumber}
           </button>
+          ${club.backdropId ? `
+            <button type="button" class="btn-secondary-sm" id="btn-club-zoom-backdrop">
+              Xem Backdrop 3x3m
+            </button>
+          ` : ''}
           <button type="button" class="btn-secondary-sm" id="btn-club-visit-web">
             Đóng
           </button>
@@ -2105,6 +2217,18 @@ export class InteractiveModal {
         };
       }
 
+      const zoomBackdropBtn = document.getElementById('btn-club-zoom-backdrop');
+      if (zoomBackdropBtn && club.backdropId) {
+        zoomBackdropBtn.onclick = () => {
+          audioManager.playClick();
+          this.showBackdropLightbox(
+            `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600`,
+            `Backdrop Gian Hàng 3x3m — [${club.prefix}] ${club.nameVi}`,
+            club.backdropUrl
+          );
+        };
+      }
+
       const visitBtn = document.getElementById('btn-club-visit-web');
       if (visitBtn) {
         visitBtn.onclick = () => {
@@ -2113,5 +2237,54 @@ export class InteractiveModal {
         };
       }
     }
+  }
+
+  /**
+   * Hiển thị Lightbox phóng to ảnh Backdrop 3x3m chất lượng cao
+   * @param {string} imageUrl
+   * @param {string} title
+   * @param {string} driveUrl
+   */
+  showBackdropLightbox(imageUrl, title, driveUrl) {
+    let lightbox = document.getElementById('club-backdrop-lightbox');
+    if (!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'club-backdrop-lightbox';
+      lightbox.className = 'club-lightbox-modal hidden';
+      document.body.appendChild(lightbox);
+    }
+
+    lightbox.innerHTML = `
+      <div class="club-lightbox-backdrop"></div>
+      <div class="club-lightbox-card">
+        <div class="club-lightbox-header">
+          <h3 class="club-lightbox-title">${escapeHtml(title)}</h3>
+          <button type="button" class="club-lightbox-close" id="btn-close-lightbox">Đóng</button>
+        </div>
+        <div class="club-lightbox-body">
+          <img src="${imageUrl}" class="club-lightbox-fullimg" alt="${escapeHtml(title)}" />
+        </div>
+        ${driveUrl ? `
+          <div class="club-lightbox-footer">
+            <a href="${escapeHtml(driveUrl)}" target="_blank" rel="noopener noreferrer" class="club-lightbox-drive-btn">
+              Mở liên kết Drive gốc
+            </a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    lightbox.classList.remove('hidden');
+
+    const closeBtn = document.getElementById('btn-close-lightbox');
+    const bgOverlay = lightbox.querySelector('.club-lightbox-backdrop');
+
+    const closeLightbox = () => {
+      audioManager.playClick();
+      lightbox.classList.add('hidden');
+    };
+
+    if (closeBtn) closeBtn.onclick = closeLightbox;
+    if (bgOverlay) bgOverlay.onclick = closeLightbox;
   }
 }

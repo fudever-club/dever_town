@@ -55,6 +55,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = null;
     this.tileSprites = [];
     this.portalLabels = [];
+    this.obstacleShadows = [];
     this.audioManager = audioManager;
     this.i18n = i18n;
     this.playerSessionActive = false;
@@ -386,6 +387,10 @@ export class WorldScene extends Phaser.Scene {
       this.portalLabels.forEach(lbl => lbl.destroy());
       this.portalLabels = [];
     }
+    if (this.obstacleShadows && this.obstacleShadows.length > 0) {
+      this.obstacleShadows.forEach(s => s.destroy());
+      this.obstacleShadows = [];
+    }
     if (this.obstacleGroup) {
       this.obstacleGroup.clear(true, true);
     }
@@ -413,19 +418,37 @@ export class WorldScene extends Phaser.Scene {
         const tileType = mapData.layout[r][c];
         const posX = c * tileSize + tileSize / 2;
         const posY = r * tileSize + tileSize / 2;
+        const isSolid = solidTiles.has(tileType);
+
+        // S2.D: Y-sort depth system (Floor = 0; Obstacles = posY + 15)
+        const tileDepth = isSolid ? (posY + (tileSize / 2) - 1) : 0;
 
         if (this.tilePool) {
-          this.tilePool.acquire(posX, posY, tileType, 0);
+          this.tilePool.acquire(posX, posY, tileType, tileDepth);
         } else {
           const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
-          tileSprite.setDepth(0);
+          tileSprite.setDepth(tileDepth);
           this.tileSprites.push(tileSprite);
         }
 
-        if (solidTiles.has(tileType)) {
+        if (isSolid) {
           const obstacle = this.obstacleGroup.create(posX, posY, 'town_tileset', tileType);
           obstacle.setVisible(false);
           obstacle.refreshBody();
+
+          // S2.D: Drop shadow mềm mại dưới chân các vật thể đứng trên sàn (trừ tường phẳng 2 và 15)
+          if (tileType !== 2 && tileType !== 15) {
+            const shadow = this.add.ellipse(
+              posX,
+              posY + tileSize * 0.38,
+              tileSize * 0.72,
+              tileSize * 0.24,
+              0x000000,
+              0.22
+            );
+            shadow.setDepth(1); // Trên mặt sàn (0), dưới chân người chơi và obstacle
+            this.obstacleShadows.push(shadow);
+          }
         }
       }
     }
@@ -1240,6 +1263,11 @@ export class WorldScene extends Phaser.Scene {
     if (this.tilePool) {
       this.tilePool.destroy();
       this.tilePool = null;
+    }
+
+    if (this.obstacleShadows && this.obstacleShadows.length > 0) {
+      this.obstacleShadows.forEach(s => s.destroy());
+      this.obstacleShadows = [];
     }
 
     if (this._toastTimer) {

@@ -1,4 +1,4 @@
-﻿# Tiến Trình Phát Triển DEVER TOWN — Phase 2: Visual & Movement Upgrade
+# Tiến Trình Phát Triển DEVER TOWN — Phase 2: Visual & Movement Upgrade
 
 > **Tài liệu tham chiếu:** `docs/plans/PLAN_v0.5_STABILIZATION_AND_VISUAL_UPGRADE.md`  
 > **Nhánh phát triển:** `develop_hung`  
@@ -13,8 +13,8 @@
 | **PHASE 1** | Stabilization (Security, Performance, RET-008, INS-001, v0.5.0) | Hoàn thành 100% | `aed29f4`, `c5efb09`, `cd2b70a`, `cdd7db6` |
 | **S2.A (Sprint 4)** | Label Clarity: Chữ sắc nét, HiDPI resolution, PixelArt render | Hoàn thành 100% | `9eef891` |
 | **S2.B (Sprint 5-6)** | Pokemon GBA Effects: Grass rustle, Shadow ellipse, Footstep variation, Room flash | Hoàn thành 100% | `9eef891` |
-| **S2.C (Sprint 7-9)** | Multi-Floor System: FloorManager, Thang bộ, 3 Tầng Tòa Alpha, 25 CLB FPTU | Hoàn thành 100% | Đang commit |
-| **S2.D (Sprint 10-12)** | Oblique 2.5D: Y-sort depth, Ambient lighting, Oblique tiles | Đã triển khai Ambient Lighting | — |
+| **S2.C (Sprint 7-9)** | Multi-Floor System: FloorManager, Thang bộ, 3 Tầng Tòa Alpha, 25 CLB FPTU | Hoàn thành 100% | `a37349c` |
+| **S2.D (Sprint 10-12)** | Oblique 2.5D Visual: Y-sort depth, Oblique tiles, Drop shadows, Drive Logo & 3x3m Backdrop | Hoàn thành 100% | Đang commit |
 
 ---
 
@@ -52,15 +52,33 @@
   - **Tầng 2**: Hub Học Thuật, Công Nghệ & Khởi Nghiệp (9 gian hàng CLB).
   - **Tầng 3**: Hub Nghệ Thuật, Kỹ Năng, Sự Kiện & Bảng Vàng Thể Thao (10 gian hàng CLB).
 - [x] `src/scenes/WorldScene.js`: Tích hợp `FloorManager`, hiển thị hậu tố tầng trên thanh tiêu đề HUD (`Tòa Alpha — Tầng X/3`), xử lý tương tác cầu thang `stair_transition` không giật lag.
-- [x] `src/ui/gameplay/InteractiveModal.js` & `index.html` & `main.css`: Giao diện Gian Hàng CLB (`pane-club-booth`) hiển thị đầy đủ thông tin STT, phân nhóm, sứ mệnh, hoạt động nổi bật và nút đăng ký quan tâm.
+
+### Sprint 10-12 (S2.D): Oblique 2.5D Visual Style & Tích Hợp Logo + Backdrop Gian Hàng
+- [x] `src/config/fptuClubs.js`:
+  - Tích hợp toàn bộ **24 Google Drive File ID Logo chính thức** của 24 CLB FPTU.
+  - Tích hợp **20 Backdrop 3mx3m chính thức** từ dữ liệu ngày hội CLB trường ĐH FPT Đà Nẵng (Google Sheet).
+  - Bổ sung thông tin chi tiết: Đạo cụ trưng bày (props), Trang phục đại diện (costume), Concept Video, Cán bộ phụ trách (officer) và Trưởng đại diện/Hotline (leads).
+- [x] `src/utils/TextureGenerator.js`: Vẽ lại toàn bộ các tile chướng ngại vật theo chuẩn **Cabinet Oblique 2.5D Projection**:
+  - `drawWall`: Tường có mặt đỉnh 10px sáng highlight + gờ nẹp + rãnh đổ bóng + mặt đứng 22px chia khối gạch slate 3D.
+  - `drawBookshelf`: Kệ sách có nóc tủ góc nghiêng, 3 ngăn kệ khoét sâu đổ bóng hốc kệ, sách nhiều màu có gáy phản quang.
+  - `drawDeskWithLaptop`: Mặt bàn gỗ sồi ấm 2.5D vân sáng, gờ trước sẫm màu, chân bàn gỗ và laptop/cốc cafe nổi khối.
+  - `drawServerRack`: Tủ rack nóc kim loại nghiêng, thân rack chia đơn vị 1U-4U, đèn LED trạng thái nháy và khe tản nhiệt.
+  - `drawWhiteboard`: Bảng trắng khung nhôm góc nghiêng, bóng đổ gờ trên, khay bút nhôm chìa ra trước và chân đế chữ A 2.5D.
+  - `drawCoffeeBar`: Quầy cafe mặt đá cẩm thạch bóng nghiêng góc, thân quầy ốp nan gỗ dọc sang trọng, máy espresso và ly takeaway.
+- [x] `src/scenes/WorldScene.js`:
+  - **Y-Sort Depth System**: Nền sàn gán depth 0; Toàn bộ obstacles gán depth = `posY + 15` đồng bộ với player chân depth `this.y + 14`. Nhân vật đi sau bàn/kệ sẽ bị che khuất chân tự nhiên, đi ra trước sẽ nổi lên trên.
+  - **Drop Shadow cho Obstacles**: Thêm shadow ellipse mềm mại màu đen mờ `0x000000` alpha 0.22 đặt dưới chân các vật thể đứng trên sàn (depth = 1).
+  - Tự động dọn dẹp an toàn `obstacleShadows` khi loadRoom và shutdown.
+- [x] `src/ui/gameplay/InteractiveModal.js` & `src/styles/main.css`:
+  - Hiển thị **Logo chính thức** trực tiếp từ Google Drive với viền theme color và cơ chế fallback tự động nếu mất mạng.
+  - Hiển thị **Backdrop 3mx3m chính thức**: Thumbnail preview sắc nét, click để mở **Lightbox Modal phóng to full-size** kèm liên kết tải trực tiếp trên Drive.
+  - Khối thông số chi tiết: Đạo cụ, Trang phục, Concept Video, Cán bộ phụ trách và Hotline liên hệ.
+  - Tuân thủ nghiêm ngặt chuẩn emoji: 0 emoji trên toàn bộ buttons và tabs.
 
 ---
 
-## 3. Hạng Mục Tiếp Theo Cần Làm
-
-### Sprint 10-12 (S2.D): Oblique 2.5D Hoàn Thiện
-- [ ] Cập nhật đồ họa tile tường và bàn ghế theo góc chiếu Oblique 2.5D trong `TextureGenerator.js`.
-- [ ] Drop shadow cho vật thể tĩnh (obstacles).
+## 3. Hoàn Tất Phase 2
+Toàn bộ các mục tiêu cốt lõi của Phase 2 (S2.A, S2.B, S2.C, S2.D) đã được triển khai hoàn chỉnh, thẩm mỹ và ổn định.
 
 ---
 
@@ -68,4 +86,5 @@
 
 - **10/09/2026 09:35**: Xác minh Phase 1 đã hoàn thiện 100%. Sao chép file plan gốc vào `docs/plans/PLAN_v0.5_STABILIZATION_AND_VISUAL_UPGRADE.md`. Khởi tạo tài liệu tiến trình Phase 2.
 - **10/09/2026 09:40**: Hoàn thành Sprint 4 (S2.A - Label Clarity) & Sprint 5-6 (S2.B - Pokemon GBA Effects & Movement Foundations + Ambient Lighting). Commit: `9eef891`.
-- **10/09/2026 09:52**: Hoàn thành Sprint 7-9 (S2.C - Multi-Floor System & 25 CLB FPTU Đà Nẵng tại Tòa Alpha). Build test thành công 0 errors (`✓ built in 4.78s`).
+- **10/09/2026 09:52**: Hoàn thành Sprint 7-9 (S2.C - Multi-Floor System & 25 CLB FPTU Đà Nẵng tại Tòa Alpha). Commit: `a37349c`.
+- **10/09/2026 10:14**: Hoàn thành Sprint 10-12 (S2.D - Oblique 2.5D Visual Style & Drop Shadows cho obstacles) cùng tích hợp toàn diện 24 Logo và 20 Backdrop 3mx3m từ Google Drive / Sheet vào Gian hàng CLB. Build Vite kiểm chứng pass 100% 0 errors.

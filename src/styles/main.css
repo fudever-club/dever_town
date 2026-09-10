@@ -6922,6 +6922,285 @@ body {
   transform: translateY(-1px);
 }
 
+.club-members-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.club-logo-box {
+  width: 58px;
+  height: 58px;
+  padding: 4px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.club-real-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.club-fallback-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.club-backdrop-section {
+  padding: 14px 16px;
+  gap: 10px;
+}
+
+.club-backdrop-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.club-backdrop-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.club-backdrop-preview-wrap {
+  position: relative;
+  width: 100%;
+  max-height: 240px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #090d16;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.club-backdrop-img {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.club-backdrop-preview-wrap:hover .club-backdrop-img {
+  transform: scale(1.02);
+}
+
+.club-backdrop-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.club-backdrop-preview-wrap:hover .club-backdrop-overlay {
+  opacity: 1;
+}
+
+.club-backdrop-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f8fafc;
+  background: rgba(30, 41, 59, 0.9);
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.club-backdrop-meta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.club-backdrop-link {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #38bdf8;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(56, 189, 248, 0.4);
+  transition: color 0.15s ease;
+}
+
+.club-backdrop-link:hover {
+  color: #7dd3fc;
+  border-bottom-style: solid;
+}
+
+.club-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.club-spec-item {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.club-spec-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.club-spec-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.club-spec-value {
+  font-size: 13px;
+  color: #e2e8f0;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* Lightbox Modal phóng to Backdrop */
+.club-lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.club-lightbox-modal.hidden {
+  display: none !important;
+}
+
+.club-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.club-lightbox-card {
+  position: relative;
+  z-index: 2;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  max-width: 92vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.club-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.club-lightbox-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.club-lightbox-close {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.club-lightbox-close:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+}
+
+.club-lightbox-body {
+  padding: 12px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050811;
+}
+
+.club-lightbox-fullimg {
+  max-width: 86vw;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.club-lightbox-footer {
+  padding: 10px 18px;
+  background: rgba(30, 41, 59, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.club-lightbox-drive-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+  text-decoration: none;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.club-lightbox-drive-btn:hover {
+  background: rgba(56, 189, 248, 0.3);
+  color: #ffffff;
+}
+
 /* ==========================================================================
    ACHIEVEMENT TOAST BANNER & JUICE ENGINE STYLES
    ========================================================================== */
