@@ -9,7 +9,10 @@ export const ITEMS_DATABASE = {
     rarity: 'legendary',
     tag: 'Thiết Bị Coder',
     desc: 'Laptop chuyên dụng của Coder FUDA, cài sẵn Linux, Docker, Node.js và VS Code.',
-    accentColor: '#38bdf8'
+    accentColor: '#38bdf8',
+    inHandType: 'laptop',
+    inHandColor: '#cbd5e1',
+    inHandGrip: 'both_hands'
   },
   keychron_kb: {
     id: 'keychron_kb',
@@ -18,7 +21,10 @@ export const ITEMS_DATABASE = {
     rarity: 'epic',
     tag: 'Gaming & Dev',
     desc: 'Bàn phím cơ Switch Gateron Pro, âm thanh gõ lách cách tạo cảm hứng lập trình xuyên đêm.',
-    accentColor: '#c084fc'
+    accentColor: '#c084fc',
+    inHandType: 'keyboard',
+    inHandColor: '#a855f7',
+    inHandGrip: 'both_hands'
   },
   gaming_mouse: {
     id: 'gaming_mouse',
@@ -27,7 +33,10 @@ export const ITEMS_DATABASE = {
     rarity: 'rare',
     tag: 'Gaming & Dev',
     desc: 'Chuột siêu nhẹ chuẩn công thái học, hỗ trợ thao tác kéo thả và fix bug tốc độ cao.',
-    accentColor: '#34d399'
+    accentColor: '#34d399',
+    inHandType: 'mouse',
+    inHandColor: '#10b981',
+    inHandGrip: 'right_hand'
   },
   golden_frog_plush: {
     id: 'golden_frog_plush',
@@ -36,7 +45,10 @@ export const ITEMS_DATABASE = {
     rarity: 'mythic',
     tag: 'Linh Vật FUDA',
     desc: 'Gấu bông Linh vật Cóc Vàng Thiềm Thừ FUDA, mang lại may mắn 100% qua mọi kỳ thi Pass PE.',
-    accentColor: '#fbbf24'
+    accentColor: '#fbbf24',
+    inHandType: 'plush',
+    inHandColor: '#eab308',
+    inHandGrip: 'both_hands'
   },
   fptu_keychain: {
     id: 'fptu_keychain',
@@ -45,7 +57,10 @@ export const ITEMS_DATABASE = {
     rarity: 'common',
     tag: 'Phụ Kiện Sinh Viên',
     desc: 'Dây đeo thẻ sinh viên FUDA màu cam FPT nổi bật.',
-    accentColor: '#f26f21'
+    accentColor: '#f26f21',
+    inHandType: 'keychain',
+    inHandColor: '#f97316',
+    inHandGrip: 'right_hand'
   },
   thermos_coffee: {
     id: 'thermos_coffee',
@@ -54,7 +69,10 @@ export const ITEMS_DATABASE = {
     rarity: 'uncommon',
     tag: 'Đồ Uống Coder',
     desc: 'Cốc giữ nhiệt 24h chứa đầy cà phê nguyên chất, xua tan cơn buồn ngủ khi chạy deadline.',
-    accentColor: '#f59e0b'
+    accentColor: '#f59e0b',
+    inHandType: 'thermos',
+    inHandColor: '#f59e0b',
+    inHandGrip: 'right_hand'
   },
   danang_salt_coffee: {
     id: 'danang_salt_coffee',
@@ -63,7 +81,10 @@ export const ITEMS_DATABASE = {
     rarity: 'epic',
     tag: 'Đặc Sản Đà Nẵng',
     desc: 'Cà phê phin đậm đà kết hợp lớp kem mặn béo ngậy nức tiếng Đà Nẵng, bí kíp giữ tỉnh táo của Dev FUDA.',
-    accentColor: '#d97706'
+    accentColor: '#d97706',
+    inHandType: 'coffee_cup',
+    inHandColor: '#78350f',
+    inHandGrip: 'right_hand'
   },
   fuda_banh_mi: {
     id: 'fuda_banh_mi',
@@ -72,7 +93,10 @@ export const ITEMS_DATABASE = {
     rarity: 'rare',
     tag: 'Ẩm Thực Canteen',
     desc: 'Bánh mì giòn rụm kẹp chả bò Đà Nẵng thơm nức, tiếp năng lượng tức thì trong 5 phút nghỉ giữa giờ.',
-    accentColor: '#ea580c'
+    accentColor: '#ea580c',
+    inHandType: 'banh_mi',
+    inHandColor: '#f59e0b',
+    inHandGrip: 'right_hand'
   },
   hackathon_trophy: {
     id: 'hackathon_trophy',
@@ -81,7 +105,46 @@ export const ITEMS_DATABASE = {
     rarity: 'mythic',
     tag: 'Vinh Danh Coder',
     desc: 'Biểu tượng chiến thắng danh giá tại cuộc thi Hackathon FU-DEVER & FUDA.',
-    accentColor: '#eab308'
+    accentColor: '#eab308',
+    inHandType: 'trophy',
+    inHandColor: '#fbbf24',
+    inHandGrip: 'both_hands'
+  },
+  football_ball: {
+    id: 'football_ball',
+    name: 'Quả Bóng Đá 11M FUDA',
+    icon: '⚽',
+    rarity: 'rare',
+    tag: 'Thể Thao',
+    desc: 'Quả bóng thi đấu sân cỏ nhân tạo FUDA.',
+    accentColor: '#22c55e',
+    inHandType: 'ball',
+    inHandColor: '#f8fafc',
+    inHandGrip: 'right_hand'
+  },
+  basketball_ball: {
+    id: 'basketball_ball',
+    name: 'Quả Bóng Rổ 3 Điểm FUDA',
+    icon: '🏀',
+    rarity: 'rare',
+    tag: 'Thể Thao',
+    desc: 'Quả bóng rổ da cam rãnh đen tiêu chuẩn thi đấu.',
+    accentColor: '#ea580c',
+    inHandType: 'ball',
+    inHandColor: '#ea580c',
+    inHandGrip: 'right_hand'
+  },
+  dever_flag: {
+    id: 'dever_flag',
+    name: 'Cờ Hiệu CLB FU-DEVER',
+    icon: '🚩',
+    rarity: 'legendary',
+    tag: 'Tự Hào CLB',
+    desc: 'Lá cờ xanh công nghệ của CLB Lập Trình FU-DEVER.',
+    accentColor: '#0284c7',
+    inHandType: 'flag',
+    inHandColor: '#0284c7',
+    inHandGrip: 'right_hand'
   }
 };
 

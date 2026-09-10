@@ -118,44 +118,23 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       this.equippedContainer.destroy();
       this.equippedContainer = null;
     }
-    // Stop tween cũ trước khi tạo mới — tránh tích lũy repeat:-1 tweens
     if (this._equippedTween) {
       this._equippedTween.stop();
       this._equippedTween = null;
     }
-
-    if (!this.equippedItemId || !ITEMS_DATABASE[this.equippedItemId]) return;
-
-    const item = ITEMS_DATABASE[this.equippedItemId];
-    this.equippedContainer = this.scene.add.container(this.x + 14, this.y - 8);
-    this.equippedContainer.setDepth(1000002);
-
-    const bgGfx = this.scene.add.graphics();
-    bgGfx.fillStyle(0x0f172a, 0.85);
-    bgGfx.fillCircle(0, 0, 9);
-    bgGfx.lineStyle(1.5, Phaser.Display.Color.HexStringToColor(item.accentColor || '#f26f21').color, 1);
-    bgGfx.strokeCircle(0, 0, 9);
-
-    const icon = this.scene.add.text(0, 0, item.icon, {
-      fontSize: '10px'
-    }).setOrigin(0.5, 0.5);
-
-    this.equippedContainer.add([bgGfx, icon]);
-
-    this._equippedTween = this.scene.tweens.add({
-      targets: this.equippedContainer,
-      y: this.y - 12,
-      duration: 800,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
-    });
+    // Xóa bỏ hoàn toàn bong bóng lơ lửng: Vật phẩm được vẽ trực tiếp vào bàn tay nhân vật
   }
-
 
   setEquippedItem(itemId) {
     this.equippedItemId = itemId;
-    this.createEquippedItemDisplay();
+    if (this.equippedContainer) {
+      this.equippedContainer.destroy();
+      this.equippedContainer = null;
+    }
+    if (this.wardrobeConfig) {
+      this.wardrobeConfig.inHandItem = itemId;
+      this.applyCustomWardrobe(this.wardrobeConfig);
+    }
   }
 
   getRoleColor() {

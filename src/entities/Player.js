@@ -106,38 +106,24 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.equippedContainer.destroy();
       this.equippedContainer = null;
     }
-
-    if (!this.equippedItemId || !ITEMS_DATABASE[this.equippedItemId]) return;
-
-    const item = ITEMS_DATABASE[this.equippedItemId];
-    this.equippedContainer = this.scene.add.container(this.x + 14, this.y - 8);
-    this.equippedContainer.setDepth(1000002);
-
-    const bgGfx = this.scene.add.graphics();
-    bgGfx.fillStyle(0x0f172a, 0.85);
-    bgGfx.fillCircle(0, 0, 9);
-    bgGfx.lineStyle(1.5, Phaser.Display.Color.HexStringToColor(item.accentColor || '#f26f21').color, 1);
-    bgGfx.strokeCircle(0, 0, 9);
-
-    const icon = this.scene.add.text(0, 0, item.icon, {
-      fontSize: '10px'
-    }).setOrigin(0.5, 0.5);
-
-    this.equippedContainer.add([bgGfx, icon]);
-
-    this.scene.tweens.add({
-      targets: this.equippedContainer,
-      y: this.y - 12,
-      duration: 800,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
-    });
+    // Xóa bỏ hoàn toàn bong bóng lơ lửng: Vật phẩm được vẽ trực tiếp vào bàn tay nhân vật
   }
 
   setEquippedItem(itemId) {
     this.equippedItemId = itemId;
-    this.createEquippedItemDisplay();
+    if (this.equippedContainer) {
+      this.equippedContainer.destroy();
+      this.equippedContainer = null;
+    }
+
+    if (!this.wardrobeConfig) {
+      this.wardrobeConfig = {};
+    }
+    this.wardrobeConfig.inHandItem = itemId;
+    this.wardrobeConfig.equippedItemId = itemId;
+
+    // Tự động tạo lại spritesheet để vẽ vật phẩm trực tiếp lên tay
+    this.setCustomWardrobe(this.avatarId || 'custom_wardrobe', this.wardrobeConfig);
   }
 
   setCustomWardrobe(avatarId = 'custom_wardrobe', wardrobeConfig = null) {
@@ -350,6 +336,91 @@ export class Player extends Phaser.GameObjects.Sprite {
           this.anims.play(idleAnim, true);
         }
       } catch (e) {}
+    }
+  }
+
+  /**
+   * Cú đấm quyền thuật (Punch Strike - Phím J)
+   * Kèm vệt khí chém vòng cung Wind Slash Arc FX như hình mẫu tham khảo
+   */
+  punch() {
+    if (this._isPerformingCombat) return;
+    this._isPerformingCombat = true;
+
+    const slashOffsetX = this.currentDirection === 'right' ? 20 : (this.currentDirection === 'left' ? -20 : 0);
+    const slashOffsetY = this.currentDirection === 'down' ? 18 : (this.currentDirection === 'up' ? -18 : 0);
+
+    audioManager.playKick(1.2);
+    if (this.scene?.windSlashFX) {
+      this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'punch');
+    }
+
+    const origX = this.x;
+    const origY = this.y;
+    this.scene?.tweens.add({
+      targets: this,
+      x: origX + slashOffsetX * 0.4,
+      y: origY + slashOffsetY * 0.4,
+      duration: 70,
+      yoyo: true,
+      ease: 'Back.easeOut',
+      onComplete: () => {
+        this._isPerformingCombat = false;
+        this.x = origX;
+        this.y = origY;
+      }
+    });
+
+    // Phát socket cho người chơi khác
+    if (this.scene?.socketManager) {
+      this.scene.socketManager.socket?.emit('playerAction', { action: 'punch', direction: this.currentDirection });
+    }
+  }
+
+  /**
+   * Cú đá chân cao (High Kick - Phím K)
+   */
+  kick() {
+    if (this._isPerformingCombat) return;
+    this._isPerformingCombat = true;
+
+    const slashOffsetX = this.currentDirection === 'right' ? 24 : (this.currentDirection === 'left' ? -24 : 0);
+    const slashOffsetY = this.currentDirection === 'down' ? 22 : (this.currentDirection === 'up' ? -22 : 0);
+
+    audioManager.playSpikeSmash();
+    if (this.scene?.windSlashFX) {
+      this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'kick');
+    }
+
+    const origAngle = this.angle;
+    this.scene?.tweens.add({
+      targets: this,
+      angle: this.currentDirection === 'left' ? -15 : 15,
+      duration: 90,
+      yoyo: true,
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        this._isPerformingCombat = false;
+        this.angle = origAngle;
+      }
+    });
+
+    if (this.scene?.socketManager) {
+      this.scene.socketManager.socket?.emit('playerAction', { action: 'kick', direction: this.currentDirection });
+    }
+  }
+
+  /**
+   * Tư thế ngồi thư giãn (Sit - Phím X)
+   */
+  sit() {
+    this.isSitting = !this.isSitting;
+    if (this.isSitting) {
+      this.scaleY = 0.85;
+      audioManager.playClick();
+      this.showEmote('wave');
+    } else {
+      this.scaleY = 1.0;
     }
   }
 

@@ -8,6 +8,42 @@ export const WARDROBE_CONFIG = {
     { id: 'female', name: 'Nữ Sinh FUDA', icon: '👧' }
   ],
 
+  skinTones: [
+    { id: 'skin_fair', name: 'Trắng Sáng Tinh Khôi', color: '#fed7aa', highlight: '#ffedd5', shadow: '#fdba74' },
+    { id: 'skin_natural', name: 'Vàng Tự Nhiên Á Đông', color: '#fbd1a2', highlight: '#fde68a', shadow: '#f59e0b' },
+    { id: 'skin_tan', name: 'Bánh Mật Năng Động', color: '#d97706', highlight: '#f59e0b', shadow: '#b45309' },
+    { id: 'skin_deep', name: 'Nâu Khỏe Khoắn', color: '#92400e', highlight: '#b45309', shadow: '#78350f' },
+    { id: 'skin_ebony', name: 'Ngăm Đậm Thời Thượng', color: '#573016', highlight: '#78350f', shadow: '#3b1d08' },
+    { id: 'skin_cyber', name: 'Cyborg Android Xanh', color: '#bae6fd', highlight: '#e0f2fe', shadow: '#7dd3fc' }
+  ],
+
+  facialHairs: [
+    { id: 'none', name: 'Mặt Nhẵn Nhụi', icon: '✕', desc: 'Thư sinh, trẻ trung' },
+    { id: 'full_beard', name: 'Râu Quai Nón Senior Dev', icon: '🧔', desc: 'Viền râu quai hàm rậm rạp uy lực' },
+    { id: 'mustache', name: 'Ria Mép Lịch Lãm', icon: '👨', desc: 'Hàng ria mép tỉa gọn gàng phong độ' },
+    { id: 'goatee', name: 'Râu Cằm / Râu Dê', icon: '🐐', desc: 'Chòm râu cằm sắc sảo, cá tính' },
+    { id: 'stubble', name: 'Râu Lún Phún Deadline', icon: '✨', desc: 'Vệt râu xanh cày code thâu đêm' },
+    { id: 'grey_beard', name: 'Râu Bạc Giáo Sư', icon: '👴', desc: 'Phong thái thông thái của giảng viên' }
+  ],
+
+  expressions: [
+    { id: 'expr_focus', name: 'Tập Trung Cao Độ', icon: '🎯', desc: 'Mắt sắc bén tập trung fix bug' },
+    { id: 'expr_smile', name: 'Vui Tươi Rạng Rỡ', icon: '😊', desc: 'Khóe mắt cười híp và má hồng' },
+    { id: 'expr_cool', name: 'Nháy Mắt Tự Tin', icon: '😉', desc: 'Nháy một bên mắt cực ngầu' },
+    { id: 'expr_shock', name: 'Sốc Vì Gặp Bug', icon: '😲', desc: 'Mắt tròn xoe ngạc nhiên' },
+    { id: 'expr_chill', name: 'Thư Thái Lofi', icon: '😌', desc: 'Mắt khép hờ nhâm nhi cà phê' }
+  ],
+
+  inHandEquipments: [
+    { id: 'none', name: 'Tay Không', icon: '✕', desc: 'Không cầm đồ vật' },
+    { id: 'macbook_dev', name: 'MacBook Pro Dev', icon: '💻', desc: 'Mở máy gõ phím với màn hình phát sáng' },
+    { id: 'danang_salt_coffee', name: 'Ly Cà Phê Muối Đà Nẵng', icon: '☕', desc: 'Cầm ly cafe bốc khói nghi ngút' },
+    { id: 'golden_frog_plush', name: 'Gấu Bông Cóc Vàng', icon: '🐸', desc: 'Ôm gấu bông may mắn trước ngực' },
+    { id: 'football_ball', name: 'Quả Bóng Đá 11M', icon: '⚽', desc: 'Kẹp bóng bên hông sân cỏ' },
+    { id: 'basketball_ball', name: 'Quả Bóng Rổ FPTU', icon: '🏀', desc: 'Đập bóng nảy nhẹ trên sàn' },
+    { id: 'dever_flag', name: 'Cờ CLB FU-DEVER', icon: '🚩', desc: 'Cầm cán cờ phấp phới tự hào' }
+  ],
+
   outfits: [
     // 1. Học Đường & Đồng Phục FPTU / FU-DEVER
     { id: 'hoodie_fuda', name: 'Áo Hoodie FUDA Cam', type: 'hoodie', color: '#f26f21', collarColor: '#002147', desc: 'Màu cam nhiệt huyết biểu tượng trường FUDA' },
@@ -70,6 +106,7 @@ export const WARDROBE_CONFIG = {
     { id: 'dreadlocks', name: 'Tóc Dreadlocks Hip-Hop' },
     { id: 'wolf_cut', name: 'Tóc Wolf Cut Layered Bụi Bặm' },
     { id: 'buzz_cut', name: 'Tóc Đầu Đinh Huấn Luyện (Buzz Cut)' },
+    { id: 'bald_professor', name: 'Tóc Hói Giáo Sư / Senior Dev (Bald with Side Hair)' },
 
     // --- KIỂU TÓC NỮ (FEMALE HAIRSTYLES) ---
     { id: 'long', name: 'Tóc Dài Suôn Mượt Nữ Sinh' },
