@@ -9,16 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added — Reliable Daily Momentum
-- Thêm Daily Goal HUD gọn, responsive và truy cập được để chỉ ra mục tiêu tiếp theo, tiến độ rương ngày, trạng thái lưu local/tài khoản và thao tác retry.
-- Thêm behavioral E2E cho claim reward, reload, hydration tài khoản, offline retry, serialized sync, achievement và bố cục mobile.
-- Khởi tạo roadmap + project wiki cho chiến lược retention có metric và guardrail rõ ràng.
+---
+
+## [0.5.0] — 2026-09-10
+
+### Added — Social Features & Friend System
+- **Player Profile Modal**: Hồ sơ cá nhân hiển thị trang phục, kỷ lục minigame và danh sách thành tựu.
+- **2-Way Realtime Friend Request Handshake** (`FriendManager.js`): Lời mời kết bạn 2 chiều qua Socket.io; modal duyệt lời mời với nút Đồng Ý / Từ Chối.
+- **Bestie Streak** — chuỗi ngày tương tác liên tiếp giữa 2 người chơi, reset về 1 khi bị đứt quá 1 ngày.
+- **Buggy Pet Companion** — linh vật tiến hóa 4 cấp (`Trứng Ấp Ủ → Chibi → Kỹ Sư → Hoàng Gia`) theo streak, hiển thị follower trên bản đồ.
+- **Taskbar Friends Menu** — menu nổi trên thanh Footer truy cập nhanh danh sách bạn bè, tìm kiếm theo Player ID, direct chat.
+- **Private Direct Chat** — mở kênh chat riêng tư theo tên/ID mà không cần cùng phòng.
+
+### Added — Guest-to-Account Progression Merge (RET-008)
+- **`captureGuestSnapshot()`** trong `AuthService`: Chụp toàn bộ tiến trình Guest từ localStorage trước khi overwrite.
+- **`mergeGuestProgressToAccount()`**: Merge an toàn khi Guest đăng nhập/đăng ký — `MAX(points)`, `MAX(quest progress per quest)`, `Union(items, friends, rooms)`. Không cộng dồn điểm tránh farming.
+- Hook vào cả `login()`, `register()`, `loginWithGoogle()` — merge chỉ khi snapshot hợp lệ, sync best-effort không block flow đăng nhập.
+
+### Added — Privacy-safe Journey Telemetry (INS-001)
+- **`src/utils/Telemetry.js`**: Module offline-first, buffer localStorage tối đa 200 events, flush định kỳ 60s hoặc khi đầy lên `/api/telemetry/batch`. Whitelist cứng: chỉ `room_id`, `quest_id`, `action_type`, `minigame_type`, `score`, `is_guest` — nghiêm cấm lưu tên, email, IP, nội dung chat.
+- **`POST /api/telemetry/batch`** (`server/routes/telemetryRoutes.js`): Endpoint append-only JSONL, validate whitelist server-side, rate-limited 60 req/phút, không yêu cầu JWT.
+- **Wire vào game**: `world_entered` khi vào session, `room_visit` khi qua portal, `quest_claimed` khi nhận thưởng, `meaningful_action` khi tăng tiến trình quest.
+- **`scripts/heart_dashboard.js`**: Script Node.js đọc `telemetry_log.jsonl` và xuất báo cáo HEART baseline (Happiness, Engagement, Adoption, Retention, Task Success).
+
+### Added — WebRTC Voice Chat (Discord-style Sync Lounge)
+- **`VoiceService.js`**: WebRTC P2P Mesh với `RTCPeerConnection`, Socket.io signaling, Listen-Only fallback khi không có microphone.
+- Tự động theo dõi thay đổi quyền micro (PermissionStatus API), nâng cấp từ listen-only lên active khi được cấp quyền.
+- Phân biệt rõ `NotFoundError` (không có phần cứng) vs permission denial.
+
+### Added — Hall of Fame (SOC-001 partial)
+- 7 giải thưởng chính thức của CLB tích hợp vào slides Sảnh Alpha và Memory Room.
+- Canvas art Award Gallery với navigation buttons đã fix.
+
+### Added — Phase 1 Security Hardening
+- **Socket Rate Limiter** (`server/utils/rateLimiter.js`): Sliding-window per-event và cooldown limiter chống spam/DDoS cho mọi socket event.
+- **XSS Sanitizer** (`src/utils/sanitize.js`): `escapeHtml()`, `sanitizeName()`, `sanitizeChatMessage()` áp dụng cho mọi user input trước khi render vào DOM.
+- Auth Middleware và SocketHandler hardening chống injection và replay.
+
+### Added — Phase 1 Performance Optimization
+- **TilePool Object Pooling** (`src/utils/TilePool.js`): Pre-allocate 600 tile sprites, tái sử dụng khi chuyển phòng, triệt tiêu GC spike và micro-stutter.
+- RemotePlayer render optimization giảm tải CPU khi nhiều người chơi cùng phòng.
+
+### Added — Daily Momentum HUD (Retention Iteration 1)
+- **`DailyGoalHUD.js`**: HUD compact hiển thị mục tiêu tiếp theo, tiến độ rương ngày, trạng thái sync local/server và nút Retry khi mất mạng. Đầy đủ ARIA accessibility.
+- Behavioral E2E test suite (`retention-loop.spec.js`): claim, reload, hydration, offline retry, achievement, mobile layout.
 
 ### Fixed
 - Hợp nhất điểm, daily quest, achievement và authenticated profile sync theo local-first state path; batch sync được debounce, tuần tự hóa và phục hồi đầy đủ sau lỗi mạng.
 - Giữ explorer progress đơn điệu qua reload và chỉ khởi tạo daily session sau khi danh tính người chơi đã sẵn sàng.
 - Khôi phục trigger thật cho `speed_coder`, `striker`, `tech_pro`; Speed Code Duel không còn ghi nhầm tiến trình Pomodoro.
-- Sửa stress-test JavaScript, room IDs và summary teardown; đồng bộ copy 9 khu cùng version `v0.4.1`.
+- Sửa stress-test JavaScript, room IDs và summary teardown.
 
 ---
 
