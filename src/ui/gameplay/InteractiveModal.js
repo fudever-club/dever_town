@@ -969,12 +969,13 @@ export class InteractiveModal {
 
     if (runBtn) {
       runBtn.disabled = true;
-      runBtn.innerHTML = '⏳ Đang chạy...';
+      runBtn.textContent = 'Đang biên dịch & thực thi...';
     }
 
-    outputEl.textContent = `[${langDef.name}] Đang biên dịch & thực thi mã nguồn...\n`;
+    outputEl.textContent = `[${langDef.name}] Đang kết nối môi trường thực thi...\n`;
+    const startTime = performance.now();
 
-    // 1. JavaScript Engine (Chạy an toàn ngay trong browser)
+    // 1. JavaScript Engine (Chạy an toàn ngay trong browser 100% Offline)
     if (selectedLang === 'javascript') {
       const logs = [];
       const customConsole = {
@@ -985,82 +986,192 @@ export class InteractiveModal {
       };
 
       try {
-        const startTime = performance.now();
         const runFn = new Function('console', code);
         runFn(customConsole);
         const elapsed = (performance.now() - startTime).toFixed(1);
         const outText = logs.length > 0 ? logs.join('\n') : 'Chương trình thực thi thành công (Không có console output).';
-        outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Engine • ${elapsed}ms) ===\n${outText}`;
+        outputEl.textContent = `=== KẾT QUẢ THỰC THI (JavaScript Browser Engine • ${elapsed}ms) ===\n${outText}`;
       } catch (err) {
         outputEl.textContent = `Lỗi thực thi JavaScript: ${err.message}`;
       } finally {
         if (runBtn) {
           runBtn.disabled = false;
-          runBtn.innerHTML = 'Chạy Code &rtrif;';
+          runBtn.textContent = 'Chạy Code';
         }
       }
       return;
     }
 
-    // 2. Các ngôn ngữ khác (C, C++, Java, Pascal, Python, Go, Rust, C#, PHP) qua Wandbox Compiler Engine
+    // 2. Multi-Tier Runner cho các ngôn ngữ khác (Judge0 CE -> Paiza.io -> Wandbox)
     try {
-      const startTime = performance.now();
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25000);
+      let result = null;
+      let usedEngine = '';
 
-      const response = await fetch('https://wandbox.org/api/compile.json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          compiler: langDef.wandboxCompiler || 'cpython-3.12.7',
-          code: code
-        }),
-        signal: controller.signal
-      });
+      // Helper mã hóa Base64 an toàn cho Unicode tiếng Việt
+      const toBase64 = (str) => {
+        try {
+          return btoa(unescape(encodeURIComponent(str)));
+        } catch (e) {
+          return btoa(str);
+        }
+      };
 
-      clearTimeout(timeoutId);
+      const fromBase64 = (b64) => {
+        if (!b64) return '';
+        try {
+          return decodeURIComponent(escape(atob(b64)));
+        } catch (e) {
+          try {
+            return atob(b64);
+          } catch (e2) {
+            return b64;
+          }
+        }
+      };
+
+      // --- TẦNG 1: Judge0 CE Cloud Engine (Tốc độ cao, hỗ trợ CORS, độ trễ ~400ms) ---
+      if (langDef.judge0Id) {
+        try {
+          outputEl.textContent = `[${langDef.name}] Đang biên dịch qua Judge0 Cloud Engine...\n`;
+          const controller = new AbortController();
+          const tId = setTimeout(() => controller.abort(), 12000);
+
+          const b64Source = toBase64(code);
+          const jRes = await fetch('https://ce.judge0.com/submissions?base64_encoded=true&wait=true', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              source_code: b64Source,
+              language_id: langDef.judge0Id
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(tId);
+
+          if (jRes.ok) {
+            const jData = await jRes.json();
+            result = {
+              stdout: fromBase64(jData.stdout),
+              stderr: fromBase64(jData.stderr),
+              compileError: fromBase64(jData.compile_output),
+              status: jData.status?.description || 'Accepted'
+            };
+            usedEngine = 'Judge0 Cloud Engine';
+          }
+        } catch (jErr) {
+          console.warn('[CodeSandbox] Judge0 CE unavailable, trying fallback:', jErr.message);
+        }
+      }
+
+      // --- TẦNG 2: Paiza.io Cloud Runner (Dự phòng chất lượng cao khi Judge0 bận) ---
+      if (!result && langDef.paizaLang) {
+        try {
+          outputEl.textContent = `[${langDef.name}] Đang chuyển tiếp qua Paiza.io Runner...\n`;
+          const pCreate = await fetch('https://api.paiza.io/runners/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              source_code: code,
+              language: langDef.paizaLang,
+              longpoll: true,
+              api_key: 'guest'
+            })
+          });
+
+          if (pCreate.ok) {
+            const pData = await pCreate.json();
+            if (pData.id) {
+              let pStatus = pData.status;
+              for (let i = 0; i < 4; i++) {
+                if (pStatus === 'completed') break;
+                await new Promise(r => setTimeout(r, 600));
+                const sRes = await fetch(`https://api.paiza.io/runners/get_status?id=${pData.id}&api_key=guest`);
+                const sJson = await sRes.json();
+                pStatus = sJson.status;
+              }
+
+              const dRes = await fetch(`https://api.paiza.io/runners/get_details?id=${pData.id}&api_key=guest`);
+              if (dRes.ok) {
+                const detail = await dRes.json();
+                result = {
+                  stdout: detail.stdout || '',
+                  stderr: detail.stderr || '',
+                  compileError: detail.build_stderr || '',
+                  status: detail.result === 'success' ? 'Accepted' : (detail.result || 'Done')
+                };
+                usedEngine = 'Paiza.io Runner';
+              }
+            }
+          }
+        } catch (pErr) {
+          console.warn('[CodeSandbox] Paiza.io unavailable, trying Wandbox:', pErr.message);
+        }
+      }
+
+      // --- TẦNG 3: Wandbox Engine (Dự phòng cấp 3) ---
+      if (!result && langDef.wandboxCompiler) {
+        try {
+          outputEl.textContent = `[${langDef.name}] Đang thử qua Wandbox Engine...\n`;
+          const controller = new AbortController();
+          const tId = setTimeout(() => controller.abort(), 12000);
+
+          const wRes = await fetch('https://wandbox.org/api/compile.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              compiler: langDef.wandboxCompiler,
+              code: code
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(tId);
+
+          if (wRes.ok) {
+            const wData = await wRes.json();
+            result = {
+              stdout: wData.program_output || '',
+              stderr: wData.program_error || '',
+              compileError: wData.compiler_error || '',
+              status: wData.status === '0' ? 'Accepted' : `Exit Code ${wData.status}`
+            };
+            usedEngine = 'Wandbox Engine';
+          }
+        } catch (wErr) {
+          console.warn('[CodeSandbox] Wandbox unavailable:', wErr.message);
+        }
+      }
+
       const elapsed = (performance.now() - startTime).toFixed(0);
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      if (result) {
+        let displayText = `=== KẾT QUẢ THỰC THI (${langDef.name} • ${usedEngine} • ${elapsed}ms) ===\nTrạng thái: ${result.status}\n\n`;
 
-      const result = await response.json();
-      const status = result.status; // "0" is success
-      const stdout = result.program_output || '';
-      const stderr = result.program_error || '';
-      const compilerError = result.compiler_error || '';
-      const compilerMsg = result.compiler_message || '';
+        if (result.compileError) {
+          displayText += `[Lỗi Biên Dịch - Compiler Error]:\n${result.compileError}\n\n`;
+        }
 
-      let displayText = `=== KẾT QUẢ BIÊN DỊCH & THỰC THI (${langDef.name} • ${elapsed}ms | Status: ${status === '0' ? 'Thành công (0)' : 'Lỗi (' + status + ')'}) ===\n`;
+        if (result.stdout) {
+          displayText += `[Output]:\n${result.stdout}\n`;
+        }
 
-      if (compilerError) {
-        displayText += `LỖI BIÊN DỊCH (Compiler Error):\n${compilerError}\n`;
-      } else if (compilerMsg && compilerMsg.includes('warning')) {
-        displayText += `CẢNH BÁO BIÊN DỊCH:\n${compilerMsg}\n\n`;
-      }
+        if (result.stderr) {
+          displayText += `\n[Runtime Stderr / Cảnh Báo]:\n${result.stderr}\n`;
+        }
 
-      if (stdout) {
-        displayText += stdout;
-      }
-      if (stderr) {
-        displayText += (stdout ? '\n\n' : '') + `RUNTIME STDERR:\n${stderr}`;
-      }
-      if (!stdout && !stderr && !compilerError) {
-        displayText += 'Chương trình thực thi hoàn tất không có output.';
-      }
+        if (!result.stdout && !result.stderr && !result.compileError) {
+          displayText += 'Chương trình thực thi hoàn tất thành công (Không có output ra màn hình).';
+        }
 
-      outputEl.textContent = displayText;
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        outputEl.textContent = `⏱️ Quá thời gian chờ (Timeout 25s): Trình biên dịch ${langDef.name} mất quá nhiều thời gian để phản hồi.`;
+        outputEl.textContent = displayText;
       } else {
-        outputEl.textContent = `⚠️ Lỗi kết nối máy chủ biên dịch (${langDef.name}): ${err.message}\n💡 Mẹo: Vui lòng kiểm tra kết nối mạng Internet. Đối với JavaScript, bạn có thể chạy Offline 100%.`;
+        throw new Error('Tất cả máy chủ biên dịch trực tuyến (Judge0, Paiza, Wandbox) đều đang quá tải hoặc không thể kết nối. Vui lòng thử lại sau giây lát.');
       }
+    } catch (err) {
+      outputEl.textContent = `[Lỗi Biên Dịch & Thực Thi]:\n${err.message}\n\nGợi ý: Kiểm tra kết nối Internet. Riêng với JavaScript, bạn có thể chạy Offline 100% không cần mạng.`;
     } finally {
       if (runBtn) {
         runBtn.disabled = false;
-        runBtn.innerHTML = 'Chạy Code &rtrif;';
+        runBtn.textContent = 'Chạy Code';
       }
     }
   }
