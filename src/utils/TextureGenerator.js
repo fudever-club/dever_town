@@ -108,67 +108,119 @@ export class TextureGenerator {
   }
 
   static drawWall(ctx, x, y, size) {
+    // Oblique 2.5D Wall (Cabinet Projection)
+    // 1. Top face (mặt trên tường nhìn nghiêng từ trên xuống - 10px)
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(x, y, size, 10);
+    // Gờ mép đỉnh sáng highlight
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x, y, size, 2);
+    // Rãnh bóng đổ ngăn cách mặt đỉnh và mặt đứng
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x, y + 9, size, 1);
+
+    // 2. Front face (mặt đứng chính diện - 22px)
     ctx.fillStyle = '#475569';
-    ctx.fillRect(x, y, size, size);
+    ctx.fillRect(x, y + 10, size, size - 10);
+
+    // Họa tiết khối gạch slate 3D tinh xảo
     ctx.fillStyle = '#334155';
-    for (let row = 0; row < size; row += 8) {
+    for (let row = 10; row < size; row += 7) {
       ctx.fillRect(x, y + row, size, 1);
-      const offset = (row / 8) % 2 === 0 ? 0 : 8;
+      const offset = (Math.floor(row / 7) % 2 === 0) ? 0 : 8;
       for (let col = offset; col < size; col += 16) {
-        ctx.fillRect(x + col, y + row, 1, 8);
+        ctx.fillRect(x + col, y + row, 1, 7);
       }
     }
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(x, y, size, 2);
+
+    // 3. Chân tường (Baseboard / Skirting)
     ctx.fillStyle = '#1e293b';
     ctx.fillRect(x, y + size - 2, size, 2);
   }
 
   static drawBookshelf(ctx, x, y, size) {
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#451a03';
-    ctx.fillRect(x + 2, y + 2, size - 4, 8);
-    ctx.fillRect(x + 2, y + 12, size - 4, 8);
-    ctx.fillRect(x + 2, y + 22, size - 4, 8);
+    // Oblique 2.5D Bookshelf
+    // 1. Nóc kệ sách (Top face)
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 1, y + 2, size - 2, 6);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 1, y + 2, size - 2, 2); // Highlight viền đỉnh
 
+    // 2. Thân tủ và sườn bên (bóng cạnh phải)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 1, y + 8, size - 2, size - 10);
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(x + size - 3, y + 8, 2, size - 10); // Cạnh sườn đổ bóng
+
+    // 3. Ba ngăn kệ khoét sâu vào trong
+    const shelfY = [9, 17, 25];
     const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
-    for (let shelf = 0; shelf < 3; shelf++) {
-      const sy = y + 2 + shelf * 10;
+    shelfY.forEach((sy, sIdx) => {
+      // Hốc kệ tối màu tạo chiều sâu
+      ctx.fillStyle = '#291102';
+      ctx.fillRect(x + 3, y + sy, size - 7, 7);
+
+      // Các cuốn sách xếp ngay ngắn
       for (let b = 0; b < 5; b++) {
-        ctx.fillStyle = colors[(shelf * 3 + b) % colors.length];
-        ctx.fillRect(x + 4 + b * 5, sy + 1, 4, 7);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + 5 + b * 5, sy + 3, 2, 1);
+        ctx.fillStyle = colors[(sIdx * 3 + b) % colors.length];
+        ctx.fillRect(x + 4 + b * 5, y + sy + 1, 4, 6);
+        // Gáy sách phản quang highlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillRect(x + 5 + b * 5, y + sy + 2, 2, 1);
       }
-    }
+
+      // Thanh đợt gỗ đỡ kệ
+      ctx.fillStyle = '#92400e';
+      ctx.fillRect(x + 2, y + sy + 6, size - 5, 1);
+    });
+
+    // Chân kệ sách chạm sàn
+    ctx.fillStyle = '#291102';
+    ctx.fillRect(x + 2, y + size - 2, 4, 2);
+    ctx.fillRect(x + size - 6, y + size - 2, 4, 2);
   }
 
   static drawDeskWithLaptop(ctx, x, y, size) {
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
+    // Oblique 2.5D Desk with Laptop
+    // 1. Mặt trên bàn làm việc (Top surface - góc nhìn chếch 2.5D)
+    ctx.fillStyle = '#a16207';
+    ctx.fillRect(x + 2, y + 4, size - 4, 12);
+    // Vệt highlight vân gỗ sáng trên mặt bàn
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x + 3, y + 5, size - 6, 2);
+
+    // 2. Mặt trước gờ bàn (Front edge)
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 4, y + 4, size - 8, size - 8);
+    ctx.fillRect(x + 2, y + 16, size - 4, 10);
+    // Bóng cạnh phải bàn
+    ctx.fillStyle = '#3d1a08';
+    ctx.fillRect(x + size - 4, y + 16, 2, 10);
 
-    // Laptop
+    // 3. Chân bàn gỗ 2.5D
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(x + 4, y + 26, 3, 5);
+    ctx.fillRect(x + size - 7, y + 26, 3, 5);
+
+    // 4. Laptop trên mặt bàn (2.5D)
+    // Màn hình mở
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 10, y + 8, 12, 10);
+    ctx.fillRect(x + 10, y + 6, 12, 6);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 11, y + 9, 10, 8);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + 13, y + 11, 4, 1);
+    ctx.fillRect(x + 11, y + 7, 10, 4);
+    // Bàn phím gập
     ctx.fillStyle = '#475569';
-    ctx.fillRect(x + 8, y + 19, 16, 4);
+    ctx.fillRect(x + 9, y + 12, 14, 3);
     ctx.fillStyle = '#64748b';
-    ctx.fillRect(x + 12, y + 20, 8, 2);
+    ctx.fillRect(x + 13, y + 13, 6, 1);
 
-    // Cốc cà phê
+    // 5. Cốc cà phê DEVER
     ctx.fillStyle = '#f87171';
-    ctx.fillRect(x + 24, y + 8, 4, 5);
+    ctx.fillRect(x + 24, y + 7, 4, 5);
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + 25, y + 9, 2, 3);
+    ctx.fillRect(x + 25, y + 8, 2, 2);
+    // Quai cốc
+    ctx.fillStyle = '#f87171';
+    ctx.fillRect(x + 28, y + 8, 1, 3);
   }
 
   static drawCobblestone(ctx, x, y, size) {
@@ -220,20 +272,36 @@ export class TextureGenerator {
   }
 
   static drawServerRack(ctx, x, y, size) {
+    // Oblique 2.5D Server Rack
+    // 1. Nóc server rack (Top face nghiêng)
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 2, y + 2, size - 4, 6);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 2, y + 2, size - 4, 2);
+
+    // 2. Thân rack (Front face)
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
+    ctx.fillRect(x + 2, y + 8, size - 4, size - 10);
+    // Rãnh sườn bên phải đổ bóng
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(x + size - 4, y + 8, 2, size - 10);
+
+    // 3. Khay máy chủ 1U - 4U
     for (let u = 0; u < 4; u++) {
-      const uy = y + 4 + u * 6;
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x + 4, uy, size - 8, 4);
-      ctx.fillStyle = u % 2 === 0 ? '#22c55e' : '#38bdf8';
+      const uy = y + 9 + u * 5;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x + 4, uy, size - 9, 4);
+
+      // Đèn tín hiệu nháy LED
+      ctx.fillStyle = (u % 2 === 0) ? '#22c55e' : '#38bdf8';
       ctx.fillRect(x + 6, uy + 1, 2, 2);
       ctx.fillStyle = '#ef4444';
       ctx.fillRect(x + 10, uy + 1, 2, 2);
-      ctx.fillStyle = '#e2e8f0';
-      ctx.fillRect(x + 14, uy + 1, 10, 1);
+
+      // Khe tản nhiệt
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(x + 14, uy + 1, 9, 1);
+      ctx.fillRect(x + 14, uy + 2, 9, 1);
     }
   }
 
@@ -291,20 +359,42 @@ export class TextureGenerator {
   }
 
   static drawWhiteboard(ctx, x, y, size) {
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(x, y, size, size);
+    // Oblique 2.5D Whiteboard
+    // 1. Khung nhôm đỉnh nghiêng
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 3, y + 2, size - 6, 3);
+
+    // 2. Mặt bảng viết melamine trắng
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(x + 2, y + 2, size - 4, size - 6);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(x + 4, y + 4, size - 8, 1);
+    ctx.fillRect(x + 3, y + 5, size - 6, 18);
+    // Bóng đổ gờ khung trên
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 4, y + 5, size - 8, 2);
+
+    // Nét vẽ / sơ đồ trên bảng
     ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(x + 4, y + 8, 10, 2);
+    ctx.fillRect(x + 6, y + 9, 8, 2);
     ctx.fillStyle = '#ef4444';
-    ctx.fillRect(x + 16, y + 8, 8, 2);
+    ctx.fillRect(x + 16, y + 9, 7, 2);
     ctx.fillStyle = '#10b981';
-    ctx.fillRect(x + 4, y + 14, 18, 2);
+    ctx.fillRect(x + 6, y + 14, 15, 2);
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillRect(x + 8, y + 18, 6, 2);
+
+    // 3. Khay đựng bút nhôm chìa ra trước
     ctx.fillStyle = '#64748b';
-    ctx.fillRect(x + 2, y + size - 4, size - 4, 2);
+    ctx.fillRect(x + 2, y + 23, size - 4, 2);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 6, y + 22, 3, 1);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 11, y + 22, 3, 1);
+
+    // 4. Chân đế chữ A kim loại 2.5D
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 5, y + 25, 2, 6);
+    ctx.fillRect(x + size - 7, y + 25, 2, 6);
+    ctx.fillRect(x + 3, y + size - 2, 6, 2);
+    ctx.fillRect(x + size - 9, y + size - 2, 6, 2);
   }
 
   static drawPottedPlant(ctx, x, y, size) {
@@ -324,22 +414,42 @@ export class TextureGenerator {
   }
 
   static drawCoffeeBar(ctx, x, y, size) {
-    ctx.fillStyle = '#451a03';
-    ctx.fillRect(x, y, size, size);
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(x + 6, y + 6, 12, 14);
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(x + 8, y + 8, 2, 2);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(x + 12, y + 8, 2, 2);
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(x + 6, y + 14, 12, 4);
+    // Oblique 2.5D Coffee Bar Counter
+    // 1. Mặt quầy đá cẩm thạch (Countertop - góc nhìn nghiêng)
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 1, y + 4, size - 2, 10);
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(x + 22, y + 12, 5, 8);
+    ctx.fillRect(x + 2, y + 5, size - 4, 2); // Highlight bóng mặt đá
+
+    // 2. Thân quầy bar ốp nan gỗ xẻ sọc dọc sang trọng
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 1, y + 14, size - 2, size - 15);
+    // Nan gỗ dọc
+    ctx.fillStyle = '#451a03';
+    for (let gx = 3; gx < size - 3; gx += 4) {
+      ctx.fillRect(x + gx, y + 14, 1, size - 15);
+    }
+    // Gờ nẹp chân quầy
+    ctx.fillStyle = '#291102';
+    ctx.fillRect(x + 1, y + size - 2, size - 2, 2);
+
+    // 3. Máy pha cafe Espresso kim loại trên mặt bàn
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 5, y + 5, 10, 8);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 6, y + 6, 8, 4);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 7, y + 7, 2, 2);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 11, y + 7, 2, 2);
+
+    // 4. Cốc cafe takeaway & ly thủy tinh
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 20, y + 8, 4, 6);
     ctx.fillStyle = '#10b981';
-    ctx.fillRect(x + 22, y + 15, 5, 3);
+    ctx.fillRect(x + 20, y + 10, 4, 2); // Logo xanh FUDA
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 25, y + 7, 3, 7);
   }
 
   static drawGlassWall(ctx, x, y, size) {

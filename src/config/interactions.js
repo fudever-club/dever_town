@@ -27,6 +27,8 @@ export const INTERACTION_PRESETS = {
         id: 'javascript',
         name: 'JavaScript (Node.js)',
         badge: 'JS',
+        judge0Id: 102,
+        paizaLang: 'javascript',
         wandboxCompiler: 'nodejs-20.17.0',
         sample: `// FU-DEVER Code Sandbox - JavaScript
 const club = {
@@ -47,6 +49,8 @@ console.log("Slogan:", club.slogan);`
         id: 'python',
         name: 'Python 3',
         badge: 'Python',
+        judge0Id: 100,
+        paizaLang: 'python3',
         wandboxCompiler: 'cpython-3.12.7',
         sample: `# FU-DEVER Code Sandbox - Python 3
 club = {
@@ -67,6 +71,8 @@ print(f"Tôn chỉ hoạt động: {club['slogan']}")`
         id: 'c',
         name: 'C (GCC)',
         badge: 'C',
+        judge0Id: 103,
+        paizaLang: 'c',
         wandboxCompiler: 'gcc-13.2.0-c',
         sample: `// FU-DEVER Code Sandbox - Ngôn ngữ C
 #include <stdio.h>
@@ -85,6 +91,8 @@ int main() {
         id: 'cpp',
         name: 'C++ (G++)',
         badge: 'C++',
+        judge0Id: 105,
+        paizaLang: 'cpp',
         wandboxCompiler: 'gcc-13.2.0',
         sample: `// FU-DEVER Code Sandbox - C++ (ICPC & Competitive Programming)
 #include <iostream>
@@ -109,6 +117,8 @@ int main() {
         id: 'java',
         name: 'Java (OpenJDK)',
         badge: 'Java',
+        judge0Id: 91,
+        paizaLang: 'java',
         wandboxCompiler: 'openjdk-jdk-22+36',
         sample: `// FU-DEVER Code Sandbox - Java (SWE201c & OOP)
 class Main {
@@ -124,6 +134,8 @@ class Main {
         id: 'pascal',
         name: 'Pascal (Free Pascal)',
         badge: 'Pascal',
+        judge0Id: 67,
+        paizaLang: null,
         wandboxCompiler: 'fpc-3.2.2',
         sample: `// FU-DEVER Code Sandbox - Pascal (Free Pascal Compiler)
 program FUDeverPascal;
@@ -140,6 +152,8 @@ end.`
         id: 'go',
         name: 'Go (Golang)',
         badge: 'Go',
+        judge0Id: 107,
+        paizaLang: 'go',
         wandboxCompiler: 'go-1.23.2',
         sample: `// FU-DEVER Code Sandbox - Go
 package main
@@ -156,6 +170,8 @@ func main() {
         id: 'rust',
         name: 'Rust',
         badge: 'Rust',
+        judge0Id: 108,
+        paizaLang: 'rust',
         wandboxCompiler: 'rust-1.82.0',
         sample: `// FU-DEVER Code Sandbox - Rust
 fn main() {
@@ -168,6 +184,8 @@ fn main() {
         id: 'csharp',
         name: 'C# (.NET / Mono)',
         badge: 'C#',
+        judge0Id: 51,
+        paizaLang: 'csharp',
         wandboxCompiler: 'mono-6.12.0.199',
         sample: `// FU-DEVER Code Sandbox - C#
 using System;
@@ -184,6 +202,8 @@ class Program {
         id: 'php',
         name: 'PHP',
         badge: 'PHP',
+        judge0Id: 98,
+        paizaLang: 'php',
         wandboxCompiler: 'php-8.3.12',
         sample: `<?php
 // FU-DEVER Code Sandbox - PHP

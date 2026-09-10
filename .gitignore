@@ -20,4 +20,4 @@ server/data/game_scores.json
 *.sw?
 playwright-report/
 test-results/
-
+server/data/telemetry_log.jsonl

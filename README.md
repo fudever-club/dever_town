@@ -8,7 +8,7 @@
 
 ### Thế Giới Pixel 2D Multiplayer của CLB FU-DEVER · FPT University Đà Nẵng
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-f26f21.svg?style=for-the-badge)](./LICENSE)
+[![Status](https://img.shields.io/badge/Project-FU--DEVER%20Exclusive-f26f21.svg?style=for-the-badge)](https://www.fudever.com/)
 [![Version](https://img.shields.io/badge/version-0.4.1-0066CC.svg?style=for-the-badge)](./package.json)
 [![Phaser](https://img.shields.io/badge/Phaser-3.88-22c55e.svg?style=for-the-badge)](https://phaser.io)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
@@ -281,54 +281,28 @@ DEVER_TOWN/
 
 ---
 
-## 🚀 Cài Đặt & Chạy Thử (Local Development)
+## 💡 Nguồn Cảm Hứng & Tri Ân (Inspirations & Credits)
 
-### Yêu Cầu
-- **Node.js** >= 18.0.0 &nbsp;·&nbsp; **npm** >= 9.0.0
+DEVER TOWN là dự án sinh thái kỹ thuật số nội bộ, phi thương mại phục vụ sinh viên và thành viên CLB Lập trình FU-DEVER. Dự án được phát triển from scratch dựa trên nguồn cảm hứng từ các tựa game và nền tảng kinh điển:
 
-### Khởi Chạy Nhanh
-```bash
-# 1. Clone repository
-git clone https://github.com/huanight19RaH/DEVER_TOWN.git
-cd DEVER_TOWN
+- **Gather.town** — Cảm hứng về mô hình không gian số 2D tương tác cộng đồng, hội họp và kết nối trực tuyến theo khoảng cách lân cận (*proximity video/voice interaction*).
+- **Pokémon GBA Series (Game Freak / Nintendo)** — Cảm hứng về phong cách nghệ thuật Pixel Art Top-down overworld, cơ chế di chuyển theo lưới ô vuông và các hiệu ứng tương tác sinh động với môi trường.
+- **Stardew Valley (ConcernedApe)** — Cảm hứng về phối cảnh Oblique 2.5D, sắp xếp chiều sâu layer hiển thị (*Y-sort depth*), không gian ấm cúng và trải nghiệm đa tầng.
+- **Phaser 3 Game Engine (Photon Storm)** — Nền tảng game engine 2D mã nguồn mở mạnh mẽ vận hành thế giới WebGL / Canvas của DEVER TOWN.
 
-# 2. Cài đặt dependencies
-npm install
-
-# 3. Tạo file cấu hình môi trường
-cp .env.example .env
-
-# 4. Khởi chạy đồng thời cả Frontend và Backend
-npm run dev:all
-```
-Mở trình duyệt tại **http://localhost:3000** để tham gia thế giới DEVER TOWN! 🎮
+> ⚖️ **Tuyên bố sở hữu trí tuệ & miễn trừ trách nhiệm**: Mọi thương hiệu, tên thương mại, phong cách nghệ thuật gợi nhớ và quyền sở hữu trí tuệ của các tựa game/nền tảng kể trên đều thuộc quyền sở hữu của các tác giả và đơn vị phát hành tương ứng. DEVER TOWN được xây dựng hoàn toàn từ đầu bởi đội ngũ kỹ thuật CLB FU-DEVER phục vụ học thuật, rèn luyện kỹ năng và phong trào sinh viên Đại học FPT Đà Nẵng.
 
 ---
 
-## 🌐 Triển Khai Online
+## 📜 Bản Quyền & Quyền Sở Hữu Độc Quyền
 
-> Xem hướng dẫn chi tiết từng bước: [`DEPLOYMENT_GUIDE_3_HUONG.md`](./docs/deployment/DEPLOYMENT_GUIDE_3_HUONG.md)
+Dự án là sản phẩm độc quyền được sáng lập, sở hữu và phát triển nội bộ bởi tác giả và **CLB Lập trình FU-DEVER · FPT University Đà Nẵng (FUDA)**.
 
-1. **Database**: Tạo PostgreSQL database miễn phí trên [Supabase](https://supabase.com).
-2. **Backend**: Triển khai lên [Render.com](https://render.com) (Node.js Service, `npm run server`).
-3. **Frontend**: Triển khai lên [Vercel](https://vercel.com) với biến môi trường `VITE_SERVER_URL`.
-
----
-
-## 🤝 Đóng Góp & Quy Chuẩn (Zero-Regression)
-
-Mọi đóng góp từ cộng đồng đều được hoan nghênh! Vui lòng tuân thủ quy chuẩn trong [`AGENTS.md`](./AGENTS.md):
-- **Zero-Regression & Scope Isolation**: Chỉ chỉnh sửa đúng phạm vi mục tiêu, không làm ảnh hưởng các map layout, colliders, spawn points và portals của 8 phòng đang hoạt động.
-- **Git Commit Author**: Gắn cờ author khi commit: `--author="RaH11 <hungnguyen.190206@gmail.com>"`.
-
----
-
-## 📜 Giấy Phép & Bản Quyền
-
-Dự án được phát hành dưới giấy phép **[MIT License](./LICENSE)**.
+- Toàn bộ mã nguồn, thiết kế đồ họa pixel, bản quyền phân khu và tài nguyên dự án thuộc quyền quản trị nội bộ của CLB FU-DEVER.
+- Dự án không tiếp nhận đóng góp bên ngoài (Closed for external contributions & PRs). Mọi quyền sửa đổi, nâng cấp và phát hành thuộc độc quyền của tác giả và ban kỹ thuật CLB.
 
 © 2026 **FU-DEVER Club · FPT University Đà Nẵng (FUDA)**  
-Tác giả: [RaH11 (Nguyen Thai Hung)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
+Tác giả & Trưởng dự án: [RaH11 (Nguyen Thai Hung)](https://github.com/huanight19RaH) · `hungnguyen.190206@gmail.com`
 
 <div align="center">
 

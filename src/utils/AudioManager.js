@@ -103,13 +103,14 @@ class AudioManager {
   }
 
   /**
-   * Tiếng bước chân khi di chuyển (gọi định kỳ mỗi ~280ms)
+   * Tiếng bước chân khi di chuyển theo bề mặt (cỏ, gỗ, đá, cyber)
+   * @param {string} surfaceType 'grass' | 'wood' | 'stone' | 'cyber'
    */
-  playFootstep() {
+  playFootstep(surfaceType = 'stone') {
     if (this.isMuted || !this.sfxEnabled || !this.footstepsEnabled) return;
 
     const now = performance.now();
-    if (now - this.lastFootstepTime < 240) return;
+    if (now - this.lastFootstepTime < 230) return;
     this.lastFootstepTime = now;
 
     const ctx = this.getAudioContext();
@@ -119,14 +120,44 @@ class AudioManager {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      osc.type = 'triangle';
-      const freq = 90 + Math.random() * 30;
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.06);
+      let baseFreq = 90;
+      let duration = 0.06;
+      let oscType = 'triangle';
+      let vol = this.masterVolume * 0.15;
 
-      const vol = this.masterVolume * 0.15;
+      switch (surfaceType) {
+        case 'grass':
+          oscType = 'sine';
+          baseFreq = 75 + Math.random() * 25;
+          duration = 0.08;
+          vol *= 0.85;
+          break;
+        case 'wood':
+          oscType = 'triangle';
+          baseFreq = 135 + Math.random() * 25;
+          duration = 0.055;
+          vol *= 1.1;
+          break;
+        case 'cyber':
+          oscType = 'sine';
+          baseFreq = 220 + Math.random() * 40;
+          duration = 0.05;
+          vol *= 0.9;
+          break;
+        case 'stone':
+        default:
+          oscType = 'triangle';
+          baseFreq = 90 + Math.random() * 30;
+          duration = 0.06;
+          break;
+      }
+
+      osc.type = oscType;
+      osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + duration);
+
       gain.gain.setValueAtTime(vol, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -139,7 +170,7 @@ class AudioManager {
       };
 
       osc.start();
-      osc.stop(ctx.currentTime + 0.06);
+      osc.stop(ctx.currentTime + duration);
     } catch (e) {
       // Ignore audio error
     }

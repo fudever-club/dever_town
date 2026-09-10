@@ -115,8 +115,184 @@ class AuthService {
     }
   }
 
+  captureGuestSnapshot() {
+    if (this.token) return null;
+
+    const parseJSON = (key, defaultVal) => {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : defaultVal;
+      } catch (e) {
+        return defaultVal;
+      }
+    };
+
+    const points = Number(localStorage.getItem('dever_points') || 0);
+    const questsState = parseJSON('dever_quests_state', null);
+    const questDate = localStorage.getItem('dever_quest_date') || null;
+    const questMilestone = Number(localStorage.getItem('dever_quest_milestone') || 0);
+    const wardrobeConfig = parseJSON('dever_wardrobe_config', null);
+    const inventoryItems = parseJSON('dever_inventory_items', null);
+    const friendsData = parseJSON('dever_friends_data', null);
+    const exploredRooms = parseJSON('dever_explored_rooms', null);
+
+    if (!points && !questsState && !inventoryItems && !wardrobeConfig && !friendsData && !exploredRooms) {
+      return null;
+    }
+
+    return { points, questsState, questDate, questMilestone, wardrobeConfig, inventoryItems, friendsData, exploredRooms };
+  }
+
+  async mergeGuestProgressToAccount(snapshot, accountUser) {
+    if (!snapshot || !accountUser) return;
+
+    let mergedStats = { points: 0, quests: 0, items: 0 };
+    const syncPayload = {};
+    const oldPoints = accountUser.dever_points || 0;
+
+    if (snapshot.points > oldPoints) {
+      accountUser.dever_points = snapshot.points;
+      localStorage.setItem('dever_points', snapshot.points.toString());
+      syncPayload.dever_points = snapshot.points;
+      mergedStats.points = snapshot.points;
+    } else {
+      mergedStats.points = oldPoints;
+    }
+
+    if (snapshot.questsState) {
+      let currentQuests = accountUser.quests_state;
+      if (typeof currentQuests === 'string') {
+        try { currentQuests = JSON.parse(currentQuests); } catch(e) { currentQuests = {}; }
+      }
+      currentQuests = currentQuests || {};
+      let updatedQuests = false;
+      let questCount = 0;
+
+      for (const [questId, guestProgress] of Object.entries(snapshot.questsState)) {
+        const accountProgress = currentQuests[questId] || 0;
+        if (guestProgress > accountProgress) {
+          currentQuests[questId] = guestProgress;
+          updatedQuests = true;
+          questCount++;
+        }
+      }
+      
+      if (updatedQuests) {
+        accountUser.quests_state = currentQuests;
+        localStorage.setItem('dever_quests_state', JSON.stringify(currentQuests));
+        syncPayload.quests_state = currentQuests;
+        mergedStats.quests = questCount;
+        
+        if (snapshot.questDate) {
+          accountUser.quest_date = snapshot.questDate;
+          localStorage.setItem('dever_quest_date', snapshot.questDate);
+          syncPayload.quest_date = snapshot.questDate;
+        }
+        if (snapshot.questMilestone !== undefined) {
+          accountUser.quest_milestone = snapshot.questMilestone;
+          localStorage.setItem('dever_quest_milestone', snapshot.questMilestone.toString());
+          syncPayload.quest_milestone = snapshot.questMilestone;
+        }
+      }
+    }
+
+    if (snapshot.wardrobeConfig && (!accountUser.wardrobe_config || Object.keys(accountUser.wardrobe_config).length === 0)) {
+      accountUser.wardrobe_config = snapshot.wardrobeConfig;
+      localStorage.setItem('dever_wardrobe_config', JSON.stringify(snapshot.wardrobeConfig));
+      window.__currentWardrobe = snapshot.wardrobeConfig;
+      syncPayload.wardrobe_config = snapshot.wardrobeConfig;
+    }
+
+    if (snapshot.inventoryItems && Array.isArray(snapshot.inventoryItems)) {
+      let currentItems = accountUser.inventory_items;
+      if (typeof currentItems === 'string') {
+        try { currentItems = JSON.parse(currentItems); } catch(e) { currentItems = []; }
+      }
+      currentItems = currentItems || [];
+      if (!Array.isArray(currentItems)) currentItems = [];
+
+      let newItemsCount = 0;
+      const accountItemIds = new Set(currentItems.map(item => item.id || item));
+      
+      for (const guestItem of snapshot.inventoryItems) {
+        const itemId = guestItem.id || guestItem;
+        if (!accountItemIds.has(itemId)) {
+          currentItems.push(guestItem);
+          accountItemIds.add(itemId);
+          newItemsCount++;
+        }
+      }
+
+      if (newItemsCount > 0) {
+        accountUser.inventory_items = currentItems;
+        localStorage.setItem('dever_inventory_items', JSON.stringify(currentItems));
+        syncPayload.inventory_items = currentItems;
+        mergedStats.items = newItemsCount;
+      }
+    }
+
+    if (snapshot.friendsData && Array.isArray(snapshot.friendsData)) {
+      let currentFriends = accountUser.friends_data;
+      if (typeof currentFriends === 'string') {
+        try { currentFriends = JSON.parse(currentFriends); } catch(e) { currentFriends = []; }
+      }
+      currentFriends = currentFriends || [];
+      if (!Array.isArray(currentFriends)) currentFriends = [];
+
+      let newFriends = 0;
+      const accountFriendIds = new Set(currentFriends.map(f => f.id));
+      
+      for (const guestFriend of snapshot.friendsData) {
+        if (guestFriend.id && !accountFriendIds.has(guestFriend.id)) {
+          currentFriends.push(guestFriend);
+          accountFriendIds.add(guestFriend.id);
+          newFriends++;
+        }
+      }
+
+      if (newFriends > 0) {
+        accountUser.friends_data = currentFriends;
+        localStorage.setItem('dever_friends_data', JSON.stringify(currentFriends));
+        syncPayload.friends_data = currentFriends;
+      }
+    }
+
+    if (snapshot.exploredRooms && Array.isArray(snapshot.exploredRooms)) {
+      let currentRooms = accountUser.explored_rooms;
+      if (typeof currentRooms === 'string') {
+        try { currentRooms = JSON.parse(currentRooms); } catch(e) { currentRooms = []; }
+      }
+      currentRooms = currentRooms || [];
+      if (!Array.isArray(currentRooms)) currentRooms = [];
+
+      let newRooms = 0;
+      const accountRoomIds = new Set(currentRooms);
+      
+      for (const guestRoom of snapshot.exploredRooms) {
+        if (!accountRoomIds.has(guestRoom)) {
+          currentRooms.push(guestRoom);
+          accountRoomIds.add(guestRoom);
+          newRooms++;
+        }
+      }
+
+      if (newRooms > 0) {
+        accountUser.explored_rooms = currentRooms;
+        localStorage.setItem('dever_explored_rooms', JSON.stringify(currentRooms));
+        syncPayload.explored_rooms = currentRooms;
+      }
+    }
+
+    console.log(`[GuestMerge] Merging guest progress: { points: ${oldPoints} \u2192 ${mergedStats.points}, quests: ${mergedStats.quests}, items: ${mergedStats.items} }`);
+
+    if (Object.keys(syncPayload).length > 0) {
+      this.syncFullProfile(syncPayload).catch(e => console.warn('[GuestMerge] Sync failed', e));
+    }
+  }
+
   async register({ email, password, displayName, avatarId }) {
     try {
+      const guestSnapshot = this.captureGuestSnapshot();
       const res = await fetch(`${this.getBaseUrl()}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -129,6 +305,9 @@ class AuthService {
       }
 
       this.saveSession(data.token, data.user);
+      if (guestSnapshot) {
+        await this.mergeGuestProgressToAccount(guestSnapshot, this.user);
+      }
       return data.user;
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
@@ -140,6 +319,7 @@ class AuthService {
 
   async login({ email, password }) {
     try {
+      const guestSnapshot = this.captureGuestSnapshot();
       const res = await fetch(`${this.getBaseUrl()}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -152,6 +332,9 @@ class AuthService {
       }
 
       this.saveSession(data.token, data.user);
+      if (guestSnapshot) {
+        await this.mergeGuestProgressToAccount(guestSnapshot, this.user);
+      }
       return data.user;
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
@@ -162,6 +345,7 @@ class AuthService {
   }
 
   async loginWithGoogle({ email, displayName }) {
+    const guestSnapshot = this.captureGuestSnapshot();
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = displayName ? displayName.trim() : cleanEmail.split('@')[0];
     const googleUser = {
@@ -177,7 +361,10 @@ class AuthService {
     };
     const mockToken = `google_token_${Date.now()}_${btoa(cleanEmail)}`;
     this.saveSession(mockToken, googleUser);
-    return googleUser;
+    if (guestSnapshot) {
+      await this.mergeGuestProgressToAccount(guestSnapshot, this.user);
+    }
+    return this.user;
   }
 
   async requestPasswordReset(email) {

@@ -155,4 +155,41 @@ export class JuiceManager {
     void el.offsetWidth;
     el.classList.add('juice-pulse');
   }
+
+  /**
+   * Hiệu ứng cỏ xòe phong cách Pokemon GBA khi di chuyển trên nền cỏ
+   * @param {number} x
+   * @param {number} y
+   */
+  spawnGrassRustle(x, y) {
+    if (!this.scene || !this.scene.add) return;
+    if (!this.scene.textures.exists('particle_grass_blade')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 4;
+      canvas.height = 4;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(0, 0, 4, 4);
+      this.scene.textures.addCanvas('particle_grass_blade', canvas);
+    }
+
+    try {
+      const tints = [0x22c55e, 0x4ade80, 0x86efac, 0x16a34a];
+      const emitter = this.scene.add.particles(x, y + 10, 'particle_grass_blade', {
+        speed: { min: 20, max: 55 },
+        angle: { min: 200, max: 340 },
+        scale: { start: 1.0, end: 0.2 },
+        alpha: { start: 0.85, end: 0 },
+        lifespan: 320,
+        tint: tints,
+        emitting: false
+      });
+      emitter.setDepth(y + 12);
+      emitter.explode(4);
+      this.scene.time.delayedCall(400, () => {
+        if (emitter && emitter.destroy) emitter.destroy();
+      });
+    } catch (e) {}
+  }
 }
+
