@@ -341,11 +341,17 @@ export class Player extends Phaser.GameObjects.Sprite {
 
   /**
    * Cú đấm quyền thuật (Punch Strike - Phím J)
-   * Kèm vệt khí chém vòng cung Wind Slash Arc FX như hình mẫu tham khảo
+   * Visual Squash & Stretch siêu nhẹ, 100% an toàn vật lý, không lag camera
    */
   punch() {
-    if (this._isPerformingCombat) return;
-    this._isPerformingCombat = true;
+    const now = performance.now();
+    if (this._combatCooldown && now < this._combatCooldown) return;
+    this._combatCooldown = now + 160;
+
+    if (this.isSitting) {
+      this.isSitting = false;
+      this.scaleY = 1.0;
+    }
 
     const slashOffsetX = this.currentDirection === 'right' ? 20 : (this.currentDirection === 'left' ? -20 : 0);
     const slashOffsetY = this.currentDirection === 'down' ? 18 : (this.currentDirection === 'up' ? -18 : 0);
@@ -355,34 +361,35 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'punch');
     }
 
-    const origX = this.x;
-    const origY = this.y;
-    this.scene?.tweens.add({
-      targets: this,
-      x: origX + slashOffsetX * 0.4,
-      y: origY + slashOffsetY * 0.4,
-      duration: 70,
-      yoyo: true,
-      ease: 'Back.easeOut',
-      onComplete: () => {
-        this._isPerformingCombat = false;
-        this.x = origX;
-        this.y = origY;
+    // Hiệu ứng vung nắm đấm bằng co giãn sprite tức thời (Zero-Lag, không đụng chạm this.x/y)
+    if (this.currentDirection === 'left' || this.currentDirection === 'right') {
+      this.scaleX = 1.22;
+      this.scaleY = 0.92;
+    } else {
+      this.scaleY = 1.2;
+      this.scaleX = 0.92;
+    }
+
+    this.scene?.time.delayedCall(80, () => {
+      if (!this.isSitting) {
+        this.scaleX = 1.0;
+        this.scaleY = 1.0;
       }
     });
-
-    // Phát socket cho người chơi khác
-    if (this.scene?.socketManager) {
-      this.scene.socketManager.socket?.emit('playerAction', { action: 'punch', direction: this.currentDirection });
-    }
   }
 
   /**
    * Cú đá chân cao (High Kick - Phím K)
    */
   kick() {
-    if (this._isPerformingCombat) return;
-    this._isPerformingCombat = true;
+    const now = performance.now();
+    if (this._combatCooldown && now < this._combatCooldown) return;
+    this._combatCooldown = now + 180;
+
+    if (this.isSitting) {
+      this.isSitting = false;
+      this.scaleY = 1.0;
+    }
 
     const slashOffsetX = this.currentDirection === 'right' ? 24 : (this.currentDirection === 'left' ? -24 : 0);
     const slashOffsetY = this.currentDirection === 'down' ? 22 : (this.currentDirection === 'up' ? -22 : 0);
@@ -392,22 +399,15 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.scene.windSlashFX.spawnSlash(this.x + slashOffsetX, this.y + slashOffsetY, this.currentDirection, 'kick');
     }
 
-    const origAngle = this.angle;
-    this.scene?.tweens.add({
-      targets: this,
-      angle: this.currentDirection === 'left' ? -15 : 15,
-      duration: 90,
-      yoyo: true,
-      ease: 'Sine.easeInOut',
-      onComplete: () => {
-        this._isPerformingCombat = false;
-        this.angle = origAngle;
+    // Nghiêng nhẹ góc quét chân rồi đàn hồi về 0
+    this.angle = this.currentDirection === 'left' ? -15 : 15;
+    this.scaleY = 1.15;
+    this.scene?.time.delayedCall(100, () => {
+      this.angle = 0;
+      if (!this.isSitting) {
+        this.scaleY = 1.0;
       }
     });
-
-    if (this.scene?.socketManager) {
-      this.scene.socketManager.socket?.emit('playerAction', { action: 'kick', direction: this.currentDirection });
-    }
   }
 
   /**
@@ -416,9 +416,12 @@ export class Player extends Phaser.GameObjects.Sprite {
   sit() {
     this.isSitting = !this.isSitting;
     if (this.isSitting) {
-      this.scaleY = 0.85;
+      this.stopMovement();
+      this.scaleY = 0.82;
       audioManager.playClick();
-      this.showEmote('wave');
+      if (this.scene?.juiceManager) {
+        this.scene.juiceManager.spawnScorePopup(this.x, this.y - 28, 'Đang Nghỉ Ngơi', '#38bdf8');
+      }
     } else {
       this.scaleY = 1.0;
     }
@@ -429,6 +432,18 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     const speed = 160;
     const { vector, left, right, up, down, isMoving } = inputData;
+
+    // Tự động đứng dậy nếu người chơi bắt đầu di chuyển
+    if (isMoving && this.isSitting) {
+      this.isSitting = false;
+      this.scaleY = 1.0;
+    }
+
+    if (this.isSitting) {
+      this.body.setVelocity(0, 0);
+      this.scaleY = 0.82;
+      return;
+    }
 
     this.body.setVelocity(vector.x * speed, vector.y * speed);
 

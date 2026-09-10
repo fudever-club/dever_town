@@ -11,6 +11,7 @@ export class WindSlashFX {
     this.slashes = [];
     this.graphics = scene.add.graphics();
     this.graphics.setDepth(99999);
+    this._hasRendered = false;
   }
 
   /**
@@ -43,11 +44,20 @@ export class WindSlashFX {
       color: 0x38bdf8,
       isKick
     });
+    this._hasRendered = true;
   }
 
   update(dt) {
+    if (this.slashes.length === 0) {
+      if (this._hasRendered) {
+        this.graphics.clear();
+        this._hasRendered = false;
+      }
+      return;
+    }
+
     this.graphics.clear();
-    if (this.slashes.length === 0) return;
+    this._hasRendered = true;
 
     for (let i = this.slashes.length - 1; i >= 0; i--) {
       const s = this.slashes[i];
@@ -58,8 +68,9 @@ export class WindSlashFX {
       }
 
       const progress = 1 - s.life / s.duration;
-      const alpha = Math.sin((1 - progress) * Math.PI);
-      const currentRadius = s.radius * (0.7 + progress * 0.4);
+      // Alpha tuyến tính tan biến mượt mà, sáng rõ nhất ngay lúc vung đòn
+      const alpha = Math.max(0, s.life / s.duration);
+      const currentRadius = s.radius * (0.8 + progress * 0.35);
 
       // 1. Vệt sáng chính màu xanh ngọc Cyber Cyan
       this.graphics.lineStyle(s.isKick ? 3.5 : 2.5, 0x38bdf8, alpha * 0.9);

@@ -150,13 +150,6 @@ export class WorldScene extends Phaser.Scene {
     camera.startFollow(this.player, true, 0.08, 0.08);
     camera.setRoundPixels(true);
 
-    // Kích hoạt PostFX Vignette làm sâu sắc góc nhìn (nếu WebGL hỗ trợ)
-    if (camera.postFX) {
-      try {
-        camera.postFX.addVignette(0.5, 0.5, 0.72, 0.3);
-      } catch (e) {}
-    }
-
     this.updateCameraZoom();
 
     // Dùng named reference để có thể removeEventListener trong shutdown()
