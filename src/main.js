@@ -12,6 +12,11 @@ const config = {
   pixelArt: true,
   roundPixels: true,
   backgroundColor: '#070a12',
+  render: {
+    antialias: false,
+    roundPixels: true,
+    pixelArt: true
+  },
   physics: {
     default: 'arcade',
     arcade: {

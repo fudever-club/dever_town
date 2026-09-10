@@ -2,6 +2,7 @@ import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
 import { setupVoiceHandler } from './voiceHandler.js';
+import { createSocketRateLimiter, createCooldownLimiter } from '../utils/rateLimiter.js';
 
 // Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
 const ipConnectionCounts = new Map();
@@ -10,12 +11,59 @@ const MAX_SOCKETS_PER_IP = 12;
 // Danh sách các yêu cầu xác thực thiết bị mới đang chờ duyệt
 const pendingApprovals = new Map();
 
+// Rate limiters cho từng event
+const friendReqLimiter    = createSocketRateLimiter(5, 60000);  // 5 lời mời/phút
+const emoteLimiter        = createCooldownLimiter(2000);        // 1 emote / 2 giây
+const wardrobeLimiter     = createCooldownLimiter(5000);        // 1 update / 5 giây
+const privateMsgLimiter   = createCooldownLimiter(400);         // 1 DM / 400ms
+
+// Cleanup pendingApprovals hết hạn mỗi 30 giây (ngăn memory leak)
+setInterval(() => {
+  const now = Date.now();
+  let cleaned = 0;
+  for (const [reqId, pending] of pendingApprovals.entries()) {
+    if (now - pending.createdAt > 60000) { // 60 giây
+      clearTimeout(pending.timeoutHandle);
+      pendingApprovals.delete(reqId);
+      cleaned++;
+    }
+  }
+  if (cleaned > 0) {
+    console.log(`[Cleanup] Đã xóa ${cleaned} pendingApprovals hết hạn`);
+  }
+}, 30000);
+
+/**
+ * Helper: Kiểm tra socket đã xác thực chưa
+ * @returns {boolean} - false nếu chưa auth (đã emit error cho client)
+ */
+function requireAuth(socket) {
+  if (!socket.authUser?.id) {
+    socket.emit('error', { message: 'Yêu cầu đăng nhập để thực hiện hành động này.' });
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Helper: Lấy IP client an toàn, tránh spoof
+ */
+function getClientIp(socket) {
+  const forwarded = socket.handshake.headers['x-forwarded-for'];
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return socket.handshake.address || '127.0.0.1';
+}
+
+
+
 export function setupSocketHandler(io) {
   io.use(async (socket, next) => {
-    const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
+    const clientIp = getClientIp(socket);
     const currentCount = ipConnectionCounts.get(clientIp) || 0;
     if (currentCount >= MAX_SOCKETS_PER_IP) {
-      console.warn(`🛑 [Socket Block] IP ${clientIp} vượt quá giới hạn ${MAX_SOCKETS_PER_IP} kết nối đồng thời.`);
+      console.warn(`[Socket Block] IP ${clientIp} vượt quá giới hạn ${MAX_SOCKETS_PER_IP} kết nối đồng thời.`);
       return next(new Error('Quá nhiều kết nối đồng thời từ IP của bạn!'));
     }
     ipConnectionCounts.set(clientIp, currentCount + 1);
@@ -43,18 +91,27 @@ export function setupSocketHandler(io) {
   });
 
   io.on('connection', (socket) => {
-    const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
+    const clientIp = getClientIp(socket);
     const userAgent = socket.handshake.headers['user-agent'] || 'Web Browser';
-    console.log(`🔌 [Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
+    console.log(`[Socket.io] Client connected: ${socket.id} (User: ${socket.authUser ? socket.authUser.displayName : 'Guest'}) [IP: ${clientIp}]`);
 
     // Khởi tạo Voice/Video Signaling cho socket
     const { handleVoiceLeave } = setupVoiceHandler(io, socket);
+
 
     /**
      * 1. Tham gia thế giới (Join Game) - Chế độ 1 Nhân Vật Duy Nhất & Xác Nhận Thiết Bị Mới Thông Minh
      */
     socket.on('joinGame', async (clientData = {}) => {
       const currentDeviceId = clientData.deviceId || socket.handshake.auth?.deviceId || 'device_default';
+
+      // Sanitize player name ngay từ đầu — strip HTML/JS injection chars
+      const rawName = String(clientData.name || '').trim();
+      clientData.name = rawName
+        .replace(/[<>"'`&]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 30) || 'Dever Member';
 
       // 1. Kiểm tra tài khoản đã đăng nhập
       if (socket.authUser && socket.authUser.id) {
@@ -271,8 +328,22 @@ export function setupSocketHandler(io) {
       const now = Date.now();
       if (!socket._movePackets) socket._movePackets = [];
       socket._movePackets = socket._movePackets.filter(ts => now - ts < 1000);
-      if (socket._movePackets.length > 35) return; // Tối đa 35 gói tin di chuyển / giây
+      if (socket._movePackets.length > 20) return; // Tối ưu: tối đa 20 gói tin / giây
       socket._movePackets.push(now);
+
+      // Delta compression: Nếu đứng yên và vị trí hầu như không đổi (< 1.5px) thì không phát tán lại
+      const lp = socket._lastBroadcastPos;
+      if (lp && !movementData.isMoving && !lp.isMoving) {
+        const dx = Math.abs((movementData.x || 0) - lp.x);
+        const dy = Math.abs((movementData.y || 0) - lp.y);
+        if (dx < 1.5 && dy < 1.5 && movementData.direction === lp.direction) return;
+      }
+      socket._lastBroadcastPos = {
+        x: movementData.x,
+        y: movementData.y,
+        direction: movementData.direction,
+        isMoving: movementData.isMoving
+      };
 
       const updated = playerManager.updateMovement(socket.id, movementData);
       if (updated) {
@@ -326,15 +397,17 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 4b. Xử lý Chat Riêng 1-1 Bạn Bè (Direct Private Message)
+     * 4b. Xử lý Chat Riêng 1-1 Bạn Bè (Direct Private Message — rate limit: 1/400ms)
      */
     socket.on('sendPrivateMessage', ({ targetSocketId, targetName, message }) => {
       const sender = playerManager.getPlayer(socket.id);
       if (!sender) return;
+      if (!privateMsgLimiter(socket, 'sendPrivateMessage')) return;
 
       const rawMsg = message || '';
       const cleanMsg = Array.from(rawMsg.normalize('NFC').trim()).slice(0, 150).join('');
       if (!cleanMsg) return;
+
 
       let targetPlayer = null;
       let targetSocket = null;
@@ -389,10 +462,29 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 6. Cập nhật Tủ đồ / Wardrobe
+     * 6. Cập nhật Tủ đồ / Wardrobe (auth required + rate limit + schema validation)
      */
     socket.on('updateWardrobe', ({ wardrobeConfig }) => {
-      const updated = playerManager.updateWardrobe(socket.id, wardrobeConfig);
+      if (!requireAuth(socket)) return;
+      if (!wardrobeLimiter(socket, 'updateWardrobe')) return;
+
+      // Schema validation — chỉ cho phép các field đã biết, giới hạn kích thước
+      const ALLOWED_WARDROBE_KEYS = [
+        'gender', 'hairstyle', 'hairColor', 'outfitType',
+        'hoodieColor', 'collarColor', 'pantsColor', 'accessory'
+      ];
+      const configStr = JSON.stringify(wardrobeConfig || {});
+      if (configStr.length > 2048) {
+        return socket.emit('error', { message: 'Dữ liệu trang phục vượt quá giới hạn cho phép.' });
+      }
+      const sanitizedConfig = {};
+      ALLOWED_WARDROBE_KEYS.forEach(k => {
+        if (wardrobeConfig?.[k] !== undefined) {
+          sanitizedConfig[k] = String(wardrobeConfig[k]).slice(0, 50);
+        }
+      });
+
+      const updated = playerManager.updateWardrobe(socket.id, sanitizedConfig);
       if (updated) {
         io.to(updated.roomId).emit('playerUpdated', {
           id: socket.id,
@@ -403,9 +495,10 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 7. Cập nhật Profile
+     * 7. Cập nhật Profile (auth required)
      */
     socket.on('updateProfile', (data) => {
+      if (!requireAuth(socket)) return;
       const updated = playerManager.updateProfile(socket.id, data);
       if (updated) {
         io.to(updated.roomId).emit('playerUpdated', {
@@ -419,16 +512,16 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 7b. Phát Biểu Cảm / Emote Realtime
+     * 7b. Phát Biểu Cảm / Emote Realtime (rate limit: 1 emote / 2 giây)
      */
     socket.on('playerEmote', ({ emoteId }) => {
       const player = playerManager.getPlayer(socket.id);
       if (!player) return;
+      if (!emoteLimiter(socket, 'playerEmote')) return;
 
       const validEmotes = new Set(['wave', 'heart', 'fire', 'clap', 'dance', 'question']);
       if (!validEmotes.has(emoteId)) return;
 
-      console.log(`✨ [Emote:${player.roomId}] ${player.name} gửi biểu cảm [${emoteId}]`);
       io.to(player.roomId).emit('playerEmote', {
         id: socket.id,
         emoteId
@@ -436,9 +529,14 @@ export function setupSocketHandler(io) {
     });
 
     /**
-     * 7c. Gửi Lời Mời Kết Bạn Realtime (2-Way Friend Request Handshake)
+     * 7c. Gửi Lời Mời Kết Bạn Realtime (auth required + rate limit: 5/phút)
      */
     socket.on('sendFriendRequest', ({ targetSocketId, targetName }) => {
+      if (!requireAuth(socket)) return;
+      if (!friendReqLimiter(socket, 'sendFriendRequest')) {
+        return socket.emit('friendRequestFailed', { message: 'Bạn đang gửi lời mời quá nhanh. Vui lòng thử lại sau.' });
+      }
+
       const sender = playerManager.getPlayer(socket.id);
       if (!sender) return;
 
@@ -463,7 +561,7 @@ export function setupSocketHandler(io) {
           return;
         }
 
-        console.log(`🤝 [Friend Request] ${sender.name} (${socket.id}) ➔ ${targetPlayer.name} (${targetSocket.id})`);
+        console.log(`[Friend Request] ${sender.name} (${socket.id}) -> ${targetPlayer.name} (${targetSocket.id})`);
         targetSocket.emit('friendRequestReceived', {
           fromSocketId: socket.id,
           fromUserId: sender.userId || null,
@@ -471,6 +569,7 @@ export function setupSocketHandler(io) {
           fromAvatarId: sender.avatarId,
           fromRole: sender.role
         });
+
 
         socket.emit('friendRequestSent', {
           targetSocketId: targetSocket.id,
