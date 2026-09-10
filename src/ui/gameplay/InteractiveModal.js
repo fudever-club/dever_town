@@ -2035,13 +2035,15 @@ export class InteractiveModal {
     const bodyEl = document.getElementById('club-booth-body');
     const footerEl = document.getElementById('club-booth-footer');
 
-    const logoHtml = club.logoId ? `
+    const logoSrc = club.logoUrl || (club.logoId ? `https://lh3.googleusercontent.com/d/${club.logoId}=w400` : null);
+
+    const logoHtml = logoSrc ? `
       <div class="club-avatar-badge club-logo-box" style="border: 2px solid ${club.themeColor}; background: ${club.themeColor}1a;">
-        <img src="https://lh3.googleusercontent.com/d/${club.logoId}=w400" 
+        <img src="${escapeHtml(logoSrc)}" 
              class="club-real-logo" 
              alt="${escapeHtml(club.prefix)} Logo" 
              loading="lazy"
-             onerror="this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+             onerror="if (this.src.indexOf('lh3.googleusercontent.com') === -1 && '${club.logoId || ''}') { this.src = 'https://lh3.googleusercontent.com/d/${club.logoId}=w400'; } else { this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.style.display='flex'; }" />
         <span class="club-fallback-icon" style="display: none;">${club.icon || '🏛️'}</span>
       </div>
     ` : `
@@ -2073,18 +2075,22 @@ export class InteractiveModal {
 
     if (bodyEl) {
       // Khối Backdrop Gian hàng 3x3m
-      const backdropSection = club.backdropId ? `
+      const backdropSrc = club.backdropLocalPath || (club.backdropId ? `https://lh3.googleusercontent.com/d/${club.backdropId}=w800` : null);
+      const lightboxBackdropSrc = club.backdropLocalPath || (club.backdropId ? `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600` : null);
+
+      const backdropSection = (club.backdropLocalPath || club.backdropId) ? `
         <div class="club-detail-section club-backdrop-section">
           <div class="club-backdrop-header-row">
             <h4 class="club-section-title">Backdrop Gian Hàng 3x3m Chính Thức</h4>
             <span class="club-backdrop-badge">Tiêu Chuẩn Ngày Hội CLB</span>
           </div>
           <div class="club-backdrop-preview-wrap" id="club-backdrop-wrap">
-            <img src="https://lh3.googleusercontent.com/d/${club.backdropId}=w800" 
+            <img src="${escapeHtml(backdropSrc)}" 
                  class="club-backdrop-img" 
                  alt="Backdrop 3x3m ${escapeHtml(club.prefix)}" 
                  loading="lazy"
-                 id="img-club-backdrop" />
+                 id="img-club-backdrop"
+                 onerror="if (this.src.indexOf('lh3.googleusercontent.com') === -1 && '${club.backdropId || ''}') { this.src = 'https://lh3.googleusercontent.com/d/${club.backdropId}=w800'; }" />
             <div class="club-backdrop-overlay">
               <span class="club-backdrop-hint">Bấm để phóng to toàn màn hình</span>
             </div>
@@ -2179,10 +2185,10 @@ export class InteractiveModal {
 
       // Thiết lập sự kiện phóng to Backdrop Lightbox
       const backdropWrap = document.getElementById('club-backdrop-wrap');
-      if (backdropWrap && club.backdropId) {
+      if (backdropWrap && (club.backdropLocalPath || club.backdropId)) {
         backdropWrap.onclick = () => {
           this.showBackdropLightbox(
-            `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600`,
+            lightboxBackdropSrc,
             `Backdrop Gian Hàng 3x3m — [${club.prefix}] ${club.nameVi}`,
             club.backdropUrl
           );
@@ -2196,7 +2202,7 @@ export class InteractiveModal {
           <button type="button" class="btn-primary-sm btn-club-register" id="btn-club-interest" style="background: ${club.themeColor};">
             Đăng Ký Quan Tâm Gian Hàng #${club.boothNumber}
           </button>
-          ${club.backdropId ? `
+          ${(club.backdropLocalPath || club.backdropId) ? `
             <button type="button" class="btn-secondary-sm" id="btn-club-zoom-backdrop">
               Xem Backdrop 3x3m
             </button>
@@ -2218,11 +2224,12 @@ export class InteractiveModal {
       }
 
       const zoomBackdropBtn = document.getElementById('btn-club-zoom-backdrop');
-      if (zoomBackdropBtn && club.backdropId) {
+      if (zoomBackdropBtn && (club.backdropLocalPath || club.backdropId)) {
+        const lightboxSrc = club.backdropLocalPath || (club.backdropId ? `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600` : null);
         zoomBackdropBtn.onclick = () => {
           audioManager.playClick();
           this.showBackdropLightbox(
-            `https://lh3.googleusercontent.com/d/${club.backdropId}=w1600`,
+            lightboxSrc,
             `Backdrop Gian Hàng 3x3m — [${club.prefix}] ${club.nameVi}`,
             club.backdropUrl
           );

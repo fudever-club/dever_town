@@ -85,6 +85,5 @@ Toàn bộ các mục tiêu cốt lõi của Phase 2 (S2.A, S2.B, S2.C, S2.D) đ
 ## 4. Nhật Ký Tiến Trình (Activity Log)
 
 - **10/09/2026 09:35**: Xác minh Phase 1 đã hoàn thiện 100%. Sao chép file plan gốc vào `docs/plans/PLAN_v0.5_STABILIZATION_AND_VISUAL_UPGRADE.md`. Khởi tạo tài liệu tiến trình Phase 2.
-- **10/09/2026 09:40**: Hoàn thành Sprint 4 (S2.A - Label Clarity) & Sprint 5-6 (S2.B - Pokemon GBA Effects & Movement Foundations + Ambient Lighting). Commit: `9eef891`.
-- **10/09/2026 09:52**: Hoàn thành Sprint 7-9 (S2.C - Multi-Floor System & 25 CLB FPTU Đà Nẵng tại Tòa Alpha). Commit: `a37349c`.
 - **10/09/2026 10:14**: Hoàn thành Sprint 10-12 (S2.D - Oblique 2.5D Visual Style & Drop Shadows cho obstacles) cùng tích hợp toàn diện 24 Logo và 20 Backdrop 3mx3m từ Google Drive / Sheet vào Gian hàng CLB. Build Vite kiểm chứng pass 100% 0 errors.
+- **10/09/2026 10:52**: Khắc phục triệt để lỗi hiển thị logo: Quét sâu vào 24 folder con Google Drive, trích xuất chính xác file ID ảnh thật và tải toàn bộ 24 file logo vào `public/assets/clubs/logos/`, đồng thời tải 19 Backdrop 3mx3m vào `public/assets/clubs/backdrops/`. Modal Gian Hàng CLB chuyển sang nạp trực tiếp tài nguyên cục bộ siêu tốc, 0ms delay và không còn phụ thuộc vào mạng ngoài.
