@@ -1033,7 +1033,11 @@
         <div class="wardrobe-preview-panel">
           <div class="preview-box">
             <canvas id="wardrobe-preview-canvas" width="160" height="160"></canvas>
-            <span class="preview-tag">Live Avatar Preview</span>
+            <span class="preview-tag">Live Avatar Preview HD</span>
+          </div>
+          <div class="wardrobe-preview-controls">
+            <button type="button" id="wardrobe-rotate-left" class="btn-preview-rotate" title="Xoay Trái">Xoay Trái</button>
+            <button type="button" id="wardrobe-rotate-right" class="btn-preview-rotate" title="Xoay Phải">Xoay Phải</button>
           </div>
           <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới</button>
         </div>
@@ -1045,27 +1049,51 @@
             <div id="wardrobe-gender-list" class="wardrobe-gender-grid"></div>
           </div>
 
-          <!-- 2. Chọn Trang Phục -->
+          <!-- 2. Chọn Màu Da (Skin Tone) -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Tông Màu Da Chân Thực:</label>
+            <div id="wardrobe-skin-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 3. Khuôn Mặt & Biểu Cảm -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Biểu Cảm Đôi Mắt:</label>
+            <div id="wardrobe-expression-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 4. Kiểu Râu (Dành cho Nam) -->
+          <div class="wardrobe-section" id="wardrobe-beard-section">
+            <label class="wardrobe-label">Kiểu Râu & Phong Cách Coder:</label>
+            <div id="wardrobe-beard-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 5. Chọn Trang Phục -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Bộ Trang Phục & Đồng Phục FUDA:</label>
             <div id="wardrobe-outfit-list" class="wardrobe-outfit-grid"></div>
           </div>
 
-          <!-- 3. Chọn Kiểu Tóc -->
+          <!-- 6. Chọn Kiểu Tóc -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Kiểu Tóc:</label>
+            <label class="wardrobe-label">Kiểu Tóc Thời Thượng:</label>
             <div id="wardrobe-hairstyle-list" class="wardrobe-chip-list"></div>
           </div>
 
-          <!-- 4. Chọn Màu Tóc -->
+          <!-- 7. Chọn Màu Tóc -->
           <div class="wardrobe-section">
             <label class="wardrobe-label">Màu Tóc Cá Tính:</label>
             <div id="wardrobe-hair-list" class="wardrobe-chip-list"></div>
           </div>
 
-          <!-- 5. Phụ Kiện -->
+          <!-- 8. Vật Phẩm Cầm Tay Thật Sự -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Phụ Kiện & Linh Vật:</label>
+            <label class="wardrobe-label">Trang Bị Cầm Tay Trực Tiếp:</label>
+            <div id="wardrobe-inhand-list" class="wardrobe-chip-list"></div>
+          </div>
+
+          <!-- 9. Phụ Kiện -->
+          <div class="wardrobe-section">
+            <label class="wardrobe-label">Phụ Kiện & Kính Cận:</label>
             <div id="wardrobe-acc-list" class="wardrobe-acc-grid"></div>
           </div>
         </div>

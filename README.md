@@ -9,7 +9,7 @@
 ### Thế Giới Pixel 2D Multiplayer của CLB FU-DEVER · FPT University Đà Nẵng
 
 [![Status](https://img.shields.io/badge/Project-FU--DEVER%20Exclusive-f26f21.svg?style=for-the-badge)](https://www.fudever.com/)
-[![Version](https://img.shields.io/badge/version-0.4.1-0066CC.svg?style=for-the-badge)](./package.json)
+[![Version](https://img.shields.io/badge/version-0.7.0-0066CC.svg?style=for-the-badge)](./package.json)
 [![Phaser](https://img.shields.io/badge/Phaser-3.88-22c55e.svg?style=for-the-badge)](https://phaser.io)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8-010101.svg?style=for-the-badge&logo=socketdotio&logoColor=white)](https://socket.io)
@@ -54,58 +54,65 @@ DEVER TOWN là một nền tảng Metaverse 2D Pixel Art hoàn chỉnh, kết h�
 
 ---
 
-## 🗺️ 1. Bản Đồ & 9 Phân Khu Chức Năng 2D
+## 🗺️ 1. Bản Đồ, Hệ Thống Đa Tầng & 25 CLB FPTU Đà Nẵng
 
-Hệ thống gồm 9 bản đồ (Map Grid 25x19 tiles = 800x608 px) kết nối liền mạch qua các **Cổng Dịch Chuyển (Portal)** có cơ chế Cooldown chống kẹt cổng an toàn. Vườn Trà FUDA là một vùng tương tác trong Tòa Alpha, không phải bản đồ thứ mười:
+Hệ thống gồm 9 bản đồ (Map Grid 25x19 tiles = 800x608 px) kết nối liền mạch qua các **Cổng Dịch Chuyển (Portal)** có cơ chế Cooldown chống kẹt cổng an toàn. Đặc biệt, **Tòa Alpha mở rộng hệ thống 3 Tầng Độc Lập** với cơ sở dữ liệu và ấn phẩm của **25 CLB chính thức trường ĐH FPT Đà Nẵng**:
 
 | Phân Khu | Tên & Đặc Điểm | Vùng Tương Tác `[E]` Nổi Bật |
 |:---|:---|:---|
-| 🏛️ **Tòa Alpha (Sảnh Chính)** | Trọng tâm hội trường trường, kết nối toàn bộ các khu vực | Sơ đồ bản đồ toàn cảnh FUDA, Màn chiếu Slide đón tiếp, Sân khấu họp toàn thể, Cóc Vàng Tâm Linh |
-| 💻 **Tòa Gamma (Tech & AI Lab)** | Không gian Hackathon, trạm máy chủ và trạm code nhóm | 2 Bàn Hackathon Code Sandbox (Alpha & Beta), Bảng sơ đồ kiến trúc, Bàn họp kỹ thuật |
-| 🕹️ **Tòa Gamma Plus (Arcade Studio)** | Khu vực máy game retro cổ điển & trung tâm game robot CLB | Máy game Rắn Săn Mồi, Máy Buggy Đẩy Hộp, Cóc Vàng Đào Kho Báu, Trạm tải Game Robot DEVER |
+| 🏛️ **Tòa Alpha (3 Tầng)** | **Tầng 1:** Sảnh đón tiếp, Cóc Vàng tâm linh & Hội trường<br>**Tầng 2:** Hub Học Thuật & Khởi Nghiệp (9 gian hàng CLB)<br>**Tầng 3:** Hub Nghệ Thuật, Kỹ Năng & Thể Thao (10 gian hàng CLB) | 24 Logo CLB chính thức + 19 Backdrop 3mx3m offline (0ms delay), Cầu thang đa tầng chuyển tầng mượt mà, Sân khấu họp toàn thể, Cóc Vàng Tâm Linh |
+| 💻 **Tòa Gamma (Tech & AI Lab)** | Không gian Hackathon, trạm máy chủ và trạm code nhóm | Code Lab Sandbox hỗ trợ Judge0 CE + Paiza.io fallback, Bảng sơ đồ kiến trúc, Bàn họp kỹ thuật |
+| 🕹️ **Tòa Gamma Plus (Arcade Studio)** | Khu vực máy game retro cổ điển & trung tâm game robot CLB | Rắn Săn Mồi 2.0 (Smooth 60fps), Đẩy Hộp Sokoban 2.0 (15 màn Microban), Vua Đào Vàng 2.0 (Nổ TNT dây chuyền) |
 | 📚 **Tòa Beta (Thư Viện Tri Thức)** | Phòng tự học yên tĩnh, tài liệu ôn thi và quầy cafe | Tủ Cẩm nang ôn thi PE SWE201c, Quy chế hoạt động CLB, Quầy Cafe Lofi & Pomodoro, Bàn sổ tay code |
 | 🏆 **Phòng Triển Lãm Kỷ Niệm** | Bảo tàng vinh danh thành tích & lịch sử 9+ năm FU-DEVER | Trạm Lịch sử 9+ năm, Bảng vàng 20+ giải thưởng ICPC & Hackathon, Album Teambuilding Biển Sơn Trà |
 | 🌐 **Không Gian Web & IT Helpdesk** | Không gian số nhúng các cổng thông tin và dự án CLB | Cổng phần mềm thi EOS/PE & IT Helpdesk, Landing Page CLB, Member Portal, Kho dự án GitHub, Đơn tuyển quân |
 | 📰 **Media Hub Học Vụ** | Cổng tiện ích học tập FPTU và mạng xã hội truyền thông | Cổng FAP, FLM, LMS FPTU, Fanpage CLB, TikTok FUDA, Kho GitHub Org |
-| ⚽🏀 **Khu Phức Hợp Thể Thao** | Sân bóng cỏ nhân tạo, sân bóng rổ, cầu lông, hồ bơi | Sân Bóng Đá Mini 11m, Sân Bóng Rổ 3 Điểm, Sân Bóng Chuyền & Cầu Lông 1v1, Hồ bơi thư giãn |
-| ☕🍽️ **Căn Tin & The High Deli** | Không gian ẩm thực sinh viên & lounge đồ uống | Quầy thực đơn 3 căn tin thực tế tầng 1 & 2, Mini-game Barista Pha Cà Phê Muối, Góc Acoustic Cafe |
+| ⚽🏀 **Khu Phức Hợp Thể Thao** | Sân bóng cỏ nhân tạo, sân bóng rổ, cầu lông, hồ bơi | Sút Phạt Đền 11M 2.0, Ném Bóng Rổ Parabol & Swish 2.0, Bóng Chuyền 1v1 Vòm Đầu Đàn Hồi & Spike 2.0 |
+| ☕🍽️ **Căn Tin & The High Deli** | Không gian ẩm thực sinh viên & lounge đồ uống | Quầy thực đơn 3 căn tin thực tế, Barista Simulator 2.0 (4 trạm: phân tầng chất lỏng & vẽ Latte Art tự do) |
 | ↳ 🍵 **Vùng Vườn Trà FUDA (thuộc Tòa Alpha)** | Không gian sân vườn ngoài trời tĩnh lặng, thoáng đãng | Bàn trà đàm đạo, ghế đá thư giãn dưới tán hoa anh đào và làn gió thoảng |
 
 ---
 
-## 👗 2. Hệ Thống Tủ Đồ & Tùy Biến Nhân Vật (Wardrobe Customizer)
+## 👗 2. Hệ Thống Tủ Đồ & Tùy Biến Nhân Vật HD (Wardrobe Customizer 2.0)
 
-Hệ thống đồ họa Pixel Art với Canvas Preview thời gian thực:
-- **Giới Tính**: Nam Sinh FUDA / Nữ Sinh FUDA.
+Hệ thống đồ họa Pixel Art HD 48x48 với Canvas Preview xoay 360° thời gian thực:
+- **Giới Tính & Giải Phẫu Riêng Biệt**:
+  - *Nam Sinh FUDA*: Khung vai rộng 14px nam tính, ngực áo polo/hoodie có gập cổ, thắt lưng da nâu có mặt khóa kim loại vàng, nếp nhăn quần 3D, giày sneaker thể thao.
+  - *Nữ Sinh FUDA*: Thon gọn 10px eo mềm mại, tà Áo Dài xẻ hông thướt tha, váy xếp ly đổ bóng sáng tối, mắt to long lanh có lông mi và má hồng đào.
+- **6 Tông Màu Da Chân Thực (Skin Tones)**: Trắng Sáng Tinh Khôi, Vàng Tự Nhiên Á Đông, Bánh Mật Thể Thao, Nâu Khỏe Khoắn, Ngăm Đậm, Cyborg Android Xanh.
+- **Đôi Mắt Có Hồn & Chớp Mắt Tự Nhiên (Blink Loop)**: Mỗi 3.5s chớp mắt tự nhiên; 5 biểu cảm: Tập trung code, Vui tươi, Nháy mắt cool, Ngạc nhiên, Thư thái.
+- **Bộ Sưu Tập Râu & Chi Tiết Khuôn Mặt**: Không râu, Râu Quai Nón Senior Dev (`full_beard`), Ria Mép Lịch Lãm, Râu Cằm / Râu Dê, Râu Lún Phún Deadline, Râu Bạc Giáo Sư.
 - **32 Bộ Trang Phục Đa Phong Cách**:
   - *Học đường & Đồng phục*: Áo Hoodie FUDA Cam, Áo Hoodie Xanh DEVER, Áo Polo FPTU, Đầm Nữ Sinh, Áo Dài Trắng Tinh Khôi, Áo Dài Cách Tân Đỏ, Đồng Phục Thủy Thủ Sailor, Sơ Mi Cà Vạt Học Viện.
   - *Công nghệ & Coder*: Áo Thun Dev Hackathon, Áo Bomber Cyberpunk Neon, Áo Choàng Hacker Matrix Dark, Bộ Giáp Mecha Android, Áo Open Source Linux Tux.
   - *Thể thao*: Áo Bóng Đá Số 10 Sân Cỏ, Áo Bóng Rổ Bulls Ba Lỗ, Đồ Gym Crop-top Nữ, Võ Phục Vovinam Đai Vàng, Đồ Bơi Surf.
   - *Streetwear & Nghề nghiệp*: Áo Da Biker, Áo Hip-hop Oversize, Cardigan Pastel, Yếm Denim Jean, Tạp Dề Barista Cà Phê Muối, Vest CEO, Blazer Nữ Công Sở, Áo Blouse Lab.
   - *Cosplay & Linh vật*: Áo Choàng Pháp Sư, Kimono Yukata Sakura, Đầm Dạ Hội Gala Prom, Bộ Đồ Mascot Cóc Vàng FUDA.
-- **20 Kiểu Tóc & Bảng Màu Tóc Tùy Chỉnh**: Short Dev, Long Wavy, Side Part, Ponytail, Undercut, Bob, Anime Spiky, Braids, Twin Tails,...
+- **21 Kiểu Tóc & Bảng Màu Tóc Tùy Chỉnh**: Bổ sung *Tóc Hói Giáo Sư / Senior Dev (Bald with Side Hair)*, Short Dev, Long Wavy, Side Part, Ponytail, Undercut, Bob, Anime Spiky, Braids, Twin Tails,...
 - **Phụ Kiện Đi Kèm**: Kính Cận Dev, Kính Râm Cyber, Tai Nghe Gaming RGB, Khẩu Trang Đen, Băng Đô Thể Thao, Vương Miện Cóc Vàng Hoàng Gia.
 
 ---
 
-## 🎒 3. Hệ Thống Túi Đồ & Vật Phẩm Cầm Tay `[I]`
+## 🎒 3. Hệ Thống Vật Phẩm Cầm Tay Thật Sự `[I]` (In-Hand Real Equipment)
 
-Người chơi có thể thu thập, quản lý và **cầm trực tiếp trên tay (Equipped Handheld Item)** được đồng bộ realtime cho mọi người chơi khác cùng thấy:
+Toàn bộ vật phẩm trang bị được gắn **trực tiếp lên bàn tay nhân vật** (xóa bỏ hoàn toàn bong bóng tròn lơ lửng cũ) với hoạt ảnh tương tác sống động:
 
-1. 💻 **MacBook Pro Dev FUDA** *(Legendary)* — Cài sẵn Linux, Docker, Node.js & VS Code.
-2. ⌨️ **Bàn phím cơ Keychron Custom** *(Epic)* — Switch Gateron Pro gõ lách cách tạo cảm hứng xuyên đêm.
-3. 🖱️ **Chuột Gaming Công Thái Học** *(Rare)* — Siêu nhẹ, hỗ trợ fix bug tốc độ cao.
-4. 🐸 **Gấu bông Cóc Vàng FUDA May Mắn** *(Mythic)* — Linh vật may mắn 100% Pass mọi kỳ thi PE.
-5. 🔑 **Móc khóa Thẻ Sinh Viên FUDA** *(Common)* — Dây đeo thẻ cam FPT nhận diện thương hiệu.
-6. ☕ **Cốc Cà Phê Dev Giữ Nhiệt** *(Uncommon)* — Giữ nhiệt 24h đồng hành cùng các đêm cày deadline.
-7. ☕ **Ly Cà Phê Muối Đặc Sản Đà Nẵng** *(Rare)* — Đậm vị cà phê truyền thống hòa quyện lớp kem muối béo ngậy.
-8. 🏆 **Cúp Vô Địch Hackathon FUDA** *(Mythic)* — Biểu tượng vinh quang của nhà vô địch lập trình.
+1. 💻 **MacBook Pro Dev FUDA** *(Legendary)* — Mở nắp màn hình hắt sáng xanh cyber lên mặt nhân vật, hai tay gõ phím; kẹp hông khi di chuyển.
+2. ☕ **Ly Cà Phê Muối Đặc Sản Đà Nẵng** *(Epic)* — Cầm ly cà phê trên tay phải, thấy rõ phân tầng chất lỏng và làn khói ấm bốc lên nghi ngút.
+3. ⚽ **Quả Bóng Đá 11M FUDA** *(Rare)* — Cầm kẹp quả bóng bên sườn; tâng bóng nhịp nhàng trên mũi giày khi đứng yên.
+4. 🏀 **Quả Bóng Rổ 3 Điểm FUDA** *(Rare)* — Đập bóng nảy nhẹ trên sàn thi đấu.
+5. 🐸 **Gấu bông Cóc Vàng FUDA May Mắn** *(Mythic)* — Ôm chú Cóc Vàng may mắn trước ngực.
+6. 🚩 **Cờ Hiệu CLB FU-DEVER** *(Legendary)* — Cầm cán cờ gỗ, lá cờ xanh phấp phới bay theo hướng di chuyển.
+7. ⌨️ **Bàn phím cơ Keychron Custom** *(Epic)* — Switch Gateron Pro gõ lách cách tạo cảm hứng xuyên đêm.
+8. 🖱️ **Chuột Gaming Công Thái Học** *(Rare)* — Siêu nhẹ, hỗ trợ fix bug tốc độ cao.
+9. 🔑 **Móc khóa Thẻ Sinh Viên FUDA** *(Common)* — Dây đeo thẻ cam FPT nhận diện thương hiệu.
+10. 🏆 **Cúp Vô Địch Hackathon FUDA** *(Mythic)* — Biểu tượng vinh quang của nhà vô địch lập trình.
 
 ---
 
 ## 🎯 4. Hệ Thống Nhiệm Vụ Hàng Ngày & Điểm Thưởng (Quests & DEVER Points)
 
-- **7 Nhiệm Vụ Hàng Ngày Tự Động Reset**:
+- **8 Nhiệm Vụ Hàng Ngày Tự Động Reset**:
   - 🌅 *Điểm Danh Mỗi Ngày* (+20 pts)
   - ⚽ *Chân Sút Vàng 11m* (+30 pts)
   - 🏀 *Tay Ném 3 Điểm FUDA* (+30 pts)
@@ -113,22 +120,30 @@ Người chơi có thể thu thập, quản lý và **cầm trực tiếp trên 
   - 🗺️ *Nhà Thám Hiểm FUDA* (+25 pts) — Đi qua ít nhất 3 phân khu
   - 💬 *Giao Lưu Kết Nối* (+15 pts) — Gửi tin nhắn chat trong phòng
   - ☕ *Thợ Pha Chế Barista* (+25 pts) — Pha thành công 1 ly Cà Phê Muối / Trà Sữa
+  - 🔥 *Duy Trì Streak Bạn Thân* (+30 pts) — Tương tác bạn bè nuôi Pet Buggy
 - **Các Mốc Điểm Danh Vọng**: Đạt 50, 100, 150 DEVER Points nhận danh hiệu và phần thưởng cá nhân.
 
 ---
 
-## 🕹️ 5. Trung Tâm Trò Chơi Mini-Games Arcade
+## 🕹️ 5. Trung Tâm Trò Chơi Mini-Games Arcade 2.0 (Kiến Trúc Sub-Engines)
 
-### ⚽🏀 Minigame Thể Thao Canvas Engine ([SportsArcade.js](file:///D:/THStudy/DeverClub/DEVER_TOWN/src/ui/minigames/SportsArcade.js))
-- **Sút Phạt Đền 11M (Penalty Shootout)**: Thanh căn lực Timing Power Bar + Chọn hướng sút + AI Thủ môn bay người ngẫu nhiên + Bộ đếm chuỗi bàn thắng liên tiếp (Streak 🔥).
-- **Ném Bóng Rổ 3 Điểm (3-Point Shootout)**: Thử thách 10 quả ném, tính tỷ lệ chuẩn xác (%), bảng thành tích danh hiệu *Tay Ném Vàng FUDA ⭐*.
-- **Bóng Chuyền & Cầu Lông 1v1 (Spike & Rally)**: Di chuyển, căn thời gian nhảy đập bóng qua lưới và cứu bóng ngoạn mục.
-- **Barista Pha Chế Cà Phê Muối & Trà Sữa**: Trò chơi mô phỏng chọn nguyên liệu (Cà phê phin, Sữa đặc, Kem muối Đà Nẵng, Trân châu), pha chế chuẩn công thức và phục vụ khách hàng.
+### ⚽🏀 Minigame Thể Thao Arcade 2.0 ([SportsArcade.js](file:///D:/THStudy/DeverClub/DEVER_TOWN/src/ui/minigames/SportsArcade.js))
+- **Sút Phạt Đền & Đối Kháng 2 Chiều 11M (PenaltyShootoutEngine)**:
+  - *Lượt Tiền Đạo:* Sút bóng uốn lượn có hàng rào chắn người nhảy cản phá, bia hồng tâm điểm thưởng treo ở góc chữ A (+150đ) và xà ngang.
+  - *Lượt Thủ Môn:* Đảo góc nhìn từ trong khung thành ra sân; điều khiển đôi găng tay phản xạ đón bắt bóng của đối thủ trong thời gian thực (+120đ).
+  - *Lưới bóng đá lò xo:* Spring-Mass Net Grid 8x6 rung sóng vật lý chân thực khi bóng vào lưới.
+- **Ném Bóng Rổ Parabol & Swish Streak (BasketballShootoutEngine)**:
+  - Quỹ đạo ném xiên parabol hoàn chỉnh ($v_x, v_y, g$), va chạm đàn hồi bảng rổ ($e=0.68$) và rung giật vành kim loại (Rim Rattle).
+  - Cơ chế **SWISH!** xé lưới (+5đ); 3 quả liên tiếp kích hoạt bốc lửa **ON FIRE! 🔥** (nhân đôi điểm). Trụ rổ di chuyển đung đưa ở điểm số cao.
+- **Bóng Chuyền 1v1 Vòm Đầu Đàn Hồi & Spike (VolleyballRallyEngine)**:
+  - Vòm đầu bán nguyệt đàn hồi cao phản xạ góc bóng theo điểm tiếp xúc; nhảy đập bóng Spike uy lực dồn vệt lửa cắm sân đối phương; bot AI 3 cấp độ biết chắn lưới (Block). Triệt tiêu 100% lỗi dính lưới qua Positional Separation.
+- **Barista FPTU Simulator 2.0 (BaristaSimulatorEngine)**:
+  - Mô phỏng 4 trạm tương tác thực tế: Nhận đơn hàng khách FPTU kèm thanh kiên nhẫn $\rightarrow$ Thả đá & Rót chất lỏng phân tầng tỷ trọng $\rightarrow$ Đánh bọt kem vi mô đo độ sánh mịn $\rightarrow$ Rót bọt sữa vẽ Latte Art tự do với thuật toán chấm điểm 1–5 sao và thưởng tiền tips.
 
-### 👾 Minigame Cổ Điển Canvas ([RetroArcade.js](file:///D:/THStudy/DeverClub/DEVER_TOWN/src/ui/minigames/RetroArcade.js))
-- **Rắn Săn Mồi Cyber Snake**: Đồ họa Neon 8-bit, ăn mồi tăng tốc độ, tranh tài điểm cao.
-- **Buggy Đẩy Hộp (Sokoban)**: Trò chơi giải đố đẩy thùng logic vào các ô mục tiêu.
-- **Cóc Vàng Đào Kho Báu (Goldminer)**: Bắn móc câu góc quay dao động, kéo vàng, kim cương và né thuốc nổ/đá nặng.
+### 👾 Minigame Cổ Điển Arcade 2.0 ([RetroArcade.js](file:///D:/THStudy/DeverClub/DEVER_TOWN/src/ui/minigames/RetroArcade.js))
+- **Rắn Săn Mồi Siêu Cấp 60FPS (SnakeEngine)**: Thân rắn uốn lượn mượt mà (không giật ô), cơ chế xả thân bứt tốc (Boost-Burn), 5 loại vật phẩm (Táo đỏ, Ớt cay, Nam châm, Kem tuyết, Cổng Portal) + Bộ lọc CRT Scanlines.
+- **Đẩy Hộp Trí Tuệ 15 Màn Microban (SokobanEngine)**: Bộ 15 màn chơi kinh điển từ dễ đến cực khó, cơ chế sàn băng trơn (Ice Floor), ngăn xếp Hoàn Tác vô hạn (Undo qua phím U), thuật toán phát hiện kẹt góc Deadlock Detector và đánh giá 3 sao.
+- **Vua Đào Vàng Nổ Dây Chuyền TNT (GoldMinerEngine)**: Cáp tời xích sắt cơ học, móc kẹp đóng mở, thùng thuốc nổ TNT nổ dây chuyền quét sạch chướng ngại vật, cửa hàng mua thuốc nổ Dynamite (bấm Space nổ đứt đá) và nước tăng lực.
 
 ---
 

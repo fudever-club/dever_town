@@ -283,12 +283,16 @@ export class PlayerProfileModal {
       gender: 'male',
       hairstyle: 'short',
       hair: '#0f172a',
-      skin: '#fcd34d',
+      skin: '#fbd1a2',
+      skinTone: 'skin_natural',
+      facialHair: 'none',
+      expression: 'expr_focus',
       outfitType: outfitType,
       shirt: shirtColor,
       collarColor: '#002147',
       pants: '#1e293b',
-      accessory: 'none'
+      accessory: 'none',
+      inHandItem: this.currentPlayer?.equippedItemId || null
     };
   }
 

@@ -27,6 +27,23 @@
 - **CẤM rải Emoji vào Nút bấm (Buttons) & Tabs**: Mọi nút bấm (CTA) và tab chuyển đổi phải dùng text thuần túy, sạch sẽ (BẮT BUỘC: `Gửi Lời Mời Kết Bạn`, `Đồng Ý Kết Bạn`, `Từ Chối`, `Nhắn Tin`, `Tải Game`...; CẤM: `<span>🤝</span> Kết Bạn`, `<span>✅</span> Đồng Ý`...).
 - **CẤM rải Emoji vào Thông báo hệ thống (Toast & Console Logs)**: Thông báo popup và log hệ thống phải dùng văn phong tinh gọn, chuyên nghiệp theo chuẩn kỹ thuật (`[Error]`, `[Warning]`, `[Info]`), không chèn emoji đầu dòng.
 
+## 6. Game Development & Upgrade Protocol (Notion Superpowers Framework)
+> Áp dụng quy chuẩn phát triển game hiện đại từ tài liệu: `thinhnguyen94/H-ng-d-n-t-o-game-b-ng-ChatGPT-Blender-MCP-Three-js-v-Superpowers-3d5afe0c56278065be83ca7108de1431`
+- **Tách Biệt Hằng Số Cân Bằng (Balancing Configuration)**:
+  - Mọi thông số vật lý (gia tốc $g$, ma sát, độ đàn hồi), vận tốc di chuyển, kích thước hitbox, bảng điểm, tỷ lệ xuất hiện vật phẩm BẮT BUỘC phải đặt trong thư mục `src/config/` (ví dụ `minigamesConfig.js`). Tuyệt đối không hardcode số ma thuật trong vòng lặp `update()` hay render.
+- **Finite State Machine (FSM) Bắt Buộc Cho Từng Minigame**:
+  - Mọi trò chơi phải có cỗ máy trạng thái tường minh (`IDLE`, `AIMING/PREPARING`, `IN_ACTION`, `RESOLUTION`, `CELEBRATING/GAMEOVER`). Không dùng các cờ boolean rời rạc gây chồng chéo sự kiện khi bấm phím liên tục.
+- **Game Feel & "Juice" 60FPS**:
+  - Tích hợp phản hồi giác quan: Camera shake (100–150ms khi sút mạnh/nổ bom), chữ số điểm bay đàn hồi (Floating Combat Text), hạt bụi/khói/pháo hoa, chuyển động co giãn đàn hồi (squash & stretch), âm thanh tổng hợp Web Audio API sinh động.
+- **Tránh Gameplay Hời Hợt (Non-Trivial & Hands-on Mechanics)**:
+  - Tuyệt đối không thiết kế game chỉ bằng 1 nút bấm đơn điệu hay canh vạch xanh vô vị. Phải nghiên cứu cơ chế chuẩn từ thị trường (vuốt vẽ quỹ đạo, phối hợp đa nhịp, vật lý phân tầng chất lỏng, kéo thả cao su, đối kháng 2 chiều).
+- **Quy Trình Kiểm Tra Trước Khi Cập Nhật (Pre-Update Verification Checklist)**:
+  - Mỗi khi nâng cấp hoặc bổ sung tính năng minigame:
+    1. Nghiên cứu benchmark game cùng thể loại trên thị trường.
+    2. Viết specification rõ ràng và cập nhật kế hoạch vào `docs/plans/`.
+    3. Bảo toàn 100% ID DOM và API interface để không gây gãy vỡ test suite (Zero-Regression).
+    4. Chạy build `npm run build` và test suite Playwright kiểm chứng trước khi kết thúc tác vụ.
+
 ## Agent skills
 
 ### Issue tracker

@@ -15,6 +15,11 @@ export class WardrobeModal {
 
     this.currentConfig = {
       gender: 'male',
+      skinTone: 'skin_natural',
+      skinColor: '#fbd1a2',
+      facialHair: 'none',
+      expression: 'expr_focus',
+      inHandItem: 'none',
       outfitId: 'hoodie_fuda',
       outfitType: 'hoodie',
       hoodieColor: '#f26f21',
@@ -23,6 +28,9 @@ export class WardrobeModal {
       hairColor: '#0f172a',
       accessory: 'none'
     };
+
+    this.previewDirections = ['down', 'left', 'up', 'right'];
+    this.currentDirIndex = 0;
 
     this.loadFromStorage();
     this.initEvents();
@@ -80,6 +88,23 @@ export class WardrobeModal {
     if (applyBtn) {
       applyBtn.addEventListener('click', () => this.handleApply());
     }
+
+    // Nút Xoay 360 độ Preview
+    const rotLeft = document.getElementById('wardrobe-rotate-left');
+    if (rotLeft) {
+      rotLeft.addEventListener('click', () => {
+        this.currentDirIndex = (this.currentDirIndex - 1 + this.previewDirections.length) % this.previewDirections.length;
+        this.updatePreviewCanvas();
+      });
+    }
+
+    const rotRight = document.getElementById('wardrobe-rotate-right');
+    if (rotRight) {
+      rotRight.addEventListener('click', () => {
+        this.currentDirIndex = (this.currentDirIndex + 1) % this.previewDirections.length;
+        this.updatePreviewCanvas();
+      });
+    }
   }
 
   isOpen() {
@@ -103,9 +128,13 @@ export class WardrobeModal {
 
   render() {
     this.renderGenderOptions();
+    this.renderSkinToneOptions();
+    this.renderExpressionOptions();
+    this.renderFacialHairOptions();
     this.renderOutfitOptions();
     this.renderHairstyleOptions();
     this.renderHairColorOptions();
+    this.renderInHandOptions();
     this.renderAccessoryOptions();
     this.updatePreviewCanvas();
   }
@@ -129,6 +158,81 @@ export class WardrobeModal {
         } else if (g.id === 'male' && this.currentConfig.hairstyle === 'long') {
           this.currentConfig.hairstyle = 'short';
         }
+        this.render();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  renderSkinToneOptions() {
+    const container = document.getElementById('wardrobe-skin-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.skinTones.forEach(skin => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = this.currentConfig.skinTone === skin.id;
+      btn.className = `wardrobe-chip-btn ${isSelected ? 'selected' : ''}`;
+      btn.innerHTML = `<span class="skin-color-preview" style="display:inline-block;width:12px;height:12px;border-radius:50%;background-color:${skin.color};margin-right:6px;vertical-align:middle;border:1px solid rgba(255,255,255,0.4);"></span>${skin.name}`;
+
+      btn.addEventListener('click', () => {
+        this.currentConfig.skinTone = skin.id;
+        this.currentConfig.skinColor = skin.color;
+        this.render();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  renderExpressionOptions() {
+    const container = document.getElementById('wardrobe-expression-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.expressions.forEach(expr => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = this.currentConfig.expression === expr.id;
+      btn.className = `wardrobe-chip-btn ${isSelected ? 'selected' : ''}`;
+      btn.textContent = expr.name;
+      btn.title = expr.desc;
+
+      btn.addEventListener('click', () => {
+        this.currentConfig.expression = expr.id;
+        this.render();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
+  renderFacialHairOptions() {
+    const section = document.getElementById('wardrobe-beard-section');
+    const container = document.getElementById('wardrobe-beard-list');
+    if (!container) return;
+
+    // Chỉ hiển thị râu cho Nam Sinh
+    if (this.currentConfig.gender === 'female') {
+      if (section) section.style.display = 'none';
+      return;
+    } else if (section) {
+      section.style.display = 'block';
+    }
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.facialHairs.forEach(beard => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = this.currentConfig.facialHair === beard.id;
+      btn.className = `wardrobe-chip-btn ${isSelected ? 'selected' : ''}`;
+      btn.textContent = beard.name;
+      btn.title = beard.desc;
+
+      btn.addEventListener('click', () => {
+        this.currentConfig.facialHair = beard.id;
         this.render();
       });
 
@@ -208,6 +312,29 @@ export class WardrobeModal {
     });
   }
 
+  renderInHandOptions() {
+    const container = document.getElementById('wardrobe-inhand-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    WARDROBE_CONFIG.inHandEquipments.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isSelected = (this.currentConfig.inHandItem || 'none') === item.id;
+      btn.className = `wardrobe-chip-btn ${isSelected ? 'selected' : ''}`;
+      btn.textContent = item.name;
+      btn.title = item.desc;
+
+      btn.addEventListener('click', () => {
+        this.currentConfig.inHandItem = item.id;
+        this.currentConfig.equippedItemId = item.id;
+        this.render();
+      });
+
+      container.appendChild(btn);
+    });
+  }
+
   renderAccessoryOptions() {
     const container = document.getElementById('wardrobe-acc-list');
     if (!container) return;
@@ -217,7 +344,7 @@ export class WardrobeModal {
       const btn = document.createElement('div');
       const isSelected = this.currentConfig.accessory === acc.id;
       btn.className = `wardrobe-acc-card ${isSelected ? 'selected' : ''}`;
-      btn.innerHTML = `<span class="acc-icon">${acc.icon}</span><span class="acc-name">${acc.name}</span>`;
+      btn.innerHTML = `<span class="acc-name">${acc.name}</span>`;
       btn.title = acc.desc;
 
       btn.addEventListener('click', () => {
@@ -240,7 +367,7 @@ export class WardrobeModal {
     // Vẽ nền preview
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#f26f21';
+    ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 2;
     ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
@@ -252,20 +379,25 @@ export class WardrobeModal {
 
     const config = {
       gender: this.currentConfig.gender || 'male',
+      skinTone: this.currentConfig.skinTone || 'skin_natural',
+      skin: this.currentConfig.skinColor || '#fbd1a2',
+      facialHair: this.currentConfig.facialHair || 'none',
+      expression: this.currentConfig.expression || 'expr_focus',
       hairstyle: this.currentConfig.hairstyle || 'short',
       hair: this.currentConfig.hairColor || '#0f172a',
-      skin: '#fcd34d',
       outfitType: this.currentConfig.outfitType || 'hoodie',
       shirt: this.currentConfig.hoodieColor || '#f26f21',
       collarColor: this.currentConfig.collarColor || '#002147',
       pants: (this.currentConfig.outfitType === 'aodai') ? '#ffffff' : ((this.currentConfig.outfitType === 'dress' || this.currentConfig.outfitType === 'sailor') ? '#38bdf8' : '#1e293b'),
-      accessory: this.currentConfig.accessory || 'none'
+      accessory: this.currentConfig.accessory || 'none',
+      inHandItem: this.currentConfig.inHandItem || null
     };
 
-    TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, 'down', 1, config);
+    const currentDir = this.previewDirections[this.currentDirIndex] || 'down';
+    TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, currentDir, 1, config);
 
     // Scale lên canvas preview (4x = 128x128)
-    ctx.drawImage(tempCanvas, 0, 0, 32, 32, (canvas.width - 128) / 2, (canvas.height - 128) / 2 + 10, 128, 128);
+    ctx.drawImage(tempCanvas, 0, 0, 32, 32, (canvas.width - 128) / 2, (canvas.height - 128) / 2 + 6, 128, 128);
   }
 
   handleApply() {
@@ -274,7 +406,6 @@ export class WardrobeModal {
 
     if (this.scene) {
       if (this.scene.player) {
-        // setCustomWardrobe tự xử lý generate texture + swap an toàn (không crash WebGL)
         this.scene.player.setCustomWardrobe(customKey, this.currentConfig);
       }
 
@@ -296,7 +427,7 @@ export class WardrobeModal {
   async syncToServer() {
     try {
       if (authService && authService.isLoggedIn()) {
-        const equippedItemId = localStorage.getItem('dever_equipped_item') || null;
+        const equippedItemId = this.currentConfig.inHandItem || localStorage.getItem('dever_equipped_item') || null;
         await authService.syncFullProfile({
           wardrobeConfig: this.currentConfig,
           equippedItemId

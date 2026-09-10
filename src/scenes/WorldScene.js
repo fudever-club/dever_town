@@ -148,13 +148,6 @@ export class WorldScene extends Phaser.Scene {
     camera.startFollow(this.player, true, 0.08, 0.08);
     camera.setRoundPixels(true);
 
-    // Kích hoạt PostFX Vignette làm sâu sắc góc nhìn (nếu WebGL hỗ trợ)
-    if (camera.postFX) {
-      try {
-        camera.postFX.addVignette(0.5, 0.5, 0.72, 0.3);
-      } catch (e) {}
-    }
-
     this.updateCameraZoom();
 
     // Dùng named reference để có thể removeEventListener trong shutdown()
@@ -538,12 +531,14 @@ export class WorldScene extends Phaser.Scene {
     if (spawnX !== undefined && spawnY !== undefined) {
       this.player.setPosition(spawnX, spawnY);
       this.player.body.reset(spawnX, spawnY);
+      this.player.body.setVelocity(0, 0);
       if (this.bestiePetFollower) {
         this.bestiePetFollower.setPosition(spawnX, spawnY);
       }
     }
 
-    this.teleportGraceUntil = performance.now() + 2000;
+    this.teleportGraceUntil = performance.now() + 3500;
+    this.lastTeleportTime = performance.now();
 
     // Cập nhật hiệu ứng hạt môi trường cho phòng
     if (this.ambientManager) {
@@ -582,7 +577,7 @@ export class WorldScene extends Phaser.Scene {
 
     const now = performance.now();
     if (now < this.teleportGraceUntil) return;
-    if (now - this.lastTeleportTime < 2000) return;
+    if (now - this.lastTeleportTime < 2500) return;
 
     this.isTeleporting = true;
     this.lastTeleportTime = now;
@@ -992,8 +987,11 @@ export class WorldScene extends Phaser.Scene {
           const mapData = MAPS_CONFIG[targetRoom];
           if (mapData) {
             this.isTeleporting = false;
-            this.teleportGraceUntil = performance.now() + 1500;
+            this.teleportGraceUntil = performance.now() + 3500;
             this.lastTeleportTime = performance.now();
+            if (this.player && this.player.body) {
+              this.player.body.setVelocity(0, 0);
+            }
             this.loadRoom(targetRoom, mapData.spawnPoint.x, mapData.spawnPoint.y, true);
           }
         }
