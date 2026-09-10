@@ -40,12 +40,12 @@ export const MAPS_CONFIG = {
     portals: [
       { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
       { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
-      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 600, y: 220 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 140, y: 220 }, label: 'Không Gian Web' },
-      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 600, y: 220 }, label: 'Media Hub' },
-      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 140, y: 304 }, label: 'Khu Thể Thao' },
-      { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' },
-      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' }
+      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
+      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
+      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
+      { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' }
     ],
     zones: [
       { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -85,12 +85,12 @@ export const MAPS_CONFIG = {
         portals: [
           { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
           { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
-          { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 600, y: 220 }, label: 'Phòng Kỷ Niệm' },
-          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 140, y: 220 }, label: 'Không Gian Web' },
-          { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 600, y: 220 }, label: 'Media Hub' },
-          { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 140, y: 304 }, label: 'Khu Thể Thao' },
-          { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' },
-          { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 120 }, label: 'Căn Tin & Cafe' }
+          { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
+          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
+          { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+          { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
+          { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+          { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' }
         ],
         zones: [
           { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -307,7 +307,7 @@ export const MAPS_CONFIG = {
     id: 'memory_room',
     name: 'Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER',
     description: 'Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử 9+ năm.',
-    spawnPoint: { x: 600, y: 220 },
+    spawnPoint: { x: 360, y: 240 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2, 16,  1, 16,  1, 16,  1, 17, 17,  1, 17, 17,  1, 16,  1, 16,  1, 16,  1, 17, 17,  1, 16, 13,  2 ],
@@ -396,7 +396,7 @@ export const MAPS_CONFIG = {
     id: 'web_room',
     name: 'Không Gian Web & IT Helpdesk FPTU',
     description: 'Không gian số nhúng Cổng thông tin, Landing Page chính thức và Bàn hỗ trợ IT Helpdesk trường.',
-    spawnPoint: { x: 140, y: 220 },
+    spawnPoint: { x: 380, y: 280 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 18, 18, 18, 18,  8,  8,  8,  8, 18, 18, 18, 18,  8,  8, 18, 18, 18, 18,  8,  8, 13, 15 ],
@@ -485,7 +485,7 @@ export const MAPS_CONFIG = {
     id: 'media_hub',
     name: 'Cổng Thông Tin Học Vụ & Media Hub',
     description: 'Không gian tích hợp toàn bộ các cổng thông tin FAP, FLM, LMS, phần mềm thi và mạng xã hội CLB.',
-    spawnPoint: { x: 600, y: 220 },
+    spawnPoint: { x: 260, y: 220 },
     layout: [
       [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
       [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
@@ -574,7 +574,7 @@ export const MAPS_CONFIG = {
     id: 'sports_complex',
     name: 'Khu Phức Hợp Thể Thao & Nhà Võ Vovinam',
     description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông, nhà võ Vovinam và hồ bơi sinh viên FUDA.',
-    spawnPoint: { x: 140, y: 304 },
+    spawnPoint: { x: 400, y: 336 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
@@ -644,7 +644,7 @@ export const MAPS_CONFIG = {
     id: 'canteen_cafe',
     name: 'Căn Tin FUDA & The High Deli Lounge',
     description: 'Không gian ẩm thực sinh viên, thực đơn 3 căn tin thực tế, quầy cà phê muối Đà Nẵng và pha chế barista.',
-    spawnPoint: { x: 400, y: 120 },
+    spawnPoint: { x: 400, y: 240 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
@@ -668,8 +668,8 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 400 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 400 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 320 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 320 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {

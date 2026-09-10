@@ -77,18 +77,18 @@ export class VolleyballRallyEngine {
         this.player.isGrounded = false;
         audioManager.playKick(0.7);
       } else {
-        // Kiểm tra tầm đập bóng Spike
+        // Kiểm tra tầm đập bóng Spike (Tăng bán kính với bóng lên 52px để người chơi dễ căn nhịp đập bóng)
         const dx = this.ball.x - this.player.x;
         const dy = this.ball.y - (this.player.y - 25);
-        if (Math.hypot(dx, dy) < 36 && this.ball.y < this.player.y) {
-          // Spike smash!
-          this.ball.vx = 7.5;
-          this.ball.vy = 6.2;
+        if (Math.hypot(dx, dy) < 52 && this.ball.y < this.player.y + 5) {
+          // Spike smash uy lực!
+          this.ball.vx = 9.4;
+          this.ball.vy = 7.8;
           this.ball.isSpiked = true;
           audioManager.playSpikeSmash();
-          this.juiceFX.shake(6, 0.15);
-          this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 14, '#ef4444');
-          this.juiceFX.spawnFloatingText('POWER SPIKE! 🔥', this.ball.x, this.ball.y - 20, { color: '#ef4444', size: 18 });
+          this.juiceFX.shake(7, 0.2);
+          this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 16, '#ef4444');
+          this.juiceFX.spawnFloatingText('POWER SPIKE! 🔥', this.ball.x, this.ball.y - 20, { color: '#ef4444', size: 20 });
         }
       }
     } else if (this.state === 'scored') {
@@ -160,18 +160,20 @@ export class VolleyballRallyEngine {
     this.ball.x += this.ball.vx;
     this.ball.y += this.ball.vy;
 
-    // 4. Va chạm vòm đầu người chơi (Player Head Arc)
+    // 4. Va chạm vòm đầu người chơi (Player Head Arc - Lực đánh bóng mạnh mẽ & có đà nhảy)
     const headX = this.player.x;
     const headY = this.player.y - 26;
     const distP = Math.hypot(this.ball.x - headX, this.ball.y - headY);
     if (distP < this.ball.radius + cfg.player.headRadius && this.ball.vy > 0) {
       const angle = Math.atan2(this.ball.y - headY, this.ball.x - headX);
-      this.ball.vx = Math.cos(angle) * 6.2;
-      this.ball.vy = -Math.abs(Math.sin(angle) * 7.5);
+      const jumpBoost = !this.player.isGrounded ? 2.2 : 0;
+      this.ball.vx = Math.cos(angle) * (7.6 + jumpBoost);
+      this.ball.vy = -Math.abs(Math.sin(angle) * 8.8) - 2.2 - jumpBoost;
       this.ball.isSpiked = false;
       this.rallyCount++;
-      audioManager.playKick(0.9);
-      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#38bdf8');
+      audioManager.playKick(1.1);
+      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#38bdf8');
+      this.juiceFX.spawnFloatingText('+1 Tâng Bóng', this.ball.x, this.ball.y - 15, { color: '#38bdf8', size: 13 });
     }
 
     // 5. Va chạm vòm đầu Bot AI
@@ -180,23 +182,34 @@ export class VolleyballRallyEngine {
     const distB = Math.hypot(this.ball.x - botHeadX, this.ball.y - botHeadY);
     if (distB < this.ball.radius + cfg.player.headRadius && this.ball.vy > 0) {
       const angle = Math.atan2(this.ball.y - botHeadY, this.ball.x - botHeadX);
-      this.ball.vx = -Math.abs(Math.cos(angle) * 5.8);
-      this.ball.vy = -Math.abs(Math.sin(angle) * 7.2);
+      this.ball.vx = -Math.abs(Math.cos(angle) * 7.2) - 1.2;
+      this.ball.vy = -Math.abs(Math.sin(angle) * 8.6) - 2.0;
       this.ball.isSpiked = false;
       this.rallyCount++;
-      audioManager.playKick(0.8);
-      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#f59e0b');
+      audioManager.playKick(0.9);
+      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#f59e0b');
     }
 
-    // 6. Va chạm lưới giữa sân
+    // 6. Va chạm lưới giữa sân (Triệt tiêu hoàn toàn lỗi dính lưới qua Positional Separation)
     const net = cfg.net;
+    const netLeft = net.x - net.width / 2;
+    const netRight = net.x + net.width / 2;
     if (
-      this.ball.x + this.ball.radius >= net.x - net.width / 2 &&
-      this.ball.x - this.ball.radius <= net.x + net.width / 2 &&
+      this.ball.x + this.ball.radius >= netLeft &&
+      this.ball.x - this.ball.radius <= netRight &&
       this.ball.y >= net.y
     ) {
-      this.ball.vx *= -0.8;
-      audioManager.playKick(0.5);
+      if (this.ball.x < net.x) {
+        this.ball.x = netLeft - this.ball.radius - 3;
+        this.ball.vx = -Math.abs(this.ball.vx || 4.2) * 0.85 - 2.0;
+      } else {
+        this.ball.x = netRight + this.ball.radius + 3;
+        this.ball.vx = Math.abs(this.ball.vx || 4.2) * 0.85 + 2.0;
+      }
+      this.ball.vy = -Math.abs(this.ball.vy || 4.5) * 0.7 - 2.8;
+      audioManager.playKick(0.6);
+      this.juiceFX.shake(3, 0.1);
+      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#ffffff');
     }
 
     // 7. Bóng chạm sàn

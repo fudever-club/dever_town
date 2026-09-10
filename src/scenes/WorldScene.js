@@ -538,12 +538,14 @@ export class WorldScene extends Phaser.Scene {
     if (spawnX !== undefined && spawnY !== undefined) {
       this.player.setPosition(spawnX, spawnY);
       this.player.body.reset(spawnX, spawnY);
+      this.player.body.setVelocity(0, 0);
       if (this.bestiePetFollower) {
         this.bestiePetFollower.setPosition(spawnX, spawnY);
       }
     }
 
-    this.teleportGraceUntil = performance.now() + 2000;
+    this.teleportGraceUntil = performance.now() + 3500;
+    this.lastTeleportTime = performance.now();
 
     // Cập nhật hiệu ứng hạt môi trường cho phòng
     if (this.ambientManager) {
@@ -582,7 +584,7 @@ export class WorldScene extends Phaser.Scene {
 
     const now = performance.now();
     if (now < this.teleportGraceUntil) return;
-    if (now - this.lastTeleportTime < 2000) return;
+    if (now - this.lastTeleportTime < 2500) return;
 
     this.isTeleporting = true;
     this.lastTeleportTime = now;
@@ -992,8 +994,11 @@ export class WorldScene extends Phaser.Scene {
           const mapData = MAPS_CONFIG[targetRoom];
           if (mapData) {
             this.isTeleporting = false;
-            this.teleportGraceUntil = performance.now() + 1500;
+            this.teleportGraceUntil = performance.now() + 3500;
             this.lastTeleportTime = performance.now();
+            if (this.player && this.player.body) {
+              this.player.body.setVelocity(0, 0);
+            }
             this.loadRoom(targetRoom, mapData.spawnPoint.x, mapData.spawnPoint.y, true);
           }
         }

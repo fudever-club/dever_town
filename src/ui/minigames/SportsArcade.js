@@ -159,6 +159,7 @@ export class SportsArcade {
   bindEvents() {
     this.handleKeyDown = (e) => {
       if (!this.running) return;
+      if (e.repeat) return; // Chống lặp phím liên tục khi người chơi nhấn giữ Space
       if (Date.now() < this.activationGraceUntil) return;
 
       const activeTag = document.activeElement?.tagName;

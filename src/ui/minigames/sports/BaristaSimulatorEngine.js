@@ -33,6 +33,7 @@ export class BaristaSimulatorEngine {
 
     // Trạng thái trạm: 'order' | 'layering' | 'whisking' | 'latte_art' | 'result'
     this.station = 'order';
+    this.actionCooldownUntil = 0;
 
     // Trạm 1: Order
     this.patience = this.recipe.patienceSec;
@@ -46,7 +47,7 @@ export class BaristaSimulatorEngine {
     this.isPouringLiquid = false;
 
     // Trạm 3: Whisking
-    this.whiskTexture = 20; // 0 - 100
+    this.whiskTexture = 25; // 0 - 100
     this.whiskDirection = 1;
 
     // Trạm 4: Latte Art
@@ -65,43 +66,84 @@ export class BaristaSimulatorEngine {
   }
 
   onActionTrigger() {
+    const now = Date.now();
+    if (now < this.actionCooldownUntil) return;
+
     if (this.station === 'order') {
       this.station = 'layering';
+      this.actionCooldownUntil = now + 450;
       audioManager.playClick();
       this.juiceFX.spawnFloatingText('Bắt Đầu Pha Chế!', 320, 180, { color: '#38bdf8' });
     } else if (this.station === 'layering') {
-      // Nhấn action để thả thêm đá nếu chưa đủ, hoặc chuyển lớp
+      // 1. Thả đá từng viên một có âm thanh và nhịp điệu
       if (this.currentIce < this.recipe.targetIce) {
         this.addIceCube();
+        this.actionCooldownUntil = now + 320;
       } else {
-        // Tăng lớp chất lỏng
-        if (this.layerProgress[this.activeLayerIndex] < 100) {
+        // 2. Rót từng nấc chất lỏng (+34% mỗi lần bấm)
+        this.actionCooldownUntil = now + 300;
+        this.layerProgress[this.activeLayerIndex] = (this.layerProgress[this.activeLayerIndex] || 0) + 34;
+        audioManager.playLiquidPour();
+        const layerName = this.recipe.layers[this.activeLayerIndex]?.name || 'Lớp';
+        
+        if (this.layerProgress[this.activeLayerIndex] >= 100) {
           this.layerProgress[this.activeLayerIndex] = 100;
-          audioManager.playLiquidPour();
-          this.juiceFX.spawnFloatingText('Lớp Đầy!', 320, 200, { color: '#fbbf24', size: 14 });
-        }
-        this.activeLayerIndex++;
-        if (this.activeLayerIndex >= this.recipe.layers.length) {
-          this.station = 'whisking';
-          this.juiceFX.spawnFloatingText('Đánh Bọt Kem!', 320, 150, { color: '#f472b6' });
+          this.juiceFX.spawnFloatingText(`Đầy Lớp: ${layerName}!`, 320, 200, { color: '#fbbf24', size: 14 });
+          this.activeLayerIndex++;
+
+          if (this.activeLayerIndex >= this.recipe.layers.length) {
+            this.station = 'whisking';
+            this.actionCooldownUntil = now + 500;
+            this.juiceFX.spawnFloatingText('Chuyển Sang Đánh Bọt Kem!', 320, 150, { color: '#f472b6' });
+          }
+        } else {
+          this.juiceFX.spawnFloatingText(`Rót ${layerName}...`, 320, 200, { color: '#e0f2fe', size: 13 });
         }
       }
     } else if (this.station === 'whisking') {
-      // Đánh bọt kem
-      this.whiskTexture = Math.min(100, this.whiskTexture + 12);
+      this.actionCooldownUntil = now + 160;
+      // Mỗi lần bấm tăng thêm độ sánh
+      this.whiskTexture = Math.min(100, this.whiskTexture + 8);
       audioManager.playWhisking();
-      this.juiceFX.spawnSparkles(320, 200, 6, '#fdf2f8');
+      this.juiceFX.spawnSparkles(320, 190, 4, '#fdf2f8');
 
+      // Nếu đã ở trong Vùng Xanh (68% - 90%) và người chơi xác nhận
       if (this.whiskTexture >= BARISTA_CONFIG.whisking.minGoodTexture && this.whiskTexture <= BARISTA_CONFIG.whisking.maxGoodTexture) {
         this.station = 'latte_art';
-        this.juiceFX.spawnFloatingText('Bọt Kem Sánh Mịn!', 320, 160, { color: '#22c55e' });
+        this.actionCooldownUntil = now + 600;
+        audioManager.playVictory();
+        this.juiceFX.spawnFloatingText('Bọt Kem Sánh Mịn Chuẩn Chỉ!', 320, 160, { color: '#22c55e' });
       }
     } else if (this.station === 'latte_art') {
-      // Hoàn thành tác phẩm
-      this.finishDrink();
+      this.actionCooldownUntil = now + 400;
+      // Nếu người chơi chưa rê chuột vẽ bọt sữa thì tự động vẽ một hình nghệ thuật đẹp mắt
+      if (this.lattePours.length === 0) {
+        this.autoPourLatteArt();
+      } else {
+        this.finishDrink();
+      }
     } else if (this.station === 'result') {
+      this.actionCooldownUntil = now + 600;
       this.nextDrink();
     }
+  }
+
+  autoPourLatteArt() {
+    audioManager.playWhisking();
+    // Vẽ hình trái tim bọt sữa đối xứng mẫu
+    const cx = this.recognizer.cupCenterX;
+    const cy = this.recognizer.cupCenterY;
+    const heartOffsets = [
+      { dx: 0, dy: 15 }, { dx: -12, dy: 5 }, { dx: 12, dy: 5 },
+      { dx: -20, dy: -8 }, { dx: 20, dy: -8 }, { dx: -12, dy: -22 },
+      { dx: 12, dy: -22 }, { dx: 0, dy: -12 }, { dx: 0, dy: 2 }
+    ];
+    for (const off of heartOffsets) {
+      this.recognizer.addPourPoint(cx + off.dx, cy + off.dy, 9);
+      this.lattePours.push({ x: cx + off.dx, y: cy + off.dy, r: 10 });
+    }
+    this.juiceFX.spawnSparkles(cx, cy, 10, '#ffffff');
+    this.juiceFX.spawnFloatingText('Vẽ Trái Tim Nghệ Thuật! Bấm nút để Hoàn Tất', 320, 100, { color: '#fbbf24', size: 14 });
   }
 
   addIceCube() {
