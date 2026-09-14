@@ -40,12 +40,12 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
-    this.shadowEllipse = scene.add.ellipse(x, y + 14, 20, 7, 0x000000, 0.28);
+    this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
 
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y + 14);
+    this.setDepth(this.y + 30);
 
     // Bật tương tác click vào nhân vật để xem Hồ sơ & Kết bạn
     this.setInteractive({ cursor: 'pointer' });

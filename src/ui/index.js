@@ -13,6 +13,7 @@ export { InteractiveModal } from './gameplay/InteractiveModal.js';
 export { InventoryModal } from './gameplay/InventoryModal.js';
 export { QuestModal } from './gameplay/QuestModal.js';
 export { WardrobeModal } from './gameplay/WardrobeModal.js';
+export { NPCDialogueModal } from './gameplay/NPCDialogueModal.js';
 
 // 3. Minigames & Tools
 export { RetroArcade } from './minigames/RetroArcade.js';
