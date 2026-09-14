@@ -310,8 +310,23 @@ export class PenaltyShootoutEngine {
     const h = this.canvas.height;
     const p = FOOTBALL_CONFIG.pitch;
 
-    // Sân cỏ nhân tạo Oblique 2.5D
-    ctx.fillStyle = '#1e3a1e';
+    // Sky gradient
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, 80);
+    skyGrad.addColorStop(0, '#0c1445');
+    skyGrad.addColorStop(1, '#1a237e');
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, w, 80);
+
+    // Ánh đèn sân vận động
+    const floodLight1 = ctx.createRadialGradient(100, 0, 5, 100, 0, 300);
+    floodLight1.addColorStop(0, 'rgba(255,255,220,0.15)');
+    floodLight1.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = floodLight1;
+    ctx.fillRect(0, 0, w, h);
+    const floodLight2 = ctx.createRadialGradient(540, 0, 5, 540, 0, 300);
+    floodLight2.addColorStop(0, 'rgba(255,255,220,0.15)');
+    floodLight2.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = floodLight2;
     ctx.fillRect(0, 0, w, h);
 
     for (let i = 0; i < 8; i++) {
@@ -366,6 +381,27 @@ export class PenaltyShootoutEngine {
 
     // Vẽ Bia Hồng Tâm Góc Chữ A
     if (this.role === 'striker') {
+      if (this.state === 'aiming') {
+        const aimTargetX = p.penaltySpotX + this.aimX * 0.95;
+        const aimTargetY = p.crossbarY + (p.groundY - p.crossbarY) * (1 - this.aimElevation * 0.8);
+        ctx.save();
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath();
+        ctx.moveTo(p.penaltySpotX, p.penaltySpotY - 8);
+        ctx.lineTo(aimTargetX, aimTargetY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Hình tròn target
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(aimTargetX, aimTargetY, 9, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
       for (const b of FOOTBALL_CONFIG.bullseyes) {
         ctx.fillStyle = '#ef4444';
         ctx.beginPath();

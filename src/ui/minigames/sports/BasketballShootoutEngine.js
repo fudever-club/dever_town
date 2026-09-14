@@ -257,6 +257,21 @@ export class BasketballShootoutEngine {
     ctx.lineTo(rimX + rimW, rimY);
     ctx.stroke();
 
+    // Power Bar
+    const barX = 20, barY = 300, barW = 120, barH = 14;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(barX, barY, barW, barH);
+    const pColor = this.power > 0.8 ? '#ef4444' : this.power > 0.5 ? '#f59e0b' : '#22c55e';
+    ctx.fillStyle = pColor;
+    ctx.fillRect(barX, barY, barW * this.power, barH);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(barX, barY, barW, barH);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Lực Ném', barX, barY - 4);
+
     // Quả bóng rổ
     ctx.save();
     ctx.translate(this.ball.x, this.ball.y);

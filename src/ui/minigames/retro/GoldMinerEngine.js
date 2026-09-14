@@ -50,11 +50,21 @@ export class GoldMinerEngine {
 
     for (const key of pool) {
       const def = GOLD_MINER_CONFIG.minerals[key];
+      let attempts = 0;
+      let mx, my;
+      do {
+        mx = 60 + Math.random() * (this.canvas.width - 120);
+        my = 110 + Math.random() * (this.canvas.height - 150);
+        attempts++;
+      } while (
+        attempts < 20 &&
+        this.minerals.some(m => Math.hypot(m.x - mx, m.y - my) < m.r + def.r + 8)
+      );
       this.minerals.push({
         type: key,
         name: def.name,
-        x: 60 + Math.random() * (this.canvas.width - 120),
-        y: 110 + Math.random() * (this.canvas.height - 150),
+        x: mx,
+        y: my,
         r: def.r,
         val: def.val,
         weight: def.weight || 1.0,
@@ -152,6 +162,8 @@ export class GoldMinerEngine {
             this.minerals.splice(i, 1);
             h.state = 'pull';
             audioManager.playPostClang();
+            this.juiceFX.spawnSparkles(hx, hy, 10, m.color);
+            this.juiceFX.spawnFloatingText(m.name, hx, hy - 20, { color: m.color, size: 14 });
           }
           break;
         }
@@ -223,11 +235,24 @@ export class GoldMinerEngine {
 
     // Vẽ khoáng sản
     for (const m of this.minerals) {
+      if (m.type === 'diamond' || m.type === 'gold_l') {
+        ctx.save();
+        ctx.shadowColor = m.color;
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = m.color;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else {
+        ctx.save();
+        ctx.fillStyle = m.color;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
       ctx.save();
-      ctx.fillStyle = m.color;
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-      ctx.fill();
 
       if (m.isBomb) {
         ctx.fillStyle = '#ffffff';

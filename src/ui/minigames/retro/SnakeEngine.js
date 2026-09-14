@@ -35,6 +35,7 @@ export class SnakeEngine {
     this.score = 0;
     this.gameOver = false;
     this.isBoosting = false;
+    this.wallMode = 'wrap';
 
     this.tickTimer = 0;
     this.currentTickInterval = SNAKE_CONFIG.baseTickMs;
@@ -124,11 +125,16 @@ export class SnakeEngine {
     for (const f of this.foods) {
       const dx = head.x - f.x;
       const dy = head.y - f.y;
-      if (Math.hypot(dx, dy) <= 4) {
-        if (dx > 0) f.x += 0.1;
-        else if (dx < 0) f.x -= 0.1;
-        if (dy > 0) f.y += 0.1;
-        else if (dy < 0) f.y -= 0.1;
+      const dist = Math.hypot(dx, dy);
+      if (dist <= 4 && dist > 0) {
+        // Kéo dần về phía head
+        f.x += (dx / dist) * Math.min(0.15, dist);
+        f.y += (dy / dist) * Math.min(0.15, dist);
+        // Snap nếu đủ gần
+        if (Math.hypot(head.x - f.x, head.y - f.y) < 0.5) {
+          f.x = head.x;
+          f.y = head.y;
+        }
       }
     }
   }
@@ -260,7 +266,36 @@ export class SnakeEngine {
       ctx.restore();
     }
 
-    // Vẽ thân rắn uốn lượn mượt mà
+    // Border danger glow khi đầu rắn gần biên
+    const head = this.snake[0];
+    const margin = 2; // tiles
+    if (head.x < margin || head.x >= this.cols - margin || head.y < margin || head.y >= this.rows - margin) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, w - 8, h - 8);
+      ctx.restore();
+    }
+
+    // Draw snake body as connected path
+    if (this.snake.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = this.grid - 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      const first = this.snake[this.snake.length - 1];
+      ctx.moveTo(first.x * this.grid + this.grid/2, first.y * this.grid + this.grid/2);
+      for (let i = this.snake.length - 2; i >= 1; i--) {
+        const s = this.snake[i];
+        ctx.lineTo(s.x * this.grid + this.grid/2, s.y * this.grid + this.grid/2);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Vẽ đầu rắn riêng
     for (let i = this.snake.length - 1; i >= 0; i--) {
       const s = this.snake[i];
       const px = s.x * this.grid + this.grid / 2;
@@ -288,11 +323,7 @@ export class SnakeEngine {
         ctx.arc(px + eyeOffsetX + this.dir.y * 3, py + eyeOffsetY - this.dir.x * 3, 1.2, 0, Math.PI * 2);
         ctx.fill();
       } else {
-        // Đốt thân bo tròn
-        ctx.fillStyle = i % 2 === 0 ? '#059669' : '#10b981';
-        ctx.beginPath();
-        ctx.arc(px, py, this.grid / 2 - 2, 0, Math.PI * 2);
-        ctx.fill();
+        // Body handled by connected path
       }
       ctx.restore();
     }

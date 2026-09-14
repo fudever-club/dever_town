@@ -125,7 +125,7 @@ export class VolleyballRallyEngine {
 
     // 1. Trọng lực & Di chuyển người chơi
     if (this.keys.left && this.player.x > 45) this.player.x -= cfg.player.moveSpeed;
-    if (this.keys.right && this.player.x < cfg.net.x - 25) this.player.x += cfg.player.moveSpeed;
+    if (this.keys.right && this.player.x < cfg.net.x - 30) this.player.x += cfg.player.moveSpeed;
 
     this.player.vy += cfg.gravity;
     this.player.y += this.player.vy;
@@ -142,7 +142,7 @@ export class VolleyballRallyEngine {
       else if (this.bot.x > targetBotX + 4) this.bot.x -= cfg.botTiers.medium.moveSpeed;
 
       // Bot nhảy đập bóng
-      if (this.bot.isGrounded && Math.abs(this.ball.x - this.bot.x) < 32 && this.ball.y < 210 && this.ball.y > 140) {
+      if (this.bot.isGrounded && Math.abs(this.ball.x - this.bot.x) < 32 && this.ball.y < 210 && this.ball.y > 140 && Math.random() > 0.25) {
         this.bot.vy = -8.2;
         this.bot.isGrounded = false;
       }
@@ -231,6 +231,7 @@ export class VolleyballRallyEngine {
       this.juiceFX.spawnConfetti(this.ball.x, this.ball.y, 25);
       this.juiceFX.spawnFloatingText(`ĐIỂM CHO BẠN! +${this.rallyCount * 10}đ`, 320, 140, { color: '#22c55e', size: 22 });
       this.callbacks.onScoreUpdate?.(this.rallyCount * 10);
+      this.rallyCount = 0;
     } else {
       // Bot ghi điểm
       this.botScore++;
