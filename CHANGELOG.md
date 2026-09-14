@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] — 2026-09-14
+
+### Added — Sprite Overhaul: Nâng Cấp Nhân Vật 48×64 Pokémon-Style (UPDATE-A)
+- **Frame Size nâng cấp 48×64 px**: Spritesheet mới `192×256 px` (4 cột × 4 hàng), thay thế 32×32 cũ — nhân vật sắc nét, chi tiết và đẹp hơn hẳn tại mọi mức zoom.
+- **Walk Animation 4 Frames**: Arm swing rõ ràng — Frame 0 neutral, Frame 1 tay phải ra trước, Frame 2 mid-stride, Frame 3 tay trái ra trước. Đúng chuẩn overworld Pokémon FireRed.
+- **Idle Breathing Animation**: `idle_breathe` 2-frame với `scaleY 1.0 ↔ 1.01` tần suất 0.8fps — nhân vật đứng yên có cảm giác "thở".
+- **Face Chi Tiết Hơn**: Mắt 3×2px + catchlight, miệng 4×1px, điểm mũi 1px — đọc được biểu cảm ở khoảng cách bình thường.
+- **20 Hairstyles + 15+ Outfits + Accessories Rescale**: Tất cả assets nhân vật được viết lại tọa độ cho 48×64.
+- **`generateNPCPortrait(scene, config, key)`**: Generator mới tạo portrait 80×96 px half-body shot cho NPC dialogue.
+
+### Added — NPC System v1.0 (UPDATE-B)
+- **`src/entities/NPC.js`**: NPC Entity với FSM 3 trạng thái (`idle → aware → talking`), breathing tween, proximity detection 80px, `lookAtPlayer()` flip hướng.
+- **`src/config/npcs.js`**: 8 NPC với config đầy đủ trải đều 8 zone: Mentor Thinh (main_hall), Barista An (canteen), Thủ Thư Linh (library), Gamer Bảo (dever_lab), HLV Minh (sports), Phóng Viên Hà (media), Sử Quan Đức (memory), Dev Khoa (web_room).
+- **`src/ui/gameplay/NPCDialogueModal.js`**: Modal hội thoại phong cách Pokémon HGSS — NPC portrait 80×96px bên trái, typewriter effect 30ms/char, bấm [E]/Space next, [F] đóng, slide-up animation từ dưới.
+- **`···` Indicator Bubble**: Khi player đến gần NPC (80px), bubble "···" nhấp nháy xuất hiện trên đầu NPC — không cần [E] tooltip.
+- **WorldScene NPC Integration**: Spawn NPC khi vào phòng (`loadRoom`), update proximity loop, [E] key ưu tiên NPC trước zone interaction.
+
+### Fixed
+- **BUG-005**: Stair spawn hardcode (tileY=112, y=80) → Đọc từ `MAPS_CONFIG[roomId].floors[targetFloor].spawnPoint`.
+- **BUG-007**: Emote tween bay về tọa độ cũ → Đổi sang `onUpdate` callback bám theo `this.x, this.y` realtime.
+- **BUG-008**: Versioned texture key orphan → Thêm `try-catch + setTimeout(500ms)` vào `cleanupOldKey()`.
+- **Input block khi NPC dialog**: `isModalOpen()` trong `controls.js` nhận diện `#npc-dialogue-modal` để chặn movement.
+- **Player/RemotePlayer physics body**: Cập nhật hitbox `24×10px, offset (12, 54)` khớp với sprite 48×64 mới.
+- **Shadow & depth sync**: Tất cả y-offset đã đồng bộ: shadow `y+30`, depth `y+30`, nametag `y-38`, speech bubble `y-64`.
+
+---
+
 ## [0.5.0] — 2026-09-10
 
 ### Added — Social Features & Friend System
