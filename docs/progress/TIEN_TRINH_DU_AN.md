@@ -8,7 +8,7 @@
 ## 🎯 TỔNG QUAN TIẾN ĐỘ
 
 ```
-[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Viewport 800x600 & FPTU Brand] ➔ [✅ EXPANSION v3: 7 Rooms, Inventory, Wardrobe, Animated Beacons, Sports Complex] ➔ [✅ EXPANSION v4: Radar HUD, Speed Duel & Chiptune] ➔ [✅ EXPANSION v5: Mobile Ergonomics & Zero-Overflow] ➔ [✅ EXPANSION v6: Ambient Particles, Juice, Achievements & Supabase] ➔ [✅ EXPANSION v7: Autonomous Gameplay Audit & Production Polish]
+[✅ Init] ➔ [✅ Bước 1: 2D Engine] ➔ [✅ Bước 2: Multiplayer Realtime] ➔ [✅ Bước 3: Auth & Database] ➔ [✅ Bước 4: Multi-Room] ➔ [✅ Bước 5: Interactive Zones] ➔ [✅ Add-on v2: Unicode & 5 Rooms] ➔ [✅ Viewport 800x600 & FPTU Brand] ➔ [✅ EXPANSION v3: 7 Rooms, Inventory, Wardrobe, Animated Beacons, Sports Complex] ➔ [✅ EXPANSION v4: Radar HUD, Speed Duel & Chiptune] ➔ [✅ EXPANSION v5: Mobile Ergonomics & Zero-Overflow] ➔ [✅ EXPANSION v6: Ambient Particles, Juice, Achievements & Supabase] ➔ [✅ EXPANSION v7: Autonomous Gameplay Audit & Production Polish] ➔ [✅ EXPANSION v8: Arcade & Sports 2.0 & HD 48x48 (v0.6 & v0.7)] ➔ [✅ EXPANSION v9: Pokémon 48x64 & NPC System (v0.7.1)]
 ```
 
 ---
@@ -141,6 +141,27 @@
 - **Chụp 26 Ảnh Màn Hình Nghiệm Thu:** Toàn bộ lưu trữ tại `audit_gameplay/`.
 
 ---
+
+### 🏆 EXPANSION v8: CẢI TỔ TOÀN DIỆN MINIGAME & ĐỒ HỌA HD 48x48 (v0.6.0 & v0.7.0 — Hoàn thành 2026-09-10)
+- **Sub-Engine Facade Architecture (v0.6.0):** Tách độc lập 7 arcade engine chuyên sâu (`PenaltyShootoutEngine`, `BasketballShootoutEngine`, `VolleyballRallyEngine`, `BaristaSimulatorEngine`, `SnakeEngine`, `SokobanEngine`, `GoldMinerEngine`) cùng hệ thống hiệu ứng `CanvasJuiceFX`.
+- **Cơ Chế Thể Thao 2.0:** Sút phạt đền 11M đổi vai thủ môn, bóng rổ ném xiên parabol swish rách lưới, bóng chuyền 3 chạm & spike smash, barista 4 trạm phân tầng chất lỏng và latte art.
+- **Đồ Họa Nhân Vật HD 48x48 (v0.7.0):** Nâng cấp pixel grid từ 32x32 lên 48x48 pixel, kiến trúc 7 layer compositing, 6 tông màu da, mắt có catchlight chớp mắt tự nhiên, 32 trang phục sinh viên FUDA và 21 kiểu tóc.
+- **Trang Bị Cầm Tay Thực Tế `[I]`:** Gắn trực tiếp vật phẩm lên tay nhân vật (laptop MacBook Pro, ly cafe bốc khói, cờ CLB, bóng thể thao).
+- **Hồ Sơ & Đồng Bộ Kỷ Lục:** Đồng bộ realtime điểm số và chuỗi thành tích thể thao lên PostgreSQL Supabase qua `syncFullProfile`.
+
+---
+
+### 👾 EXPANSION v9: POKÉMON-STYLE 48x64 SPRITE ENGINE, NPC SYSTEM & ARCADE POLISH (v0.7.1 — Hoàn thành 2026-09-14)
+- **Đồ Họa Sprite 48×64 px Pokémon FireRed/HGSS:** Tăng chiều cao frame lên 64px (spritesheet 192x256), hoạt ảnh bước đi 4-frame kèm vung tay (arm swing) uyển chuyển, hoạt ảnh thở `idle_breathe` 2-frame nhấp nhô nhẹ nhàng, mắt 3x2px có chiều sâu.
+- **Hệ Thống NPC Độc Lập v1.0:** 8 NPC đặc trưng (Mentor Thinh, Barista An, Thủ Thư Linh, Gamer Bảo, HLV Minh, Phóng Viên Hà, Sử Quan Đức, Dev Khoa) với máy trạng thái FSM 3 cấp (`idle → aware → talking`), bong bóng tương tác "···" nhấp nháy, xoay hướng theo người chơi.
+- **Hộp Thoại Đối Thoại Pokémon HGSS (`NPCDialogueModal.js`):** Slide-up modal với chân dung half-body 80x96 px, hiệu ứng máy đánh chữ 30ms/ký tự, phím tắt `[E]`/`Space` next, `[F]`/`Esc` đóng, khóa chuyển động người chơi chống trôi.
+- **Sửa Lỗi & Tinh Chỉnh Minigame Toàn Diện:**
+  - *Bóng chuyền*: Sửa dứt điểm lỗi `rallyCount` không reset khi ghi điểm, AI bot có 25% miss chance, phân làn sân nét đứt.
+  - *Bóng rổ*: Bổ sung thanh đo lực ném Power Bar 3 màu, góc ném dao động 40°–70°, đèn spotlight rọi sân.
+  - *Sút phạt đền*: Đường ngắm chấm nét đứt & hồng tâm góc chữ A, hiệu ứng đèn pha sân vận động.
+  - *Đào vàng*: Thuật toán chống sinh khoáng sản đè chồng lên nhau, hiệu ứng hào quang phát sáng `shadowBlur=12` cho kim cương & vàng lớn.
+  - *Rắn săn mồi*: Thân rắn nối liền dạng vector path bo tròn mượt mà, sửa thuật toán nam châm hút mồi chính xác, viền cảnh báo đỏ khi sát mép tường.
+- **Chuẩn Hóa Kỹ Thuật**: Hitbox chân `24×10px, offset (12, 54)`, đồng bộ depth và shadow `y+30`, stair spawn tự động đọc từ floor config.
 
 ## 🧪 BÁO CÁO NGHIỆM THU KIỂM THỬ (QA REPORT)
 - **Playwright E2E Test Suite (`tests/e2e/*.spec.js`):** **58/58 TESTS PASSED (100% PASS RATE)** trên cả Desktop Chromium và Mobile Chrome (FUDA Touch):

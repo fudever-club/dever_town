@@ -9,7 +9,7 @@
 ### Thế Giới Pixel 2D Multiplayer của CLB FU-DEVER · FPT University Đà Nẵng
 
 [![Status](https://img.shields.io/badge/Project-FU--DEVER%20Exclusive-f26f21.svg?style=for-the-badge)](https://www.fudever.com/)
-[![Version](https://img.shields.io/badge/version-0.7.0-0066CC.svg?style=for-the-badge)](./package.json)
+[![Version](https://img.shields.io/badge/version-0.7.1-0066CC.svg?style=for-the-badge)](./package.json)
 [![Phaser](https://img.shields.io/badge/Phaser-3.88-22c55e.svg?style=for-the-badge)](https://phaser.io)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8-010101.svg?style=for-the-badge&logo=socketdotio&logoColor=white)](https://socket.io)

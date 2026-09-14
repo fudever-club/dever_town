@@ -11,30 +11,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.6.0] — 2026-09-14
+## [Unreleased]
 
-### Added — Sprite Overhaul: Nâng Cấp Nhân Vật 48×64 Pokémon-Style (UPDATE-A)
-- **Frame Size nâng cấp 48×64 px**: Spritesheet mới `192×256 px` (4 cột × 4 hàng), thay thế 32×32 cũ — nhân vật sắc nét, chi tiết và đẹp hơn hẳn tại mọi mức zoom.
-- **Walk Animation 4 Frames**: Arm swing rõ ràng — Frame 0 neutral, Frame 1 tay phải ra trước, Frame 2 mid-stride, Frame 3 tay trái ra trước. Đúng chuẩn overworld Pokémon FireRed.
-- **Idle Breathing Animation**: `idle_breathe` 2-frame với `scaleY 1.0 ↔ 1.01` tần suất 0.8fps — nhân vật đứng yên có cảm giác "thở".
-- **Face Chi Tiết Hơn**: Mắt 3×2px + catchlight, miệng 4×1px, điểm mũi 1px — đọc được biểu cảm ở khoảng cách bình thường.
-- **20 Hairstyles + 15+ Outfits + Accessories Rescale**: Tất cả assets nhân vật được viết lại tọa độ cho 48×64.
-- **`generateNPCPortrait(scene, config, key)`**: Generator mới tạo portrait 80×96 px half-body shot cho NPC dialogue.
+---
 
-### Added — NPC System v1.0 (UPDATE-B)
-- **`src/entities/NPC.js`**: NPC Entity với FSM 3 trạng thái (`idle → aware → talking`), breathing tween, proximity detection 80px, `lookAtPlayer()` flip hướng.
-- **`src/config/npcs.js`**: 8 NPC với config đầy đủ trải đều 8 zone: Mentor Thinh (main_hall), Barista An (canteen), Thủ Thư Linh (library), Gamer Bảo (dever_lab), HLV Minh (sports), Phóng Viên Hà (media), Sử Quan Đức (memory), Dev Khoa (web_room).
-- **`src/ui/gameplay/NPCDialogueModal.js`**: Modal hội thoại phong cách Pokémon HGSS — NPC portrait 80×96px bên trái, typewriter effect 30ms/char, bấm [E]/Space next, [F] đóng, slide-up animation từ dưới.
-- **`···` Indicator Bubble**: Khi player đến gần NPC (80px), bubble "···" nhấp nháy xuất hiện trên đầu NPC — không cần [E] tooltip.
-- **WorldScene NPC Integration**: Spawn NPC khi vào phòng (`loadRoom`), update proximity loop, [E] key ưu tiên NPC trước zone interaction.
+## [0.7.1] — 2026-09-14
 
-### Fixed
-- **BUG-005**: Stair spawn hardcode (tileY=112, y=80) → Đọc từ `MAPS_CONFIG[roomId].floors[targetFloor].spawnPoint`.
-- **BUG-007**: Emote tween bay về tọa độ cũ → Đổi sang `onUpdate` callback bám theo `this.x, this.y` realtime.
-- **BUG-008**: Versioned texture key orphan → Thêm `try-catch + setTimeout(500ms)` vào `cleanupOldKey()`.
-- **Input block khi NPC dialog**: `isModalOpen()` trong `controls.js` nhận diện `#npc-dialogue-modal` để chặn movement.
-- **Player/RemotePlayer physics body**: Cập nhật hitbox `24×10px, offset (12, 54)` khớp với sprite 48×64 mới.
-- **Shadow & depth sync**: Tất cả y-offset đã đồng bộ: shadow `y+30`, depth `y+30`, nametag `y-38`, speech bubble `y-64`.
+### Added — Pokémon FireRed/HGSS 48×64 Sprite Engine Overhaul
+- **Frame Size nâng cấp 48×64 px**: Spritesheet mới `192×256 px` (4 cột × 4 hàng), thay thế chuẩn cũ — nhân vật sắc nét, chi tiết giải phẫu rõ ràng và đẹp mắt tại mọi mức zoom màn hình.
+- **Walk Animation 4 Frames Thực Thụ**: Arm swing rõ ràng — Frame 0 neutral thả tay, Frame 1 bước chân trái & tay phải vung trước, Frame 2 mid-stride, Frame 3 bước chân phải & tay trái vung trước. Đúng chuẩn chuyển động nhân vật Pokémon GBA.
+- **Idle Breathing Animation**: Hoạt ảnh `idle_breathe` 2-frame với chu kỳ co giãn ngực `scaleY 1.0 ↔ 1.01` tần suất 0.8fps — nhân vật đứng yên có nhịp thở sống động.
+- **Face & Anatomy Chi Tiết Cao**: Đôi mắt 3×2px có đốm sáng phản quang (catchlight), miệng 4×1px, điểm mũi 1px — thể hiện rõ cảm xúc khuôn mặt.
+- **20 Hairstyles + 15+ Outfits + Accessories Rescale**: Toàn bộ trang phục, kiểu tóc và phụ kiện đã được tái cấu trúc tọa độ và tỷ lệ hiển thị khớp chuẩn 48×64.
+- **`generateNPCPortrait(scene, config, key)`**: Trình sinh đồ họa Canvas tạo chân dung bán thân (Half-body shot 80×96 px) phục vụ đối thoại tương tác.
+
+### Added — NPC System v1.0
+- **`src/entities/NPC.js`**: Lớp thực thể NPC độc lập với máy trạng thái FSM 3 cấp (`idle → aware → talking`), breathing tween, bán kính phát hiện tương tác 80px, tự động quay mặt về người chơi (`lookAtPlayer`).
+- **`src/config/npcs.js`**: Hệ thống 8 NPC đặc trưng trải đều 8 phân khu sinh hoạt:
+  - *Sảnh Alpha*: Mentor Thinh (Senior Dev • Web Team)
+  - *Căn Tin & Cafe*: Barista An (Quán Cà Phê FUDA)
+  - *Thư Viện Tri Thức*: Thủ Thư Linh (Library Keeper)
+  - *Tech & AI Lab*: Gamer Bảo (Game Team Lead)
+  - *Khu Thể Thao*: HLV Minh (Sports Coach)
+  - *Media Hub*: Phóng Viên Hà (Media Hub Reporter)
+  - *Phòng Kỷ Niệm*: Sử Quan Đức (Lịch Sử CLB)
+  - *Không Gian Web*: Senior Dev Khoa (Full-Stack • AI Team)
+- **Hộp Thoại Hội Thoại Pokémon HGSS (`NPCDialogueModal.js`)**:
+  - Khung hội thoại trượt nổi slide-up từ cạnh dưới màn hình.
+  - Chân dung NPC 80×96 px sắc nét, nhãn tên và chức vụ nổi bật.
+  - Hiệu ứng máy đánh chữ (Typewriter Effect) tốc độ 30ms/ký tự.
+  - Phím `[E]` hoặc `Space` chuyển câu nhanh / skip hiển thị, `[F]` hoặc `Esc` đóng hội thoại tức thì.
+  - Tự động khóa di chuyển nhân vật trong lúc đang đối thoại, tránh trôi vị trí.
+- **`···` Speech Indicator Bubble**: Bong bóng dấu ba chấm nhấp nháy bồng bềnh trên đầu NPC khi người chơi bước vào bán kính gần (không dùng emoji thô sơ).
+- **WorldScene Integration**: Tự động spawn danh sách NPC khi chuyển phòng (`loadRoom`), cập nhật vòng lặp khoảng cách và ưu tiên phím `[E]` tương tác NPC trước zone.
+
+### Fixed & Enhanced — Arcade & Sports Engine Polish
+- **Volleyball Rally**: Sửa triệt để lỗi `rallyCount` không reset khi người chơi ghi điểm; đồng bộ giới hạn biên lưới `net.x - 30`; bổ sung tỷ lệ đánh trượt 25% cho Bot AI giúp trận đấu chân thực hơn; nâng cấp nền khán đài gradient và vạch phân làn nét đứt.
+- **Basketball Shootout**: Bổ sung thanh đo lực ném (Power Bar) 3 màu trực quan (xanh/vàng/đỏ); thêm cơ chế dao động góc ném parabol 40°–70°; phủ ánh sáng đèn rọi spotlight từ đỉnh trần.
+- **Penalty Shootout**: Bổ sung đường ngắm chấm nét đứt và hồng tâm vàng góc chữ A khi lấy đà sút; thêm dải gradient bầu trời đêm và đèn pha sân vận động.
+- **Gold Miner**: Thêm cơ chế kiểm tra khoảng cách spawn chống hiện tượng khoáng sản đè chồng lên nhau; bổ sung hiệu ứng hào quang phát sáng `shadowBlur=12` cho kim cương và vàng lớn; văng tia lửa đất đá khi móc trúng.
+- **Snake**: Vẽ thân rắn nối liền dạng vector path bo tròn mượt mà thay vì các chấm tròn rời rạc; sửa thuật toán nam châm (Magnet) hút mồi tiệm cận chính xác về ô; thêm viền cảnh báo nguy hiểm đỏ khi áp sát mép tường.
+- **System & Engine**:
+  - BUG-005: Tọa độ spawn cầu thang đọc tự động từ `floorData.spawnPoint` thay vì hardcode.
+  - BUG-007: Emote float tween bám theo tọa độ người chơi theo thời gian thực (`onUpdate`).
+  - BUG-008: Cơ chế dọn dẹp texture key an toàn với try-catch và bộ đệm 500ms chống rò rỉ VRAM.
+  - Hitbox vật lý: Chuẩn hóa body `24×10px, offset (12, 54)` khớp với chân nhân vật 48×64.
+  - Đồng bộ chiều sâu: Chuẩn hóa y-offset cho bóng đổ `y+30`, depth sorting `y+30`, thẻ tên `y-38`, bong bóng thoại `y-64`.
+
+---
+
+## [0.7.0] — 2026-09-10
+
+### Added — HD Character Graphics 48x48, In-Hand Equipment & Profile Sync (PLAN_v0.7)
+- **Đồ Họa Nhân Vật HD 48x48 Pixel Grid**: Nâng cấp từ 32x32 lên 48x48 pixel (tăng gấp 2.25 lần mật độ điểm ảnh), khắc họa giải phẫu cơ thể sinh viên Nam & Nữ FUDA rõ ràng.
+- **Kiến Trúc 7 Lớp Đồ Họa Độc Lập (Layered Compositor 2.0)**:
+  - Layer 1: Base Body & 6 tông màu da (Trắng sáng, Vàng tự nhiên Á Đông, Bánh mật, Nâu khỏe, Ngăm đậm, Cyborg Android).
+  - Layer 2: Quần tây, quần jean nếp gấp 3D, váy xếp ly, giày sneaker thể thao đế cao su.
+  - Layer 3: Áo Polo FPTU gập cổ, Hoodie cam/xanh, Áo dài thướt tha, võ phục Vovinam, vest CEO, hacker matrix,...
+  - Layer 4: Mắt 3x3px có đốm sáng phản quang (catchlight), chớp mắt tự nhiên Blink Loop mỗi 3.5s, 5 biểu cảm khuôn mặt.
+  - Layer 5: Bộ sưu tập 21 kiểu tóc 3 lớp sáng tối highlight (Undercut, Wolf cut, Hime cut, Ponytail, Bald Senior Dev,...).
+  - Layer 6: Bộ sưu tập râu & phụ kiện (Râu quai nón Senior Dev, ria mép, râu lún phún deadline, kính cận, tai nghe RGB).
+  - Layer 7: In-Hand Equipment cầm tay trực tiếp.
+- **Trang Bị Cầm Tay Thực Tế `[I]` (In-Hand Equipment)**: Gắn trực tiếp lên tay nhân vật thay cho bong bóng lơ lửng cũ (MacBook Pro Dev, Ly cà phê muối bốc khói, Cờ CLB, Gấu bông Cóc Vàng, Quả bóng thể thao,...).
+- **Hồ Sơ Cá Nhân & Đồng Bộ Thành Tích Thể Thao**: Tự động đồng bộ các kỷ lục penalty streak, basketball high, volleyball rally và điểm barista lên cơ sở dữ liệu qua `syncFullProfile`.
+
+---
+
+## [0.6.0] — 2026-09-10
+
+### Added — Arcade & Sports Minigame Overhaul 2.0 (PLAN_v0.6)
+- **Kiến Trúc Sub-Engine Facade Mới**: Tách nhỏ hệ thống minigame thành các engine độc lập, dễ bảo trì và mở rộng:
+  - `PenaltyShootoutEngine`: Sút phạt đền 11M, sút bóng cong 3D parabol, hàng rào người nhảy chắn, bia hồng tâm góc chữ A, thủ môn AI bay người cản phá, đổi vai làm thủ môn đeo găng bắt bóng, lưới khung thành lò xo đa điểm Spring-Mass Grid.
+  - `BasketballShootoutEngine`: Quỹ đạo ném xiên vật lý, va chạm đàn hồi bảng rổ mica & chốt vành kim loại (Rim Rattle), cơ chế SWISH xé lưới, chuỗi bốc lửa ON FIRE! 🔥, trụ rổ di chuyển đung đưa ở điểm cao.
+  - `VolleyballRallyEngine`: Vật lý vòm đầu bán nguyệt đàn hồi cao, bật nhảy đập bóng Power Spike Jump dồn vệt lửa, va chạm lưới giữa sân có positional separation triệt tiêu kẹt bóng.
+  - `BaristaSimulatorEngine`: Mô phỏng pha chế 4 trạm tương tác (đong đá, rót cà phê, bọt kem béo muối hồng, vẽ Latte Art tự do), mô phỏng vật lý phân tầng chất lỏng.
+  - `SnakeEngine`: Chuyển động trườn 60fps mượt mà, cơ chế Xả thân bứt tốc (Boost-Burn), 5 loại vật phẩm (táo, ớt tốc độ, nam châm hút mồi), đầu rắn Buggy có mắt chuyển hướng.
+  - `SokobanEngine`: 15 màn giải đố Microban kinh điển, hỗ trợ Undo không giới hạn, sàn trượt băng quán tính, nút dẫm áp lực và cổng teleport.
+  - `GoldMinerEngine`: Dây tời xích sắt cơ học, móc kẹp kim loại đóng mở tự nhiên, nổ dây chuyền thùng thuốc nổ TNT, 7 loại khoáng sản, kíp nổ Dynamite hủy vật nặng.
+- **Hệ Thống Game Feel "Juice" (`CanvasJuiceFX.js`)**: Tích hợp rung chấn camera screen shake, pháo hoa giấy Confetti, chữ điểm bay đàn hồi floating text, tia lửa hạt va chạm.
 
 ---
 
@@ -208,6 +262,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.7.1]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.2.5...v0.3.0
 [0.2.5]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.2.0...v0.2.5
 [0.2.0]: https://github.com/huanight19RaH/DEVER_TOWN/compare/v0.1.0...v0.2.0
