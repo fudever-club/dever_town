@@ -59,6 +59,8 @@ export class WorldScene extends Phaser.Scene {
     this.tileSprites = [];
     this.portalLabels = [];
     this.obstacleShadows = [];
+    this.npcGroup = [];
+    this.npcDialogueModal = null;
     this.audioManager = audioManager;
     this.i18n = i18n;
     this.playerSessionActive = false;
@@ -142,10 +144,28 @@ export class WorldScene extends Phaser.Scene {
       }
     });
 
-    // 3. Xây dựng bản đồ phòng
+    // 3. Khởi tạo NPC Group & Dialogue Modal
+    this.npcGroup = [];
+    this.npcDialogueModal = new NPCDialogueModal(this);
+
+    if (this.input?.keyboard) {
+      this.input.keyboard.on('keydown-E', () => {
+        if (this.npcDialogueModal?.isOpen) return;
+        const nearNPC = this.npcGroup?.find(npc => 
+          npc.state === 'aware' && !this.npcDialogueModal?.isOpen
+        );
+        if (nearNPC) {
+          nearNPC.state = 'talking';
+          this.npcDialogueModal.show(nearNPC);
+          return; 
+        }
+      });
+    }
+
+    // 4. Xây dựng bản đồ phòng
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
-    // 4. Camera Follow với vùng đệm rộng rãi (Headroom Padding)
+    // 5. Camera Follow với vùng đệm rộng rãi (Headroom Padding)
     // Giúp khi đi lên phía Bắc (North) camera có không gian mở rộng thoáng đãng, không bị gò bó hoặc che khuất tên phòng
     const camera = this.cameras.main;
     const PADDING_X = 64;
@@ -162,27 +182,12 @@ export class WorldScene extends Phaser.Scene {
     window.addEventListener('resize', this._resizeHandler);
     window.addEventListener('orientationchange', this._orientationHandler);
 
-    // 5. HUD & Network
+    // 6. HUD & Network
     this.createHUD();
     this.socketManager = new SocketManager(this);
 
-    // 6. UI Modals & Network Monitor
+    // 7. UI Modals & Network Monitor
     this.initUI();
-
-    this.npcGroup = [];
-    this.npcDialogueModal = new NPCDialogueModal(this);
-    
-    this.input.keyboard.on('keydown-E', () => {
-      if (this.npcDialogueModal?.isOpen) return;
-      const nearNPC = this.npcGroup?.find(npc => 
-        npc.state === 'aware' && !this.npcDialogueModal?.isOpen
-      );
-      if (nearNPC) {
-        nearNPC.state = 'talking';
-        this.npcDialogueModal.show(nearNPC);
-        return; 
-      }
-    });
 
     // 7. Connect Realtime Socket
     this.socketManager.connect();
@@ -534,16 +539,22 @@ export class WorldScene extends Phaser.Scene {
     }
 
     // Spawn NPCs cho room hiện tại
-    if (this.npcGroup) {
-      this.npcGroup.forEach(n => n.destroy());
-      this.npcGroup = [];
+    if (this.npcGroup && Array.isArray(this.npcGroup)) {
+      this.npcGroup.forEach(n => {
+        try { n.destroy(); } catch (e) {}
+      });
     }
+    this.npcGroup = [];
     const roomNPCs = NPC_CONFIG[roomId] || [];
     roomNPCs.forEach(cfg => {
-      const npcX = cfg.tileX * tileSize + tileSize / 2;
-      const npcY = cfg.tileY * tileSize + tileSize / 2;
-      const npc = new NPC(this, npcX, npcY, cfg);
-      this.npcGroup.push(npc);
+      try {
+        const npcX = cfg.tileX * tileSize + tileSize / 2;
+        const npcY = cfg.tileY * tileSize + tileSize / 2;
+        const npc = new NPC(this, npcX, npcY, cfg);
+        this.npcGroup.push(npc);
+      } catch (err) {
+        console.warn('Lỗi khi spawn NPC:', cfg?.id, err);
+      }
     });
 
     // Pickups for this room

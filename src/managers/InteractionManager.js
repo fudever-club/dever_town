@@ -74,6 +74,11 @@ export class InteractionManager {
   interactCurrentZone() {
     if (!this.canInteract()) return false;
 
+    // Không kích hoạt zone nếu NPC Dialogue đang mở hoặc có NPC đang được trò chuyện
+    if (this.scene?.npcDialogueModal?.isOpen) return false;
+    const nearNPC = this.scene?.npcGroup?.find(npc => npc.state === 'aware' || npc.state === 'talking');
+    if (nearNPC) return false;
+
     // 1. Nếu đã có active zone trong tầm
     if (this.currentActiveZone) {
       this.triggerInteraction(this.currentActiveZone);
@@ -110,6 +115,10 @@ export class InteractionManager {
   canInteract() {
     const activeModal = document.querySelector('.modal-backdrop:not(.hidden)');
     if (activeModal) {
+      return false;
+    }
+    const npcModal = document.getElementById('npc-dialogue-modal');
+    if (npcModal && npcModal.style.bottom !== '-200px' && npcModal.style.bottom !== '') {
       return false;
     }
     return true;

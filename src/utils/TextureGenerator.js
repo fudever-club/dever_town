@@ -932,22 +932,20 @@ export class TextureGenerator {
     }
   }
 
-  static drawCharacterFrame(ctx, x, y, direction, frameIndex, config) {
-    const {
-      gender = 'male',
-      hairstyle = (gender === 'female' ? 'long' : 'short'),
-      hair = '#0f172a',
-      skin = '#fbd1a2',
-      skinTone = 'skin_natural',
-      facialHair = 'none',
-      expression = 'expr_focus',
-      outfitType = 'hoodie',
-      shirt = '#f26f21',
-      collarColor = '#002147',
-      pants = '#1e293b',
-      accessory = 'none',
-      inHandItem = null
-    } = config;
+  static drawCharacterFrame(ctx, x, y, direction, frameIndex, config = {}) {
+    const gender = config.gender || 'male';
+    const hairstyle = config.hairstyle || (gender === 'female' ? 'long' : 'short');
+    const hair = config.hair || config.hairColor || '#0f172a';
+    const skin = config.skin || config.skinColor || '#fbd1a2';
+    const skinTone = config.skinTone || 'skin_natural';
+    const facialHair = config.facialHair || 'none';
+    const expression = config.expression || 'expr_focus';
+    const outfitType = config.outfitType || 'hoodie';
+    const shirt = config.shirt || config.hoodieColor || config.outfitColor || '#f26f21';
+    const collarColor = config.collarColor || '#002147';
+    const pants = config.pants || config.pantsColor || '#1e293b';
+    const accessory = config.accessory || 'none';
+    const inHandItem = config.inHandItem || config.equippedItemId || null;
 
     const skinMap = {
       skin_fair: { base: '#fed7aa', highlight: '#ffedd5', shadow: '#fdba74' },
@@ -1557,14 +1555,123 @@ export class TextureGenerator {
     canvas.width = 80;
     canvas.height = 96;
     const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = npcConfig.shirt || '#f26f21';
-    ctx.fillRect(16, 28, 48, 68); 
-    ctx.fillStyle = npcConfig.skin || '#fbd1a2';
-    ctx.fillRect(29, 6, 22, 22); 
+
+    const shirt = npcConfig.shirt || npcConfig.hoodieColor || npcConfig.outfitColor || '#2563eb';
+    const collar = npcConfig.collarColor || '#1d4ed8';
+    const hair = npcConfig.hair || npcConfig.hairColor || '#1e293b';
+    const skinTone = npcConfig.skinTone || 'skin_natural';
+    const skinMap = {
+      skin_fair: { base: '#fed7aa', shadow: '#fdba74' },
+      skin_natural: { base: '#fbd1a2', shadow: '#f59e0b' },
+      skin_tan: { base: '#d97706', shadow: '#b45309' },
+      skin_deep: { base: '#92400e', shadow: '#78350f' },
+      skin_ebony: { base: '#573016', shadow: '#3b1d08' },
+      skin_cyber: { base: '#bae6fd', shadow: '#7dd3fc' }
+    };
+    const skin = skinMap[skinTone] || { base: npcConfig.skin || '#fbd1a2', shadow: '#f59e0b' };
+
+    // 1. Nền Gradient phong cách thẻ bài Pokémon
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, 96);
+    bgGrad.addColorStop(0, '#1e293b');
+    bgGrad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 80, 96);
+
+    // Viền khung trong suốt nhẹ
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, 78, 94);
+
+    // 2. Thân & Áo (Torso & Shoulders)
+    ctx.fillStyle = shirt;
+    ctx.beginPath();
+    ctx.moveTo(8, 96);
+    ctx.lineTo(8, 62);
+    ctx.quadraticCurveTo(18, 52, 32, 50);
+    ctx.lineTo(48, 50);
+    ctx.quadraticCurveTo(62, 52, 72, 62);
+    ctx.lineTo(72, 96);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cổ áo (Collar)
+    ctx.fillStyle = collar;
+    ctx.beginPath();
+    ctx.moveTo(30, 50);
+    ctx.lineTo(40, 62);
+    ctx.lineTo(50, 50);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3. Cổ (Neck)
+    ctx.fillStyle = skin.shadow;
+    ctx.fillRect(34, 42, 12, 10);
+
+    // 4. Khuôn mặt (Face & Head)
+    ctx.fillStyle = skin.base;
+    ctx.beginPath();
+    ctx.roundRect(24, 16, 32, 30, [8, 8, 12, 12]);
+    ctx.fill();
+
+    // Má hồng nhẹ
+    ctx.fillStyle = 'rgba(244, 114, 182, 0.35)';
+    ctx.fillRect(26, 34, 5, 3);
+    ctx.fillRect(49, 34, 5, 3);
+
+    // 5. Đôi mắt & Lông mày (Eyes & Eyebrows)
+    ctx.fillStyle = '#0f172a';
+    // Lông mày
+    ctx.fillRect(30, 26, 6, 2);
+    ctx.fillRect(44, 26, 6, 2);
+    // Mắt
+    ctx.fillRect(31, 30, 5, 5);
+    ctx.fillRect(44, 30, 5, 5);
+    // Điểm sáng Catchlight
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(32, 31, 2, 2);
+    ctx.fillRect(45, 31, 2, 2);
+
+    // Mũi & Miệng
+    ctx.fillStyle = skin.shadow;
+    ctx.fillRect(39, 36, 2, 2);
+    ctx.fillStyle = '#b91c1c';
+    ctx.fillRect(38, 40, 4, 1.5);
+
+    // 6. Mái tóc (Hair)
+    ctx.fillStyle = hair;
+    ctx.beginPath();
+    ctx.roundRect(22, 10, 36, 16, [10, 10, 2, 2]);
+    ctx.fill();
+    // Mái tóc trước trán
+    ctx.beginPath();
+    ctx.moveTo(24, 18);
+    ctx.lineTo(36, 22);
+    ctx.lineTo(44, 18);
+    ctx.lineTo(52, 23);
+    ctx.lineTo(56, 18);
+    ctx.lineTo(54, 12);
+    ctx.lineTo(26, 12);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tóc 2 bên mai
+    ctx.fillRect(21, 20, 4, 14);
+    ctx.fillRect(55, 20, 4, 14);
+
+    // 7. Phụ kiện Kính (nếu có)
+    if (npcConfig.accessory === 'glasses_smart' || npcConfig.accessory === 'glasses') {
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(29, 29, 9, 7);
+      ctx.strokeRect(42, 29, 9, 7);
+      ctx.beginPath();
+      ctx.moveTo(38, 32);
+      ctx.lineTo(42, 32);
+      ctx.stroke();
+    }
 
     if (scene.textures.exists(key)) scene.textures.remove(key);
-    scene.textures.addImage(key, canvas);
+    scene.textures.addCanvas(key, canvas);
     return key;
   }
 }

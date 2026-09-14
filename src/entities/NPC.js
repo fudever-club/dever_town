@@ -5,7 +5,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y, config = {}) {
     // config: { id, name, role, spriteConfig, dialogues, portrait }
     // Tạo texture cho NPC nếu chưa có
-    const textureKey = `npc_sprite_${config.id}`;
+    const textureKey = `char_${config.id}`;
     if (!scene.textures.exists(textureKey)) {
       TextureGenerator.generateCharacterSpritesheet(scene, {
         id: config.id,
@@ -13,7 +13,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
       });
     }
     
-    super(scene, x, y, `char_${config.id}`, 0);
+    super(scene, x, y, textureKey, 0);
     
     this.npcId = config.id;
     this.npcName = config.name || 'NPC';
@@ -30,14 +30,14 @@ export class NPC extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     
     // Shadow
-    this.shadowEllipse = scene.add.ellipse(x, y + 28, 20, 7, 0x000000, 0.25);
+    this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.25);
     this.shadowEllipse.setDepth(this.y - 0.1);
     
     // Speech indicator "···" bubble
     this.indicatorBubble = null;
     
     // Start idle animation
-    this.setDepth(this.y + 14);
+    this.setDepth(this.y + 30);
     this._playIdleAnim();
     
     // Breathing tween
