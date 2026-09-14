@@ -59,20 +59,22 @@ export class Player extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(18, 14);
-    this.body.setOffset(7, 18);
+    // Physics hitbox: 24×10px tại chân nhân vật (48×64 sprite — feet vùng y+54 to y+64)
+    this.body.setSize(24, 10);
+    this.body.setOffset(12, 54);
     this.body.setCollideWorldBounds(true);
 
     this.currentDirection = 'down';
     this.speechBubble = null;
     this.speechTimer = null;
 
-    this.shadowEllipse = scene.add.ellipse(x, y + 14, 20, 7, 0x000000, 0.28);
+    // Shadow ellipse dưới chân — vị trí y+30 tính từ origin sprite (64/2=32, chân tại +32)
+    this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
 
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y + 14);
+    this.setDepth(this.y + 30);
   }
 
   createNameTag() {
@@ -269,13 +271,21 @@ export class Player extends Phaser.GameObjects.Sprite {
     container.add([bg, txt]);
     this.emoteContainer = container;
 
-    // Float upward tween
+    // Float upward tween — dùng onUpdate để bám theo vị trí thực tế của player
+    let elapsed = 0;
+    const duration = 2600;
     this.scene.tweens.add({
-      targets: container,
-      y: this.y - 68,
-      alpha: { from: 1, to: 0 },
-      duration: 2600,
+      targets: { t: 0 },
+      t: 1,
+      duration,
       ease: 'Cubic.easeOut',
+      onUpdate: (tween) => {
+        if (!container || container.destroyed) return;
+        elapsed = tween.progress;
+        const floatOffset = elapsed * 20;
+        container.setPosition(this.x, this.y - 48 - floatOffset);
+        container.setAlpha(1 - elapsed);
+      },
       onComplete: () => {
         if (this.emoteContainer === container) {
           container.destroy();
@@ -406,7 +416,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     // Cập nhật vị trí bóng chân và độ co giãn nhẹ theo nhịp bước
     if (this.shadowEllipse) {
-      this.shadowEllipse.setPosition(this.x, this.y + 14);
+      this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
       const shadowBob = isMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
       this.shadowEllipse.setScale(shadowBob, 1.0);
@@ -415,18 +425,19 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y + 14);
+      this.setDepth(this.y + 30);
 
       if (this.nameTagContainer) {
-        this.nameTagContainer.setPosition(this.x, this.y - 28);
+        // Nametag trên đỉnh đầu sprite 64px — y - 38
+        this.nameTagContainer.setPosition(this.x, this.y - 38);
       }
 
       if (this.speechBubble) {
-        this.speechBubble.setPosition(this.x, this.y - 52);
+        this.speechBubble.setPosition(this.x, this.y - 64);
       }
 
       if (this.equippedContainer) {
-        this.equippedContainer.setPosition(this.x + 14, this.y - 8);
+        this.equippedContainer.setPosition(this.x + 18, this.y - 8);
       }
     }
   }

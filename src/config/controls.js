@@ -4,6 +4,7 @@ export class InputController {
   constructor(scene) {
     this.scene = scene;
     this.isDisabled = false;
+    this.blocked = false;
 
     // 1. Tắt Key Captures mặc định của Phaser để không chặn phím trên input
     if (scene.input && scene.input.keyboard) {
@@ -127,6 +128,10 @@ export class InputController {
     if (settingsModal && !settingsModal.classList.contains('hidden')) return true;
     if (questModal && !questModal.classList.contains('hidden')) return true;
 
+    // NPC Dialogue Modal — khi player đang hội thoại với NPC
+    const npcDialogueModal = document.getElementById('npc-dialogue-modal');
+    if (npcDialogueModal && npcDialogueModal.style.bottom !== '-200px' && npcDialogueModal.style.bottom !== '') return true;
+
     return false;
   }
 
@@ -147,6 +152,7 @@ export class InputController {
 
   isInputBlocked() {
     if (this.isDisabled) return true;
+    if (this.blocked) return true;
     if (this.isTypingActive()) return true;
     if (this.isModalOpen()) return true;
     return false;

@@ -1,4 +1,7 @@
 import Phaser from 'phaser';
+import { NPC } from '../entities/NPC.js';
+import { NPC_CONFIG } from '../config/npcs.js';
+import { NPCDialogueModal } from '../ui/gameplay/NPCDialogueModal.js';
 import { GAME_CONFIG } from '../config/gameConfig.js';
 import { MAPS_CONFIG } from '../config/maps.js';
 import { InputController } from '../config/controls.js';
@@ -108,8 +111,11 @@ export class WorldScene extends Phaser.Scene {
         if (zoneData.type === 'stair_transition') {
           if (this.floorManager) {
             const targetFloor = zoneData.targetFloor;
-            const spawnX = targetFloor === 0 ? 112 : (targetFloor === 1 ? 112 : 680);
-            const spawnY = targetFloor === 0 ? 100 : 80;
+            // Đọc spawn từ floor config thay vì hardcode
+            const currentMapConfig = MAPS_CONFIG[this.currentRoomId] || {};
+            const floorData = (currentMapConfig.floors || [])[targetFloor];
+            const spawnX = zoneData.spawnX ?? floorData?.spawnPoint?.x ?? 400;
+            const spawnY = zoneData.spawnY ?? floorData?.spawnPoint?.y ?? 350;
             this.floorManager.transitionToFloor(targetFloor, { spawnX, spawnY });
           }
           return;
@@ -162,6 +168,21 @@ export class WorldScene extends Phaser.Scene {
 
     // 6. UI Modals & Network Monitor
     this.initUI();
+
+    this.npcGroup = [];
+    this.npcDialogueModal = new NPCDialogueModal(this);
+    
+    this.input.keyboard.on('keydown-E', () => {
+      if (this.npcDialogueModal?.isOpen) return;
+      const nearNPC = this.npcGroup?.find(npc => 
+        npc.state === 'aware' && !this.npcDialogueModal?.isOpen
+      );
+      if (nearNPC) {
+        nearNPC.state = 'talking';
+        this.npcDialogueModal.show(nearNPC);
+        return; 
+      }
+    });
 
     // 7. Connect Realtime Socket
     this.socketManager.connect();
@@ -511,6 +532,19 @@ export class WorldScene extends Phaser.Scene {
     if (this.interactionManager) {
       this.interactionManager.setZones(mapData.zones || []);
     }
+
+    // Spawn NPCs cho room hiện tại
+    if (this.npcGroup) {
+      this.npcGroup.forEach(n => n.destroy());
+      this.npcGroup = [];
+    }
+    const roomNPCs = NPC_CONFIG[roomId] || [];
+    roomNPCs.forEach(cfg => {
+      const npcX = cfg.tileX * tileSize + tileSize / 2;
+      const npcY = cfg.tileY * tileSize + tileSize / 2;
+      const npc = new NPC(this, npcX, npcY, cfg);
+      this.npcGroup.push(npc);
+    });
 
     // Pickups for this room
     if (this.inventoryManager) {
@@ -1231,6 +1265,12 @@ export class WorldScene extends Phaser.Scene {
       this.interactionManager.update(this.player);
     }
 
+    if (this.npcGroup && this.player) {
+      this.npcGroup.forEach(npc => {
+        npc.update(this.player.x, this.player.y);
+      });
+    }
+
     if (this.inventoryManager && this.player) {
       this.inventoryManager.update(this.player);
     }
@@ -1271,6 +1311,15 @@ export class WorldScene extends Phaser.Scene {
     if (this._toastTimer) {
       clearTimeout(this._toastTimer);
       this._toastTimer = null;
+    }
+
+    if (this.npcGroup) {
+      this.npcGroup.forEach(n => n.destroy());
+      this.npcGroup = [];
+    }
+    if (this.npcDialogueModal) {
+      this.npcDialogueModal.destroy();
+      this.npcDialogueModal = null;
     }
   }
 }
