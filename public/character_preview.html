@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEVER_TOWN — Chibi Gather.town Character Spritesheet Preview</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      margin: 0;
+    }
+    h1 {
+      color: #f26f21;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .anim-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-around;
+      background: #090d16;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px dashed #334155;
+      margin-bottom: 16px;
+    }
+    .sprite-box {
+      text-align: center;
+    }
+    .sprite-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .sprite-canvas {
+      width: 48px;
+      height: 64px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      background: rgba(255,255,255,0.03);
+      border-radius: 4px;
+    }
+    .full-sheet {
+      width: 100%;
+      image-rendering: pixelated;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #090d16;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>DEVER_TOWN — Chibi Gather.town Character Studio</h1>
+  <p>Bản xem trước mẫu nhân vật Chibi tỷ lệ 1:1.2 phong cách Gather.town, 4 hướng xoay, 4-frame walk cycle chuẩn 48x64px.</p>
+
+  <div class="grid">
+    <!-- Card 1: Male Orange Hoodie FUDA -->
+    <div class="card">
+      <div class="card-title">
+        <span>Nam Sinh FUDA — Áo Hoodie Cam</span>
+        <span style="font-size: 12px; color: #f26f21;">FPT Orange #f26f21</span>
+      </div>
+      <div class="anim-row">
+        <div class="sprite-box">
+          <canvas id="fuda_down" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Down</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="fuda_left" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Left</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="fuda_right" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Right</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="fuda_up" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Up</div>
+        </div>
+      </div>
+      <img src="assets/characters/test_gathertown_fuda.png" class="full-sheet" alt="FUDA Sheet">
+    </div>
+
+    <!-- Card 2: Female White Ao Dai -->
+    <div class="card">
+      <div class="card-title">
+        <span>Nữ Sinh FUDA — Áo Dài Trắng</span>
+        <span style="font-size: 12px; color: #38bdf8;">White & Sky Blue</span>
+      </div>
+      <div class="anim-row">
+        <div class="sprite-box">
+          <canvas id="female_down" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Down</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="female_left" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Left</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="female_right" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Right</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="female_up" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Up</div>
+        </div>
+      </div>
+      <img src="assets/characters/test_gathertown_female.png" class="full-sheet" alt="Female Sheet">
+    </div>
+
+    <!-- Card 3: Base Male Body -->
+    <div class="card">
+      <div class="card-title">
+        <span>Base Thân Nam Modular</span>
+        <span style="font-size: 12px; color: #a855f7;">Paper Doll Base</span>
+      </div>
+      <div class="anim-row">
+        <div class="sprite-box">
+          <canvas id="base_down" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Down</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="base_left" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Left</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="base_right" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Right</div>
+        </div>
+        <div class="sprite-box">
+          <canvas id="base_up" class="sprite-canvas" width="48" height="64"></canvas>
+          <div class="sprite-label">Up</div>
+        </div>
+      </div>
+      <img src="assets/characters/test_gathertown_base_male.png" class="full-sheet" alt="Base Sheet">
+    </div>
+  </div>
+
+  <script>
+    function setupAnimation(imageSrc, canvasIds) {
+      const img = new Image();
+      img.src = imageSrc;
+      let frame = 0;
+      const frameW = 48;
+      const frameH = 64;
+
+      img.onload = () => {
+        setInterval(() => {
+          frame = (frame + 1) % 4;
+          // Row 0: down, Row 1: left, Row 2: right, Row 3: up
+          const rows = [0, 1, 2, 3];
+          canvasIds.forEach((id, r) => {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, frameW, frameH);
+            ctx.drawImage(
+              img,
+              frame * frameW, r * frameH, frameW, frameH,
+              0, 0, frameW, frameH
+            );
+          });
+        }, 160); // ~6 fps walk cycle
+      };
+    }
+
+    setupAnimation('assets/characters/test_gathertown_fuda.png', ['fuda_down', 'fuda_left', 'fuda_right', 'fuda_up']);
+    setupAnimation('assets/characters/test_gathertown_female.png', ['female_down', 'female_left', 'female_right', 'female_up']);
+    setupAnimation('assets/characters/test_gathertown_base_male.png', ['base_down', 'base_left', 'base_right', 'base_up']);
+  </script>
+</body>
+</html>
