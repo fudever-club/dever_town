@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DEVER_TOWN — Chibi Gather.town Character Spritesheet Preview</title>
+  <title>DEVER_TOWN — Chibi Gather.town Character Studio</title>
   <style>
     body {
       background: #0f172a;
@@ -36,7 +36,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .card-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       margin-bottom: 16px;
       color: #38bdf8;
@@ -46,7 +46,7 @@
     }
     .anim-row {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       align-items: center;
       justify-content: space-around;
       background: #090d16;
@@ -80,131 +80,140 @@
       border: 1px solid #334155;
       background: #090d16;
     }
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 13px;
-    }
-    button:hover {
-      background: #1d4ed8;
-    }
   </style>
 </head>
 <body>
 
   <h1>DEVER_TOWN — Chibi Gather.town Character Studio</h1>
-  <p>Bản xem trước mẫu nhân vật Chibi tỷ lệ 1:1.2 phong cách Gather.town, 4 hướng xoay, 4-frame walk cycle chuẩn 48x64px.</p>
+  <p>Bản xem trước 8 bộ Spritesheet Chibi chuẩn Gather.town (1:1.2, 4 hướng xoay, 4-frame walk cycle 48x64px, 192x256px tổng thể).</p>
 
   <div class="grid">
-    <!-- Card 1: Male Orange Hoodie FUDA -->
+    <!-- 1: Male Orange Hoodie FUDA -->
     <div class="card">
       <div class="card-title">
         <span>Nam Sinh FUDA — Áo Hoodie Cam</span>
         <span style="font-size: 12px; color: #f26f21;">FPT Orange #f26f21</span>
       </div>
-      <div class="anim-row">
-        <div class="sprite-box">
-          <canvas id="fuda_down" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Down</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="fuda_left" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Left</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="fuda_right" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Right</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="fuda_up" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Up</div>
-        </div>
-      </div>
-      <img src="assets/characters/test_gathertown_fuda.png" class="full-sheet" alt="FUDA Sheet">
+      <div class="anim-row" id="row_fuda"></div>
+      <img src="assets/characters/outfits/full_hoodie_fuda.png" class="full-sheet" alt="FUDA Sheet">
     </div>
 
-    <!-- Card 2: Female White Ao Dai -->
+    <!-- 2: Female White Ao Dai -->
     <div class="card">
       <div class="card-title">
         <span>Nữ Sinh FUDA — Áo Dài Trắng</span>
         <span style="font-size: 12px; color: #38bdf8;">White & Sky Blue</span>
       </div>
-      <div class="anim-row">
-        <div class="sprite-box">
-          <canvas id="female_down" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Down</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="female_left" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Left</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="female_right" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Right</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="female_up" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Up</div>
-        </div>
-      </div>
-      <img src="assets/characters/test_gathertown_female.png" class="full-sheet" alt="Female Sheet">
+      <div class="anim-row" id="row_aodai"></div>
+      <img src="assets/characters/outfits/full_aodai_white.png" class="full-sheet" alt="Ao Dai Sheet">
     </div>
 
-    <!-- Card 3: Base Male Body -->
+    <!-- 3: Male Blue Hoodie FU-DEVER -->
     <div class="card">
       <div class="card-title">
-        <span>Base Thân Nam Modular</span>
-        <span style="font-size: 12px; color: #a855f7;">Paper Doll Base</span>
+        <span>Nam Sinh Dev — Hoodie Xanh FU-DEVER</span>
+        <span style="font-size: 12px; color: #0066CC;">DEVER Blue #0066CC</span>
       </div>
-      <div class="anim-row">
-        <div class="sprite-box">
-          <canvas id="base_down" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Down</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="base_left" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Left</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="base_right" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Right</div>
-        </div>
-        <div class="sprite-box">
-          <canvas id="base_up" class="sprite-canvas" width="48" height="64"></canvas>
-          <div class="sprite-label">Up</div>
-        </div>
+      <div class="anim-row" id="row_hoodie_dever"></div>
+      <img src="assets/characters/outfits/full_hoodie_dever.png" class="full-sheet" alt="DEVER Hoodie Sheet">
+    </div>
+
+    <!-- 4: Hackathon Black Tee -->
+    <div class="card">
+      <div class="card-title">
+        <span>Nam Sinh Dev — Áo Thun Hackathon Đen</span>
+        <span style="font-size: 12px; color: #10b981;">Terminal Green #10b981</span>
       </div>
-      <img src="assets/characters/test_gathertown_base_male.png" class="full-sheet" alt="Base Sheet">
+      <div class="anim-row" id="row_tee_dev"></div>
+      <img src="assets/characters/outfits/full_tee_dev_black.png" class="full-sheet" alt="Hackathon Tee Sheet">
+    </div>
+
+    <!-- 5: NPC Dang Quang Nhat -->
+    <div class="card">
+      <div class="card-title">
+        <span>NPC Đặng Quang Nhật (Chủ Nhiệm)</span>
+        <span style="font-size: 12px; color: #2563eb;">Leader • Undercut • Glasses</span>
+      </div>
+      <div class="anim-row" id="row_npc_nhat"></div>
+      <img src="assets/characters/npcs/npc_chunhiem_nhat.png" class="full-sheet" alt="NPC Nhat Sheet">
+    </div>
+
+    <!-- 6: NPC Nguyen Thai Hung -->
+    <div class="card">
+      <div class="card-title">
+        <span>NPC Nguyễn Thái Hưng (Phó Chủ Nhiệm)</span>
+        <span style="font-size: 12px; color: #a855f7;">Vice Leader • Wolf Cut • Smile</span>
+      </div>
+      <div class="anim-row" id="row_npc_hung"></div>
+      <img src="assets/characters/npcs/npc_pho_hung.png" class="full-sheet" alt="NPC Hung Sheet">
+    </div>
+
+    <!-- 7: Base Body Male -->
+    <div class="card">
+      <div class="card-title">
+        <span>Base Body Nam (Modular Phôi)</span>
+        <span style="font-size: 12px; color: #fdba74;">Paper Doll Base</span>
+      </div>
+      <div class="anim-row" id="row_base_male"></div>
+      <img src="assets/characters/bases/base_male.png" class="full-sheet" alt="Base Male Sheet">
+    </div>
+
+    <!-- 8: Base Body Female -->
+    <div class="card">
+      <div class="card-title">
+        <span>Base Body Nữ (Modular Phôi)</span>
+        <span style="font-size: 12px; color: #f472b6;">Paper Doll Base</span>
+      </div>
+      <div class="anim-row" id="row_base_female"></div>
+      <img src="assets/characters/bases/base_female.png" class="full-sheet" alt="Base Female Sheet">
     </div>
   </div>
 
   <script>
-    function setupAnimation(imageSrc, canvasIds) {
-      const img = new Image();
-      img.src = imageSrc;
-      let frame = 0;
-      const frameW = 48;
-      const frameH = 64;
+    const characters = [
+      { id: 'fuda', src: 'assets/characters/outfits/full_hoodie_fuda.png' },
+      { id: 'aodai', src: 'assets/characters/outfits/full_aodai_white.png' },
+      { id: 'hoodie_dever', src: 'assets/characters/outfits/full_hoodie_dever.png' },
+      { id: 'tee_dev', src: 'assets/characters/outfits/full_tee_dev_black.png' },
+      { id: 'npc_nhat', src: 'assets/characters/npcs/npc_chunhiem_nhat.png' },
+      { id: 'npc_hung', src: 'assets/characters/npcs/npc_pho_hung.png' },
+      { id: 'base_male', src: 'assets/characters/bases/base_male.png' },
+      { id: 'base_female', src: 'assets/characters/bases/base_female.png' }
+    ];
 
+    const dirs = ['down', 'left', 'right', 'up'];
+    const frameW = 48;
+    const frameH = 64;
+
+    characters.forEach(char => {
+      const container = document.getElementById(`row_${char.id}`);
+      if (!container) return;
+
+      const canvases = [];
+      dirs.forEach(d => {
+        const box = document.createElement('div');
+        box.className = 'sprite-box';
+        const canvas = document.createElement('canvas');
+        canvas.className = 'sprite-canvas';
+        canvas.width = frameW;
+        canvas.height = frameH;
+        const label = document.createElement('div');
+        label.className = 'sprite-label';
+        label.textContent = d;
+        box.appendChild(canvas);
+        box.appendChild(label);
+        container.appendChild(box);
+        canvases.push(canvas);
+      });
+
+      const img = new Image();
+      img.src = char.src;
+      let frame = 0;
       img.onload = () => {
         setInterval(() => {
           frame = (frame + 1) % 4;
-          // Row 0: down, Row 1: left, Row 2: right, Row 3: up
-          const rows = [0, 1, 2, 3];
-          canvasIds.forEach((id, r) => {
-            const canvas = document.getElementById(id);
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+          canvases.forEach((c, r) => {
+            const ctx = c.getContext('2d');
             ctx.clearRect(0, 0, frameW, frameH);
             ctx.drawImage(
               img,
@@ -212,13 +221,9 @@
               0, 0, frameW, frameH
             );
           });
-        }, 160); // ~6 fps walk cycle
+        }, 160);
       };
-    }
-
-    setupAnimation('assets/characters/test_gathertown_fuda.png', ['fuda_down', 'fuda_left', 'fuda_right', 'fuda_up']);
-    setupAnimation('assets/characters/test_gathertown_female.png', ['female_down', 'female_left', 'female_right', 'female_up']);
-    setupAnimation('assets/characters/test_gathertown_base_male.png', ['base_down', 'base_left', 'base_right', 'base_up']);
+    });
   </script>
 </body>
 </html>
