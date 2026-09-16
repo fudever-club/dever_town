@@ -202,10 +202,10 @@ export class PlayerProfileModal {
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
-    // Temporary 32x32 canvas
+    // Temporary 48x64 canvas (khớp kích thước frame sprite)
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 32;
-    tempCanvas.height = 32;
+    tempCanvas.width = 48;
+    tempCanvas.height = 64;
     const tempCtx = tempCanvas.getContext('2d');
     tempCtx.imageSmoothingEnabled = false;
 
@@ -227,10 +227,10 @@ export class PlayerProfileModal {
       // Chuẩn bị config trang phục
       const config = this.getWardrobeConfig();
 
-      tempCtx.clearRect(0, 0, 32, 32);
+      tempCtx.clearRect(0, 0, 48, 64);
       TextureGenerator.drawCharacterFrame(tempCtx, 0, hopY, dir, fIdx, config);
 
-      // Render lên canvas preview (160x160, character 128x128 4x scale)
+      // Render lên canvas preview (160x160, character 2.5x scale = 120x160)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Nền sân khấu gradient spotlight
@@ -249,8 +249,8 @@ export class PlayerProfileModal {
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Vẽ nhân vật phóng to 4x (128x128)
-      ctx.drawImage(tempCanvas, 0, 0, 32, 32, 16, 14, 128, 128);
+      // Vẽ nhân vật phóng to 2.5x (120x160)
+      ctx.drawImage(tempCanvas, 0, 0, 48, 64, 20, 0, 120, 160);
     }, 180);
   }
 

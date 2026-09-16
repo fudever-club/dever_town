@@ -1167,8 +1167,28 @@ export class TextureGenerator {
         }
     };
 
-    if (direction !== 'left') drawArm(rArmX, rArmY, rArmW, rArmH, 'right');
-    if (direction !== 'right') drawArm(lArmX, lArmY, lArmW, lArmH, 'left');
+    // Xác định loại grip để không vẽ arm swing khi đang cầm vật phẩm 2 tay
+    const isBothHandsItem = inHandItem && ['macbook_dev', 'golden_frog_plush'].includes(inHandItem);
+    const isOneHandItem = inHandItem && !isBothHandsItem && inHandItem !== 'none';
+
+    if (isBothHandsItem) {
+        // Không vẽ arm swing — drawInHandEquipment sẽ vẽ tay ôm đồ phù hợp
+    } else if (isOneHandItem) {
+        // Vật phẩm 1 tay: vẽ tay không cầm đồ vung bình thường
+        if (direction === 'left') {
+            // Nhìn trái: vật cầm tay trái (phía trước), vẽ tay phải (phía sau) bình thường — nhưng tay phải ẩn khi nhìn trái
+        } else if (direction === 'right') {
+            // Nhìn phải: vật cầm tay phải (phía trước), vẽ tay trái (phía sau) bình thường — nhưng tay trái ẩn khi nhìn phải
+        } else {
+            // Hướng down/up: chỉ cần vẽ tay không cầm đồ vung bình thường
+            drawArm(lArmX, lArmY, lArmW, lArmH, 'left');
+            // Tay phải sẽ được vẽ bởi drawInHandEquipment
+        }
+    } else {
+        // Không cầm gì — vung cả 2 tay bình thường
+        if (direction !== 'left') drawArm(rArmX, rArmY, rArmW, rArmH, 'right');
+        if (direction !== 'right') drawArm(lArmX, lArmY, lArmW, lArmH, 'left');
+    }
 
     // --- HEAD SKIN BASE ---
     // y+6 to y+20, 14px wide centered at x+24 (x+17 to x+31)
@@ -1443,30 +1463,41 @@ export class TextureGenerator {
     ctx.save();
     if (itemId === 'macbook_dev') {
       if (direction === 'down') {
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 15, y + 25, 18, 10);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 16, y + 26, 16, 7);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + 23, y + 29, 2, 2);
+        // Cánh tay trái ôm laptop (sleeve + hand)
+        ctx.fillStyle = '#94a3b8'; // Laptop body
+        ctx.fillRect(x + 15, y + 30, 18, 8);
+        ctx.fillStyle = '#38bdf8'; // Màn hình laptop
+        ctx.fillRect(x + 16, y + 31, 16, 5);
+        ctx.fillStyle = '#ffffff'; // Logo
+        ctx.fillRect(x + 23, y + 33, 2, 2);
+        // Tay trái ôm (cánh tay + bàn tay)
+        ctx.fillStyle = '#94a3b8'; // Dùng màu áo cho sleeve — sẽ lấy từ context
+        ctx.fillRect(x + 10, y + 28, 6, 10);
         ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(x + 14, y + 28, 3, 4);
-        ctx.fillRect(x + 31, y + 28, 3, 4);
+        ctx.fillRect(x + 12, y + 38, 4, 3);
+        // Tay phải ôm
+        ctx.fillRect(x + 32, y + 38, 4, 3);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(x + 32, y + 28, 6, 10);
       } else if (direction === 'left') {
         ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 16, y + 25, 7, 10);
+        ctx.fillRect(x + 16, y + 28, 7, 10);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 15, y + 26, 2, 7);
+        ctx.fillRect(x + 15, y + 29, 2, 7);
       } else if (direction === 'right') {
         ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 25, y + 25, 7, 10);
+        ctx.fillRect(x + 25, y + 28, 7, 10);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 31, y + 26, 2, 7);
+        ctx.fillRect(x + 31, y + 29, 2, 7);
       } else if (direction === 'up') {
         ctx.fillStyle = '#64748b';
-        ctx.fillRect(x + 16, y + 27, 16, 9);
+        ctx.fillRect(x + 16, y + 30, 16, 8);
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillRect(x + 23, y + 30, 2, 2);
+        ctx.fillRect(x + 23, y + 33, 2, 2);
+        // Tay ôm (nhìn từ sau)
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(x + 10, y + 28, 6, 10);
+        ctx.fillRect(x + 32, y + 28, 6, 10);
       }
     } else if (itemId === 'danang_salt_coffee' || itemId === 'thermos_coffee') {
       const cupX = direction === 'left' ? x + 12 : x + 31;

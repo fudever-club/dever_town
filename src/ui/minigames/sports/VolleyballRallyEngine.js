@@ -61,12 +61,13 @@ export class VolleyballRallyEngine {
   }
 
   onActionTrigger() {
+    const cfg = VOLLEYBALL_CONFIG;
     if (this.state === 'serving_player') {
       // Phát bóng bổng qua lưới
       this.state = 'rally';
-      this.ball.vx = 4.8;
-      this.ball.vy = -7.8;
-      this.player.vy = -5.5;
+      this.ball.vx = cfg.serve.playerVx;
+      this.ball.vy = cfg.serve.playerVy;
+      this.player.vy = cfg.serve.playerJumpVy;
       this.player.isGrounded = false;
       audioManager.playKick(1.0);
       this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#38bdf8');
@@ -111,9 +112,9 @@ export class VolleyballRallyEngine {
       this.botServeTimer -= dt;
       if (this.botServeTimer <= 0) {
         this.state = 'rally';
-        this.ball.vx = -4.8;
-        this.ball.vy = -7.8;
-        this.bot.vy = -5.5;
+        this.ball.vx = cfg.serve.botVx;
+        this.ball.vy = cfg.serve.botVy;
+        this.bot.vy = cfg.serve.botJumpVy;
         this.bot.isGrounded = false;
         audioManager.playKick(1.0);
         this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#f59e0b');
@@ -201,12 +202,12 @@ export class VolleyballRallyEngine {
     ) {
       if (this.ball.x < net.x) {
         this.ball.x = netLeft - this.ball.radius - 3;
-        this.ball.vx = -Math.abs(this.ball.vx || 4.2) * 0.85 - 2.0;
+        this.ball.vx = -Math.abs(this.ball.vx) * cfg.netBounce.restitutionX - cfg.netBounce.extraVx;
       } else {
         this.ball.x = netRight + this.ball.radius + 3;
-        this.ball.vx = Math.abs(this.ball.vx || 4.2) * 0.85 + 2.0;
+        this.ball.vx = Math.abs(this.ball.vx) * cfg.netBounce.restitutionX + cfg.netBounce.extraVx;
       }
-      this.ball.vy = -Math.abs(this.ball.vy || 4.5) * 0.7 - 2.8;
+      this.ball.vy = -Math.abs(this.ball.vy) * cfg.netBounce.restitutionY - cfg.netBounce.extraVy;
       audioManager.playKick(0.6);
       this.juiceFX.shake(3, 0.1);
       this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#ffffff');

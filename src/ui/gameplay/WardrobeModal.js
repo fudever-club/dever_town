@@ -371,10 +371,10 @@ export class WardrobeModal {
     ctx.lineWidth = 2;
     ctx.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
-    // Tạo canvas nhân vật tạm thời
+    // Tạo canvas nhân vật tạm thời (48x64 khớp với kích thước frame sprite)
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 32;
-    tempCanvas.height = 32;
+    tempCanvas.width = 48;
+    tempCanvas.height = 64;
     const tempCtx = tempCanvas.getContext('2d');
 
     const config = {
@@ -396,8 +396,10 @@ export class WardrobeModal {
     const currentDir = this.previewDirections[this.currentDirIndex] || 'down';
     TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, currentDir, 1, config);
 
-    // Scale lên canvas preview (4x = 128x128)
-    ctx.drawImage(tempCanvas, 0, 0, 32, 32, (canvas.width - 128) / 2, (canvas.height - 128) / 2 + 6, 128, 128);
+    // Scale lên canvas preview (2.5x = 120x160, vừa vặn canvas preview)
+    const scaledW = 120;
+    const scaledH = 160;
+    ctx.drawImage(tempCanvas, 0, 0, 48, 64, (canvas.width - scaledW) / 2, (canvas.height - scaledH) / 2, scaledW, scaledH);
   }
 
   handleApply() {

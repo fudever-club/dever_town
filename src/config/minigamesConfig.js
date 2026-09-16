@@ -149,6 +149,29 @@ export const VOLLEYBALL_CONFIG = {
     radius: 11,
     restitution: 0.86,
     spikeSpeedMultiplier: 2.2
+  },
+  // Tham so phat bong (tach roi tu Engine)
+  serve: {
+    playerVx: 5.8,
+    playerVy: -9.2,
+    playerJumpVy: -5.5,
+    botVx: -5.8,
+    botVy: -9.2,
+    botJumpVy: -5.5
+  },
+  // Tham so va cham luoi (giam luc nay, triet tieu nang luong)
+  netBounce: {
+    restitutionX: 0.35,
+    restitutionY: 0.40,
+    extraVx: 0.5,
+    extraVy: 1.0
+  },
+  // Tham so va cham dau
+  headBounce: {
+    basePower: 7.6,
+    verticalPower: 8.8,
+    jumpBoost: 2.2,
+    extraVy: 2.2
   }
 };
 

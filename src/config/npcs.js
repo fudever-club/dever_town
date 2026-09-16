@@ -1,9 +1,9 @@
 export const NPC_CONFIG = {
   main_hall: [
     {
-      id: 'npc_mentor_thinh',
-      name: 'Mentor Thinh',
-      role: 'Senior Dev • Web Team',
+      id: 'npc_chunhiem_nhat',
+      name: 'Dang Quang Nhat',
+      role: 'Chu Nhiem CLB • K20',
       tileX: 8, tileY: 4,
       direction: 'down',
       spriteConfig: {
@@ -22,17 +22,47 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Chào bạn! Mình là Thinh, mentor Web Team của FU-DEVER.',
-            'Bạn có muốn tìm hiểu về CLB không?',
-            'FU-DEVER có 4 sub-team: Web, AI, Mobile và Game.'
+            'Chao cau! Minh la Nhat, Chu nhiem cua FU-DEVER.',
+            'Cau dang tim hieu ve cau lac bo phai khong?',
+            'Ben minh hien tai co 4 sub-team la Web, AI, Mobile va Game.'
           ],
           nextDialogue: 'line_2'
         },
         line_2: {
           lines: [
-            'Nếu bạn giỏi code, chúng mình luôn chào đón!',
-            'Tìm form đăng ký tại fanpage FPTUDever nhé.',
-            'Gặp bạn ở hackathon lần sau!'
+            'Moi team deu co rat nhieu hoat dong va du an thuc te.',
+            'Neu thay hung thu thi dung ngai join voi tui minh nhe!',
+            'Can gi cu hoi minh, dung ngai nha.'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_pho_hung',
+      name: 'Nguyen Thai Hung',
+      role: 'Pho Chu Nhiem CLB',
+      tileX: 10, tileY: 6,
+      direction: 'right',
+      spriteConfig: {
+        gender: 'male',
+        hairstyle: 'wolf_cut',
+        hairColor: '#334155',
+        skinTone: 'skin_fair',
+        outfitType: 'hoodie',
+        hoodieColor: '#4f46e5',
+        collarColor: '#4338ca',
+        pantsColor: '#1e293b',
+        accessory: 'none',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Hello! Cau thay khuon vien cau lac bo the nao?',
+            'Day la mot phan cua du an DEVER TOWN tui minh dang phat trien.',
+            'Ngoai ra con co he thong dever-arena va web fudever.com nua do.'
           ],
           nextDialogue: 'line_1'
         }
@@ -73,14 +103,14 @@ export const NPC_CONFIG = {
   ],
   library_lounge: [
     {
-      id: 'npc_librarian_linh',
-      name: 'Thủ Thư Linh',
-      role: 'Library Keeper',
+      id: 'npc_hocthu_kiet',
+      name: 'Luong Van Tuan Kiet',
+      role: 'Truong Ban Hoc Thuat',
       tileX: 12, tileY: 5,
       direction: 'down',
       spriteConfig: {
-        gender: 'female',
-        hairstyle: 'hime_cut',
+        gender: 'male',
+        hairstyle: 'buzz_cut',
         hairColor: '#0f172a',
         skinTone: 'skin_fair',
         outfitType: 'suit',
@@ -94,9 +124,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Yêu cầu giữ yên lặng trong khu vực thư viện.',
-            'Chúng tôi có bộ sưu tập tài liệu kỹ thuật phong phú.',
-            'Bạn cần tìm tài liệu về chủ đề nào?'
+            'Ban Hoc Thuat ben minh chuyen lo may vu training cho member do.',
+            'Tu may cai bootcamp co ban den workshop chuyen sau luon.',
+            'Sap toi co mua thi PE voi FE, chac tui minh lai mo lop on tap tiep.'
           ],
           nextDialogue: 'line_1'
         }
@@ -105,9 +135,9 @@ export const NPC_CONFIG = {
   ],
   dever_lab: [
     {
-      id: 'npc_gamer_bao',
-      name: 'Gamer Bảo',
-      role: 'Game Team Lead',
+      id: 'npc_game_lead_thanh',
+      name: 'Nguyen Le Dang Thanh',
+      role: 'Game Development Lead',
       tileX: 15, tileY: 8,
       direction: 'down',
       spriteConfig: {
@@ -126,9 +156,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Bro! Mày đang chơi DEVER TOWN mà mày không biết à?',
-            'Game này là dự án của Game Team FU-DEVER đó.',
-            'Join Game Team để build game cùng tụi tao nhé!'
+            'Hello bro, minh la Thanh, lead cua Game Team.',
+            'Cai DEVER TOWN ban dang choi la tui minh lam bang Phaser 3 do.',
+            'Ngay xua tap tanh ve pixel art chua quen tay nhung gio muot roi!'
           ],
           nextDialogue: 'line_1'
         }
@@ -137,9 +167,9 @@ export const NPC_CONFIG = {
   ],
   sports_complex: [
     {
-      id: 'npc_coach_minh',
-      name: 'HLV Minh',
-      role: 'Sports Coach',
+      id: 'npc_sukien_thang',
+      name: 'Ho Quoc Thang',
+      role: 'Truong Ban Su Kien • K20',
       tileX: 12, tileY: 9,
       direction: 'down',
       spriteConfig: {
@@ -158,9 +188,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Chào tân binh! Sân thể thao FUDA luôn mở cửa.',
-            'Bóng đá, bóng rổ, bơi lội — chọn môn nào?',
-            'Coder khỏe thì code bền hơn đấy nhé!'
+            'Chao ban! Ban Su Kien chuyen to chuc may cai event cho CLB ne.',
+            'Sua soan cho Club Day sap toi ban ghe luon, ban den choi nha.',
+            'Tham gia teambuilding de gan ket tinh cam anh em nua!'
           ],
           nextDialogue: 'line_1'
         }
@@ -169,17 +199,17 @@ export const NPC_CONFIG = {
   ],
   media_hub: [
     {
-      id: 'npc_reporter_ha',
-      name: 'Phóng Viên Hà',
-      role: 'Media Hub Reporter',
+      id: 'npc_media_hai',
+      name: 'Doan Phuoc Truong Hai',
+      role: 'Truong Ban Truyen Thong',
       tileX: 10, tileY: 7,
       direction: 'down',
       spriteConfig: {
-        gender: 'female',
-        hairstyle: 'bob',
+        gender: 'male',
+        hairstyle: 'undercut',
         hairColor: '#92400e',
         skinTone: 'skin_natural',
-        outfitType: 'suit',
+        outfitType: 'polo',
         hoodieColor: '#1e293b',
         collarColor: '#0f172a',
         pantsColor: '#1e293b',
@@ -190,9 +220,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Breaking news: DEVER TOWN vừa ra mắt hệ thống NPC!',
-            'Tôi là Hà, phóng viên mảng tech của FU-DEVER Media.',
-            'Theo dõi fanpage để cập nhật tin tức CLB mới nhất!'
+            'Helo, ban Truyen Thong la noi quan ly fanpage voi dang bai do.',
+            'May cai content ban doc hay video highlight la do ben minh lam ne.',
+            'Can xin chu ky vao ban hay lien he dang tin thi cu keu minh nha!'
           ],
           nextDialogue: 'line_1'
         }
@@ -242,9 +272,9 @@ export const NPC_CONFIG = {
   ],
   web_room: [
     {
-      id: 'npc_dev_khoa',
-      name: 'Senior Dev Khoa',
-      role: 'Full-Stack • AI Team',
+      id: 'npc_backend_khoa',
+      name: 'Le Dinh Dang Khoa',
+      role: 'Backend Lead • Core Dev',
       tileX: 14, tileY: 7,
       direction: 'down',
       spriteConfig: {
@@ -264,9 +294,41 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Không gian Web & AI — nơi các dự án lớn được sinh ra.',
-            'Mình đang build LLM agent cho wiki của CLB.',
-            'Nếu bạn biết Python hoặc React, ghé AI Team nhé!'
+            'Minh dang chinh lai cai architecture cho backend he thong.',
+            'Chu yeu ben minh code Node.js, lam API voi quan ly may cai database.',
+            'He thong sap toi keo view cao nen phai toi uu ky lam.'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    }
+  ],
+  game_arcade: [
+    {
+      id: 'npc_algo_truyen',
+      name: 'Pham Duc Truyen',
+      role: 'Algorithm / ICPC Lead',
+      tileX: 12, tileY: 8,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'male',
+        hairstyle: 'undercut',
+        hairColor: '#0284c7',
+        skinTone: 'skin_fair',
+        outfitType: 'hoodie',
+        hoodieColor: '#0369a1',
+        collarColor: '#075985',
+        pantsColor: '#1e293b',
+        accessory: 'glasses_smart',
+        expression: 'expr_focus'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Ban co hung thu voi competitive programming khong?',
+            'Doi tuyen ICPC thuong xuyen to chuc thi tran dever-arena do.',
+            'Giai thuat khong kho, quan trong la code dung ma khong bi Time Limit.'
           ],
           nextDialogue: 'line_1'
         }

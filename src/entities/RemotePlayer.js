@@ -337,7 +337,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
 
     // Cập nhật vị trí bóng chân và co giãn nhẹ theo nhịp bước
     if (this.shadowEllipse) {
-      this.shadowEllipse.setPosition(this.x, this.y + 14);
+      this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
       const shadowBob = isVisiblyMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
       this.shadowEllipse.setScale(shadowBob, 1.0);
@@ -346,7 +346,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y + 14);
+      this.setDepth(this.y + 30);
 
       if (this.nameTagContainer) {
         this.nameTagContainer.setPosition(this.x, this.y - 28);
