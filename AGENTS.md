@@ -16,9 +16,14 @@
 - Tuyệt đối không spawn đè lên portal tile `10`.
 - WorldScene phải duy trì teleport cooldown >= 1.5s để chống vòng lặp kẹt cổng.
 
-## 4. Git Commit Author Rule
-- Mọi commit git bắt buộc phải chỉ định author của người dùng:
-  `--author="qnhat1504 <dangquangnhat1504@gmail.com>"` (hoặc `--author="RaH11 <hungnguyen.190206@gmail.com>"`)
+## 4. Git Branch & Commit Workflow Policy (Quy Tắc Phân Nhánh & Commit)
+- **Quy tắc phân nhánh Source Game:**
+  - **Source Code, Assets, Config, Game Engine, UI, Logic**: **BẮT BUỘC** luôn luôn commit và push lên nhánh **`develop_hung`** trước (`origin/develop_hung`) để người dùng kiểm tra và trải nghiệm thực tế. Tuyệt đối **KHÔNG** push thẳng vào `main`.
+  - **Quy trình Merge vào `main`**: Chỉ khi người dùng yêu cầu ("merge pull request", "merge vào main", "merge PR") thì Agent mới được checkout sang `main`, merge từ `develop_hung` và push lên `origin/main`.
+  - **Ngoại lệ cho Docs / Plans**: Nếu chỉ chỉnh sửa hoặc bổ sung tài liệu (`docs/`, `*.md`, `plans/`, `CHANGELOG.md`...), Agent được phép commit và merge trực tiếp vào nhánh **`main`**.
+- **Quy chuẩn Author:**
+  - Mọi commit git bắt buộc phải chỉ định author của người dùng:
+    `--author="RaH11 <hungnguyen.190206@gmail.com>"` (hoặc `--author="qnhat1504 <dangquangnhat1504@gmail.com>"`)
 
 
 ## 5. Strict Emoji Control & Anti-AI-Slop Protocol (Quy Chuẩn Kiểm Soát Emoji & Văn Phong Game)
