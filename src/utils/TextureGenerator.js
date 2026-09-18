@@ -907,6 +907,17 @@ export class TextureGenerator {
         if (srcImg) {
           ctx.drawImage(srcImg, 0, 0, canvas.width, canvas.height);
           usedPrebaked = true;
+
+          // Vẽ vật phẩm cầm tay (in-hand equipment) lên trên bộ Chibi spritesheet đã preload
+          if (config.inHandItem && config.inHandItem !== 'none') {
+            const directions = ['down', 'left', 'right', 'up'];
+            for (let r = 0; r < rows; r++) {
+              const dir = directions[r];
+              for (let c = 0; c < cols; c++) {
+                this.drawInHandEquipment(ctx, c * frameW, r * frameH, dir, c, config.inHandItem);
+              }
+            }
+          }
         }
       } catch (e) {}
     }
@@ -1481,79 +1492,131 @@ export class TextureGenerator {
     if (!itemId || itemId === 'none') return;
 
     ctx.save();
+    // Phù hợp với tỷ lệ Chibi 48x64 px (Tay ở khoảng y + 40..46, x + 10..14 và x + 33..38)
     if (itemId === 'macbook_dev') {
       if (direction === 'down') {
-        // Cánh tay trái ôm laptop (sleeve + hand)
-        ctx.fillStyle = '#94a3b8'; // Laptop body
-        ctx.fillRect(x + 15, y + 30, 18, 8);
-        ctx.fillStyle = '#38bdf8'; // Màn hình laptop
-        ctx.fillRect(x + 16, y + 31, 16, 5);
-        ctx.fillStyle = '#ffffff'; // Logo
-        ctx.fillRect(x + 23, y + 33, 2, 2);
-        // Tay trái ôm (cánh tay + bàn tay)
-        ctx.fillStyle = '#94a3b8'; // Dùng màu áo cho sleeve — sẽ lấy từ context
-        ctx.fillRect(x + 10, y + 28, 6, 10);
+        // Laptop mở nằm ngang trước bụng/ngực
+        ctx.fillStyle = '#94a3b8'; // Vỏ nhôm MacBook
+        ctx.fillRect(x + 16, y + 40, 16, 9);
+        ctx.fillStyle = '#38bdf8'; // Màn hình Retina phát sáng
+        ctx.fillRect(x + 17, y + 41, 14, 6);
+        ctx.fillStyle = '#ffffff'; // Logo táo khuyết
+        ctx.fillRect(x + 23, y + 43, 2, 2);
+        // Bàn tay giữ 2 cạnh máy
         ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(x + 12, y + 38, 4, 3);
-        // Tay phải ôm
-        ctx.fillRect(x + 32, y + 38, 4, 3);
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 32, y + 28, 6, 10);
+        ctx.fillRect(x + 15, y + 43, 2, 3);
+        ctx.fillRect(x + 31, y + 43, 2, 3);
       } else if (direction === 'left') {
+        // Laptop kẹp bên hông/cầm ngang
         ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 16, y + 28, 7, 10);
+        ctx.fillRect(x + 13, y + 40, 6, 11);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 15, y + 29, 2, 7);
+        ctx.fillRect(x + 12, y + 41, 2, 8);
+        ctx.fillStyle = '#fbd1a2';
+        ctx.fillRect(x + 15, y + 44, 3, 3);
       } else if (direction === 'right') {
         ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 25, y + 28, 7, 10);
+        ctx.fillRect(x + 29, y + 40, 6, 11);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 31, y + 29, 2, 7);
+        ctx.fillRect(x + 34, y + 41, 2, 8);
+        ctx.fillStyle = '#fbd1a2';
+        ctx.fillRect(x + 30, y + 44, 3, 3);
       } else if (direction === 'up') {
         ctx.fillStyle = '#64748b';
-        ctx.fillRect(x + 16, y + 30, 16, 8);
-        ctx.fillStyle = '#cbd5e1';
-        ctx.fillRect(x + 23, y + 33, 2, 2);
-        // Tay ôm (nhìn từ sau)
-        ctx.fillStyle = '#64748b';
-        ctx.fillRect(x + 10, y + 28, 6, 10);
-        ctx.fillRect(x + 32, y + 28, 6, 10);
+        ctx.fillRect(x + 16, y + 40, 16, 8);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + 23, y + 43, 2, 2);
       }
     } else if (itemId === 'danang_salt_coffee' || itemId === 'thermos_coffee') {
-      const cupX = direction === 'left' ? x + 12 : x + 31;
-      const cupY = y + 25;
+      const isLeft = direction === 'left';
+      const isRight = direction === 'right';
+      const cupX = isLeft ? x + 13 : (isRight ? x + 29 : x + 33);
+      const cupY = y + 40;
+
+      // Thân ly cà phê nâu đậm
       ctx.fillStyle = itemId === 'danang_salt_coffee' ? '#78350f' : '#f59e0b';
-      ctx.fillRect(cupX, cupY, 6, 9);
+      ctx.fillRect(cupX, cupY, 7, 9);
+      // Lớp bọt kem muối trắng mịn bồng bềnh
       ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(cupX - 1, cupY - 1, 8, 3);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.fillRect(cupX + 1, cupY - 6, 2, 3);
-      ctx.fillRect(cupX + 4, cupY - 9, 2, 3);
+      ctx.fillRect(cupX - 1, cupY - 2, 9, 3);
+      // Nắp & ống hút xanh
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(cupX + 2, cupY - 5, 2, 4);
+      // Làn khói / hương thơm cà phê nhẹ
+      if (direction !== 'up') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.fillRect(cupX + 1, cupY - 8, 2, 2);
+        ctx.fillRect(cupX + 4, cupY - 10, 2, 2);
+      }
+      // Ngón tay cầm ly
+      ctx.fillStyle = '#fbd1a2';
+      ctx.fillRect(cupX + 4, cupY + 3, 3, 3);
     } else if (itemId === 'golden_frog_plush') {
       if (direction !== 'up') {
+        const frogX = direction === 'left' ? x + 14 : (direction === 'right' ? x + 26 : x + 20);
+        const frogY = y + 39;
+        // Thân cóc vàng
         ctx.fillStyle = '#eab308';
         ctx.beginPath();
-        ctx.arc(x + 24, y + 27, 7, 0, Math.PI * 2);
+        ctx.ellipse(frogX + 4, frogY + 4, 5, 4, 0, 0, Math.PI * 2);
         ctx.fill();
+        // Khăn quàng đỏ may mắn
         ctx.fillStyle = '#dc2626';
-        ctx.fillRect(x + 22, y + 18, 3, 3);
+        ctx.fillRect(frogX + 1, frogY + 3, 7, 2);
+        // Mắt cóc
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(frogX + 2, frogY + 1, 2, 2);
+        ctx.fillRect(frogX + 5, frogY + 1, 2, 2);
+        // Tay người chơi ôm cóc
+        ctx.fillStyle = '#fbd1a2';
+        ctx.fillRect(frogX - 1, frogY + 4, 2, 2);
+        ctx.fillRect(frogX + 8, frogY + 4, 2, 2);
       }
     } else if (itemId === 'football_ball' || itemId === 'basketball_ball') {
-      const ballX = direction === 'left' ? x + 10 : x + 38;
-      const ballY = y + 28;
+      const isLeft = direction === 'left';
+      const isRight = direction === 'right';
+      const ballX = isLeft ? x + 12 : (isRight ? x + 31 : x + 33);
+      const ballY = y + 43;
+
       ctx.fillStyle = itemId === 'basketball_ball' ? '#ea580c' : '#ffffff';
       ctx.beginPath();
-      ctx.arc(ballX, ballY, 6, 0, Math.PI * 2);
+      ctx.arc(ballX + 4, ballY + 4, 5, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = '#0f172a';
       ctx.lineWidth = 1;
       ctx.stroke();
+
+      if (itemId === 'basketball_ball') {
+        // Rãnh bóng rổ
+        ctx.strokeStyle = '#18181b';
+        ctx.beginPath();
+        ctx.moveTo(ballX + 4, ballY - 1);
+        ctx.lineTo(ballX + 4, ballY + 9);
+        ctx.stroke();
+      } else {
+        // Họa tiết bóng đá
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(ballX + 3, ballY + 3, 2, 2);
+      }
+      // Bàn tay kẹp bóng
+      ctx.fillStyle = '#fbd1a2';
+      ctx.fillRect(ballX + 2, ballY + 1, 3, 2);
     } else if (itemId === 'dever_flag') {
-      const flagX = direction === 'left' ? x + 10 : x + 38;
+      const isLeft = direction === 'left';
+      const flagX = isLeft ? x + 12 : x + 33;
+      // Cán cờ gỗ dài vững chãi
       ctx.fillStyle = '#78350f';
-      ctx.fillRect(flagX, y + 4, 3, 30);
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(flagX + (direction === 'left' ? -12 : 3), y + 4, 12, 9);
+      ctx.fillRect(flagX, y + 16, 2, 32);
+      // Lá cờ FU-DEVER xanh rực rỡ
+      ctx.fillStyle = '#0066CC';
+      const flagDir = isLeft ? -13 : 2;
+      ctx.fillRect(flagX + flagDir, y + 16, 13, 9);
+      // Viền cam FPTU
+      ctx.fillStyle = '#f26f21';
+      ctx.fillRect(flagX + flagDir, y + 23, 13, 2);
+      // Tay cầm cán cờ
+      ctx.fillStyle = '#fbd1a2';
+      ctx.fillRect(flagX - 1, y + 43, 4, 3);
     }
     ctx.restore();
   }
@@ -1606,6 +1669,41 @@ export class TextureGenerator {
     canvas.width = 80;
     canvas.height = 96;
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    // 1. Nền Gradient thẻ bài Chibi Metaverse
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, 96);
+    bgGrad.addColorStop(0, '#0b1329');
+    bgGrad.addColorStop(1, '#020617');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 80, 96);
+
+    // Vầng sáng spotlight sau lưng
+    const radial = ctx.createRadialGradient(40, 48, 4, 40, 48, 40);
+    radial.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
+    radial.addColorStop(1, 'rgba(2, 6, 23, 0)');
+    ctx.fillStyle = radial;
+    ctx.fillRect(0, 0, 80, 96);
+
+    // Viền khung neon sắc nét
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(1, 1, 78, 94);
+
+    // Kiểm tra xem texture Chibi Gather.town có sẵn không
+    const charKey = key ? key.replace('npc_portrait_', 'char_') : (npcConfig?.id ? `char_${npcConfig.id}` : null);
+    if (charKey && scene && scene.textures && scene.textures.exists(charKey)) {
+      try {
+        const srcTex = scene.textures.get(charKey);
+        const srcImg = srcTex.getSourceImage();
+        if (srcImg) {
+          // Lấy frame 0 (mặt trước 48x64), vẽ căn giữa tỉ lệ đẹp vào khung 80x96
+          ctx.drawImage(srcImg, 0, 0, 48, 64, 7, 6, 66, 88);
+          scene.textures.addCanvas(key, canvas);
+          return canvas;
+        }
+      } catch (e) {}
+    }
 
     const shirt = npcConfig.shirt || npcConfig.hoodieColor || npcConfig.outfitColor || '#2563eb';
     const collar = npcConfig.collarColor || '#1d4ed8';
@@ -1621,19 +1719,7 @@ export class TextureGenerator {
     };
     const skin = skinMap[skinTone] || { base: npcConfig.skin || '#fbd1a2', shadow: '#f59e0b' };
 
-    // 1. Nền Gradient phong cách thẻ bài Pokémon
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, 96);
-    bgGrad.addColorStop(0, '#1e293b');
-    bgGrad.addColorStop(1, '#0f172a');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 80, 96);
-
-    // Viền khung trong suốt nhẹ
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, 78, 94);
-
-    // 2. Thân & Áo (Torso & Shoulders)
+    // Fallback: Thân & Áo (Torso & Shoulders)
     ctx.fillStyle = shirt;
     ctx.beginPath();
     ctx.moveTo(8, 96);

@@ -2,8 +2,8 @@ export const NPC_CONFIG = {
   main_hall: [
     {
       id: 'npc_chunhiem_nhat',
-      name: 'Dang Quang Nhat',
-      role: 'Chu Nhiem CLB • K20',
+      name: 'Đặng Quang Nhật',
+      role: 'Chủ Nhiệm CLB • K20',
       tileX: 8, tileY: 4,
       direction: 'down',
       spriteConfig: {
@@ -22,17 +22,17 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Chao cau! Minh la Nhat, Chu nhiem cua FU-DEVER.',
-            'Cau dang tim hieu ve cau lac bo phai khong?',
-            'Ben minh hien tai co 4 sub-team la Web, AI, Mobile va Game.'
+            'Chào bạn! Mình là Nhật, Chủ nhiệm của CLB Lập Trình FU-DEVER.',
+            'Bạn đang tìm hiểu về câu lạc bộ phải không?',
+            'Hiện tại FU-DEVER có 4 sub-team chuyên môn: Web, AI, Mobile và Game Dev.'
           ],
           nextDialogue: 'line_2'
         },
         line_2: {
           lines: [
-            'Moi team deu co rat nhieu hoat dong va du an thuc te.',
-            'Neu thay hung thu thi dung ngai join voi tui minh nhe!',
-            'Can gi cu hoi minh, dung ngai nha.'
+            'Mỗi sub-team đều có mentor 1:1, workshop chuyên sâu và dự án thực chiến.',
+            'Nếu bạn muốn nâng trình code và kết nối cộng đồng, cứ đăng ký tham gia nhé!',
+            'Cần hỗ trợ bất cứ điều gì, bạn cứ hỏi tụi mình, đừng ngại nha.'
           ],
           nextDialogue: 'line_1'
         }
@@ -40,8 +40,8 @@ export const NPC_CONFIG = {
     },
     {
       id: 'npc_pho_hung',
-      name: 'Nguyen Thai Hung',
-      role: 'Pho Chu Nhiem CLB',
+      name: 'Nguyễn Thái Hưng',
+      role: 'Phó Chủ Nhiệm CLB • K20',
       tileX: 10, tileY: 6,
       direction: 'right',
       spriteConfig: {
@@ -60,9 +60,39 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Hello! Cau thay khuon vien cau lac bo the nao?',
-            'Day la mot phan cua du an DEVER TOWN tui minh dang phat trien.',
-            'Ngoai ra con co he thong dever-arena va web fudever.com nua do.'
+            'Hello! Bạn thấy khuôn viên Metaverse của CLB thế nào?',
+            'Đây là thế giới DEVER TOWN do chính các thành viên FU-DEVER phát triển.',
+            'Ngoài ra tụi mình còn có đấu trường lập trình dever-arena và web fudever.com nữa đó!'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_thuky_anh',
+      name: 'Nguyễn Thị Ngọc Ánh',
+      role: 'Thư Ký CLB • K20',
+      tileX: 8, tileY: 4,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'female',
+        hairstyle: 'ponytail',
+        hairColor: '#0f172a',
+        skinTone: 'skin_fair',
+        outfitType: 'aodai',
+        hoodieColor: '#ea580c',
+        collarColor: '#002147',
+        pantsColor: '#ffffff',
+        accessory: 'glasses_smart',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào bạn! Mình là Ngọc Ánh, Thư ký của CLB Lập Trình FU-DEVER.',
+            'Mình phụ trách quản lý hồ sơ thành viên, tài chính và điều phối hoạt động chung.',
+            'Nếu bạn cần hỗ trợ thủ tục gia nhập CLB hay đóng quỹ hoạt động, cứ nhắn mình nhé!'
           ],
           nextDialogue: 'line_1'
         }
@@ -73,7 +103,7 @@ export const NPC_CONFIG = {
     {
       id: 'npc_barista_an',
       name: 'Barista An',
-      role: 'Quán Cà Phê FUDA',
+      role: 'Chuyên Gia Pha Chế Cà Phê Muối',
       tileX: 8, tileY: 8,
       direction: 'down',
       spriteConfig: {
@@ -92,9 +122,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Xin chào! Hôm nay bạn muốn dùng gì?',
-            'Cà phê muối Đà Nẵng là món đặc trưng của quán mình!',
-            'Vừa code vừa nhâm nhi — perfect combo!'
+            'Xin chào! Hôm nay bạn muốn dùng gì nào?',
+            'Cà phê muối Đà Nẵng là món đặc trưng tiếp năng lượng cày code của quán mình!',
+            'Một ly cà phê bọt muối thơm béo + fix sạch bug — combo chuẩn bài luôn!'
           ],
           nextDialogue: 'line_1'
         }
@@ -104,8 +134,8 @@ export const NPC_CONFIG = {
   library_lounge: [
     {
       id: 'npc_hocthu_kiet',
-      name: 'Luong Van Tuan Kiet',
-      role: 'Truong Ban Hoc Thuat',
+      name: 'Lương Văn Tuấn Kiệt',
+      role: 'Trưởng Ban Học Thuật',
       tileX: 12, tileY: 5,
       direction: 'down',
       spriteConfig: {
@@ -124,9 +154,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Ban Hoc Thuat ben minh chuyen lo may vu training cho member do.',
-            'Tu may cai bootcamp co ban den workshop chuyen sau luon.',
-            'Sap toi co mua thi PE voi FE, chac tui minh lai mo lop on tap tiep.'
+            'Ban Học Thuật phụ trách các buổi training, workshop chuyên sâu và bootcamp cho thành viên.',
+            'Từ thuật toán cơ bản đến kiến trúc phần mềm, tụi mình đều có lộ trình chi tiết.',
+            'Sắp tới kỳ thi PE và FE, tụi mình sẽ mở các lớp ôn tập đồ án, bạn nhớ tham gia nhé!'
           ],
           nextDialogue: 'line_1'
         }
@@ -136,8 +166,8 @@ export const NPC_CONFIG = {
   dever_lab: [
     {
       id: 'npc_game_lead_thanh',
-      name: 'Nguyen Le Dang Thanh',
-      role: 'Game Development Lead',
+      name: 'Nguyễn Lê Đăng Thành',
+      role: 'Trưởng Ban Game Development',
       tileX: 15, tileY: 8,
       direction: 'down',
       spriteConfig: {
@@ -156,9 +186,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Hello bro, minh la Thanh, lead cua Game Team.',
-            'Cai DEVER TOWN ban dang choi la tui minh lam bang Phaser 3 do.',
-            'Ngay xua tap tanh ve pixel art chua quen tay nhung gio muot roi!'
+            'Hello bro! Mình là Thành, lead của Game Dev Sub-team.',
+            'Thế giới DEVER TOWN mà bạn đang trải nghiệm được xây dựng bằng Phaser 3 và Socket.io đó!',
+            'Nếu bạn đam mê thiết kế gameplay, pixel art hay game mechanics, vào team mình cùng chiến nhé!'
           ],
           nextDialogue: 'line_1'
         }
@@ -168,8 +198,8 @@ export const NPC_CONFIG = {
   sports_complex: [
     {
       id: 'npc_sukien_thang',
-      name: 'Ho Quoc Thang',
-      role: 'Truong Ban Su Kien • K20',
+      name: 'Hồ Quốc Thắng',
+      role: 'Trưởng Ban Sự Kiện • K20',
       tileX: 12, tileY: 9,
       direction: 'down',
       spriteConfig: {
@@ -188,9 +218,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Chao ban! Ban Su Kien chuyen to chuc may cai event cho CLB ne.',
-            'Sua soan cho Club Day sap toi ban ghe luon, ban den choi nha.',
-            'Tham gia teambuilding de gan ket tinh cam anh em nua!'
+            'Chào bạn! Ban Sự Kiện chuyên lo khâu tổ chức các ngày hội lớn cho CLB nè.',
+            'Sắp tới có Club Day và giải thể thao teambuilding siêu cháy, bạn nhớ ghé chơi nha.',
+            'Code hết mình và thể thao cũng phải hết sức — chuẩn tinh thần builder FPTU!'
           ],
           nextDialogue: 'line_1'
         }
@@ -200,8 +230,8 @@ export const NPC_CONFIG = {
   media_hub: [
     {
       id: 'npc_media_hai',
-      name: 'Doan Phuoc Truong Hai',
-      role: 'Truong Ban Truyen Thong',
+      name: 'Đoàn Phước Trường Hải',
+      role: 'Trưởng Ban Truyền Thông',
       tileX: 10, tileY: 7,
       direction: 'down',
       spriteConfig: {
@@ -220,9 +250,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Helo, ban Truyen Thong la noi quan ly fanpage voi dang bai do.',
-            'May cai content ban doc hay video highlight la do ben minh lam ne.',
-            'Can xin chu ky vao ban hay lien he dang tin thi cu keu minh nha!'
+            'Chào bạn! Ban Truyền Thông là nơi phụ trách hình ảnh, video highlight và Fanpage FU-DEVER.',
+            'Mọi bài viết công nghệ, recap sự kiện và poster ấn phẩm đều do tụi mình thực hiện.',
+            'Nhớ theo dõi Fanpage CLB để cập nhật những hoạt động mới nhất nhé!'
           ],
           nextDialogue: 'line_1'
         }
@@ -233,7 +263,7 @@ export const NPC_CONFIG = {
     {
       id: 'npc_historian_duc',
       name: 'Sử Quan Đức',
-      role: 'Lịch Sử CLB',
+      role: 'Ban Cố Vấn & Lịch Sử CLB',
       tileX: 11, tileY: 8,
       direction: 'down',
       spriteConfig: {
@@ -253,17 +283,17 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Phòng này lưu giữ ký ức của FU-DEVER qua nhiều năm.',
-            'CLB được thành lập từ những ngày đầu FPT University Đà Nẵng.',
-            'Mỗi giải thưởng là một trang lịch sử của CLB chúng ta.'
+            'Căn phòng này lưu giữ những ký ức và cột mốc đáng tự hào của FU-DEVER qua nhiều năm.',
+            'CLB được thành lập từ những ngày đầu trường ĐH FPT Đà Nẵng đi vào hoạt động.',
+            'Mỗi cúp vô địch, mỗi tấm bằng khen là một trang sử của đại gia đình chúng ta.'
           ],
           nextDialogue: 'line_2'
         },
         line_2: {
           lines: [
-            'Hackathon, CTF, Game Jam... đây đều là dấu ấn của FU-DEVER.',
-            'Bạn là thế hệ tiếp theo để viết thêm những trang mới.',
-            'Cố lên nhé, thế hệ trẻ!'
+            'Hackathon, CTF, Game Jam hay ICPC... đây đều là những dấu ấn rực rỡ của các thế hệ coder.',
+            'Bạn chính là thế hệ tiếp theo để viết tiếp những trang sử vẻ vang ấy.',
+            'Chúc bạn có những trải nghiệm thật ý nghĩa tại FU-DEVER!'
           ],
           nextDialogue: 'line_1'
         }
@@ -273,7 +303,7 @@ export const NPC_CONFIG = {
   web_room: [
     {
       id: 'npc_backend_khoa',
-      name: 'Le Dinh Dang Khoa',
+      name: 'Lê Đình Đăng Khoa',
       role: 'Backend Lead • Core Dev',
       tileX: 14, tileY: 7,
       direction: 'down',
@@ -294,9 +324,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Minh dang chinh lai cai architecture cho backend he thong.',
-            'Chu yeu ben minh code Node.js, lam API voi quan ly may cai database.',
-            'He thong sap toi keo view cao nen phai toi uu ky lam.'
+            'Mình đang tối ưu lại kiến trúc backend và cấu trúc database cho toàn hệ thống.',
+            'Tụi mình dùng Node.js, API RESTful, WebSocket và PostgreSQL để xử lý đồng thời lượng lớn người chơi.',
+            'Hệ thống luôn cần tối ưu hiệu năng và độ trễ, bạn có hứng thú với Backend thì trao đổi cùng mình nhé!'
           ],
           nextDialogue: 'line_1'
         }
@@ -306,8 +336,8 @@ export const NPC_CONFIG = {
   game_arcade: [
     {
       id: 'npc_algo_truyen',
-      name: 'Pham Duc Truyen',
-      role: 'Algorithm / ICPC Lead',
+      name: 'Phạm Đức Truyền',
+      role: 'Algorithm Lead • Đội Tuyển ICPC',
       tileX: 12, tileY: 8,
       direction: 'down',
       spriteConfig: {
@@ -326,9 +356,9 @@ export const NPC_CONFIG = {
       dialogues: {
         line_1: {
           lines: [
-            'Ban co hung thu voi competitive programming khong?',
-            'Doi tuyen ICPC thuong xuyen to chuc thi tran dever-arena do.',
-            'Giai thuat khong kho, quan trong la code dung ma khong bi Time Limit.'
+            'Chào bạn! Bạn có niềm đam mê với Competitive Programming hay thuật toán không?',
+            'Đội tuyển ICPC FU-DEVER thường xuyên tổ chức luyện tập và thi đấu trên đấu trường dever-arena.',
+            'Giải thuật không hề khô khan, quan trọng là tư duy tối ưu để thuật toán chạy trong O(n log n)!'
           ],
           nextDialogue: 'line_1'
         }

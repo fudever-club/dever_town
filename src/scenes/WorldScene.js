@@ -544,18 +544,40 @@ export class WorldScene extends Phaser.Scene {
         try { n.destroy(); } catch (e) {}
       });
     }
-    this.npcGroup = [];
-    const roomNPCs = NPC_CONFIG[roomId] || [];
-    roomNPCs.forEach(cfg => {
-      try {
-        const npcX = cfg.tileX * tileSize + tileSize / 2;
-        const npcY = cfg.tileY * tileSize + tileSize / 2;
-        const npc = new NPC(this, npcX, npcY, cfg);
-        this.npcGroup.push(npc);
-      } catch (err) {
-        console.warn('Lỗi khi spawn NPC:', cfg?.id, err);
-      }
-    });
+    // Chỉ spawn NPC của main_hall khi đang ở tầng 1 (floorIndex = 0)
+    const isMainHallUpperFloor = roomId === 'main_hall' && (this.floorManager?.currentFloor || 0) > 0;
+    if (!isMainHallUpperFloor) {
+      const roomNPCs = NPC_CONFIG[roomId] || [];
+      const playerName = (this.player?.name || authService.getUser()?.display_name || '').toLowerCase();
+      const isPlayerNhat = playerName.includes('nhat') || playerName.includes('nhật');
+
+      roomNPCs.forEach(cfg => {
+        try {
+          // Nếu người chơi chính là Đặng Quang Nhật, thay thế NPC Chủ nhiệm bằng Thư Ký Nguyễn Thị Ngọc Ánh để tránh trùng 2 Chủ nhiệm
+          if (cfg.id === 'npc_chunhiem_nhat' && isPlayerNhat) {
+            const thukyCfg = (NPC_CONFIG.main_hall || []).find(n => n.id === 'npc_thuky_anh');
+            if (thukyCfg) {
+              const npcX = thukyCfg.tileX * tileSize + tileSize / 2;
+              const npcY = thukyCfg.tileY * tileSize + tileSize / 2;
+              const npc = new NPC(this, npcX, npcY, thukyCfg);
+              this.npcGroup.push(npc);
+            }
+            return;
+          }
+          // Bỏ qua npc_thuky_anh nếu người chơi không phải Đặng Quang Nhật (giữ nguyên Chủ nhiệm)
+          if (cfg.id === 'npc_thuky_anh') {
+            return;
+          }
+
+          const npcX = cfg.tileX * tileSize + tileSize / 2;
+          const npcY = cfg.tileY * tileSize + tileSize / 2;
+          const npc = new NPC(this, npcX, npcY, cfg);
+          this.npcGroup.push(npc);
+        } catch (err) {
+          console.warn('Lỗi khi spawn NPC:', cfg?.id, err);
+        }
+      });
+    }
 
     // Pickups for this room
     if (this.inventoryManager) {

@@ -8,6 +8,7 @@ import { friendManager } from '../../managers/FriendManager.js';
 import { audioManager } from '../../utils/AudioManager.js';
 import { ITEMS_DATABASE } from '../../config/items.js';
 import { TextureGenerator } from '../../utils/TextureGenerator.js';
+import { WARDROBE_CONFIG } from '../../config/wardrobe.js';
 
 export class PlayerProfileModal {
   constructor({ onWhisper, onTeleportTo, onOpenAvatarSelector } = {}) {
@@ -224,11 +225,35 @@ export class PlayerProfileModal {
       // Hiệu ứng nhảy vui vẻ (hop -3px khi ở frame nhấc chân)
       const hopY = (fIdx === 1) ? -2 : 0;
 
-      // Chuẩn bị config trang phục
+      // Chuẩn bị config trang phục thực tế
       const config = this.getWardrobeConfig();
+      const outfitId = config.outfitId || 'hoodie_fuda';
+      const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
+      const prebakedKey = `char_${normalizedOutfitId}`;
 
       tempCtx.clearRect(0, 0, 48, 64);
-      TextureGenerator.drawCharacterFrame(tempCtx, 0, hopY, dir, fIdx, config);
+
+      let usedPrebaked = false;
+      const gameScene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      if (gameScene?.textures?.exists(prebakedKey)) {
+        try {
+          const srcTex = gameScene.textures.get(prebakedKey);
+          const srcImg = srcTex.getSourceImage();
+          if (srcImg) {
+            const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[dir] || 0;
+            tempCtx.drawImage(srcImg, fIdx * 48, dirRow * 64, 48, 64, 0, hopY, 48, 64);
+            usedPrebaked = true;
+
+            if (config.inHandItem && config.inHandItem !== 'none') {
+              TextureGenerator.drawInHandEquipment(tempCtx, 0, hopY, dir, fIdx, config.inHandItem);
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!usedPrebaked) {
+        TextureGenerator.drawCharacterFrame(tempCtx, 0, hopY, dir, fIdx, config);
+      }
 
       // Render lên canvas preview (160x160, character 2.5x scale = 120x160)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -262,55 +287,50 @@ export class PlayerProfileModal {
   }
 
   getWardrobeConfig() {
-    const friend = friendManager.getFriend(this.currentPlayer?.name);
-    const avatarId = this.currentPlayer?.avatarId || friend?.avatarId || 'dev_hoodie';
-
-    let shirtColor = '#f26f21';
-    let outfitType = 'hoodie';
-
-    if (avatarId === 'polo_white') {
-      shirtColor = '#f8fafc';
-      outfitType = 'polo';
-    } else if (avatarId === 'cyber_punk') {
-      shirtColor = '#06b6d4';
-      outfitType = 'cyber';
-    } else if (avatarId === 'event_tee') {
-      shirtColor = '#7c3aed';
-      outfitType = 'tee';
+    let rawConfig = this.currentPlayer?.wardrobeConfig;
+    if (!rawConfig && this.currentPlayer?.isMe) {
+      try {
+        const saved = localStorage.getItem('dever_wardrobe_config');
+        if (saved) rawConfig = JSON.parse(saved);
+      } catch (e) {}
     }
+    const friend = friendManager.getFriend(this.currentPlayer?.name);
+    const outfitId = rawConfig?.outfitId || this.currentPlayer?.avatarId || friend?.avatarId || 'hoodie_fuda';
+    const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
+    const outfitObj = WARDROBE_CONFIG.outfits.find(o => o.id === normalizedOutfitId || o.id === outfitId) || WARDROBE_CONFIG.outfits[0];
 
-    return this.currentPlayer?.wardrobeConfig || {
-      gender: 'male',
-      hairstyle: 'short',
-      hair: '#0f172a',
-      skin: '#fbd1a2',
-      skinTone: 'skin_natural',
-      facialHair: 'none',
-      expression: 'expr_focus',
-      outfitType: outfitType,
-      shirt: shirtColor,
-      collarColor: '#002147',
-      pants: '#1e293b',
-      accessory: 'none',
-      inHandItem: this.currentPlayer?.equippedItemId || null
+    return {
+      gender: rawConfig?.gender || 'male',
+      hairstyle: rawConfig?.hairstyle || 'short',
+      hair: rawConfig?.hairColor || rawConfig?.hair || '#0f172a',
+      skin: rawConfig?.skinColor || rawConfig?.skin || '#fbd1a2',
+      skinTone: rawConfig?.skinTone || 'skin_natural',
+      facialHair: rawConfig?.facialHair || 'none',
+      expression: rawConfig?.expression || 'expr_focus',
+      outfitId: normalizedOutfitId,
+      outfitType: rawConfig?.outfitType || outfitObj?.type || 'hoodie',
+      shirt: rawConfig?.hoodieColor || outfitObj?.color || '#f26f21',
+      collarColor: rawConfig?.collarColor || outfitObj?.collarColor || '#002147',
+      pants: rawConfig?.pantsColor || '#1e293b',
+      accessory: rawConfig?.accessory || 'none',
+      inHandItem: this.currentPlayer?.equippedItemId || rawConfig?.inHandItem || (this.currentPlayer?.isMe ? localStorage.getItem('dever_equipped_item') : null) || null
     };
   }
 
   getOutfitName(avatarId) {
-    const map = {
-      dev_hoodie: 'Áo Hoodie Dev FPTU Cam',
-      polo_white: 'Áo Polo FPTU Trắng Lịch Lãm',
-      cyber_punk: 'Trang Phục Cyberpunk Coder',
-      event_tee: 'Áo Thun Sự Kiện Hackathon FU-DEVER',
-      tech_suit: 'Bộ Suit Công Nghệ Cao Cấp',
-      academic_robe: 'Áo Cử Nhân Tốt Nghiệp FUDA',
-      sport_jersey: 'Áo Thể Thao CLB Năng Động'
-    };
-    return map[avatarId] || 'Đồng Phục Coder FU-DEVER';
+    if (!avatarId) return 'Áo Hoodie FUDA Cam';
+    const normalized = avatarId === 'barista_apron' ? 'apron_barista' : avatarId;
+    const found = WARDROBE_CONFIG.outfits.find(o => o.id === normalized || o.id === avatarId);
+    if (found) return found.name;
+    const upcoming = WARDROBE_CONFIG.upcomingOutfits?.find(o => o.id === avatarId);
+    if (upcoming) return upcoming.name;
+    return 'Đồng Phục Coder FU-DEVER';
   }
 
   getEquippedItemInfo(itemId) {
-    if (!itemId) return null;
+    if (!itemId || itemId === 'none') return null;
+    const inHand = WARDROBE_CONFIG.inHandEquipments.find(i => i.id === itemId);
+    if (inHand) return inHand;
     return ITEMS_DATABASE[itemId] || null;
   }
 
@@ -337,9 +357,37 @@ export class PlayerProfileModal {
       if (playerData.customAvatarUrl) {
         avatarEl.innerHTML = `<img src="${playerData.customAvatarUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
       } else {
-        const role = playerData.role || 'dev';
-        const icon = role === 'admin' ? '👑' : role === 'leader' ? '⚡' : '🧑‍💻';
-        avatarEl.textContent = icon;
+        // Vẽ mini Chibi Avatar sắc nét trực tiếp từ spritesheet
+        const config = this.getWardrobeConfig();
+        const outfitId = config.outfitId || 'hoodie_fuda';
+        const prebakedKey = `char_${outfitId}`;
+        const gameScene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+
+        let avatarRendered = false;
+        if (gameScene?.textures?.exists(prebakedKey)) {
+          try {
+            const srcTex = gameScene.textures.get(prebakedKey);
+            const srcImg = srcTex.getSourceImage();
+            if (srcImg) {
+              const miniCanvas = document.createElement('canvas');
+              miniCanvas.width = 44;
+              miniCanvas.height = 44;
+              const miniCtx = miniCanvas.getContext('2d');
+              miniCtx.imageSmoothingEnabled = false;
+              // Cắt phần mặt Chibi chính diện (x: 4..44, y: 4..44)
+              miniCtx.drawImage(srcImg, 4, 4, 40, 40, 0, 0, 44, 44);
+              avatarEl.innerHTML = '';
+              avatarEl.appendChild(miniCanvas);
+              avatarRendered = true;
+            }
+          } catch (e) {}
+        }
+
+        if (!avatarRendered) {
+          const role = playerData.role || 'dev';
+          const icon = role === 'admin' ? '👑' : role === 'leader' ? '⚡' : '🧑‍💻';
+          avatarEl.textContent = icon;
+        }
       }
     }
 

@@ -45,54 +45,58 @@ export const WARDROBE_CONFIG = {
   ],
 
   outfits: [
-    // 1. Học Đường & Đồng Phục FPTU / FU-DEVER
-    { id: 'hoodie_fuda', name: 'Áo Hoodie FUDA Cam', type: 'hoodie', color: '#f26f21', collarColor: '#002147', desc: 'Màu cam nhiệt huyết biểu tượng trường FUDA' },
-    { id: 'hoodie_dever', name: 'Áo Hoodie Xanh FU-DEVER', type: 'hoodie', color: '#0066CC', collarColor: '#0f172a', desc: 'Màu xanh công nghệ của CLB FU-DEVER' },
-    { id: 'polo_fuda', name: 'Áo Polo Đồng Phục FPTU', type: 'polo', color: '#ea580c', collarColor: '#002147', desc: 'Đồng phục chính khóa sinh viên FUDA' },
-    { id: 'dress_fuda', name: 'Đầm Nữ Sinh FUDA Thanh Lịch', type: 'dress', color: '#38bdf8', collarColor: '#0284c7', desc: 'Trang phục nữ sinh FPTU trẻ trung, tươi tắn' },
-    { id: 'aodai_white', name: 'Áo Dài Trắng Nữ Sinh Tinh Khôi', type: 'aodai', color: '#f8fafc', collarColor: '#e2e8f0', desc: 'Nét đẹp truyền thống duyên dáng của nữ sinh Việt Nam' },
-    { id: 'aodai_red', name: 'Áo Dài Cách Tân Đỏ Lễ Hội', type: 'aodai', color: '#dc2626', collarColor: '#fbbf24', desc: 'Áo dài đỏ may mắn rực rỡ trong các dịp sự kiện lớn' },
-    { id: 'sailor_uniform', name: 'Đồng Phục Thủy Thủ Sailor Nữ', type: 'sailor', color: '#1e3a8a', collarColor: '#ffffff', desc: 'Phong cách nữ sinh Anime Nhật Bản dễ thương' },
-    { id: 'shirt_tie', name: 'Sơ Mi Trắng & Cà Vạt Học Viện', type: 'suit', color: '#f8fafc', collarColor: '#1e293b', desc: 'Phong cách nam sinh học viện lịch lãm, chỉn chu' },
-
-    // 2. Lập Trình Viên, Công Nghệ & Cyberpunk
+    // 1. Học Đường & Đồng Phục FPTU / FU-DEVER (Pre-baked Chibi HD)
+    { id: 'hoodie_fuda', name: 'Áo Hoodie FUDA Cam', type: 'hoodie', color: '#f26f21', collarColor: '#002147', desc: 'Màu cam nhiệt huyết biểu tượng trường FPTU Đà Nẵng' },
+    { id: 'polo_fuda', name: 'Áo Polo Đồng Phục FPTU Cam', type: 'polo', color: '#ea580c', collarColor: '#002147', desc: 'Đồng phục chính khóa sinh viên FUDA' },
+    { id: 'hoodie_dever', name: 'Áo Hoodie Xanh FU-DEVER', type: 'hoodie', color: '#0066CC', collarColor: '#0f172a', desc: 'Màu xanh công nghệ của CLB Lập Trình FU-DEVER' },
+    { id: 'polo_dever', name: 'Áo Polo Xanh FU-DEVER Core', type: 'polo', color: '#2563eb', collarColor: '#1d4ed8', desc: 'Đồng phục Ban Điều Hành & Ban Chủ Nhiệm FU-DEVER' },
     { id: 'tee_dev_black', name: 'Áo Thun Dev FU-DEVER Hackathon', type: 'tee', color: '#0f172a', collarColor: '#38bdf8', desc: 'Áo thun lập trình viên thức đêm cày code' },
-    { id: 'bomber_cyber', name: 'Áo Khoác Bomber Cyberpunk Neon', type: 'bomber', color: '#7e22ce', collarColor: '#f59e0b', desc: 'Phong cách Cyberpunk tương lai chất lừ' },
-    { id: 'hacker_matrix', name: 'Áo Choàng Hacker Matrix Dark', type: 'bomber', color: '#064e3b', collarColor: '#10b981', desc: 'Thời trang hacker bí ẩn trong không gian số' },
-    { id: 'mecha_suit', name: 'Bộ Giáp Mecha Android Tương Lai', type: 'mecha', color: '#0891b2', collarColor: '#22d3ee', desc: 'Thiết kế người máy công nghệ cao siêu ngầu' },
-    { id: 'tee_opensource', name: 'Áo Thun Open Source Linux Tux', type: 'tee', color: '#334155', collarColor: '#e2e8f0', desc: 'Biểu tượng tinh thần mã nguồn mở cộng đồng dev' },
+    { id: 'aodai_white', name: 'Áo Dài Trắng Nữ Sinh Tinh Khôi', type: 'aodai', color: '#f8fafc', collarColor: '#e2e8f0', desc: 'Nét đẹp truyền thống duyên dáng của nữ sinh Việt Nam' },
+    { id: 'aodai_fuda', name: 'Áo Dài Nữ Sinh FPTU Cách Tân', type: 'aodai', color: '#ea580c', collarColor: '#002147', desc: 'Áo dài cách tân sắc cam trường FPTU rạng rỡ' },
 
-    // 3. Thể Thao & Năng Động (Sports Complex)
-    { id: 'jersey_football', name: 'Áo Bóng Đá FPTU Sân Cỏ Số 10', type: 'jersey', color: '#16a34a', collarColor: '#ffffff', desc: 'Trang phục tiền đạo sân cỏ nhân tạo FUDA' },
-    { id: 'jersey_basketball', name: 'Áo Bóng Rổ Ba Lỗ Bulls Đỏ', type: 'jersey', color: '#b91c1c', collarColor: '#000000', desc: 'Trang phục ném bóng rổ 3 điểm siêu cháy' },
-    { id: 'gym_croptop', name: 'Đồ Thể Thao Nữ Crop-top Gym & Dance', type: 'croptop', color: '#ec4899', collarColor: '#1e293b', desc: 'Năng động, quyến rũ cho các buổi tập nhảy & gym' },
-    { id: 'vovinam_suit', name: 'Võ Phục Vovinam FPTU Đai Vàng', type: 'martial', color: '#0284c7', collarColor: '#eab308', desc: 'Võ phục truyền thống rèn luyện thể chất FPTU' },
-    { id: 'swimsuit_sport', name: 'Đồ Bơi Thể Thao Nữ Beach Surf', type: 'croptop', color: '#06b6d4', collarColor: '#0891b2', desc: 'Trang phục bơi lội mát mẻ tại hồ bơi FUDA' },
+    // 2. Phong Cách & Nghề Nghiệp (Career & Campus Life)
+    { id: 'suit_formal', name: 'Bộ Vest Công Sở Tech CEO Lịch Lãm', type: 'suit', color: '#1e293b', collarColor: '#ffffff', desc: 'Bộ vest quyền lực của nhà sáng lập Startup' },
+    { id: 'jersey_sport', name: 'Áo Thể Thao FPTU Sân Cỏ Số 10', type: 'jersey', color: '#16a34a', collarColor: '#ffffff', desc: 'Trang phục thể thao năng động trên sân bóng FPTU' },
+    { id: 'hoodie_gaming', name: 'Áo Hoodie Gaming Esport Đỏ Đen', type: 'hoodie', color: '#dc2626', collarColor: '#18181b', desc: 'Phong cách thi đấu Game Jam & Esport rực lửa' },
+    { id: 'hoodie_terminal', name: 'Áo Hoodie Terminal Hacker Xanh Lá', type: 'hoodie', color: '#15803d', collarColor: '#0f172a', desc: 'Họa tiết dòng lệnh terminal hacker bí ẩn' },
+    { id: 'apron_barista', name: 'Tạp Dề Barista Cà Phê Muối Nâu', type: 'barista', color: '#854d0e', collarColor: '#fef08a', desc: 'Trang phục chuyên gia pha chế Căn Tin FUDA' },
 
-    // 4. Streetwear & Thời Trang Xu Hướng
+    // 3. Bộ Trang Phục Đặc Biệt (Special Legendary Outfits)
+    { id: 'vovinam_suit', name: 'Võ Phục Vovinam FPTU Đai Vàng', type: 'martial', color: '#0284c7', collarColor: '#eab308', desc: 'Võ phục Việt Võ Đạo rèn luyện thể chất FPTU' },
     { id: 'leather_biker', name: 'Áo Khoác Da Biker Rocker Đen', type: 'biker', color: '#18181b', collarColor: '#94a3b8', desc: 'Phong cách cá tính, bụi bặm của dân phượt' },
-    { id: 'oversize_hiphop', name: 'Áo Thun Oversize Streetwear Hip-Hop', type: 'tee', color: '#6366f1', collarColor: '#ffffff', desc: 'Thời trang đường phố thụng rộng chất chơi' },
-    { id: 'cardigan_autumn', name: 'Áo Len Cardigan Mùa Thu Pastel', type: 'cardigan', color: '#d97706', collarColor: '#fef3c7', desc: 'Giai điệu ấm áp cho những ngày se lạnh' },
-    { id: 'denim_overall', name: 'Váy Yếm Denim Jean Nữ Sinh', type: 'dress', color: '#2563eb', collarColor: '#f8fafc', desc: 'Phong cách Y2K denim năng động, đáng yêu' },
-    { id: 'windbreaker_retro', name: 'Áo Khoác Gió Retro 90s Block', type: 'bomber', color: '#059669', collarColor: '#f59e0b', desc: 'Thời trang thể thao retro thập niên 90s' },
-    { id: 'trench_coat', name: 'Áo Măng Tô Dạ Dáng Dài Quý Phái', type: 'cardigan', color: '#78350f', collarColor: '#451a03', desc: 'Phong cách quý phái chuẩn thanh lịch mùa đông' },
-
-    // 5. Công Sở & Nghề Nghiệp (Career & Barista)
-    { id: 'barista_apron', name: 'Tạp Dề Barista Cà Phê Muối Nâu', type: 'barista', color: '#854d0e', collarColor: '#fef08a', desc: 'Trang phục chuyên gia pha chế quán quen FUDA' },
-    { id: 'suit_ceo', name: 'Bộ Vest Công Sở Tech CEO Lịch Lãm', type: 'suit', color: '#1e293b', collarColor: '#ffffff', desc: 'Bộ vest quyền lực của nhà sáng lập Startup' },
-    { id: 'blazer_female', name: 'Bộ Suit Nữ Blazer Công Sở Hiện Đại', type: 'suit', color: '#475569', collarColor: '#f472b6', desc: 'Thanh lịch, tự tin cho các nữ lập trình viên' },
-    { id: 'lab_coat', name: 'Áo Blouse Trắng Bác Sĩ & Lab Tech', type: 'suit', color: '#f8fafc', collarColor: '#0284c7', desc: 'Trang phục nghiên cứu khoa học phòng Tech Lab' },
-
-    // 6. Cosplay & Lễ Hội (Anime / Fantasy)
     { id: 'wizard_robe', name: 'Áo Choàng Pháp Sư Huyền Bí', type: 'wizard', color: '#4c1d95', collarColor: '#fbbf24', desc: 'Phù thủy công nghệ triệu hồi mã code kỳ diệu' },
-    { id: 'yukata_sakura', name: 'Kimono Yukata Hoa Anh Đào', type: 'yukata', color: '#f472b6', collarColor: '#dc2626', desc: 'Trang phục lễ hội truyền thống xứ sở hoa anh đào' },
-    { id: 'princess_gown', name: 'Đầm Công Chúa Dạ Hội Dạ Quang', type: 'dress', color: '#a855f7', collarColor: '#fdf4ff', desc: 'Lộng lẫy và tỏa sáng trong đêm tiệc Gala Prom' },
-    { id: 'frog_mascot', name: 'Bộ Đồ Cóc Vàng Mascot FUDA', type: 'frog', color: '#eab308', collarColor: '#15803d', desc: 'Linh vật Cóc Vàng mang lại may mắn và điểm A+' }
+    { id: 'frog_mascot', name: 'Bộ Đồ Cóc Vàng Mascot FUDA', type: 'frog', color: '#eab308', collarColor: '#15803d', desc: 'Linh vật Cóc Vàng mang lại may mắn và điểm A+' },
+    { id: 'mecha_suit', name: 'Bộ Giáp Mecha Android Tương Lai', type: 'mecha', color: '#0891b2', collarColor: '#22d3ee', desc: 'Thiết kế người máy công nghệ cao siêu ngầu' }
   ],
 
   get hoodies() {
     return this.outfits;
   },
+
+  /**
+   * Kho lưu trữ các mẫu trang phục đang phát triển (Sẽ mở khóa ở các bản cập nhật tiếp theo)
+   */
+  upcomingOutfits: [
+    { id: 'dress_fuda', name: 'Đầm Nữ Sinh FUDA Thanh Lịch', type: 'dress', color: '#38bdf8' },
+    { id: 'aodai_red', name: 'Áo Dài Cách Tân Đỏ Lễ Hội', type: 'aodai', color: '#dc2626' },
+    { id: 'sailor_uniform', name: 'Đồng Phục Thủy Thủ Sailor Nữ', type: 'sailor', color: '#1e3a8a' },
+    { id: 'shirt_tie', name: 'Sơ Mi Trắng & Cà Vạt Học Viện', type: 'suit', color: '#f8fafc' },
+    { id: 'bomber_cyber', name: 'Áo Khoác Bomber Cyberpunk Neon', type: 'bomber', color: '#7e22ce' },
+    { id: 'hacker_matrix', name: 'Áo Choàng Hacker Matrix Dark', type: 'bomber', color: '#064e3b' },
+    { id: 'tee_opensource', name: 'Áo Thun Open Source Linux Tux', type: 'tee', color: '#334155' },
+    { id: 'jersey_basketball', name: 'Áo Bóng Rổ Ba Lỗ Bulls Đỏ', type: 'jersey', color: '#b91c1c' },
+    { id: 'gym_croptop', name: 'Đồ Thể Thao Nữ Crop-top Gym & Dance', type: 'croptop', color: '#ec4899' },
+    { id: 'swimsuit_sport', name: 'Đồ Bơi Thể Thao Nữ Beach Surf', type: 'croptop', color: '#06b6d4' },
+    { id: 'oversize_hiphop', name: 'Áo Thun Oversize Streetwear Hip-Hop', type: 'tee', color: '#6366f1' },
+    { id: 'cardigan_autumn', name: 'Áo Len Cardigan Mùa Thu Pastel', type: 'cardigan', color: '#d97706' },
+    { id: 'denim_overall', name: 'Váy Yếm Denim Jean Nữ Sinh', type: 'dress', color: '#2563eb' },
+    { id: 'windbreaker_retro', name: 'Áo Khoác Gió Retro 90s Block', type: 'bomber', color: '#059669' },
+    { id: 'trench_coat', name: 'Áo Măng Tô Dạ Dáng Dài Quý Phái', type: 'cardigan', color: '#78350f' },
+    { id: 'blazer_female', name: 'Bộ Suit Nữ Blazer Công Sở Hiện Đại', type: 'suit', color: '#475569' },
+    { id: 'lab_coat', name: 'Áo Blouse Trắng Bác Sĩ & Lab Tech', type: 'suit', color: '#f8fafc' },
+    { id: 'yukata_sakura', name: 'Kimono Yukata Hoa Anh Đào', type: 'yukata', color: '#f472b6' },
+    { id: 'princess_gown', name: 'Đầm Công Chúa Dạ Hội Dạ Quang', type: 'dress', color: '#a855f7' }
+  ],
 
   hairstyles: [
     // --- KIỂU TÓC NAM (MALE HAIRSTYLES) ---

@@ -407,6 +407,10 @@ export class WardrobeModal {
           const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[currentDir] || 0;
           tempCtx.drawImage(srcImg, 0, dirRow * 64, 48, 64, 0, 0, 48, 64);
           usedPrebaked = true;
+
+          if (config.inHandItem && config.inHandItem !== 'none') {
+            TextureGenerator.drawInHandEquipment(tempCtx, 0, 0, currentDir, 1, config.inHandItem);
+          }
         }
       } catch (e) {}
     }

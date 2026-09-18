@@ -179,28 +179,64 @@ export class NPCDialogueModal {
     this.roleTag.textContent = npc.npcRole;
     
     // Copy NPC portrait to canvas
-    const portraitKey = `npc_portrait_${npc.npcId}`;
     const portraitCtx = this.portraitCanvas.getContext('2d');
     portraitCtx.clearRect(0, 0, 80, 96);
-    
+    portraitCtx.imageSmoothingEnabled = false;
+
+    let drawn = false;
+    const charKey = `char_${npc.npcId}`;
     try {
-      if (npc.scene.textures.exists(portraitKey)) {
-        const tex = npc.scene.textures.get(portraitKey);
-        if (tex && tex.source && tex.source[0]) {
-          portraitCtx.imageSmoothingEnabled = false;
-          portraitCtx.drawImage(tex.source[0].image, 0, 0, 80, 96);
+      if (npc.scene.textures.exists(charKey)) {
+        const charTex = npc.scene.textures.get(charKey);
+        const charImg = charTex.getSourceImage();
+        if (charImg) {
+          // 1. Nền thẻ bài Chibi Metaverse
+          const bgGrad = portraitCtx.createLinearGradient(0, 0, 0, 96);
+          bgGrad.addColorStop(0, '#0b1329');
+          bgGrad.addColorStop(1, '#020617');
+          portraitCtx.fillStyle = bgGrad;
+          portraitCtx.fillRect(0, 0, 80, 96);
+
+          // Vầng sáng spotlight sau lưng
+          const radial = portraitCtx.createRadialGradient(40, 48, 4, 40, 48, 40);
+          radial.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
+          radial.addColorStop(1, 'rgba(2, 6, 23, 0)');
+          portraitCtx.fillStyle = radial;
+          portraitCtx.fillRect(0, 0, 80, 96);
+
+          // Viền khung neon sắc nét
+          portraitCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+          portraitCtx.lineWidth = 1.5;
+          portraitCtx.strokeRect(1, 1, 78, 94);
+
+          // Lấy frame 0 (mặt trước 48x64 px), vẽ căn giữa 66x88 px
+          portraitCtx.drawImage(charImg, 0, 0, 48, 64, 7, 6, 66, 88);
+          drawn = true;
         }
-      } else {
-        // Fallback: draw colored block với initial
-        portraitCtx.fillStyle = '#1e293b';
-        portraitCtx.fillRect(0, 0, 80, 96);
-        portraitCtx.fillStyle = '#38bdf8';
-        portraitCtx.font = 'bold 32px Outfit';
-        portraitCtx.textAlign = 'center';
-        portraitCtx.fillText(npc.npcName[0], 40, 56);
       }
-    } catch (err) {
-      // Silent fallback
+    } catch (e) {}
+
+    if (!drawn) {
+      const portraitKey = `npc_portrait_${npc.npcId}`;
+      try {
+        if (npc.scene.textures.exists(portraitKey)) {
+          const tex = npc.scene.textures.get(portraitKey);
+          if (tex && tex.source && tex.source[0]) {
+            portraitCtx.drawImage(tex.source[0].image, 0, 0, 80, 96);
+            drawn = true;
+          }
+        }
+      } catch (err) {}
+    }
+
+    if (!drawn) {
+      // Fallback: draw colored block với initial
+      portraitCtx.fillStyle = '#1e293b';
+      portraitCtx.fillRect(0, 0, 80, 96);
+      portraitCtx.fillStyle = '#38bdf8';
+      portraitCtx.font = 'bold 32px Outfit';
+      portraitCtx.textAlign = 'center';
+      portraitCtx.fillText(npc.npcName[0] || '?', 40, 56);
     }
     
     // Show overlay
