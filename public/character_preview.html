@@ -138,6 +138,14 @@
   <div class="section-title">4. PHÔI MODULAR THÂN NGƯỜI (PAPER DOLL BASES)</div>
   <div class="grid" id="grid_bases"></div>
 
+  <!-- 5. MẪU TÓC MODULAR CHIBI -->
+  <div class="section-title">5. MẪU TÓC MODULAR CHIBI (HAIR LAYERS)</div>
+  <div class="grid" id="grid_hair"></div>
+
+  <!-- 6. MẪU PHỤ KIỆN MODULAR CHIBI -->
+  <div class="section-title">6. MẪU PHỤ KIỆN MODULAR CHIBI (ACCESSORIES)</div>
+  <div class="grid" id="grid_acc"></div>
+
   <script>
     const SPECIAL_OUTFITS = [
       { id: 'frog_mascot', name: 'Mascot Cóc Vàng FUDA', badge: 'Mascot', color: '#eab308', src: 'assets/characters/special_outfits/special_frog_mascot.png' },
@@ -162,14 +170,36 @@
 
     const STANDARDS = [
       { id: 'fuda', name: 'Nam Sinh FUDA — Hoodie Cam', badge: 'FPT Orange', color: '#f26f21', src: 'assets/characters/outfits/full_hoodie_fuda.png' },
+      { id: 'polo_fuda', name: 'Sinh Viên FUDA — Polo Cam Chính Thức', badge: 'FPT Uniform', color: '#ea580c', src: 'assets/characters/outfits/full_polo_fuda.png' },
       { id: 'aodai', name: 'Nữ Sinh FUDA — Áo Dài Trắng', badge: 'Truyền Thống', color: '#38bdf8', src: 'assets/characters/outfits/full_aodai_white.png' },
+      { id: 'aodai_fuda', name: 'Nữ Sinh FUDA — Áo Dài Cam Lễ Hội', badge: 'FPT Event', color: '#f97316', src: 'assets/characters/outfits/full_aodai_fuda.png' },
       { id: 'hoodie_dever', name: 'Nam Sinh — Hoodie Xanh CLB', badge: 'FU-DEVER', color: '#0066CC', src: 'assets/characters/outfits/full_hoodie_dever.png' },
+      { id: 'polo_dever', name: 'Thành Viên — Polo Xanh Công Nghệ', badge: 'FU-DEVER Tech', color: '#2563eb', src: 'assets/characters/outfits/full_polo_dever.png' },
+      { id: 'suit_formal', name: 'Sinh Viên — Suit Vest Lịch Lãm', badge: 'Formal Academy', color: '#64748b', src: 'assets/characters/outfits/full_suit_formal.png' },
+      { id: 'jersey_sport', name: 'Sinh Viên — Đồ Thể Thao Năng Động', badge: 'Sports Club', color: '#16a34a', src: 'assets/characters/outfits/full_jersey_sport.png' },
+      { id: 'hoodie_gaming', name: 'Game Developer — Hoodie Đỏ RGB', badge: 'Game Dev', color: '#ef4444', src: 'assets/characters/outfits/full_hoodie_gaming.png' },
+      { id: 'hoodie_terminal', name: 'Backend Engineer — Terminal Hoodie', badge: 'Dev Ops', color: '#0f172a', src: 'assets/characters/outfits/full_hoodie_terminal.png' },
+      { id: 'apron_barista', name: 'Nhân Viên — Tạp Dề Cà Phê Muối', badge: 'Canteen', color: '#b45309', src: 'assets/characters/outfits/full_apron_barista.png' },
       { id: 'tee_dev', name: 'Nam Sinh — Áo Thun Hackathon', badge: 'Code Night', color: '#10b981', src: 'assets/characters/outfits/full_tee_dev_black.png' }
     ];
 
     const BASES = [
       { id: 'base_male', name: 'Base Body Nam Chibi', badge: 'Modular Base', color: '#fdba74', src: 'assets/characters/bases/base_male.png' },
       { id: 'base_female', name: 'Base Body Nữ Chibi', badge: 'Modular Base', color: '#f472b6', src: 'assets/characters/bases/base_female.png' }
+    ];
+
+    const HAIR_SAMPLES = [
+      { id: 'hair_pompadour', name: 'Tóc Undercut Pompadour', badge: 'Nam Tính', color: '#38bdf8', src: 'assets/characters/hair/hair_pompadour_black.png' },
+      { id: 'hair_messy', name: 'Tóc Anime Messy Tự Nhiên', badge: 'Lãng Tử', color: '#a855f7', src: 'assets/characters/hair/hair_messy_black.png' },
+      { id: 'hair_ponytail', name: 'Tóc Ponytail Nâu Năng Động', badge: 'Dễ Thương', color: '#d97706', src: 'assets/characters/hair/hair_ponytail_brown.png' },
+      { id: 'hair_buzzcut', name: 'Tóc Buzz Cut Thể Thao', badge: 'Gọn Gàng', color: '#22c55e', src: 'assets/characters/hair/hair_buzzcut_black.png' },
+      { id: 'hair_wolfcut', name: 'Tóc Wolf Cut Gamer', badge: 'Cá Tính', color: '#ef4444', src: 'assets/characters/hair/hair_wolfcut_dark.png' },
+      { id: 'hair_twintails', name: 'Tóc Buộc Hai Bên Áo Dài', badge: 'Duyên Dáng', color: '#ec4899', src: 'assets/characters/hair/hair_twintails_black.png' }
+    ];
+
+    const ACC_SAMPLES = [
+      { id: 'acc_glasses', name: 'Kính Dev Vuông Đen', badge: 'Phụ Kiện', color: '#64748b', src: 'assets/characters/accessories/acc_glasses_dark.png' },
+      { id: 'acc_headphones', name: 'Tai Nghe Gaming LED RGB', badge: 'Phụ Kiện', color: '#10b981', src: 'assets/characters/accessories/acc_headphones_rgb.png' }
     ];
 
     const dirs = ['down', 'left', 'right', 'up'];
@@ -238,6 +268,8 @@
     renderGroup(NPCS, 'grid_npcs');
     renderGroup(STANDARDS, 'grid_standard');
     renderGroup(BASES, 'grid_bases');
+    renderGroup(HAIR_SAMPLES, 'grid_hair');
+    renderGroup(ACC_SAMPLES, 'grid_acc');
   </script>
 </body>
 </html>

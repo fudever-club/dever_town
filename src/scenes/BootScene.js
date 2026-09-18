@@ -24,11 +24,19 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet('char_base_male', 'assets/characters/bases/base_male.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_base_female', 'assets/characters/bases/base_female.png', { frameWidth: 48, frameHeight: 64 });
 
-    // 2B. Bộ Trang phục Đời Thường (Standard Outfits)
+    // 2B. Bộ Trang phục Đời Thường (Standard & Extended Outfits)
     this.load.spritesheet('char_hoodie_fuda', 'assets/characters/outfits/full_hoodie_fuda.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_aodai_white', 'assets/characters/outfits/full_aodai_white.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_hoodie_dever', 'assets/characters/outfits/full_hoodie_dever.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_tee_dev_black', 'assets/characters/outfits/full_tee_dev_black.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_polo_dever', 'assets/characters/outfits/full_polo_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_polo_fuda', 'assets/characters/outfits/full_polo_fuda.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_aodai_fuda', 'assets/characters/outfits/full_aodai_fuda.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_suit_formal', 'assets/characters/outfits/full_suit_formal.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_hoodie_gaming', 'assets/characters/outfits/full_hoodie_gaming.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_jersey_sport', 'assets/characters/outfits/full_jersey_sport.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_hoodie_terminal', 'assets/characters/outfits/full_hoodie_terminal.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_apron_barista', 'assets/characters/outfits/full_apron_barista.png', { frameWidth: 48, frameHeight: 64 });
 
     // 2C. Bộ Trang Phục Đặc Biệt (Special Outfits)
     this.load.spritesheet('char_frog_mascot', 'assets/characters/special_outfits/special_frog_mascot.png', { frameWidth: 48, frameHeight: 64 });
@@ -69,8 +77,10 @@ export class BootScene extends Phaser.Scene {
     const newAvatars = [
       // Bases
       'base_male', 'base_female',
-      // Standard Outfits
+      // Standard & Extended Outfits
       'hoodie_fuda', 'aodai_white', 'hoodie_dever', 'tee_dev_black',
+      'polo_dever', 'polo_fuda', 'aodai_fuda', 'suit_formal',
+      'hoodie_gaming', 'jersey_sport', 'hoodie_terminal', 'apron_barista',
       // Special Outfits
       'frog_mascot', 'mecha_suit', 'wizard_robe', 'vovinam_suit', 'leather_biker',
       // 10 NPCs CLB
