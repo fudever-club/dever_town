@@ -894,11 +894,31 @@ export class TextureGenerator {
       inHandItem: wardrobeConfig.inHandItem || wardrobeConfig.equippedItemId || null
     };
 
-    const directions = ['down', 'left', 'right', 'up'];
-    for (let r = 0; r < rows; r++) {
-      const dir = directions[r];
-      for (let c = 0; c < cols; c++) {
-        this.drawCharacterFrame(ctx, c * frameW, r * frameH, dir, c, config);
+    // 1. Kiểm tra xem outfit được chọn có tương ứng với Spritesheet Gather.town HD đã preload không
+    const outfitId = wardrobeConfig.outfitId;
+    const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
+    const prebakedKey = normalizedOutfitId ? `char_${normalizedOutfitId}` : null;
+
+    let usedPrebaked = false;
+    if (prebakedKey && scene && scene.textures && scene.textures.exists(prebakedKey)) {
+      try {
+        const srcTex = scene.textures.get(prebakedKey);
+        const srcImg = srcTex.getSourceImage();
+        if (srcImg) {
+          ctx.drawImage(srcImg, 0, 0, canvas.width, canvas.height);
+          usedPrebaked = true;
+        }
+      } catch (e) {}
+    }
+
+    // 2. Fallback sinh Canvas từng frame nếu không có spritesheet pre-baked
+    if (!usedPrebaked) {
+      const directions = ['down', 'left', 'right', 'up'];
+      for (let r = 0; r < rows; r++) {
+        const dir = directions[r];
+        for (let c = 0; c < cols; c++) {
+          this.drawCharacterFrame(ctx, c * frameW, r * frameH, dir, c, config);
+        }
       }
     }
 

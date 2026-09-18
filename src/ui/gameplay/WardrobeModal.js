@@ -394,7 +394,26 @@ export class WardrobeModal {
     };
 
     const currentDir = this.previewDirections[this.currentDirIndex] || 'down';
-    TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, currentDir, 1, config);
+    const outfitId = this.currentConfig.outfitId;
+    const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
+    const prebakedKey = normalizedOutfitId ? `char_${normalizedOutfitId}` : null;
+
+    let usedPrebaked = false;
+    if (prebakedKey && this.scene && this.scene.textures && this.scene.textures.exists(prebakedKey)) {
+      try {
+        const srcTex = this.scene.textures.get(prebakedKey);
+        const srcImg = srcTex.getSourceImage();
+        if (srcImg) {
+          const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[currentDir] || 0;
+          tempCtx.drawImage(srcImg, 0, dirRow * 64, 48, 64, 0, 0, 48, 64);
+          usedPrebaked = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!usedPrebaked) {
+      TextureGenerator.drawCharacterFrame(tempCtx, 0, 0, currentDir, 1, config);
+    }
 
     // Scale lên canvas preview (2.5x = 120x160, vừa vặn canvas preview)
     const scaledW = 120;
