@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEVER_TOWN — Chibi Gather.town Character Studio (Phase 2)</title>
+  <style>
+    body {
+      background: #0b0f19;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+      margin: 0;
+    }
+    header {
+      margin-bottom: 28px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 16px;
+    }
+    h1 {
+      color: #f26f21;
+      font-size: 26px;
+      margin: 0 0 6px 0;
+    }
+    p.subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin: 32px 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: #f26f21;
+      border-radius: 2px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .anim-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-around;
+      background: #080c14;
+      border-radius: 8px;
+      padding: 12px 8px;
+      border: 1px dashed #243049;
+      margin-bottom: 12px;
+    }
+    .sprite-box {
+      text-align: center;
+    }
+    .sprite-label {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 4px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .sprite-canvas {
+      width: 48px;
+      height: 64px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      background: rgba(255,255,255,0.02);
+      border-radius: 4px;
+    }
+    .full-sheet {
+      width: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border-radius: 6px;
+      border: 1px solid #1e293b;
+      background: #080c14;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>DEVER_TOWN — Chibi Gather.town Studio (Phase 2 Overhaul)</h1>
+    <p class="subtitle">Đại tu đồ họa nhân vật Chibi 1:1.2 Gather.town (16 frames walk cycle 48x64 px, tổng thể 192x256 px). Tổng cộng 21 bộ spritesheet hoàn thiện.</p>
+  </header>
+
+  <!-- 1. TRANG PHỤC ĐẶC BIỆT -->
+  <div class="section-title">1. BỘ TRANG PHỤC ĐẶC BIỆT (SPECIAL OUTFITS)</div>
+  <div class="grid" id="grid_special"></div>
+
+  <!-- 2. BAN CHỦ NHIỆM & CỐ VẤN CLB -->
+  <div class="section-title">2. BAN CHỦ NHIỆM & CỐ VẤN CLB FU-DEVER (10 NPCS)</div>
+  <div class="grid" id="grid_npcs"></div>
+
+  <!-- 3. TRANG PHỤC SINH VIÊN ĐỜI THƯỜNG -->
+  <div class="section-title">3. TRANG PHỤC SINH VIÊN ĐỜI THƯỜNG (STANDARD OUTFITS)</div>
+  <div class="grid" id="grid_standard"></div>
+
+  <!-- 4. PHÔI MODULAR THÂN NGƯỜI -->
+  <div class="section-title">4. PHÔI MODULAR THÂN NGƯỜI (PAPER DOLL BASES)</div>
+  <div class="grid" id="grid_bases"></div>
+
+  <!-- 5. MẪU TÓC MODULAR CHIBI -->
+  <div class="section-title">5. MẪU TÓC MODULAR CHIBI (HAIR LAYERS)</div>
+  <div class="grid" id="grid_hair"></div>
+
+  <!-- 6. MẪU PHỤ KIỆN MODULAR CHIBI -->
+  <div class="section-title">6. MẪU PHỤ KIỆN MODULAR CHIBI (ACCESSORIES)</div>
+  <div class="grid" id="grid_acc"></div>
+
+  <script>
+    const SPECIAL_OUTFITS = [
+      { id: 'frog_mascot', name: 'Mascot Cóc Vàng FUDA', badge: 'Mascot', color: '#eab308', src: 'assets/characters/special_outfits/special_frog_mascot.png' },
+      { id: 'mecha_suit', name: 'Giáp Mecha Android Cyber', badge: 'Sci-Fi', color: '#06b6d4', src: 'assets/characters/special_outfits/special_mecha_suit.png' },
+      { id: 'wizard_robe', name: 'Áo Choàng Pháp Sư Huyền Bí', badge: 'Fantasy', color: '#a855f7', src: 'assets/characters/special_outfits/special_wizard_robe.png' },
+      { id: 'vovinam_suit', name: 'Võ Phục Vovinam FPTU Đai Vàng', badge: 'Võ Thuật', color: '#0284c7', src: 'assets/characters/special_outfits/special_vovinam_suit.png' },
+      { id: 'leather_biker', name: 'Áo Khoác Da Biker Rocker', badge: 'Streetwear', color: '#f43f5e', src: 'assets/characters/special_outfits/special_leather_biker.png' }
+    ];
+
+    const NPCS = [
+      { id: 'npc_nhat', name: 'Đặng Quang Nhật', badge: 'Chủ Nhiệm CLB', color: '#2563eb', src: 'assets/characters/npcs/npc_chunhiem_nhat.png' },
+      { id: 'npc_hung', name: 'Nguyễn Thái Hưng', badge: 'Phó Chủ Nhiệm', color: '#8b5cf6', src: 'assets/characters/npcs/npc_pho_hung.png' },
+      { id: 'npc_barista', name: 'Barista An', badge: 'Cà Phê Muối FUDA', color: '#d97706', src: 'assets/characters/npcs/npc_barista_an.png' },
+      { id: 'npc_kiet', name: 'Lương Văn Tuấn Kiệt', badge: 'Tech Lead', color: '#7c3aed', src: 'assets/characters/npcs/npc_hocthu_kiet.png' },
+      { id: 'npc_thanh', name: 'Nguyễn Lê Đăng Thành', badge: 'Game Lead', color: '#ef4444', src: 'assets/characters/npcs/npc_game_lead_thanh.png' },
+      { id: 'npc_thang', name: 'Hồ Quốc Thắng', badge: 'Event Lead', color: '#16a34a', src: 'assets/characters/npcs/npc_sukien_thang.png' },
+      { id: 'npc_hai', name: 'Đoàn Phước Trường Hải', badge: 'Media Lead', color: '#0284c7', src: 'assets/characters/npcs/npc_media_hai.png' },
+      { id: 'npc_duc', name: 'Sử Quan Đức', badge: 'Lịch Sử CLB', color: '#64748b', src: 'assets/characters/npcs/npc_historian_duc.png' },
+      { id: 'npc_khoa', name: 'Lê Đình Đăng Khoa', badge: 'Backend Lead', color: '#334155', src: 'assets/characters/npcs/npc_backend_khoa.png' },
+      { id: 'npc_truyen', name: 'Phạm Đức Truyền', badge: 'Algorithm Lead', color: '#0284c7', src: 'assets/characters/npcs/npc_algo_truyen.png' }
+    ];
+
+    const STANDARDS = [
+      { id: 'fuda', name: 'Nam Sinh FUDA — Hoodie Cam', badge: 'FPT Orange', color: '#f26f21', src: 'assets/characters/outfits/full_hoodie_fuda.png' },
+      { id: 'polo_fuda', name: 'Sinh Viên FUDA — Polo Cam Chính Thức', badge: 'FPT Uniform', color: '#ea580c', src: 'assets/characters/outfits/full_polo_fuda.png' },
+      { id: 'aodai', name: 'Nữ Sinh FUDA — Áo Dài Trắng', badge: 'Truyền Thống', color: '#38bdf8', src: 'assets/characters/outfits/full_aodai_white.png' },
+      { id: 'aodai_fuda', name: 'Nữ Sinh FUDA — Áo Dài Cam Lễ Hội', badge: 'FPT Event', color: '#f97316', src: 'assets/characters/outfits/full_aodai_fuda.png' },
+      { id: 'hoodie_dever', name: 'Nam Sinh — Hoodie Xanh CLB', badge: 'FU-DEVER', color: '#0066CC', src: 'assets/characters/outfits/full_hoodie_dever.png' },
+      { id: 'polo_dever', name: 'Thành Viên — Polo Xanh Công Nghệ', badge: 'FU-DEVER Tech', color: '#2563eb', src: 'assets/characters/outfits/full_polo_dever.png' },
+      { id: 'suit_formal', name: 'Sinh Viên — Suit Vest Lịch Lãm', badge: 'Formal Academy', color: '#64748b', src: 'assets/characters/outfits/full_suit_formal.png' },
+      { id: 'jersey_sport', name: 'Sinh Viên — Đồ Thể Thao Năng Động', badge: 'Sports Club', color: '#16a34a', src: 'assets/characters/outfits/full_jersey_sport.png' },
+      { id: 'hoodie_gaming', name: 'Game Developer — Hoodie Đỏ RGB', badge: 'Game Dev', color: '#ef4444', src: 'assets/characters/outfits/full_hoodie_gaming.png' },
+      { id: 'hoodie_terminal', name: 'Backend Engineer — Terminal Hoodie', badge: 'Dev Ops', color: '#0f172a', src: 'assets/characters/outfits/full_hoodie_terminal.png' },
+      { id: 'apron_barista', name: 'Nhân Viên — Tạp Dề Cà Phê Muối', badge: 'Canteen', color: '#b45309', src: 'assets/characters/outfits/full_apron_barista.png' },
+      { id: 'tee_dev', name: 'Nam Sinh — Áo Thun Hackathon', badge: 'Code Night', color: '#10b981', src: 'assets/characters/outfits/full_tee_dev_black.png' }
+    ];
+
+    const BASES = [
+      { id: 'base_male', name: 'Base Body Nam Chibi', badge: 'Modular Base', color: '#fdba74', src: 'assets/characters/bases/base_male.png' },
+      { id: 'base_female', name: 'Base Body Nữ Chibi', badge: 'Modular Base', color: '#f472b6', src: 'assets/characters/bases/base_female.png' }
+    ];
+
+    const HAIR_SAMPLES = [
+      { id: 'hair_pompadour', name: 'Undercut Pompadour — Đen', badge: 'Classic', color: '#38bdf8', src: 'assets/characters/hair/hair_pompadour_black.png' },
+      { id: 'hair_pompadour_silv', name: 'Undercut Pompadour — Bạc', badge: 'Silver', color: '#cbd5e1', src: 'assets/characters/hair/hair_pompadour_silver.png' },
+      { id: 'hair_messy', name: 'Anime Messy — Đen Tự Nhiên', badge: 'Messy', color: '#a855f7', src: 'assets/characters/hair/hair_messy_black.png' },
+      { id: 'hair_messy_blon', name: 'Anime Messy — Vàng Kim', badge: 'Blonde', color: '#facc15', src: 'assets/characters/hair/hair_messy_blonde.png' },
+      { id: 'hair_messy_silv', name: 'Anime Messy — Bạch Kim', badge: 'Silver', color: '#94a3b8', src: 'assets/characters/hair/hair_messy_silver.png' },
+      { id: 'hair_wolfcut', name: 'Wolf Cut — Đen Dark', badge: 'Wolf', color: '#ef4444', src: 'assets/characters/hair/hair_wolfcut_dark.png' },
+      { id: 'hair_wolfcut_cyan', name: 'Wolf Cut — Xanh Cyber', badge: 'Cyber Neon', color: '#06b6d4', src: 'assets/characters/hair/hair_wolfcut_cyan.png' },
+      { id: 'hair_wolfcut_red', name: 'Wolf Cut — Đỏ Ruby', badge: 'Ruby Red', color: '#dc2626', src: 'assets/characters/hair/hair_wolfcut_red.png' },
+      { id: 'hair_ponytail', name: 'Ponytail — Nâu Hạt Dẻ', badge: 'Brown', color: '#d97706', src: 'assets/characters/hair/hair_ponytail_brown.png' },
+      { id: 'hair_ponytail_purp', name: 'Ponytail — Tím Pastel', badge: 'Lavender', color: '#c084fc', src: 'assets/characters/hair/hair_ponytail_purple.png' },
+      { id: 'hair_twintails', name: 'Twintails — Đen Truyền Thống', badge: 'Áo Dài', color: '#ec4899', src: 'assets/characters/hair/hair_twintails_black.png' },
+      { id: 'hair_twintails_brn', name: 'Twintails — Nâu Tây', badge: 'Chestnut', color: '#b45309', src: 'assets/characters/hair/hair_twintails_brown.png' },
+      { id: 'hair_buzzcut', name: 'Buzz Cut — Thể Thao', badge: 'Gọn Gàng', color: '#22c55e', src: 'assets/characters/hair/hair_buzzcut_black.png' }
+    ];
+
+    const ACC_SAMPLES = [
+      { id: 'acc_sunglasses', name: 'Kính Râm Biker Rocker', badge: 'Ngầu', color: '#0f172a', src: 'assets/characters/accessories/acc_sunglasses_black.png' },
+      { id: 'acc_glasses_gold', name: 'Kính Tròn Gọng Vàng Tri Thức', badge: 'Học Thuật', color: '#facc15', src: 'assets/characters/accessories/acc_glasses_round_gold.png' },
+      { id: 'acc_cap_fuda', name: 'Nón Lưỡi Trai FPT Cam', badge: 'FPTU', color: '#f26f21', src: 'assets/characters/accessories/acc_cap_fuda_orange.png' },
+      { id: 'acc_mask_street', name: 'Khẩu Trang Đen Ninja', badge: 'Streetwear', color: '#334155', src: 'assets/characters/accessories/acc_mask_streetwear_black.png' },
+      { id: 'acc_headband', name: 'Băng Đô Thể Thao Đỏ Trắng', badge: 'Thể Thao', color: '#ef4444', src: 'assets/characters/accessories/acc_headband_sport.png' },
+      { id: 'acc_glasses_dark', name: 'Kính Dev Vuông Đen', badge: 'Tech', color: '#64748b', src: 'assets/characters/accessories/acc_glasses_dark.png' },
+      { id: 'acc_headphones', name: 'Tai Nghe Gaming LED RGB', badge: 'Gaming', color: '#10b981', src: 'assets/characters/accessories/acc_headphones_rgb.png' }
+    ];
+
+    const dirs = ['down', 'left', 'right', 'up'];
+    const frameW = 48;
+    const frameH = 64;
+
+    function renderGroup(items, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+          <div class="card-title">
+            <span>${item.name}</span>
+            <span class="badge" style="background: ${item.color}22; color: ${item.color}; border: 1px solid ${item.color}55;">${item.badge}</span>
+          </div>
+          <div class="anim-row" id="row_${item.id}"></div>
+          <img src="${item.src}" class="full-sheet" alt="${item.name}">
+        `;
+
+        container.appendChild(card);
+
+        const animRow = card.querySelector(`#row_${item.id}`);
+        const canvases = [];
+
+        dirs.forEach(d => {
+          const box = document.createElement('div');
+          box.className = 'sprite-box';
+          const canvas = document.createElement('canvas');
+          canvas.className = 'sprite-canvas';
+          canvas.width = frameW;
+          canvas.height = frameH;
+          const label = document.createElement('div');
+          label.className = 'sprite-label';
+          label.textContent = d;
+          box.appendChild(canvas);
+          box.appendChild(label);
+          animRow.appendChild(box);
+          canvases.push(canvas);
+        });
+
+        const img = new Image();
+        img.src = item.src;
+        let frame = 0;
+        img.onload = () => {
+          setInterval(() => {
+            frame = (frame + 1) % 4;
+            canvases.forEach((c, r) => {
+              const ctx = c.getContext('2d');
+              ctx.clearRect(0, 0, frameW, frameH);
+              ctx.drawImage(
+                img,
+                frame * frameW, r * frameH, frameW, frameH,
+                0, 0, frameW, frameH
+              );
+            });
+          }, 160);
+        };
+      });
+    }
+
+    renderGroup(SPECIAL_OUTFITS, 'grid_special');
+    renderGroup(NPCS, 'grid_npcs');
+    renderGroup(STANDARDS, 'grid_standard');
+    renderGroup(BASES, 'grid_bases');
+    renderGroup(HAIR_SAMPLES, 'grid_hair');
+    renderGroup(ACC_SAMPLES, 'grid_acc');
+  </script>
+</body>
+</html>
