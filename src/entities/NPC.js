@@ -25,7 +25,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
     // FSM States: 'idle' | 'aware' | 'talking'
     this.state = 'idle';
     this.direction = config.direction || 'down';
-    this.proximityRadius = 80;
+    this.proximityRadius = 50;
     
     scene.add.existing(this);
     

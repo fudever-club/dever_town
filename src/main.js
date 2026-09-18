@@ -60,7 +60,8 @@ function initGame() {
           try { localStorage.setItem('dever_wardrobe_config', JSON.stringify(wardrobeConfig)); } catch (e) {}
         }
 
-        const avatarId = wardrobeConfig ? 'custom_wardrobe' : (user.avatar_id || user.avatarId || 'dev_hoodie');
+        const charId = wardrobeConfig?.characterId || wardrobeConfig?.outfitId || user?.avatar_id || 'hoodie_dever';
+        const avatarId = wardrobeConfig ? (wardrobeConfig.inHandItem && wardrobeConfig.inHandItem !== 'none' ? 'custom_wardrobe' : charId) : (user?.avatar_id || user?.avatarId || 'hoodie_dever');
 
         scene.player.updateProfile({
           name: user.display_name || user.displayName,
@@ -68,10 +69,6 @@ function initGame() {
           role: user.role || (isGuest ? 'guest' : 'dev'),
           wardrobeConfig: wardrobeConfig
         });
-
-        if (wardrobeConfig) {
-          scene.player.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
-        }
 
         const equippedItem = user.equipped_item_id || localStorage.getItem('dever_equipped_item');
         if (equippedItem && scene.player.setEquippedItem) {

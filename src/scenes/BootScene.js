@@ -60,16 +60,6 @@ export class BootScene extends Phaser.Scene {
     // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
     TextureGenerator.generateAllCharacterSpritesheets(this);
 
-    // 4. Tự động sinh sẵn bộ Spritesheet tùy chỉnh custom_wardrobe ngay tại BootScene nếu có lưu trong storage
-    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
-    if (savedWardrobeRaw) {
-      try {
-        const wardrobeConfig = JSON.parse(savedWardrobeRaw);
-        if (wardrobeConfig && typeof wardrobeConfig === 'object') {
-          TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
-        }
-      } catch (e) {}
-    }
   }
 
   create() {
@@ -91,6 +81,17 @@ export class BootScene extends Phaser.Scene {
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);
     });
+
+    // Tự động sinh sẵn bộ Spritesheet tùy chỉnh custom_wardrobe ngay tại BootScene khi toàn bộ spritesheet gốc đã nạp xong
+    const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
+    if (savedWardrobeRaw) {
+      try {
+        const wardrobeConfig = JSON.parse(savedWardrobeRaw);
+        if (wardrobeConfig && typeof wardrobeConfig === 'object') {
+          TextureGenerator.generateCustomAvatar(this, wardrobeConfig, 'char_custom_wardrobe');
+        }
+      } catch (e) {}
+    }
 
     this.scene.start('WorldScene');
   }

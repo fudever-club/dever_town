@@ -151,13 +151,25 @@ export class WorldScene extends Phaser.Scene {
     if (this.input?.keyboard) {
       this.input.keyboard.on('keydown-E', () => {
         if (this.npcDialogueModal?.isOpen) return;
-        const nearNPC = this.npcGroup?.find(npc => 
-          npc.state === 'aware' && !this.npcDialogueModal?.isOpen
-        );
-        if (nearNPC) {
-          nearNPC.state = 'talking';
-          this.npcDialogueModal.show(nearNPC);
-          return; 
+        if (!this.player) return;
+
+        let closestNPC = null;
+        let minDistance = Infinity;
+        const INTERACTION_MAX_DIST = 56; // Bán kính tương tác thực tế (~1.75 tile)
+
+        (this.npcGroup || []).forEach(npc => {
+          if (!npc || npc.state === 'talking') return;
+          const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, npc.x, npc.y);
+          if (dist < minDistance && dist <= INTERACTION_MAX_DIST) {
+            minDistance = dist;
+            closestNPC = npc;
+          }
+        });
+
+        if (closestNPC) {
+          closestNPC.state = 'talking';
+          this.npcDialogueModal.show(closestNPC);
+          return;
         }
       });
     }
@@ -765,15 +777,12 @@ export class WorldScene extends Phaser.Scene {
         const role = user.role || (isGuest ? 'guest' : 'dev');
 
         if (this.player) {
-          this.player.updateProfile({ name, avatarId, role });
-        }
-
-        // Tự động khôi phục trang phục từ Database nếu có
-        if (user.wardrobe_config && typeof user.wardrobe_config === 'object') {
-          if (this.player) {
-            // setCustomWardrobe tự xử lý generate + swap an toàn
-            this.player.setCustomWardrobe('custom_wardrobe', user.wardrobe_config);
-          }
+          this.player.updateProfile({
+            name,
+            avatarId: user.wardrobe_config ? (user.wardrobe_config.characterId || user.wardrobe_config.outfitId || avatarId) : avatarId,
+            role,
+            wardrobeConfig: user.wardrobe_config
+          });
         }
 
         const equippedItem = localStorage.getItem('dever_equipped_item');

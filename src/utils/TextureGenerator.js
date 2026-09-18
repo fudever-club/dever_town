@@ -894,10 +894,10 @@ export class TextureGenerator {
       inHandItem: wardrobeConfig.inHandItem || wardrobeConfig.equippedItemId || null
     };
 
-    // 1. Kiểm tra xem outfit được chọn có tương ứng với Spritesheet Gather.town HD đã preload không
-    const outfitId = wardrobeConfig.outfitId;
+    // 1. Kiểm tra xem outfit/character được chọn có tương ứng với Spritesheet Gather.town HD đã preload không
+    const outfitId = wardrobeConfig.characterId || wardrobeConfig.outfitId || 'hoodie_dever';
     const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
-    const prebakedKey = normalizedOutfitId ? `char_${normalizedOutfitId}` : null;
+    const prebakedKey = normalizedOutfitId ? (normalizedOutfitId.startsWith('char_') ? normalizedOutfitId : `char_${normalizedOutfitId}`) : null;
 
     let usedPrebaked = false;
     if (prebakedKey && scene && scene.textures && scene.textures.exists(prebakedKey)) {

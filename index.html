@@ -1022,8 +1022,8 @@
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
           <div>
-            <h2 class="modal-title">Tủ Đồ & Tùy Chỉnh Nhân Vật FUDA</h2>
-            <p class="modal-sub">Chọn giới tính Nam/Nữ, đa dạng loại trang phục, kiểu tóc và phụ kiện công nghệ.</p>
+            <h2 class="modal-title">Tủ Đồ & Bộ Sưu Tập Nhân Vật FU-DEVER</h2>
+            <p class="modal-sub">Chọn nhân vật đại diện yêu thích (Nam, Nữ, Võ Sinh Vovinam, Cóc Vàng) và túi đồ cầm tay.</p>
           </div>
         </div>
         <button type="button" id="wardrobe-modal-close" class="modal-close-btn">&times;</button>
@@ -1039,62 +1039,27 @@
             <button type="button" id="wardrobe-rotate-left" class="btn-preview-rotate" title="Xoay Trái">Xoay Trái</button>
             <button type="button" id="wardrobe-rotate-right" class="btn-preview-rotate" title="Xoay Phải">Xoay Phải</button>
           </div>
-          <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Áp Dụng Trang Phục Mới</button>
+          <button type="button" id="wardrobe-apply-btn" class="modal-btn btn-apply-wardrobe">Chọn Nhân Vật Này</button>
         </div>
 
         <div class="wardrobe-options-panel">
-          <!-- 1. Chọn Giới Tính -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Giới Tính Nhân Vật:</label>
-            <div id="wardrobe-gender-list" class="wardrobe-gender-grid"></div>
+          <!-- 1. Tab Bar Phân Loại: Chung, Nam, Nữ -->
+          <div class="wardrobe-tabs-header" id="wardrobe-tabs-container">
+            <button type="button" class="wardrobe-tab-btn active" data-tab="all">Chung (Tất Cả)</button>
+            <button type="button" class="wardrobe-tab-btn" data-tab="male">Nhân Vật Nam</button>
+            <button type="button" class="wardrobe-tab-btn" data-tab="female">Nhân Vật Nữ</button>
           </div>
 
-          <!-- 2. Chọn Màu Da (Skin Tone) -->
+          <!-- 2. Danh Sách Nhân Vật Hoàn Chỉnh -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Tông Màu Da Chân Thực:</label>
-            <div id="wardrobe-skin-list" class="wardrobe-chip-list"></div>
+            <label class="wardrobe-label">Danh Sách Nhân Vật Hoàn Chỉnh:</label>
+            <div id="wardrobe-character-list" class="wardrobe-character-grid"></div>
           </div>
 
-          <!-- 3. Khuôn Mặt & Biểu Cảm -->
+          <!-- 3. Túi Đồ & Vật Phẩm Cầm Tay Trực Tiếp -->
           <div class="wardrobe-section">
-            <label class="wardrobe-label">Biểu Cảm Đôi Mắt:</label>
-            <div id="wardrobe-expression-list" class="wardrobe-chip-list"></div>
-          </div>
-
-          <!-- 4. Kiểu Râu (Dành cho Nam) -->
-          <div class="wardrobe-section" id="wardrobe-beard-section">
-            <label class="wardrobe-label">Kiểu Râu & Phong Cách Coder:</label>
-            <div id="wardrobe-beard-list" class="wardrobe-chip-list"></div>
-          </div>
-
-          <!-- 5. Chọn Trang Phục -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Bộ Trang Phục & Đồng Phục FUDA:</label>
-            <div id="wardrobe-outfit-list" class="wardrobe-outfit-grid"></div>
-          </div>
-
-          <!-- 6. Chọn Kiểu Tóc -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Kiểu Tóc Thời Thượng:</label>
-            <div id="wardrobe-hairstyle-list" class="wardrobe-chip-list"></div>
-          </div>
-
-          <!-- 7. Chọn Màu Tóc -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Màu Tóc Cá Tính:</label>
-            <div id="wardrobe-hair-list" class="wardrobe-chip-list"></div>
-          </div>
-
-          <!-- 8. Vật Phẩm Cầm Tay Thật Sự -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Trang Bị Cầm Tay Trực Tiếp:</label>
+            <label class="wardrobe-label">Túi Đồ & Vật Phẩm Cầm Tay:</label>
             <div id="wardrobe-inhand-list" class="wardrobe-chip-list"></div>
-          </div>
-
-          <!-- 9. Phụ Kiện -->
-          <div class="wardrobe-section">
-            <label class="wardrobe-label">Phụ Kiện & Kính Cận:</label>
-            <div id="wardrobe-acc-list" class="wardrobe-acc-grid"></div>
           </div>
         </div>
       </div>

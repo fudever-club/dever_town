@@ -28,29 +28,38 @@ export class Player extends Phaser.GameObjects.Sprite {
       }
     }
 
-    let avatarId = options.avatarId || (wardrobeConfig ? 'custom_wardrobe' : 'dev_hoodie');
+    let avatarId = options.avatarId || (wardrobeConfig ? (wardrobeConfig.characterId || wardrobeConfig.outfitId || 'hoodie_dever') : 'hoodie_dever');
     let resolvedTextureKey = `char_${avatarId}`;
 
     if (wardrobeConfig && scene) {
-      if (!scene.textures.exists('char_custom_wardrobe')) {
-        // Tạo texture mới, nhận actual key (có thể là versioned)
-        const actualKey = TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
-        if (actualKey) resolvedTextureKey = actualKey;
+      const charId = wardrobeConfig.characterId || wardrobeConfig.outfitId || avatarId;
+      const normalizedCharId = charId === 'barista_apron' ? 'apron_barista' : charId;
+      const hasHandItem = wardrobeConfig.inHandItem && wardrobeConfig.inHandItem !== 'none';
+
+      if (hasHandItem) {
+        if (!scene.textures.exists('char_custom_wardrobe')) {
+          const actualKey = TextureGenerator.generateCustomAvatar(scene, wardrobeConfig, 'char_custom_wardrobe');
+          if (actualKey) resolvedTextureKey = actualKey;
+        } else {
+          resolvedTextureKey = 'char_custom_wardrobe';
+        }
+        avatarId = resolvedTextureKey.replace(/^char_/, '');
       } else {
-        // Texture đã có (từ BootScene), dùng actual key từ registry
-        resolvedTextureKey = TextureGenerator.getActualKey('char_custom_wardrobe');
+        const directKey = `char_${normalizedCharId}`;
+        if (scene.textures.exists(directKey)) {
+          resolvedTextureKey = directKey;
+          avatarId = normalizedCharId;
+        }
       }
-      avatarId = 'custom_wardrobe';
     }
 
-    const safeTextureKey = (scene && scene.textures.exists(resolvedTextureKey)) ? resolvedTextureKey : 'char_dev_hoodie';
+    const safeTextureKey = (scene && scene.textures.exists(resolvedTextureKey)) ? resolvedTextureKey : 'char_hoodie_dever';
     super(scene, x, y, safeTextureKey, 0);
 
     this.name = options.name || 'Dever Member';
-    // Đồng bộ avatarId với actual texture key để animation key luôn khớp
-    this.avatarId = (scene && scene.textures.exists(resolvedTextureKey))
-      ? resolvedTextureKey.replace(/^char_/, '')
-      : 'dev_hoodie';
+    this.avatarId = (scene && scene.textures.exists(safeTextureKey))
+      ? safeTextureKey.replace(/^char_/, '')
+      : 'hoodie_dever';
     this.wardrobeConfig = wardrobeConfig;
     this.role = options.role || 'guest';
     this.isCurrentPlayer = options.isCurrentPlayer || false;
@@ -132,35 +141,49 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (wardrobeConfig) {
       this.wardrobeConfig = wardrobeConfig;
     }
-    const logicalKey = `char_${avatarId}`;
-    if (this.scene) {
-      const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? (() => {
-        try {
-          const p = JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null');
-          return (p && typeof p === 'object') ? p : null;
-        } catch (e) { return null; }
-      })() : null);
+    if (!this.scene) return;
 
-      if (cfgToUse) {
-        // Ghi nhớ key cũ đang được Sprite sử dụng
+    const cfgToUse = this.wardrobeConfig || (typeof localStorage !== 'undefined' ? (() => {
+      try {
+        const p = JSON.parse(localStorage.getItem('dever_wardrobe_config') || 'null');
+        return (p && typeof p === 'object') ? p : null;
+      } catch (e) { return null; }
+    })() : null);
+
+    if (cfgToUse) {
+      const charId = cfgToUse.characterId || cfgToUse.outfitId || avatarId;
+      const normalizedCharId = charId === 'barista_apron' ? 'apron_barista' : charId;
+      const directKey = `char_${normalizedCharId}`;
+      const hasHandItem = cfgToUse.inHandItem && cfgToUse.inHandItem !== 'none';
+
+      // Nếu có vật phẩm cầm tay, sinh texture composite (chồng item lên tay)
+      if (hasHandItem) {
         const oldActualKey = this.texture ? this.texture.key : null;
-
-        // Tạo texture mới với versioned key an toàn (KHÔNG xóa key cũ ở bước này)
-        const newActualKey = TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, logicalKey);
-        const keyToUse = newActualKey || logicalKey;
-
+        const actualKey = TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, 'char_custom_wardrobe');
+        const keyToUse = actualKey || directKey;
         if (this.scene.textures.exists(keyToUse)) {
-          // Gán texture mới cho Sprite TRƯỚC
           this.setTexture(keyToUse, 0);
-          // Cập nhật avatarId để khớp với actual key (bỏ prefix 'char_')
-          // Vì animation được tạo với avatarId = actual key minus 'char_'
           this.avatarId = keyToUse.replace(/^char_/, '');
           this.stopMovement();
-          // Sau khi Sprite đã dùng texture mới, xóa texture cũ nếu là versioned
-          TextureGenerator.cleanupOldKey(this.scene, logicalKey, oldActualKey);
+          TextureGenerator.cleanupOldKey(this.scene, 'char_custom_wardrobe', oldActualKey);
         }
-      } else if (this.scene.textures.exists(logicalKey)) {
-        this.setTexture(logicalKey, 0);
+      } else if (this.scene.textures.exists(directKey)) {
+        // Dùng trực tiếp spritesheet pre-baked của nhân vật với key chuẩn mực, không tạo versioned
+        this.setTexture(directKey, 0);
+        this.avatarId = normalizedCharId;
+        this.stopMovement();
+      } else {
+        const actualKey = TextureGenerator.generateCustomAvatar(this.scene, cfgToUse, 'char_custom_wardrobe');
+        if (actualKey && this.scene.textures.exists(actualKey)) {
+          this.setTexture(actualKey, 0);
+          this.avatarId = actualKey.replace(/^char_/, '');
+          this.stopMovement();
+        }
+      }
+    } else {
+      const targetKey = `char_${avatarId}`;
+      if (this.scene.textures.exists(targetKey)) {
+        this.setTexture(targetKey, 0);
         this.avatarId = avatarId;
         this.stopMovement();
       }
@@ -321,17 +344,13 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     if (wardrobeConfig) {
-      this.setCustomWardrobe('custom_wardrobe', wardrobeConfig);
+      this.setCustomWardrobe(this.avatarId || 'custom_wardrobe', wardrobeConfig);
     } else if (avatarId && avatarId !== this.avatarId) {
-      const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');
-      if (savedWardrobeRaw && this.avatarId === 'custom_wardrobe') {
-        // Đang sử dụng custom wardrobe, giữ nguyên avatarId
-      } else {
-        this.avatarId = avatarId;
-        const textureKey = `char_${avatarId}`;
-        if (this.scene && this.scene.textures.exists(textureKey)) {
-          this.setTexture(textureKey, 0);
-        }
+      this.avatarId = avatarId;
+      const textureKey = `char_${avatarId}`;
+      if (this.scene && this.scene.textures.exists(textureKey)) {
+        this.setTexture(textureKey, 0);
+        this.stopMovement();
       }
     }
     this.createNameTag();
@@ -344,6 +363,10 @@ export class Player extends Phaser.GameObjects.Sprite {
       try {
         if (this.scene?.anims?.exists(idleAnim)) {
           this.anims.play(idleAnim, true);
+        } else {
+          // Fallback gán frame tĩnh theo hướng hiện tại để không bao giờ bị đơ sai hướng
+          const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
+          this.setFrame(dirFrames[this.currentDirection] ?? 0);
         }
       } catch (e) {}
     }
@@ -373,6 +396,21 @@ export class Player extends Phaser.GameObjects.Sprite {
     try {
       if (this.scene?.anims?.exists(animKey)) {
         this.anims.play(animKey, true);
+      } else {
+        // TỰ ĐỘNG PHỤC HỒI HOẠT ẢNH: Nếu animKey chưa có, sinh ngay tức thì từ texture sẵn có
+        if (this.scene && this.avatarId) {
+          const charTexKey = `char_${this.avatarId}`;
+          if (this.scene.textures.exists(charTexKey)) {
+            TextureGenerator.createCharacterAnimations(this.scene, this.avatarId);
+            if (this.scene.anims.exists(animKey)) {
+              this.anims.play(animKey, true);
+            }
+          } else {
+            // Fallback quay đúng hướng của frame 4 hướng (down: 0, left: 4, right: 8, up: 12)
+            const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
+            this.setFrame(dirFrames[this.currentDirection] ?? 0);
+          }
+        }
       }
     } catch (e) {}
 

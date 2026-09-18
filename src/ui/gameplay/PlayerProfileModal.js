@@ -295,36 +295,38 @@ export class PlayerProfileModal {
       } catch (e) {}
     }
     const friend = friendManager.getFriend(this.currentPlayer?.name);
-    const outfitId = rawConfig?.outfitId || this.currentPlayer?.avatarId || friend?.avatarId || 'hoodie_fuda';
+    const outfitId = rawConfig?.characterId || rawConfig?.outfitId || this.currentPlayer?.avatarId || friend?.avatarId || 'hoodie_dever';
     const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
-    const outfitObj = WARDROBE_CONFIG.outfits.find(o => o.id === normalizedOutfitId || o.id === outfitId) || WARDROBE_CONFIG.outfits[0];
+    const charList = WARDROBE_CONFIG.characters || WARDROBE_CONFIG.outfits || [];
+    const outfitObj = charList.find(o => o.id === normalizedOutfitId || o.id === outfitId) || charList[0];
 
     return {
-      gender: rawConfig?.gender || 'male',
-      hairstyle: rawConfig?.hairstyle || 'short',
-      hair: rawConfig?.hairColor || rawConfig?.hair || '#0f172a',
-      skin: rawConfig?.skinColor || rawConfig?.skin || '#fbd1a2',
-      skinTone: rawConfig?.skinTone || 'skin_natural',
-      facialHair: rawConfig?.facialHair || 'none',
-      expression: rawConfig?.expression || 'expr_focus',
+      gender: rawConfig?.gender || outfitObj?.gender || 'male',
+      hairstyle: 'short',
+      hair: '#0f172a',
+      skin: '#fbd1a2',
+      skinTone: 'skin_natural',
+      facialHair: 'none',
+      expression: 'expr_focus',
       outfitId: normalizedOutfitId,
-      outfitType: rawConfig?.outfitType || outfitObj?.type || 'hoodie',
-      shirt: rawConfig?.hoodieColor || outfitObj?.color || '#f26f21',
-      collarColor: rawConfig?.collarColor || outfitObj?.collarColor || '#002147',
-      pants: rawConfig?.pantsColor || '#1e293b',
-      accessory: rawConfig?.accessory || 'none',
+      outfitType: 'hoodie',
+      shirt: outfitObj?.color || '#2563eb',
+      collarColor: '#002147',
+      pants: '#1e293b',
+      accessory: 'none',
       inHandItem: this.currentPlayer?.equippedItemId || rawConfig?.inHandItem || (this.currentPlayer?.isMe ? localStorage.getItem('dever_equipped_item') : null) || null
     };
   }
 
   getOutfitName(avatarId) {
-    if (!avatarId) return 'Áo Hoodie FUDA Cam';
+    if (!avatarId) return 'Nam Dev FU-DEVER';
     const normalized = avatarId === 'barista_apron' ? 'apron_barista' : avatarId;
-    const found = WARDROBE_CONFIG.outfits.find(o => o.id === normalized || o.id === avatarId);
+    const charList = WARDROBE_CONFIG.characters || WARDROBE_CONFIG.outfits || [];
+    const found = charList.find(o => o.id === normalized || o.id === avatarId);
     if (found) return found.name;
     const upcoming = WARDROBE_CONFIG.upcomingOutfits?.find(o => o.id === avatarId);
     if (upcoming) return upcoming.name;
-    return 'Đồng Phục Coder FU-DEVER';
+    return 'Thành Viên FU-DEVER';
   }
 
   getEquippedItemInfo(itemId) {

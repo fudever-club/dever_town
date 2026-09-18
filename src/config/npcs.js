@@ -4,7 +4,7 @@ export const NPC_CONFIG = {
       id: 'npc_chunhiem_nhat',
       name: 'Đặng Quang Nhật',
       role: 'Chủ Nhiệm CLB • K20',
-      tileX: 8, tileY: 4,
+      tileX: 6, tileY: 4,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
@@ -42,8 +42,8 @@ export const NPC_CONFIG = {
       id: 'npc_pho_hung',
       name: 'Nguyễn Thái Hưng',
       role: 'Phó Chủ Nhiệm CLB • K20',
-      tileX: 10, tileY: 6,
-      direction: 'right',
+      tileX: 14, tileY: 4,
+      direction: 'down',
       spriteConfig: {
         gender: 'male',
         hairstyle: 'wolf_cut',
@@ -72,7 +72,7 @@ export const NPC_CONFIG = {
       id: 'npc_thuky_anh',
       name: 'Nguyễn Thị Ngọc Ánh',
       role: 'Thư Ký CLB • K20',
-      tileX: 8, tileY: 4,
+      tileX: 10, tileY: 6,
       direction: 'down',
       spriteConfig: {
         gender: 'female',
