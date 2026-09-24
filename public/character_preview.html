@@ -135,12 +135,48 @@
       <div style="display: flex; align-items: center; gap: 10px;">
         <label for="charSelect" style="font-size: 13px; color: #cbd5e1;">Chọn nhân vật:</label>
         <select id="charSelect" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer;">
-          <option value="sample_dev_dever">1. Nam Dev FU-DEVER (Undercut Đen)</option>
-          <option value="sample_fptu_female">2. Nữ Sinh FPTU Tươi Tắn (Ponytail Nâu, Nơ Cam)</option>
-          <option value="sample_cyber_hacker">3. Cyber Hacker (Wolf Cut Xanh Cyber, Dị Sắc)</option>
-          <option value="sample_wizard_sorceress">4. Phù Thủy Thuật Toán (Twintails Bạch Kim Tím, Wink)</option>
-          <option value="sample_biker_rocker">5. Biker Rocker (Anime Spiky Đỏ Ruby Rực Lửa)</option>
-          <option value="sample_barista_an">6. Barista An (Búi Củ Tỏi Nâu Socola, Kính Tròn)</option>
+          <optgroup label="✨ 6 Mẫu Mới Gather.town v2">
+            <option value="sample_dev_dever">1. Nam Dev FU-DEVER (V2 Remaster)</option>
+            <option value="sample_fptu_female">2. Nữ Sinh FPTU Tươi Tắn (V2)</option>
+            <option value="sample_cyber_hacker">3. Cyber Hacker Dị Sắc (V2)</option>
+            <option value="sample_wizard_sorceress">4. Phù Thủy Thuật Toán (V2)</option>
+            <option value="sample_biker_rocker">5. Biker Rocker Đỏ Ruby (V2)</option>
+            <option value="sample_barista_an">6. Barista An Cà Phê Muối (V2)</option>
+          </optgroup>
+          <optgroup label="👔 11 Ban Quản Trị & Cố Vấn CLB">
+            <option value="npc_nhat">Đặng Quang Nhật (Chủ Nhiệm)</option>
+            <option value="npc_hung">Nguyễn Thái Hưng (Phó Chủ Nhiệm)</option>
+            <option value="npc_anh">Nguyễn Thị Ngọc Ánh (Thư Ký)</option>
+            <option value="npc_barista">Barista An (Quán Cà Phê Muối)</option>
+            <option value="npc_kiet">Lương Văn Tuấn Kiệt (Học Thuật)</option>
+            <option value="npc_thanh">Nguyễn Lê Đăng Thành (Game Lead)</option>
+            <option value="npc_thang">Hồ Quốc Thắng (Sự Kiện)</option>
+            <option value="npc_hai">Đoàn Phước Trường Hải (Truyền Thông)</option>
+            <option value="npc_duc">Sử Quan Đức (Lịch Sử CLB)</option>
+            <option value="npc_khoa">Lê Đình Đăng Khoa (Backend)</option>
+            <option value="npc_truyen">Phạm Đức Truyền (Thuật Toán)</option>
+          </optgroup>
+          <optgroup label="🌟 Trang Phục Đặc Biệt">
+            <option value="frog_mascot">Mascot Cóc Vàng FUDA</option>
+            <option value="vovinam_suit">Võ Phục Vovinam FPTU Đai Vàng</option>
+            <option value="wizard_robe">Áo Choàng Pháp Sư Huyền Bí</option>
+            <option value="mecha_suit">Giáp Mecha Android Cyber</option>
+            <option value="leather_biker">Áo Khoác Da Biker Rocker</option>
+          </optgroup>
+          <optgroup label="🎓 Trang Phục Sinh Viên FPTU & FU-DEVER">
+            <option value="hoodie_dever">Nam Sinh — Hoodie Xanh CLB</option>
+            <option value="polo_dever">Thành Viên — Polo Xanh Công Nghệ</option>
+            <option value="fuda">Nam Sinh FUDA — Hoodie Cam</option>
+            <option value="polo_fuda">Sinh Viên FUDA — Polo Cam Chính Thức</option>
+            <option value="aodai">Nữ Sinh FUDA — Áo Dài Trắng</option>
+            <option value="aodai_fuda">Nữ Sinh FUDA — Áo Dài Cam Lễ Hội</option>
+            <option value="tee_dev">Nam Sinh — Áo Thun Hackathon</option>
+            <option value="suit_formal">Sinh Viên — Suit Vest Lịch Lãm</option>
+            <option value="jersey_sport">Sinh Viên — Đồ Thể Thao Năng Động</option>
+            <option value="hoodie_gaming">Game Developer — Hoodie Đỏ RGB</option>
+            <option value="hoodie_terminal">Backend Engineer — Terminal Hoodie</option>
+            <option value="apron_barista">Nhân Viên — Tạp Dề Cà Phê Muối</option>
+          </optgroup>
         </select>
       </div>
     </div>
@@ -210,6 +246,7 @@
     const NPCS = [
       { id: 'npc_nhat', name: 'Đặng Quang Nhật', badge: 'Chủ Nhiệm CLB', color: '#2563eb', src: 'assets/characters/npcs/npc_chunhiem_nhat.png' },
       { id: 'npc_hung', name: 'Nguyễn Thái Hưng', badge: 'Phó Chủ Nhiệm', color: '#8b5cf6', src: 'assets/characters/npcs/npc_pho_hung.png' },
+      { id: 'npc_anh', name: 'Nguyễn Thị Ngọc Ánh', badge: 'Thư Ký CLB', color: '#ea580c', src: 'assets/characters/npcs/npc_thuky_anh.png' },
       { id: 'npc_barista', name: 'Barista An', badge: 'Cà Phê Muối FUDA', color: '#d97706', src: 'assets/characters/npcs/npc_barista_an.png' },
       { id: 'npc_kiet', name: 'Lương Văn Tuấn Kiệt', badge: 'Tech Lead', color: '#7c3aed', src: 'assets/characters/npcs/npc_hocthu_kiet.png' },
       { id: 'npc_thanh', name: 'Nguyễn Lê Đăng Thành', badge: 'Game Lead', color: '#ef4444', src: 'assets/characters/npcs/npc_game_lead_thanh.png' },
@@ -342,7 +379,13 @@
     iCtx.imageSmoothingEnabled = false;
 
     const charImages = {};
-    NEW_SAMPLES.forEach(item => {
+    const ALL_PLAYABLE = [
+      ...NEW_SAMPLES,
+      ...SPECIAL_OUTFITS,
+      ...NPCS,
+      ...STANDARDS
+    ];
+    ALL_PLAYABLE.forEach(item => {
       const img = new Image();
       img.src = item.src;
       charImages[item.id] = img;
@@ -527,7 +570,7 @@
       iCtx.fillStyle = '#f8fafc';
       iCtx.font = '600 11px -apple-system, sans-serif';
       iCtx.textAlign = 'center';
-      const activeChar = NEW_SAMPLES.find(c => c.id === currentCharId);
+      const activeChar = ALL_PLAYABLE.find(c => c.id === currentCharId);
       const name = activeChar ? activeChar.name.replace(/^\d+\.\s*/, '') : 'Player';
       iCtx.fillText(name, playerX, playerY - 38);
 

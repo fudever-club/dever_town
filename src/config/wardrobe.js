@@ -217,6 +217,16 @@ export const CHARACTER_PRESETS = [
     desc: 'Tóc nâu hạt dẻ ngang vai, trang phục học đường đơn giản, xinh xắn và thông minh.',
     tags: ['Basic', 'Dễ Thương']
   },
+  {
+    id: 'npc_thuky_anh',
+    name: 'Thư Ký Ngọc Ánh',
+    role: 'Thư Ký CLB FU-DEVER • K20',
+    gender: 'female',
+    color: '#ea580c',
+    spriteKey: 'char_npc_thuky_anh',
+    desc: 'Tóc ponytail đen gọn gàng, kính thông minh, áo dài cam FPTU thướt tha, chu đáo và nhiệt tình.',
+    tags: ['Thư Ký', 'Ban Quản Trị', 'Áo Dài']
+  },
 
   // --- NHÂN VẬT ĐẶC BIỆT & LINH THÚ (UNISEX / SPECIAL CHARACTERS) ---
   {

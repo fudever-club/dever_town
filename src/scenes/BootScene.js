@@ -45,9 +45,10 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet('char_vovinam_suit', 'assets/characters/special_outfits/special_vovinam_suit.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_leather_biker', 'assets/characters/special_outfits/special_leather_biker.png', { frameWidth: 48, frameHeight: 64 });
 
-    // 2D. Toàn bộ 10 NPC Ban Chủ Nhiệm & Cố Vấn CLB FU-DEVER
+    // 2D. Toàn bộ 11 NPC Ban Quản Trị & Cố Vấn CLB FU-DEVER
     this.load.spritesheet('char_npc_chunhiem_nhat', 'assets/characters/npcs/npc_chunhiem_nhat.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_npc_pho_hung', 'assets/characters/npcs/npc_pho_hung.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_thuky_anh', 'assets/characters/npcs/npc_thuky_anh.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_npc_barista_an', 'assets/characters/npcs/npc_barista_an.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_npc_hocthu_kiet', 'assets/characters/npcs/npc_hocthu_kiet.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_npc_game_lead_thanh', 'assets/characters/npcs/npc_game_lead_thanh.png', { frameWidth: 48, frameHeight: 64 });
@@ -81,8 +82,8 @@ export class BootScene extends Phaser.Scene {
       'hoodie_gaming', 'jersey_sport', 'hoodie_terminal', 'apron_barista',
       // Special Outfits
       'frog_mascot', 'mecha_suit', 'wizard_robe', 'vovinam_suit', 'leather_biker',
-      // 10 NPCs CLB
-      'npc_chunhiem_nhat', 'npc_pho_hung', 'npc_barista_an', 'npc_hocthu_kiet',
+      // 11 NPCs CLB
+      'npc_chunhiem_nhat', 'npc_pho_hung', 'npc_thuky_anh', 'npc_barista_an', 'npc_hocthu_kiet',
       'npc_game_lead_thanh', 'npc_sukien_thang', 'npc_media_hai',
       'npc_historian_duc', 'npc_backend_khoa', 'npc_algo_truyen',
       // 6 Mẫu Mới Gather.town v2 Polish
