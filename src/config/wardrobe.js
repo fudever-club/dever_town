@@ -6,6 +6,46 @@
 export const CHARACTER_PRESETS = [
   // --- NHÂN VẬT NAM (MALE CHARACTERS) ---
   {
+    id: 'sample_dev_dever',
+    name: 'Nam Dev FU-DEVER (V2 Remaster)',
+    role: 'Core Builder • Tech Lead',
+    gender: 'male',
+    color: '#0066CC',
+    spriteKey: 'char_sample_dev_dever',
+    desc: 'Tóc undercut đen tuyền highlight xám tro, kính dev bạc, áo hoodie xanh công nghệ FU-DEVER sắc nét chuẩn Gather.town v2.',
+    tags: ['Mới', 'Gather.town v2', 'FU-DEVER']
+  },
+  {
+    id: 'sample_cyber_hacker',
+    name: 'Cyber Hacker Dị Sắc',
+    role: 'Matrix Specialist • Security',
+    gender: 'male',
+    color: '#06b6d4',
+    spriteKey: 'char_sample_cyber_hacker',
+    desc: 'Tóc wolf cut xanh neon cyber, mắt 2 màu dị sắc (cyan & gold), tai nghe RGB, áo bomber viền mạch điện Matrix phát sáng.',
+    tags: ['Mới', 'Anime', 'Cyber']
+  },
+  {
+    id: 'sample_biker_rocker',
+    name: 'Biker Rocker Đỏ Ruby',
+    role: 'Rebel Edge • Streetwear',
+    gender: 'male',
+    color: '#e11d48',
+    spriteKey: 'char_sample_biker_rocker',
+    desc: 'Tóc anime spiky đỏ ruby rực lửa, áo da biker có khóa kéo và đinh tán bạc, biểu cảm sắc sảo cá tính.',
+    tags: ['Mới', 'Anime', 'Rocker']
+  },
+  {
+    id: 'sample_barista_an',
+    name: 'Barista An Cà Phê Muối (V2)',
+    role: 'Host Thân Thiện • Cà Phê Muối',
+    gender: 'male',
+    color: '#d97706',
+    spriteKey: 'char_sample_barista_an',
+    desc: 'Tóc búi củ tỏi nâu socola, kính tròn gọng vàng, tạp dề cà phê thêu Cóc Vàng, nụ cười hiền từ chu đáo.',
+    tags: ['Mới', 'Gather.town v2', 'Barista']
+  },
+  {
     id: 'hoodie_dever',
     name: 'Nam Dev FU-DEVER',
     role: 'Core Member • Web/AI',
@@ -107,6 +147,26 @@ export const CHARACTER_PRESETS = [
   },
 
   // --- NHÂN VẬT NỮ (FEMALE CHARACTERS) ---
+  {
+    id: 'sample_fptu_female',
+    name: 'Nữ Sinh FPTU Tươi Tắn (V2)',
+    role: 'Campus Ambassador • FPTU',
+    gender: 'female',
+    color: '#f26f21',
+    spriteKey: 'char_sample_fptu_female',
+    desc: 'Tóc đuôi ngựa nâu hạt dẻ cài nơ cam, áo polo cam FPTU có cổ, chân váy tennis xếp ly navy, nụ cười tươi má hồng cam đào.',
+    tags: ['Mới', 'FPTU', 'Gather.town v2']
+  },
+  {
+    id: 'sample_wizard_sorceress',
+    name: 'Phù Thủy Thuật Toán (Anime)',
+    role: 'Algorithm Sorceress • Fantasy',
+    gender: 'female',
+    color: '#c084fc',
+    spriteKey: 'char_sample_wizard_sorceress',
+    desc: 'Tóc twintails bạch kim tím pastel, nón phù thủy mini ngôi sao, áo choàng tím viền vàng, biểu cảm nháy mắt tinh nghịch.',
+    tags: ['Mới', 'Anime', 'Fantasy']
+  },
   {
     id: 'aodai_white',
     name: 'Nữ Sinh Áo Dài Trắng',

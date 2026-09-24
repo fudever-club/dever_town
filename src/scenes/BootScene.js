@@ -57,6 +57,14 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet('char_npc_backend_khoa', 'assets/characters/npcs/npc_backend_khoa.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_npc_algo_truyen', 'assets/characters/npcs/npc_algo_truyen.png', { frameWidth: 48, frameHeight: 64 });
 
+    // 2E. 6 Mẫu Nhân Vật Gather.town Cải Tiến (Samples v2 Polish)
+    this.load.spritesheet('char_sample_dev_dever', 'assets/characters/samples_v2/sample_dev_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_fptu_female', 'assets/characters/samples_v2/sample_fptu_female.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_cyber_hacker', 'assets/characters/samples_v2/sample_cyber_hacker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_wizard_sorceress', 'assets/characters/samples_v2/sample_wizard_sorceress.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_biker_rocker', 'assets/characters/samples_v2/sample_biker_rocker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_barista_an', 'assets/characters/samples_v2/sample_barista_an.png', { frameWidth: 48, frameHeight: 64 });
+
     // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
     TextureGenerator.generateAllCharacterSpritesheets(this);
 
@@ -76,7 +84,10 @@ export class BootScene extends Phaser.Scene {
       // 10 NPCs CLB
       'npc_chunhiem_nhat', 'npc_pho_hung', 'npc_barista_an', 'npc_hocthu_kiet',
       'npc_game_lead_thanh', 'npc_sukien_thang', 'npc_media_hai',
-      'npc_historian_duc', 'npc_backend_khoa', 'npc_algo_truyen'
+      'npc_historian_duc', 'npc_backend_khoa', 'npc_algo_truyen',
+      // 6 Mẫu Mới Gather.town v2 Polish
+      'sample_dev_dever', 'sample_fptu_female', 'sample_cyber_hacker',
+      'sample_wizard_sorceress', 'sample_biker_rocker', 'sample_barista_an'
     ];
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);

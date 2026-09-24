@@ -1641,7 +1641,7 @@ export class TextureGenerator {
         frames: scene.anims.generateFrameNumbers(key, {
           frames: [baseFrame, baseFrame + 1, baseFrame + 2, baseFrame + 3]
         }),
-        frameRate: 8,
+        frameRate: 9,
         repeat: -1
       });
 

@@ -118,9 +118,53 @@
 <body>
 
   <header>
-    <h1>DEVER_TOWN — Chibi Gather.town Studio (Phase 2 Overhaul)</h1>
-    <p class="subtitle">Đại tu đồ họa nhân vật Chibi 1:1.2 Gather.town (16 frames walk cycle 48x64 px, tổng thể 192x256 px). Tổng cộng 21 bộ spritesheet hoàn thiện.</p>
+    <h1>DEVER_TOWN — Chibi Gather.town Studio (Phase 2 & Delverium Polish)</h1>
+    <p class="subtitle">Đại tu mỹ thuật nhân vật Chibi 1:1.3 Gather.town kết hợp kỹ thuật Sel-out và chuyển động 4 hướng mượt mà (1-pixel Stride Dip) từ Delverium & Stardew Valley.</p>
   </header>
+
+  <!-- 0. PHÂN KHU ĐẶC BIỆT: 6 MẪU NHÂN VẬT GATHER.TOWN CẢI TIẾN -->
+  <div class="section-title" style="color: #4ade80;">0. 6 MẪU NHÂN VẬT GATHER.TOWN MỚI (CHIBI + DELVERIUM & STARDEW POLISH)</div>
+  <p style="color: #94a3b8; font-size: 13px; margin-top: -8px; margin-bottom: 16px;">
+    Mỗi nhân vật là một thiết kế độc bản: khuôn mặt có hồn (mắt phản quang 2-pixel, má hồng), viền nét chọn lọc (Sel-out không dùng viền đen thô), đa dạng từ tóc đen/nâu truyền thống đến phong cách anime sặc sỡ.
+  </p>
+
+  <!-- BỘ THỬ NGHIỆM ĐIỀU KHIỂN BƯỚC ĐI THỜI GIAN THỰC -->
+  <div style="background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 18px; margin-bottom: 28px; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+      <div style="font-weight: 700; color: #38bdf8; font-size: 15px;">🎮 TRẢI NGHIỆM ĐIỀU KHIỂN THỜI GIAN THỰC (INTERACTIVE WALK TESTER)</div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="charSelect" style="font-size: 13px; color: #cbd5e1;">Chọn nhân vật:</label>
+        <select id="charSelect" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer;">
+          <option value="sample_dev_dever">1. Nam Dev FU-DEVER (Undercut Đen)</option>
+          <option value="sample_fptu_female">2. Nữ Sinh FPTU Tươi Tắn (Ponytail Nâu, Nơ Cam)</option>
+          <option value="sample_cyber_hacker">3. Cyber Hacker (Wolf Cut Xanh Cyber, Dị Sắc)</option>
+          <option value="sample_wizard_sorceress">4. Phù Thủy Thuật Toán (Twintails Bạch Kim Tím, Wink)</option>
+          <option value="sample_biker_rocker">5. Biker Rocker (Anime Spiky Đỏ Ruby Rực Lửa)</option>
+          <option value="sample_barista_an">6. Barista An (Búi Củ Tỏi Nâu Socola, Kính Tròn)</option>
+        </select>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <canvas id="interactiveCanvas" width="384" height="256" style="border: 1px solid #334155; border-radius: 8px; image-rendering: pixelated; background: #1a2234; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);"></canvas>
+      <div style="flex: 1; min-width: 240px; color: #cbd5e1; font-size: 13px; line-height: 1.6;">
+        <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; margin-bottom: 10px;">
+          <div style="color: #facc15; font-weight: 600; margin-bottom: 4px;">Phím điều khiển:</div>
+          <div>• Bấm <b>W, A, S, D</b> hoặc <b>Phím Mũi Tên</b> để di chuyển nhân vật.</div>
+          <div>• Thả phím để nhân vật dừng lại ở hướng nhìn tương ứng.</div>
+        </div>
+        <div style="color: #94a3b8; font-size: 12px;">
+          <b style="color: #38bdf8;">Kỹ thuật đang kích hoạt trên sân thử:</b><br>
+          ✓ Chu kỳ bước đi 4 frames 9 FPS đồng bộ tốc độ di chuyển 160 px/s.<br>
+          ✓ Nhún người tự nhiên (Organic Squash & Stretch) theo trục Y.<br>
+          ✓ Bóng đổ co giãn dưới chân theo nhịp dậm chân.<br>
+          ✓ Hạt bụi bước chân (Dust Puffs) xuất hiện khi bắt đầu chạy hoặc đổi hướng.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid_new_samples" style="margin-bottom: 40px;"></div>
 
   <!-- 1. TRANG PHỤC ĐẶC BIỆT -->
   <div class="section-title">1. BỘ TRANG PHỤC ĐẶC BIỆT (SPECIAL OUTFITS)</div>
@@ -147,6 +191,14 @@
   <div class="grid" id="grid_acc"></div>
 
   <script>
+    const NEW_SAMPLES = [
+      { id: 'sample_dev_dever', name: '1. Nam Dev FU-DEVER', badge: 'Core Dev', color: '#0066CC', src: 'assets/characters/samples_v2/sample_dev_dever.png' },
+      { id: 'sample_fptu_female', name: '2. Nữ Sinh FPTU Tươi Tắn', badge: 'Ambassador', color: '#f26f21', src: 'assets/characters/samples_v2/sample_fptu_female.png' },
+      { id: 'sample_cyber_hacker', name: '3. Cyber Hacker', badge: 'Matrix/Cyber', color: '#06b6d4', src: 'assets/characters/samples_v2/sample_cyber_hacker.png' },
+      { id: 'sample_wizard_sorceress', name: '4. Phù Thủy Thuật Toán', badge: 'Fantasy Anime', color: '#c084fc', src: 'assets/characters/samples_v2/sample_wizard_sorceress.png' },
+      { id: 'sample_biker_rocker', name: '5. Biker Rocker Streetwear', badge: 'Rebel Edge', color: '#e11d48', src: 'assets/characters/samples_v2/sample_biker_rocker.png' },
+      { id: 'sample_barista_an', name: '6. Barista An Cà Phê Muối', badge: 'Cozy Host', color: '#d97706', src: 'assets/characters/samples_v2/sample_barista_an.png' }
+    ];
     const SPECIAL_OUTFITS = [
       { id: 'frog_mascot', name: 'Mascot Cóc Vàng FUDA', badge: 'Mascot', color: '#eab308', src: 'assets/characters/special_outfits/special_frog_mascot.png' },
       { id: 'mecha_suit', name: 'Giáp Mecha Android Cyber', badge: 'Sci-Fi', color: '#06b6d4', src: 'assets/characters/special_outfits/special_mecha_suit.png' },
@@ -276,12 +328,213 @@
       });
     }
 
+    renderGroup(NEW_SAMPLES, 'grid_new_samples');
     renderGroup(SPECIAL_OUTFITS, 'grid_special');
     renderGroup(NPCS, 'grid_npcs');
     renderGroup(STANDARDS, 'grid_standard');
     renderGroup(BASES, 'grid_bases');
     renderGroup(HAIR_SAMPLES, 'grid_hair');
     renderGroup(ACC_SAMPLES, 'grid_acc');
+
+    // --- LOGIC CHO BỘ ĐIỀU KHIỂN BƯỚC ĐI THỜI GIAN THỰC (INTERACTIVE WALK TESTER) ---
+    const iCanvas = document.getElementById('interactiveCanvas');
+    const iCtx = iCanvas.getContext('2d');
+    iCtx.imageSmoothingEnabled = false;
+
+    const charImages = {};
+    NEW_SAMPLES.forEach(item => {
+      const img = new Image();
+      img.src = item.src;
+      charImages[item.id] = img;
+    });
+
+    let currentCharId = 'sample_dev_dever';
+    const charSelect = document.getElementById('charSelect');
+    if (charSelect) {
+      charSelect.addEventListener('change', (e) => {
+        currentCharId = e.target.value;
+      });
+    }
+
+    // Trạng thái nhân vật trên sân thử
+    let playerX = iCanvas.width / 2;
+    let playerY = iCanvas.height / 2;
+    let playerDir = 0; // 0: down, 1: left, 2: right, 3: up
+    let isMoving = false;
+    let wasMoving = false;
+    let animFrame = 0;
+    let animTimer = 0;
+    const ANIM_SPEED = 110; // ~9 FPS chuẩn Stardew/Delverium
+    const MOVE_SPEED = 160; // px/giây
+
+    // Hạt bụi bước chân
+    const particles = [];
+
+    function spawnDust(x, y) {
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: x + (Math.random() - 0.5) * 12,
+          y: y + (Math.random() - 0.5) * 4,
+          vx: (Math.random() - 0.5) * 30,
+          vy: -Math.random() * 15 - 5,
+          alpha: 0.8,
+          size: Math.random() * 2.5 + 1.5
+        });
+      }
+    }
+
+    // Xử lý bàn phím
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.code] = true;
+      if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'].includes(e.code)) {
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      keys[e.code] = false;
+    });
+
+    let lastTime = performance.now();
+
+    function gameLoop(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      // Tính toán vector di chuyển
+      let dx = 0;
+      let dy = 0;
+      if (keys['KeyW'] || keys['ArrowUp']) dy -= 1;
+      if (keys['KeyS'] || keys['ArrowDown']) dy += 1;
+      if (keys['KeyA'] || keys['ArrowLeft']) dx -= 1;
+      if (keys['KeyD'] || keys['ArrowRight']) dx += 1;
+
+      const len = Math.hypot(dx, dy);
+      if (len > 0) {
+        dx /= len;
+        dy /= len;
+        isMoving = true;
+
+        // Cập nhật hướng nhìn
+        if (Math.abs(dx) > Math.abs(dy)) {
+          playerDir = dx > 0 ? 2 : 1; // right : left
+        } else {
+          playerDir = dy > 0 ? 0 : 3; // down : up
+        }
+
+        // Cập nhật vị trí
+        playerX += dx * MOVE_SPEED * dt;
+        playerY += dy * MOVE_SPEED * dt;
+
+        // Giới hạn trong sân thử
+        playerX = Math.max(30, Math.min(iCanvas.width - 30, playerX));
+        playerY = Math.max(40, Math.min(iCanvas.height - 30, playerY));
+
+        // Bụi bước chân khi bắt đầu chạy hoặc đổi hướng
+        if (!wasMoving) {
+          spawnDust(playerX, playerY + 28);
+        }
+
+        // Cập nhật hoạt ảnh chân bước
+        animTimer += dt * 1000;
+        if (animTimer >= ANIM_SPEED) {
+          animTimer = 0;
+          animFrame = (animFrame + 1) % 4;
+        }
+      } else {
+        isMoving = false;
+        animFrame = 0;
+        animTimer = 0;
+      }
+      wasMoving = isMoving;
+
+      // Cập nhật hạt bụi
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.alpha -= dt * 2.2;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      // --- VẼ SÂN THỬ & NHÂN VẬT ---
+      iCtx.clearRect(0, 0, iCanvas.width, iCanvas.height);
+
+      // 1. Vẽ nền sàn Campus gạch đá hiện đại (Tile 32x32)
+      const tileSize = 32;
+      for (let x = 0; x < iCanvas.width; x += tileSize) {
+        for (let y = 0; y < iCanvas.height; y += tileSize) {
+          const isEven = ((x / tileSize) + (y / tileSize)) % 2 === 0;
+          iCtx.fillStyle = isEven ? '#1e293b' : '#172033';
+          iCtx.fillRect(x, y, tileSize, tileSize);
+          iCtx.strokeStyle = '#27354f';
+          iCtx.lineWidth = 1;
+          iCtx.strokeRect(x, y, tileSize, tileSize);
+        }
+      }
+
+      // 2. Vẽ các hạt bụi bước chân
+      particles.forEach(p => {
+        iCtx.fillStyle = `rgba(226, 232, 240, ${Math.max(0, p.alpha)})`;
+        iCtx.beginPath();
+        iCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        iCtx.fill();
+      });
+
+      // 3. Tính toán nhún người (Organic Squash & Stretch + 1-pixel Stride Dip)
+      let squashX = 1.0;
+      let stretchY = 1.0;
+      let bobY = 0;
+      if (isMoving) {
+        const walkPhase = now / 80;
+        const bob = Math.sin(walkPhase) * 0.04;
+        stretchY = 1.0 + bob;
+        squashX = 1.0 - bob * 0.6;
+        bobY = (animFrame === 1 || animFrame === 3) ? 1 : 0; // 1-pixel Stride Dip
+      }
+
+      // 4. Vẽ bóng đổ elip dưới chân
+      iCtx.save();
+      iCtx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      iCtx.beginPath();
+      const shadowW = 20 * (isMoving ? 1.0 / squashX : 1.0);
+      const shadowH = 7;
+      iCtx.ellipse(playerX, playerY + 28, shadowW / 2, shadowH / 2, 0, 0, Math.PI * 2);
+      iCtx.fill();
+      iCtx.restore();
+
+      // 5. Vẽ Sprite nhân vật
+      const currentImg = charImages[currentCharId];
+      if (currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
+        iCtx.save();
+        iCtx.translate(playerX, playerY + bobY);
+        iCtx.scale(squashX, stretchY);
+
+        const srcX = animFrame * frameW;
+        const srcY = playerDir * frameH;
+
+        iCtx.drawImage(
+          currentImg,
+          srcX, srcY, frameW, frameH,
+          -frameW / 2, -frameH / 2, frameW, frameH
+        );
+        iCtx.restore();
+      }
+
+      // 6. Tên nhân vật nổi phía trên
+      iCtx.fillStyle = '#f8fafc';
+      iCtx.font = '600 11px -apple-system, sans-serif';
+      iCtx.textAlign = 'center';
+      const activeChar = NEW_SAMPLES.find(c => c.id === currentCharId);
+      const name = activeChar ? activeChar.name.replace(/^\d+\.\s*/, '') : 'Player';
+      iCtx.fillText(name, playerX, playerY - 38);
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
