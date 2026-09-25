@@ -193,7 +193,7 @@ export const MAPS_CONFIG = {
     spawnPoint: { x: 400, y: 350 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
-      [ 15,  8,  8,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9, 10,  8, 13, 15 ],
+      [ 15,  8,  8, 10,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9, 10,  8, 13, 15 ],
       [ 15,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  9, 15 ],
       [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  4,  4,  9,  9,  4,  4,  4,  4,  9,  4,  4,  4,  4,  9,  9,  4,  4,  9,  9,  9, 15 ],
@@ -215,7 +215,8 @@ export const MAPS_CONFIG = {
     portals: [
       { tileX: 12, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
       { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' }
+      { tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
+      { tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
       { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
@@ -709,5 +710,100 @@ export const MAPS_CONFIG = {
         metadata: { title: 'BÀN THẢO LUẬN CANTEEN' }
       }
     ]
+  },
+
+  server_dungeon: {
+    id: 'server_dungeon',
+    name: 'Tầng Hầm Tòa Gamma — Phòng Máy Chủ Sự Cố (Server Faults)',
+    description: 'Khu vực hầm ngục kỹ thuật ngầm, nơi xảy ra các sự cố rò rỉ mã lỗi hệ thống và rò rỉ bộ nhớ RAM.',
+    spawnPoint: { x: 384, y: 100 },
+    layout: [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
+      [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
+      [  2,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9, 18,  8, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18,  8, 18,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
+      [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18,  8, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
+      [  2,  9,  9,  9,  4,  4,  4,  9,  9,  9,  4,  4,  4,  9,  9,  9,  4,  4,  4,  9,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  2 ],
+      [  2, 13,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 13,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
+    ],
+    portals: [
+      { tileX: 11, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 100, y: 100 }, label: 'Lên Tech Lab' },
+      { tileX: 12, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 100, y: 100 }, label: 'Lên Tech Lab' }
+    ],
+    zones: [
+      {
+        id: 'zone_dungeon_nullpointer',
+        type: 'bug_dungeon_hunt',
+        bugType: 'null_pointer',
+        tileX: 5,
+        tileY: 4,
+        name: 'Sự Cố: NullPointerException Bug',
+        label: 'Bắt Lỗi NullPointer',
+        metadata: {
+          title: 'SỰ CỐ NULL POINTER EXCEPTION',
+          reward: 50,
+          desc: 'Phát hiện biến con trỏ null trôi nổi gây sập hệ thống xác thực. Hãy xử lý ngay!',
+          code: 'String userRole = user.getProfile().getRole(); // user.getProfile() is NULL!'
+        }
+      },
+      {
+        id: 'zone_dungeon_memoryleak',
+        type: 'bug_dungeon_hunt',
+        bugType: 'memory_leak',
+        tileX: 18,
+        tileY: 4,
+        name: 'Sự Cố: Memory Leak Slime',
+        label: 'Dọn Rác RAM',
+        metadata: {
+          title: 'SỰ CỐ RÒ RỈ BỘ NHỚ RAM (MEMORY LEAK)',
+          reward: 75,
+          desc: 'Event Listener không được gỡ bỏ khiến bộ nhớ RAM bị đầy 98%. Kích hoạt Garbage Collector!',
+          code: 'window.addEventListener("scroll", handler); // Missing removeEventListener!'
+        }
+      },
+      {
+        id: 'zone_dungeon_infiniteloop',
+        type: 'bug_dungeon_hunt',
+        bugType: 'infinite_loop',
+        tileX: 11,
+        tileY: 10,
+        name: 'Sự Cố: Infinite Loop Matrix',
+        label: 'Ngắt Vòng Lặp',
+        metadata: {
+          title: 'SỰ CỐ VÒNG LẶP VÔ TẬN (INFINITE LOOP)',
+          reward: 100,
+          desc: 'CPU đạt 100% do điều kiện dừng vòng lặp while không bao giờ thỏa mãn. Chèn lệnh break ngay!',
+          code: 'while (balance > 0) { /* balance is never updated */ }'
+        }
+      },
+      {
+        id: 'zone_dungeon_terminal',
+        type: 'bug_dungeon_hunt',
+        bugType: 'terminal_status',
+        tileX: 11,
+        tileY: 14,
+        name: 'Máy Trạm Trung Tâm Hầm Ngục',
+        label: 'Báo Cáo Máy Chủ',
+        metadata: {
+          title: 'TRUNG TÂM KIỂM SOÁT HỆ THỐNG SERVER',
+          reward: 30,
+          desc: 'Theo dõi tình trạng tải server, kiểm tra số lượng bug đã săn và chuyển đổi Logic Shards thành D-Coin.',
+          code: 'STATUS: ACTIVE • ACTIVE BUGS: 3 • SYSTEM INTEGRITY: 87%'
+        }
+      }
+    ]
   }
 };
+
