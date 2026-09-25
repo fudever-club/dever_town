@@ -261,6 +261,9 @@ export class InteractiveModal {
         case 'club_booth':
           this.setupClubBoothView(zoneData);
           break;
+        case 'bug_dungeon_hunt':
+          this.setupBugDungeonView(zoneData);
+          break;
         default:
           break;
       }
@@ -1945,7 +1948,11 @@ export class InteractiveModal {
 
     const canvas = document.getElementById('retro-arcade-canvas');
     if (canvas && !this.retroArcade) {
-      this.retroArcade = new RetroArcade(canvas);
+      this.retroArcade = new RetroArcade(canvas, {
+        onScoreUpdate: ({ game, score, high }) => {
+          this.syncArcadeBadges(game, score, high);
+        }
+      });
     }
 
     const defaultGame = (zoneData && zoneData.defaultGame) || 'snake';
@@ -1969,10 +1976,84 @@ export class InteractiveModal {
             if (this.retroArcade) {
               this.retroArcade.setGame(game);
             }
+            this.syncArcadeTabUI(game);
             audioManager.playClick();
           });
         });
       }
+    }
+
+    // Touch controls for arcade games
+    const btnUp = document.getElementById('arcade-btn-up');
+    const btnDown = document.getElementById('arcade-btn-down');
+    const btnLeft = document.getElementById('arcade-btn-left');
+    const btnRight = document.getElementById('arcade-btn-right');
+    const btnAction = document.getElementById('arcade-btn-action');
+    const btnUndo = document.getElementById('arcade-btn-undo');
+
+    if (btnUp && !btnUp.dataset.initialized) {
+      btnUp.dataset.initialized = 'true';
+      btnUp.addEventListener('click', () => this.retroArcade?.moveUp());
+    }
+    if (btnDown && !btnDown.dataset.initialized) {
+      btnDown.dataset.initialized = 'true';
+      btnDown.addEventListener('click', () => this.retroArcade?.moveDown());
+    }
+    if (btnLeft && !btnLeft.dataset.initialized) {
+      btnLeft.dataset.initialized = 'true';
+      btnLeft.addEventListener('click', () => this.retroArcade?.moveLeft());
+    }
+    if (btnRight && !btnRight.dataset.initialized) {
+      btnRight.dataset.initialized = 'true';
+      btnRight.addEventListener('click', () => this.retroArcade?.moveRight());
+    }
+    if (btnAction && !btnAction.dataset.initialized) {
+      btnAction.dataset.initialized = 'true';
+      btnAction.addEventListener('click', () => this.retroArcade?.triggerAction());
+    }
+    if (btnUndo && !btnUndo.dataset.initialized) {
+      btnUndo.dataset.initialized = 'true';
+      btnUndo.addEventListener('click', () => this.retroArcade?.undo());
+    }
+
+    this.syncArcadeTabUI(defaultGame);
+  }
+
+  syncArcadeTabUI(game) {
+    const typeBadge = document.getElementById('arcade-type-badge');
+    const descEl = document.getElementById('arcade-game-desc');
+    const btnUndo = document.getElementById('arcade-btn-undo');
+
+    if (game === 'snake') {
+      if (typeBadge) typeBadge.textContent = 'CYBER SNAKE 60FPS';
+      if (descEl) descEl.textContent = 'Dùng phím mũi tên hoặc W/A/S/D để điều khiển rắn ăn táo và né va chạm. Phím SPACE để bứt tốc.';
+      if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'sokoban') {
+      if (typeBadge) typeBadge.textContent = 'BUGGY SOKOBAN';
+      if (descEl) descEl.textContent = 'Dùng W/A/S/D để đẩy các khối linh kiện vào vị trí mục tiêu. Phím U để hoàn tác nước đi.';
+      if (btnUndo) btnUndo.classList.remove('hidden');
+    } else if (game === 'goldminer') {
+      if (typeBadge) typeBadge.textContent = 'FPTU GOLD MINER';
+      if (descEl) descEl.textContent = 'Canh móc tời xoay đúng hướng và bấm SPACE để thả móc kéo vàng, kim cương và quà bí ẩn!';
+      if (btnUndo) btnUndo.classList.add('hidden');
+    }
+
+    if (this.retroArcade && this.retroArcade.scores) {
+      const s = this.retroArcade.scores;
+      if (game === 'snake') this.syncArcadeBadges(game, s.snakeScore, s.snakeHigh);
+      else if (game === 'sokoban') this.syncArcadeBadges(game, s.sokobanLevel, s.sokobanLevel);
+      else if (game === 'goldminer') this.syncArcadeBadges(game, s.goldminerScore, s.goldminerHigh);
+    }
+  }
+
+  syncArcadeBadges(game, score, high) {
+    const scoreBadge = document.getElementById('arcade-score-badge');
+    const highBadge = document.getElementById('arcade-high-badge');
+    if (scoreBadge && score !== undefined) {
+      scoreBadge.textContent = game === 'sokoban' ? `Màn: ${score}` : `Điểm: ${score}`;
+    }
+    if (highBadge && high !== undefined) {
+      highBadge.textContent = game === 'sokoban' ? `Kỷ lục Màn: ${high}` : `Kỷ lục: ${high}`;
     }
   }
 
@@ -2289,10 +2370,70 @@ export class InteractiveModal {
         <div class="club-detail-section">
           <h4 class="club-section-title">Chiêu Mộ & Tuyển Quân</h4>
           <p class="club-section-desc"><strong>Vị trí & Cơ hội phát triển:</strong> ${escapeHtml(club.roles || 'Tất cả sinh viên FPTU đam mê học hỏi và cống hiến')}</p>
+          ${(() => {
+            const clubId = zoneData.clubId || 'dever';
+            let recruitedClubs = [];
+            try {
+              recruitedClubs = JSON.parse(localStorage.getItem('dever_recruited_clubs') || '[]');
+            } catch (e) {
+              recruitedClubs = [];
+            }
+            const isRecruited = recruitedClubs.includes(clubId);
+
+            return isRecruited ? `
+              <div class="club-recruit-box">
+                <div class="club-recruit-info">
+                  <h5>Đại Diện CLB Đã Định Cư</h5>
+                  <p>CLB đã chiêu mộ thành công NPC đại diện thường trực tại gian hàng Tòa Alpha.</p>
+                </div>
+                <span class="club-recruit-badge">Đang Thường Trực</span>
+              </div>
+            ` : `
+              <div class="club-recruit-box">
+                <div class="club-recruit-info">
+                  <h5>Chiêu Mộ Đại Diện CLB</h5>
+                  <p>Dùng 500 D-Coin để chiêu mộ 1 NPC sinh viên tài năng về đại diện thường trực tại gian hàng.</p>
+                </div>
+                <button type="button" class="btn-primary-sm" id="btn-recruit-club-npc" style="background: ${club.themeColor};">
+                  Chiêu Mộ (500 D-Coin)
+                </button>
+              </div>
+            `;
+          })()}
         </div>
 
         ${managementSection}
       `;
+
+      // Xử lý sự kiện chiêu mộ đại diện CLB
+      const recruitBtn = document.getElementById('btn-recruit-club-npc');
+      if (recruitBtn) {
+        recruitBtn.onclick = () => {
+          const clubId = zoneData.clubId || 'dever';
+          let recruitedClubs = [];
+          try {
+            recruitedClubs = JSON.parse(localStorage.getItem('dever_recruited_clubs') || '[]');
+          } catch (e) {
+            recruitedClubs = [];
+          }
+          const currentCoins = parseInt(localStorage.getItem('dever_points') || '1250', 10);
+          if (currentCoins < 500) {
+            alert('Bạn cần tối thiểu 500 D-Coin để chiêu mộ đại diện. Hãy xuống Hầm Ngục Server Faults để săn thêm bọ code nhé!');
+            return;
+          }
+          const newCoins = currentCoins - 500;
+          localStorage.setItem('dever_points', newCoins.toString());
+          recruitedClubs.push(clubId);
+          localStorage.setItem('dever_recruited_clubs', JSON.stringify(recruitedClubs));
+
+          const coinEl = document.getElementById('wardrobe-dcoins-val');
+          if (coinEl) coinEl.textContent = newCoins.toLocaleString('vi-VN');
+
+          audioManager.playSuccess();
+          alert(`Chiêu mộ NPC đại diện cho CLB [${club.prefix}] ${club.nameVi} thành công! Đã trừ 500 D-Coin.`);
+          this.setupClubBoothView(zoneData);
+        };
+      }
 
       // Thiết lập sự kiện phóng to Backdrop Lightbox
       const backdropWrap = document.getElementById('club-backdrop-wrap');
@@ -2404,5 +2545,76 @@ export class InteractiveModal {
 
     if (closeBtn) closeBtn.onclick = closeLightbox;
     if (bgOverlay) bgOverlay.onclick = closeLightbox;
+  }
+
+  /**
+   * Thiết lập giao diện Hầm Ngục Sự Cố Server & Săn Dever Coin (Bug Dungeon / Server Faults)
+   * @param {Object} zoneData
+   */
+  setupBugDungeonView(zoneData) {
+    const pane = document.getElementById('pane-bug-dungeon');
+    if (!pane) return;
+    pane.classList.remove('hidden');
+
+    const meta = zoneData.metadata || {};
+    const titleEl = document.getElementById('bug-dungeon-title');
+    const descEl = document.getElementById('bug-dungeon-desc');
+    const rewardEl = document.getElementById('bug-dungeon-reward');
+    const severityEl = document.getElementById('bug-dungeon-severity');
+    const codeEl = document.getElementById('bug-dungeon-code');
+    const feedbackEl = document.getElementById('bug-action-feedback');
+    const fixBtn = document.getElementById('btn-fix-bug');
+    const closeBtn = document.getElementById('btn-close-dungeon-pane');
+
+    if (titleEl) titleEl.textContent = meta.title || zoneData.name || 'Sự Cố Lập Trình Hệ Thống';
+    if (descEl) descEl.textContent = meta.desc || 'Phát hiện sự cố bất thường trong mã nguồn hệ thống.';
+    const reward = meta.reward || 50;
+    if (rewardEl) rewardEl.textContent = `+${reward} D-Coin`;
+    if (severityEl) {
+      severityEl.textContent = zoneData.bugType === 'terminal_status' ? 'SYSTEM DIAGNOSTIC' : 'CRITICAL FAULT';
+    }
+    if (codeEl) codeEl.textContent = meta.code || '// Lỗi hệ thống: Code StackTrace';
+
+    if (feedbackEl) {
+      feedbackEl.style.display = 'none';
+      feedbackEl.className = 'bug-action-feedback';
+      feedbackEl.textContent = '';
+    }
+
+    if (closeBtn) {
+      closeBtn.onclick = () => this.hide();
+    }
+
+    if (fixBtn) {
+      fixBtn.disabled = false;
+      fixBtn.textContent = zoneData.bugType === 'terminal_status' ? 'Đồng Bộ Hóa Dữ Liệu (+30 D-Coin)' : 'Khắc Phục Lỗi Ngay';
+      fixBtn.onclick = () => {
+        fixBtn.disabled = true;
+        fixBtn.textContent = 'Đang Xử Lý Debug...';
+
+        setTimeout(() => {
+          try {
+            audioManager.playSuccess();
+            questManager.addPoints(reward, 'Săn Bug Hầm Ngục');
+
+            const currentPoints = parseInt(localStorage.getItem('dever_points') || '1250', 10);
+            const coinEl = document.getElementById('wardrobe-dcoins-val');
+            if (coinEl) coinEl.textContent = currentPoints.toLocaleString('vi-VN');
+
+            if (feedbackEl) {
+              feedbackEl.style.display = 'block';
+              feedbackEl.className = 'bug-action-feedback success';
+              feedbackEl.textContent = `Khắc phục lỗi thành công! Bạn nhận được +${reward} D-Coin. Số dư hiện tại: ${currentPoints.toLocaleString('vi-VN')} D-Coin.`;
+            }
+
+            fixBtn.textContent = 'Đã Khắc Phục Thành Công';
+            questManager.incrementProgress('explorer_rooms', 1);
+            window.__DEVER_GAME__?.scene?.keys?.WorldScene?.achievementManager?.unlock('bug_hunter');
+          } catch (e) {
+            console.warn('Lỗi khi thưởng D-Coin:', e);
+          }
+        }, 500);
+      };
+    }
   }
 }

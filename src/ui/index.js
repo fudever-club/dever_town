@@ -35,5 +35,6 @@ export { PlayerProfileModal } from './gameplay/PlayerProfileModal.js';
 export { FriendRequestModal } from './gameplay/FriendRequestModal.js';
 export { FriendsListModal } from './gameplay/FriendsListModal.js';
 export { AvatarSelectorModal, UNLOCKABLE_AVATARS } from './gameplay/AvatarSelectorModal.js';
+export { RadialEmoteWheel } from './gameplay/RadialEmoteWheel.js';
 
 

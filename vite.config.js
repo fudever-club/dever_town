@@ -13,6 +13,15 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    assetsInlineLimit: 0
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          phaser: ['phaser'],
+          socket: ['socket.io-client']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1600
   }
 });

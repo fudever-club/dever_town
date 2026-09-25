@@ -661,19 +661,56 @@
       </section>
     </main>
 
-    <!-- Footer Status -->
-    <footer id="main-footer">
+    <!-- Footer Status & Controls Guide -->
+    <footer id="main-footer" class="cyber-footer">
       <div class="footer-left">
-        <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • FUDA</span>
-        <span class="divider">|</span>
-        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.4.1 • WORK HARD PLAY HARD</span>
+        <div class="footer-brand-badge">
+          <span class="brand-glow-dot"></span>
+          <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • METAVERSE</span>
+        </div>
+        <span class="footer-divider">|</span>
+        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.4.2</span>
       </div>
+
+      <div class="footer-center-controls" id="footer-controls-guide">
+        <div class="control-pill">
+          <div class="key-group">
+            <kbd class="key-badge">W</kbd>
+            <kbd class="key-badge">A</kbd>
+            <kbd class="key-badge">S</kbd>
+            <kbd class="key-badge">D</kbd>
+          </div>
+          <span class="control-label">Di chuyển</span>
+        </div>
+
+        <div class="control-pill">
+          <kbd class="key-badge key-highlight">E</kbd>
+          <span class="control-label">Tương tác</span>
+        </div>
+
+        <div class="control-pill">
+          <kbd class="key-badge">Tab</kbd>
+          <span class="control-label">Biểu cảm</span>
+        </div>
+
+        <div class="control-pill">
+          <kbd class="key-badge">M</kbd>
+          <span class="control-label">Bản đồ</span>
+        </div>
+
+        <div class="control-pill">
+          <kbd class="key-badge">I</kbd>
+          <span class="control-label">Tủ đồ</span>
+        </div>
+
+        <div class="control-pill">
+          <kbd class="key-badge">ESC</kbd>
+          <span class="control-label">Đóng</span>
+        </div>
+      </div>
+
       <div class="footer-right">
-        <span>WASD/Mũi tên: Di chuyển</span>
-        <span class="divider">•</span>
-        <span>[E]: Tương tác</span>
-        <span class="divider">•</span>
-        <span>[I]: Túi đồ</span>
+        <span class="footer-motto">WORK HARD • PLAY HARD</span>
       </div>
     </footer>
   </div>
@@ -1022,8 +1059,15 @@
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
           <div>
-            <h2 class="modal-title">Tủ Đồ & Bộ Sưu Tập Nhân Vật FU-DEVER</h2>
-            <p class="modal-sub">Chọn nhân vật đại diện yêu thích (Nam, Nữ, Võ Sinh Vovinam, Cóc Vàng) và túi đồ cầm tay.</p>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <h2 class="modal-title">Tủ Đồ & Bộ Sưu Tập Nhân Vật FU-DEVER</h2>
+              <div class="wardrobe-coin-badge" id="wardrobe-user-dcoins" title="Số dư Dever Coin của bạn">
+                <span class="coin-icon">🪙</span>
+                <span class="coin-amount" id="wardrobe-dcoins-val">1,250</span>
+                <span class="coin-unit">D-Coin</span>
+              </div>
+            </div>
+            <p class="modal-sub">Chọn nhân vật đại diện yêu thích (Nam, Nữ, Mascot Buggy, Cóc Vàng) và túi đồ cầm tay.</p>
           </div>
         </div>
         <button type="button" id="wardrobe-modal-close" class="modal-close-btn">&times;</button>
@@ -1043,11 +1087,12 @@
         </div>
 
         <div class="wardrobe-options-panel">
-          <!-- 1. Tab Bar Phân Loại: Chung, Nam, Nữ -->
+          <!-- 1. Tab Bar Phân Loại: Tất Cả, Nam, Nữ, Mascot & Linh Vật -->
           <div class="wardrobe-tabs-header" id="wardrobe-tabs-container">
-            <button type="button" class="wardrobe-tab-btn active" data-tab="all">Chung (Tất Cả)</button>
+            <button type="button" class="wardrobe-tab-btn active" data-tab="all">Tất Cả</button>
             <button type="button" class="wardrobe-tab-btn" data-tab="male">Nhân Vật Nam</button>
             <button type="button" class="wardrobe-tab-btn" data-tab="female">Nhân Vật Nữ</button>
+            <button type="button" class="wardrobe-tab-btn" data-tab="special">Mascot & Linh Vật</button>
           </div>
 
           <!-- 2. Danh Sách Nhân Vật Hoàn Chỉnh -->
@@ -1396,18 +1441,34 @@
       <!-- View Arcade: Retro Arcade & Minigames -->
       <div id="pane-arcade-games" class="interactive-pane hidden">
         <div class="arcade-workspace">
-          <div class="arcade-header">
-            <h3>Retro Arcade</h3>
+          <div class="arcade-header-box">
+            <div class="arcade-badge-row">
+              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE</span>
+              <span id="arcade-score-badge" class="sports-badge streak">Điểm: 0</span>
+              <span id="arcade-high-badge" class="sports-badge high">Kỷ lục: 0</span>
+            </div>
             <div class="arcade-tabs" id="arcade-nav-tabs">
               <button type="button" class="arcade-tab active" data-game="snake">Cyber Snake</button>
               <button type="button" class="arcade-tab" data-game="sokoban">Buggy Sokoban</button>
               <button type="button" class="arcade-tab" data-game="goldminer">FPTU Gold Miner</button>
             </div>
+            <p id="arcade-game-desc" class="sports-desc">Dùng phím mũi tên hoặc W/A/S/D để điều khiển rắn ăn táo và né va chạm. Phím SPACE để bứt tốc.</p>
           </div>
           <div class="arcade-arena">
-            <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
-            <div id="arcade-touch-controls" class="arcade-touch-controls hidden">
-               <!-- To be populated if needed -->
+            <div class="arcade-canvas-wrapper">
+              <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
+            </div>
+            <div id="arcade-touch-controls" class="arcade-touch-controls">
+              <div class="arcade-dpad">
+                <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
+                <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
+                <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
+                <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+              </div>
+              <div class="arcade-actions">
+                <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
+                <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1535,6 +1596,38 @@
           <div id="club-booth-header" class="club-booth-header"></div>
           <div id="club-booth-body" class="club-booth-body"></div>
           <div id="club-booth-footer" class="club-booth-footer"></div>
+        </div>
+      </div>
+
+      <!-- View 14: Hầm Ngục Sự Cố Server & Săn Dever Coin (Bug Dungeon / Server Faults) -->
+      <div id="pane-bug-dungeon" class="interactive-pane hidden">
+        <div class="bug-dungeon-workspace">
+          <div class="bug-dungeon-header">
+            <div class="bug-dungeon-badge-row">
+              <span class="bug-severity-tag" id="bug-dungeon-severity">CRITICAL FAULT</span>
+              <span class="bug-location-tag">Tầng Hầm Tòa Gamma • Server Room</span>
+              <span class="bug-reward-tag" id="bug-dungeon-reward">+50 D-Coin</span>
+            </div>
+            <h3 class="bug-dungeon-title" id="bug-dungeon-title">Sự Cố Lập Trình Hệ Thống</h3>
+            <p class="bug-dungeon-desc" id="bug-dungeon-desc">Mô tả sự cố hệ thống đang xảy ra tại hầm máy chủ.</p>
+          </div>
+
+          <div class="bug-code-terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-title">debug_console.sh — StackTrace</span>
+            </div>
+            <pre class="terminal-code-block" id="bug-dungeon-code">// Đang phân tích mã nguồn lỗi...</pre>
+          </div>
+
+          <div class="bug-action-feedback" id="bug-action-feedback" style="display: none;"></div>
+
+          <div class="bug-dungeon-footer">
+            <button type="button" id="btn-fix-bug" class="btn-primary-sm btn-action-fix">Khắc Phục Lỗi Ngay</button>
+            <button type="button" id="btn-close-dungeon-pane" class="btn-secondary-sm">Đóng Console</button>
+          </div>
         </div>
       </div>
     </div>

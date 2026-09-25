@@ -646,15 +646,166 @@ body {
   transform: translateY(1px);
 }
 
-/* --- FOOTER --- */
-#ui-footer {
-  font-size: 11px;
-  color: #94a3b8;
-  text-align: center;
+/* --- CYBER FOOTER & CONTROLS GUIDE --- */
+#main-footer, .cyber-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 18px;
+  min-height: 42px;
+  background: rgba(11, 19, 41, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(56, 189, 248, 0.22);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(56, 189, 248, 0.12);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 50;
+  position: relative;
+  flex-shrink: 0;
 }
 
-#ui-footer b {
-  color: #f26f21;
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.footer-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 9px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 999px;
+}
+
+.brand-glow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.footer-left .brand-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.6px;
+}
+
+.footer-divider {
+  color: #334155;
+  font-size: 11px;
+}
+
+.footer-left .version-tag {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Center: Controls Pill Guide */
+.footer-center-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.control-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.key-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.key-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 20px;
+  padding: 0 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-bottom: 2px solid rgba(148, 163, 184, 0.6);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  line-height: 1;
+}
+
+.key-badge.key-highlight {
+  background: linear-gradient(180deg, rgba(242, 111, 33, 0.25) 0%, rgba(242, 111, 33, 0.12) 100%);
+  border-color: rgba(242, 111, 33, 0.6);
+  border-bottom-color: #f26f21;
+  color: #fb923c;
+  box-shadow: 0 0 10px rgba(242, 111, 33, 0.35);
+}
+
+.control-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.footer-motto {
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  #main-footer, .cyber-footer {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  .footer-right {
+    display: none;
+  }
+  .footer-center-controls {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-left .version-tag, .footer-divider {
+    display: none;
+  }
+  .control-pill:nth-child(n+4) {
+    display: none;
+  }
 }
 
 /* --- MODAL DIALOGS --- */
@@ -2497,7 +2648,40 @@ body {
   box-shadow: 0 0 10px rgba(242, 111, 33, 0.4);
 }
 
-/* Wardrobe Tabs Header (Chung, Nam, Nữ) */
+/* Dever Coin (D-Coin) Badge in Wardrobe Header */
+.wardrobe-coin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.25));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.wardrobe-coin-badge .coin-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.wardrobe-coin-badge .coin-amount {
+  font-weight: 700;
+  font-size: 13px;
+  color: #facc15;
+  letter-spacing: 0.5px;
+}
+
+.wardrobe-coin-badge .coin-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Wardrobe Tabs Header (Tất Cả, Nam, Nữ, Mascot & Linh Vật) */
 .wardrobe-tabs-header {
   display: flex;
   gap: 8px;
@@ -2922,10 +3106,10 @@ body {
 .sports-canvas-wrapper {
   width: 100%;
   background: #020617;
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(56, 189, 248, 0.25);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2937,7 +3121,7 @@ body {
   height: auto;
   aspect-ratio: 16 / 9;
   display: block;
-  image-rendering: pixelated;
+  image-rendering: auto;
   cursor: pointer;
 }
 
@@ -5977,49 +6161,171 @@ body {
   flex-direction: column;
   align-items: center;
   height: 100%;
+  gap: 12px;
+  padding: 12px;
 }
 
-.arcade-header {
+.arcade-header-box {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 10px 20px;
-  background: rgba(15, 23, 42, 0.8);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-direction: column;
   align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.arcade-badge-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .arcade-tabs {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .arcade-tab {
-  background: rgba(255,255,255,0.1);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 6px 12px;
-  border-radius: 6px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid transparent;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arcade-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .arcade-tab.active {
   background: linear-gradient(135deg, #f26f21, #ea580c);
+  color: #ffffff;
   border-color: #f26f21;
+  box-shadow: 0 2px 10px rgba(242, 111, 33, 0.35);
 }
 
 .arcade-arena {
   flex: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+  gap: 12px;
+}
+
+.arcade-canvas-wrapper {
+  width: 100%;
+  max-width: 640px;
+  background: #020617;
+  border: 2px solid rgba(242, 111, 33, 0.35);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(242, 111, 33, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #retro-arcade-canvas {
-  background: black;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  background: #000000;
+  cursor: pointer;
+}
+
+.arcade-touch-controls {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.arcade-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(2, 40px);
+  gap: 6px;
+}
+
+.arcade-dpad .dpad-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.arcade-dpad .dpad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.arcade-dpad .dpad-down {
+  grid-column: 2;
+  grid-row: 2;
+}
+.arcade-dpad .dpad-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.arcade-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.arcade-touch-btn {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 12px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  user-select: none;
+}
+
+.arcade-touch-btn:hover, .arcade-touch-btn:active {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: scale(0.96);
+}
+
+.arcade-touch-btn.action-btn {
+  background: linear-gradient(135deg, #f26f21, #ea580c);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(242, 111, 33, 0.4);
+}
+
+.arcade-touch-btn.undo-btn {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: #0ea5e9;
+  color: #bae6fd;
 }
 
 .robot-workspace {
@@ -7345,6 +7651,188 @@ body {
   border-radius: 6px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
+
+/* ==========================================================================
+   8. BUG DUNGEON / SERVER FAULTS WORKSPACE (HẦM NGỤC SỰ CỐ & SĂN D-COIN)
+   ========================================================================== */
+.bug-dungeon-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 18px;
+  background: #080c16;
+  border-radius: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.1);
+}
+
+.bug-dungeon-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.bug-dungeon-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.bug-severity-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.bug-location-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bug-reward-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #facc15;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.bug-dungeon-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 4px 0;
+}
+
+.bug-dungeon-desc {
+  font-size: 13px;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.bug-code-terminal {
+  background: #040711;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bug-code-terminal .terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f172a;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot.red { background: #ef4444; }
+.terminal-dot.yellow { background: #eab308; }
+.terminal-dot.green { background: #22c55e; }
+
+.terminal-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #64748b;
+  margin-left: 6px;
+}
+
+.terminal-code-block {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #38bdf8;
+  padding: 14px;
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.bug-action-feedback {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.bug-action-feedback.success {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+.bug-action-feedback.error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.bug-dungeon-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+/* Club Recruitment Box in Club Booth */
+.club-recruit-box {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.club-recruit-info h5 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin: 0 0 3px 0;
+}
+
+.club-recruit-info p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.club-recruit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
 
 .club-lightbox-footer {
   padding: 10px 18px;
@@ -9795,3 +10283,91 @@ body {
     gap: 14px;
   }
 }
+
+/* ==========================================================================
+   RADIAL EMOTE WHEEL (DELVERIUM INSPIRED)
+   ========================================================================== */
+.radial-emote-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 6, 23, 0.48);
+  backdrop-filter: blur(6px);
+  user-select: none;
+  touch-action: none;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.radial-wheel-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-wheel-center {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid #f26f21;
+  box-shadow: 0 0 25px rgba(242, 111, 33, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+  text-align: center;
+  padding: 4px;
+}
+
+.radial-wheel-center .center-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.radial-wheel-center .center-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-top: 4px;
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.radial-slice-btn {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.88);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.radial-slice-btn:hover, .radial-slice-btn.active {
+  background: linear-gradient(135deg, rgba(242, 111, 33, 0.95), rgba(234, 88, 12, 0.95));
+  border-color: #ffedd5;
+  transform: scale(1.18);
+  box-shadow: 0 0 20px rgba(242, 111, 33, 0.65);
+}
+
+.radial-slice-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+

@@ -138,6 +138,19 @@ export class WardrobeModal {
     this.renderCharacterOptions();
     this.renderInHandOptions();
     this.updatePreviewCanvas();
+    this.updateDCoinsDisplay();
+  }
+
+  updateDCoinsDisplay() {
+    const coinEl = document.getElementById('wardrobe-dcoins-val');
+    if (!coinEl) return;
+    try {
+      const user = authService?.getUser();
+      const points = user?.dever_points ?? parseInt(localStorage.getItem('dever_points') || '1250', 10);
+      coinEl.textContent = points.toLocaleString('vi-VN');
+    } catch (e) {
+      coinEl.textContent = '1,250';
+    }
   }
 
   renderCharacterOptions() {
@@ -146,11 +159,14 @@ export class WardrobeModal {
 
     container.innerHTML = '';
 
-    // Lọc danh sách nhân vật theo tab hiện tại (all | male | female)
+    // Lọc danh sách nhân vật theo tab hiện tại (all | male | female | special)
     const filteredChars = (CHARACTER_PRESETS || []).filter(char => {
       if (this.currentTab === 'all') return true;
-      if (this.currentTab === 'male') return char.gender === 'male' || char.gender === 'unisex';
-      if (this.currentTab === 'female') return char.gender === 'female' || char.gender === 'unisex';
+      if (this.currentTab === 'male') return char.gender === 'male';
+      if (this.currentTab === 'female') return char.gender === 'female';
+      if (this.currentTab === 'special') {
+        return char.gender === 'unisex' || (char.tags && (char.tags.includes('Mascot') || char.tags.includes('Linh Vật') || char.tags.includes('Special')));
+      }
       return true;
     });
 

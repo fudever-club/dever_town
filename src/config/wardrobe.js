@@ -6,9 +6,49 @@
 export const CHARACTER_PRESETS = [
   // --- NHÂN VẬT NAM (MALE CHARACTERS) ---
   {
+    id: 'sample_dev_dever',
+    name: 'Áo Hoodie Xanh Dev FU-DEVER',
+    role: 'Trang Phục Coder • FU-DEVER',
+    gender: 'male',
+    color: '#0066CC',
+    spriteKey: 'char_sample_dev_dever',
+    desc: 'Tóc undercut đen tuyền highlight xám tro, kính dev bạc, áo hoodie xanh công nghệ FU-DEVER sắc nét chuẩn Gather.town v2.',
+    tags: ['Mới', 'Gather.town v2', 'FU-DEVER']
+  },
+  {
+    id: 'sample_cyber_hacker',
+    name: 'Cyber Hacker Dị Sắc',
+    role: 'Matrix Specialist • Security',
+    gender: 'male',
+    color: '#06b6d4',
+    spriteKey: 'char_sample_cyber_hacker',
+    desc: 'Tóc wolf cut xanh neon cyber, mắt 2 màu dị sắc (cyan & gold), tai nghe RGB, áo bomber viền mạch điện Matrix phát sáng.',
+    tags: ['Mới', 'Anime', 'Cyber']
+  },
+  {
+    id: 'sample_biker_rocker',
+    name: 'Biker Rocker Đỏ Ruby',
+    role: 'Rebel Edge • Streetwear',
+    gender: 'male',
+    color: '#e11d48',
+    spriteKey: 'char_sample_biker_rocker',
+    desc: 'Tóc anime spiky đỏ ruby rực lửa, áo da biker có khóa kéo và đinh tán bạc, biểu cảm sắc sảo cá tính.',
+    tags: ['Mới', 'Anime', 'Rocker']
+  },
+  {
+    id: 'sample_barista_an',
+    name: 'Tạp Dề Barista Cà Phê Muối',
+    role: 'Đồng Phục Cà Phê • Căn Tin',
+    gender: 'male',
+    color: '#d97706',
+    spriteKey: 'char_sample_barista_an',
+    desc: 'Tóc búi củ tỏi nâu socola, kính tròn gọng vàng, tạp dề cà phê thêu Cóc Vàng, phong cách pha chế ấm áp.',
+    tags: ['Mới', 'Gather.town v2', 'Barista']
+  },
+  {
     id: 'hoodie_dever',
-    name: 'Nam Dev FU-DEVER',
-    role: 'Core Member • Web/AI',
+    name: 'Áo Hoodie Xanh Cổ Điển',
+    role: 'Áo Khoác Nỉ CLB • FU-DEVER',
     gender: 'male',
     color: '#0066CC',
     spriteKey: 'char_hoodie_dever',
@@ -17,18 +57,18 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'polo_dever',
-    name: 'Nam Leader K20 FU-DEVER',
-    role: 'Ban Chủ Nhiệm • Ban Điều Hành',
+    name: 'Áo Polo Xanh CLB FU-DEVER',
+    role: 'Đồng Phục Ban Cán Sự CLB',
     gender: 'male',
     color: '#2563eb',
     spriteKey: 'char_polo_dever',
-    desc: 'Tóc wolf cut lịch lãm, áo Polo xanh FU-DEVER chính khóa, phong thái lãnh đạo tự tin.',
-    tags: ['Ban Chủ Nhiệm', 'Polo', 'Leader']
+    desc: 'Tóc wolf cut lịch lãm, áo Polo xanh phối cổ trắng FU-DEVER chính khóa, phong thái tự tin.',
+    tags: ['Đồng Phục', 'Polo', 'FU-DEVER']
   },
   {
     id: 'hoodie_fuda',
-    name: 'Nam Sinh Viên FPTU',
-    role: 'Sinh Viên K20 • ĐH FPT',
+    name: 'Áo Hoodie Cam Năng Động FPTU',
+    role: 'Đồng Phục Sinh Viên • FPTU',
     gender: 'male',
     color: '#f26f21',
     spriteKey: 'char_hoodie_fuda',
@@ -37,8 +77,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'polo_fuda',
-    name: 'Nam Cán Bộ FPTU Đà Nẵng',
-    role: 'Đồng Phục Chính Khóa',
+    name: 'Áo Polo Cam Chính Khóa FPTU',
+    role: 'Đồng Phục Cơ Bản • FPTU',
     gender: 'male',
     color: '#ea580c',
     spriteKey: 'char_polo_fuda',
@@ -47,8 +87,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'tee_dev_black',
-    name: 'Nam Dev Hackathon Đêm',
-    role: 'Hacker • Full-Stack Coder',
+    name: 'Áo Thun Đen Hackathon Builder',
+    role: 'Trang Phục Lập Trình Viên',
     gender: 'male',
     color: '#0f172a',
     spriteKey: 'char_tee_dev_black',
@@ -57,8 +97,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'suit_formal',
-    name: 'Nam Thuyết Trình Tech CEO',
-    role: 'Startup Founder • Pitching',
+    name: 'Bộ Vest Công Nghệ Lịch Lãm',
+    role: 'Trang Phục Thuyết Trình • Pitching',
     gender: 'male',
     color: '#1e293b',
     spriteKey: 'char_suit_formal',
@@ -67,8 +107,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'jersey_sport',
-    name: 'Nam Vận Động Viên FPTU',
-    role: 'Cầu Thủ Sân Cỏ Số 10',
+    name: 'Đồng Phục Thể Thao Sân Cỏ',
+    role: 'Áo Bóng Đá FPTU Số 10',
     gender: 'male',
     color: '#16a34a',
     spriteKey: 'char_jersey_sport',
@@ -77,8 +117,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'hoodie_terminal',
-    name: 'Cyber Hacker Terminal',
-    role: 'Security Engineer • Linux',
+    name: 'Áo Hoodie Matrix Terminal',
+    role: 'Trang Phục Hacker • Linux',
     gender: 'male',
     color: '#15803d',
     spriteKey: 'char_hoodie_terminal',
@@ -87,8 +127,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'leather_biker',
-    name: 'Biker Phượt Thủ Đường Phố',
-    role: 'Streetwear • Rocker',
+    name: 'Áo Khoác Da Biker Classic',
+    role: 'Streetwear • Phong Cách Bụi',
     gender: 'male',
     color: '#18181b',
     spriteKey: 'char_leather_biker',
@@ -97,8 +137,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'base_male',
-    name: 'Nam Sinh Viên Thanh Lịch',
-    role: 'Thư Sinh • Basic',
+    name: 'Set Đồ Sinh Viên Cơ Bản (Nam)',
+    role: 'Thư Sinh Học Đường',
     gender: 'male',
     color: '#3b82f6',
     spriteKey: 'char_base_male',
@@ -108,9 +148,29 @@ export const CHARACTER_PRESETS = [
 
   // --- NHÂN VẬT NỮ (FEMALE CHARACTERS) ---
   {
+    id: 'sample_fptu_female',
+    name: 'Set Áo Polo & Váy Tennis FPTU',
+    role: 'Đồng Phục Nữ Sinh • FPTU',
+    gender: 'female',
+    color: '#f26f21',
+    spriteKey: 'char_sample_fptu_female',
+    desc: 'Tóc đuôi ngựa nâu hạt dẻ cài nơ cam, áo polo cam FPTU có cổ, chân váy tennis xếp ly navy, nụ cười tươi má hồng cam đào.',
+    tags: ['Mới', 'FPTU', 'Gather.town v2']
+  },
+  {
+    id: 'sample_wizard_sorceress',
+    name: 'Set Phù Thủy Thuật Toán Code',
+    role: 'Trang Phục Ảo Thuật • Fantasy',
+    gender: 'female',
+    color: '#c084fc',
+    spriteKey: 'char_sample_wizard_sorceress',
+    desc: 'Tóc twintails bạch kim tím pastel, nón phù thủy mini ngôi sao, áo choàng tím viền vàng, biểu cảm nháy mắt tinh nghịch.',
+    tags: ['Mới', 'Anime', 'Fantasy']
+  },
+  {
     id: 'aodai_white',
-    name: 'Nữ Sinh Áo Dài Trắng',
-    role: 'Nữ Sinh Tinh Khôi • FPTU',
+    name: 'Áo Dài Trắng Nữ Sinh Tinh Khôi',
+    role: 'Áo Dài Truyền Thống Việt Nam',
     gender: 'female',
     color: '#f8fafc',
     spriteKey: 'char_aodai_white',
@@ -119,8 +179,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'aodai_fuda',
-    name: 'Nữ Sinh Áo Dài FPTU',
-    role: 'Đại Sứ Thương Hiệu FUDA',
+    name: 'Áo Dài Cam Cách Tân FPTU',
+    role: 'Lễ Phục Nữ Sinh • FUDA',
     gender: 'female',
     color: '#ea580c',
     spriteKey: 'char_aodai_fuda',
@@ -129,8 +189,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'hoodie_gaming',
-    name: 'Nữ Streamer Cyber Gamer',
-    role: 'Game Dev & Esport Caster',
+    name: 'Áo Hoodie Gaming & Tai Nghe Mèo',
+    role: 'Trang Phục Streamer Esport',
     gender: 'female',
     color: '#dc2626',
     spriteKey: 'char_hoodie_gaming',
@@ -139,8 +199,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'apron_barista',
-    name: 'Nữ Barista Cà Phê Căn Tin',
-    role: 'Chuyên Viên Cà Phê Muối',
+    name: 'Set Tạp Dề Nữ Barista Căn Tin',
+    role: 'Đồng Phục Cà Phê Căn Tin',
     gender: 'female',
     color: '#854d0e',
     spriteKey: 'char_apron_barista',
@@ -149,19 +209,29 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'base_female',
-    name: 'Nữ Sinh Viên Dễ Thương',
-    role: 'Nữ Coder • Basic',
+    name: 'Set Đồ Sinh Viên Cơ Bản (Nữ)',
+    role: 'Nữ Sinh Trẻ Trung',
     gender: 'female',
     color: '#ec4899',
     spriteKey: 'char_base_female',
     desc: 'Tóc nâu hạt dẻ ngang vai, trang phục học đường đơn giản, xinh xắn và thông minh.',
     tags: ['Basic', 'Dễ Thương']
   },
+  {
+    id: 'npc_thuky_anh',
+    name: 'Áo Dài Cam Kính Cận Tri Thức',
+    role: 'Đồng Phục Nữ Sinh • FPTU',
+    gender: 'female',
+    color: '#ea580c',
+    spriteKey: 'char_npc_thuky_anh',
+    desc: 'Tóc ponytail đen gọn gàng, kính cận thông minh, áo dài cam FPTU thướt tha, trang nhã.',
+    tags: ['Áo Dài', 'Nữ Sinh', 'Tri Thức']
+  },
 
   // --- NHÂN VẬT ĐẶC BIỆT & LINH THÚ (UNISEX / SPECIAL CHARACTERS) ---
   {
     id: 'vovinam_suit',
-    name: 'Võ Sinh Vovinam FPTU',
+    name: 'Võ Phục Vovinam Truyền Thống',
     role: 'Việt Võ Đạo • Tinh Thần Thượng Võ',
     gender: 'unisex',
     color: '#0284c7',
@@ -171,8 +241,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'wizard_robe',
-    name: 'Phù Thủy Thuật Toán Code',
-    role: 'Algorithm Wizard • Magic Dev',
+    name: 'Áo Choàng Pháp Sư Huyền Bí',
+    role: 'Trang Phục Magic Developer',
     gender: 'unisex',
     color: '#4c1d95',
     spriteKey: 'char_wizard_robe',
@@ -181,8 +251,8 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'mecha_suit',
-    name: 'Cyber Mecha Android',
-    role: 'Robot AI Tương Lai • Sci-Fi',
+    name: 'Bộ Giáp Mecha Chiến Binh AI',
+    role: 'Bộ Giáp Sci-Fi Tương Lai',
     gender: 'unisex',
     color: '#0891b2',
     spriteKey: 'char_mecha_suit',
@@ -191,22 +261,33 @@ export const CHARACTER_PRESETS = [
   },
   {
     id: 'frog_mascot',
-    name: 'Linh Vật Cóc Vàng FPTU',
+    name: 'Trang Phục Mascot Cóc Vàng FPTU',
     role: 'Mascot May Mắn • Điểm A+',
     gender: 'unisex',
     color: '#eab308',
     spriteKey: 'char_frog_mascot',
     desc: 'Bộ mascot Cóc Vàng FPTU siêu đáng yêu, biểu tượng của sự may mắn, vượt qua mọi kỳ thi qua môn.',
     tags: ['Cóc Vàng', 'Mascot', 'May Mắn']
+  },
+  {
+    id: 'buggy_mascot',
+    name: 'Trang Phục Mascot Bọ Buggy CLB',
+    role: 'Linh Vật Chính Thức • FU-DEVER',
+    gender: 'unisex',
+    color: '#ef4444',
+    spriteKey: 'char_buggy_mascot',
+    desc: 'Chú bọ cánh cam Buggy đáng yêu với lớp cánh đỏ chấm bi đen, 2 râu anten tinh nghịch, biểu tượng của sự may mắn và sạch bug code.',
+    tags: ['Mascot', 'Buggy', 'FU-DEVER', 'Mới']
   }
 ];
 
 export const WARDROBE_CONFIG = {
-  // Danh sách Tab lọc theo giới tính
+  // Danh sách Tab lọc danh mục nhân vật
   tabs: [
-    { id: 'all', name: 'Chung (Tất Cả)', icon: '👥' },
-    { id: 'male', name: 'Nhân Vật Nam', icon: '👦' },
-    { id: 'female', name: 'Nhân Vật Nữ', icon: '👧' }
+    { id: 'all', name: 'Tất Cả' },
+    { id: 'male', name: 'Nhân Vật Nam' },
+    { id: 'female', name: 'Nhân Vật Nữ' },
+    { id: 'special', name: 'Mascot & Linh Vật' }
   ],
 
   // Hệ thống Nhân Vật Hoàn Chỉnh (Character Presets)

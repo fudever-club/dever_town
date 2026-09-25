@@ -21,3 +21,5 @@ server/data/game_scores.json
 playwright-report/
 test-results/
 server/data/telemetry_log.jsonl
+__pycache__/
+*.py[cod]

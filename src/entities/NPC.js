@@ -19,13 +19,14 @@ export class NPC extends Phaser.GameObjects.Sprite {
     this.npcName = config.name || 'NPC';
     this.npcRole = config.role || '';
     this.dialogues = config.dialogues || {};
-    this.portrait = config.portrait || null;
+    this.portrait = config.portrait || `portrait_${config.id}`;
     this.currentDialogueId = config.startDialogue || Object.keys(config.dialogues)[0];
     
     // FSM States: 'idle' | 'aware' | 'talking'
     this.state = 'idle';
-    this.direction = config.direction || 'down';
-    this.proximityRadius = 50;
+    this.initialDirection = config.direction || 'down';
+    this.direction = this.initialDirection;
+    this.proximityRadius = 52;
     
     scene.add.existing(this);
     
@@ -120,13 +121,21 @@ export class NPC extends Phaser.GameObjects.Sprite {
     }
   }
   
-  lookAtPlayer(playerX) {
-    if (playerX < this.x) {
-      this.direction = 'left';
+  lookAtPlayer(playerX, playerY) {
+    const dx = playerX - this.x;
+    const dy = (playerY !== undefined ? playerY : this.y) - this.y;
+    let newDir = this.direction;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      newDir = dx > 0 ? 'right' : 'left';
     } else {
-      this.direction = 'right';
+      newDir = dy > 0 ? 'down' : 'up';
     }
-    this._playIdleAnim();
+
+    if (newDir !== this.direction) {
+      this.direction = newDir;
+      this._playIdleAnim();
+    }
   }
   
   update(playerX, playerY) {
@@ -135,13 +144,24 @@ export class NPC extends Phaser.GameObjects.Sprite {
     if (dist < this.proximityRadius) {
       if (this.state === 'idle') {
         this.state = 'aware';
-        this.lookAtPlayer(playerX);
+        this.lookAtPlayer(playerX, playerY);
         this.showIndicator();
+        // Hiệu ứng nhún chào hỏi tinh tế phong cách Delverium
+        this.scene.tweens.add({
+          targets: this,
+          y: this.y - 3,
+          yoyo: true,
+          duration: 150,
+          ease: 'Quad.easeOut'
+        });
+      } else if (this.state === 'aware') {
+        // Bám theo hướng người chơi khi di chuyển quanh NPC
+        this.lookAtPlayer(playerX, playerY);
       }
     } else {
       if (this.state === 'aware') {
         this.state = 'idle';
-        this.direction = 'down';
+        this.direction = this.initialDirection;
         this._playIdleAnim();
         this.hideIndicator();
       }

@@ -22,6 +22,7 @@ import {
   MinimapOverlay,
   RoomBanner,
   EmoteBar,
+  RadialEmoteWheel,
   SpeedCodeDuel,
   DailyGoalHUD,
   PlayerProfileModal,
@@ -40,6 +41,7 @@ import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { i18n } from '../config/i18n.js';
 import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager.js';
+import { LightingManager } from '../managers/LightingManager.js';
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
@@ -73,6 +75,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = new TilePool(this, 550);
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
+    this.lightingManager = new LightingManager(this);
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);
@@ -565,19 +568,8 @@ export class WorldScene extends Phaser.Scene {
 
       roomNPCs.forEach(cfg => {
         try {
-          // Nếu người chơi chính là Đặng Quang Nhật, thay thế NPC Chủ nhiệm bằng Thư Ký Nguyễn Thị Ngọc Ánh để tránh trùng 2 Chủ nhiệm
+          // Nếu người chơi chính là Đặng Quang Nhật, ẩn NPC Chủ nhiệm để tránh thấy bản thể sao chép
           if (cfg.id === 'npc_chunhiem_nhat' && isPlayerNhat) {
-            const thukyCfg = (NPC_CONFIG.main_hall || []).find(n => n.id === 'npc_thuky_anh');
-            if (thukyCfg) {
-              const npcX = thukyCfg.tileX * tileSize + tileSize / 2;
-              const npcY = thukyCfg.tileY * tileSize + tileSize / 2;
-              const npc = new NPC(this, npcX, npcY, thukyCfg);
-              this.npcGroup.push(npc);
-            }
-            return;
-          }
-          // Bỏ qua npc_thuky_anh nếu người chơi không phải Đặng Quang Nhật (giữ nguyên Chủ nhiệm)
-          if (cfg.id === 'npc_thuky_anh') {
             return;
           }
 
@@ -645,6 +637,9 @@ export class WorldScene extends Phaser.Scene {
     // Cập nhật Minimap & Room Banner
     if (this.minimap) {
       this.minimap.setRoom(roomId);
+    }
+    if (this.lightingManager) {
+      this.lightingManager.setRoom(roomId);
     }
     if (this.roomBanner) {
       this.roomBanner.show(roomId, this.remotePlayers.size + 1);
@@ -829,6 +824,12 @@ export class WorldScene extends Phaser.Scene {
 
     // 12. Emote Bar (Biểu cảm nhanh & Nhảy múa)
     this.emoteBar = new EmoteBar({
+      onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
+    });
+
+    // 12b. Vòng xoay biểu cảm nhanh (Radial Emote Wheel - Delverium Inspired)
+    this.radialEmoteWheel = new RadialEmoteWheel({
+      scene: this,
       onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
     });
 
@@ -1328,9 +1329,23 @@ export class WorldScene extends Phaser.Scene {
     if (this.minimap) {
       this.minimap.render();
     }
+
+    if (this.lightingManager) {
+      this.lightingManager.update(time, delta);
+    }
   }
 
   shutdown() {
+    if (this.lightingManager) {
+      this.lightingManager.destroy();
+      this.lightingManager = null;
+    }
+
+    if (this.radialEmoteWheel) {
+      this.radialEmoteWheel.destroy();
+      this.radialEmoteWheel = null;
+    }
+
     if (this._resizeHandler) {
       window.removeEventListener('resize', this._resizeHandler);
       this._resizeHandler = null;

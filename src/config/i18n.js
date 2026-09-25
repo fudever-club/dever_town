@@ -171,8 +171,8 @@ export const TRANSLATIONS = {
     chatSendBtn: 'Gửi',
 
     // Footer
-    footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.4.1 • WORK HARD PLAY HARD',
+    footerBrand: 'FU-DEVER • METAVERSE',
+    footerSlogan: 'DEVER TOWN v0.4.2',
     footerMove: 'WASD/Mũi tên: Di chuyển',
     footerInteract: '[E]: Tương tác',
     footerInv: '[I]: Túi đồ',
@@ -359,8 +359,8 @@ export const TRANSLATIONS = {
     chatSendBtn: 'Send',
 
     // Footer
-    footerBrand: 'FU-DEVER • FUDA',
-    footerSlogan: 'DEVER TOWN v0.4.1 • WORK HARD PLAY HARD',
+    footerBrand: 'FU-DEVER • METAVERSE',
+    footerSlogan: 'DEVER TOWN v0.4.2',
     footerMove: 'WASD/Arrows: Move',
     footerInteract: '[E]: Interact',
     footerInv: '[I]: Inventory',
