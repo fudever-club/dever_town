@@ -269,9 +269,15 @@ export class Player extends Phaser.GameObjects.Sprite {
       fire: '🔥',
       clap: '👏',
       dance: '🕺',
-      question: '❓'
+      question: '❓',
+      fireworks: '🎉',
+      buggy: '🐞'
     };
     const icon = emoteIcons[emoteId] || '✨';
+
+    if (emoteId === 'fireworks' && this.scene?.juiceManager) {
+      this.scene.juiceManager.spawnSparkles?.(this.x, this.y - 30, 20, '#f59e0b');
+    }
 
     if (this.emoteContainer) {
       this.emoteContainer.destroy();
@@ -375,7 +381,8 @@ export class Player extends Phaser.GameObjects.Sprite {
   update(inputData) {
     if (!inputData) return;
 
-    const speed = 160;
+    const baseSpeed = 160;
+    const speed = baseSpeed * (this.speedMultiplier ?? 1.0);
     const { vector, left, right, up, down, isMoving } = inputData;
 
     this.body.setVelocity(vector.x * speed, vector.y * speed);
@@ -441,9 +448,11 @@ export class Player extends Phaser.GameObjects.Sprite {
       // Phát tiếng bước chân theo chất liệu mặt sàn
       if (this.scene?.audioManager) {
         let surface = 'stone';
-        if (grassTiles.has(tileType)) surface = 'grass';
-        else if (woodTiles.has(tileType)) surface = 'wood';
-        else if (cyberTiles.has(tileType)) surface = 'cyber';
+        const roomId = this.scene?.currentRoomId;
+
+        if (grassTiles.has(tileType) || roomId === 'sports_complex') surface = 'grass';
+        else if (woodTiles.has(tileType) || roomId === 'canteen_cafe' || roomId === 'library') surface = 'wood';
+        else if (cyberTiles.has(tileType) || roomId === 'server_dungeon' || roomId === 'dever_lab') surface = 'cyber';
 
         this.scene.audioManager.playFootstep(surface);
       }
@@ -458,6 +467,24 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.shadowEllipse.setDepth(this.y - 0.1);
       const shadowBob = isMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
       this.shadowEllipse.setScale(shadowBob, 1.0);
+    }
+
+    // Hiệu ứng LED Breathing cho Cyber Mecha & Sparkling Eye Glint cho Cóc Vàng FUDA
+    const outfit = this.wardrobeConfig?.outfit;
+    if (outfit === 'special_mecha_suit' || this.avatarId === 'mecha') {
+      const pulse = 0.88 + Math.sin(performance.now() / 350) * 0.12;
+      const g = Math.floor(255 * pulse);
+      const r = Math.floor(180 * pulse);
+      this.setTint((r << 16) | (g << 8) | 255);
+    } else {
+      if (this.isTinted) this.clearTint();
+    }
+
+    if (outfit === 'special_frog_mascot' && this.scene?.juiceManager) {
+      if (!this._lastFrogGlint || performance.now() - this._lastFrogGlint > 2400) {
+        this._lastFrogGlint = performance.now();
+        this.scene.juiceManager.spawnSparkles?.(this.x + 5, this.y - 22, 1, '#fde047');
+      }
     }
 
     if (this.lastX !== this.x || this.lastY !== this.y) {

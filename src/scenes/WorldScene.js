@@ -22,6 +22,7 @@ import {
   MinimapOverlay,
   RoomBanner,
   EmoteBar,
+  RadialEmoteWheel,
   SpeedCodeDuel,
   DailyGoalHUD,
   PlayerProfileModal,
@@ -40,6 +41,7 @@ import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { i18n } from '../config/i18n.js';
 import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager.js';
+import { LightingManager } from '../managers/LightingManager.js';
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
@@ -73,6 +75,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = new TilePool(this, 550);
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
+    this.lightingManager = new LightingManager(this);
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);
@@ -646,6 +649,9 @@ export class WorldScene extends Phaser.Scene {
     if (this.minimap) {
       this.minimap.setRoom(roomId);
     }
+    if (this.lightingManager) {
+      this.lightingManager.setRoom(roomId);
+    }
     if (this.roomBanner) {
       this.roomBanner.show(roomId, this.remotePlayers.size + 1);
     }
@@ -829,6 +835,12 @@ export class WorldScene extends Phaser.Scene {
 
     // 12. Emote Bar (Biểu cảm nhanh & Nhảy múa)
     this.emoteBar = new EmoteBar({
+      onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
+    });
+
+    // 12b. Vòng xoay biểu cảm nhanh (Radial Emote Wheel - Delverium Inspired)
+    this.radialEmoteWheel = new RadialEmoteWheel({
+      scene: this,
       onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
     });
 
@@ -1328,9 +1340,23 @@ export class WorldScene extends Phaser.Scene {
     if (this.minimap) {
       this.minimap.render();
     }
+
+    if (this.lightingManager) {
+      this.lightingManager.update(time, delta);
+    }
   }
 
   shutdown() {
+    if (this.lightingManager) {
+      this.lightingManager.destroy();
+      this.lightingManager = null;
+    }
+
+    if (this.radialEmoteWheel) {
+      this.radialEmoteWheel.destroy();
+      this.radialEmoteWheel = null;
+    }
+
     if (this._resizeHandler) {
       window.removeEventListener('resize', this._resizeHandler);
       this._resizeHandler = null;

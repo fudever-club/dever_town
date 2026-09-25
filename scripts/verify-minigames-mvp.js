@@ -121,6 +121,18 @@ async function runVerification() {
   goldMiner.shootHook();
   assert(goldMiner.hook.state === 'shoot', 'GoldMinerEngine phóng móc tời');
 
+  console.log('\n--- 2b. KIỂM TRA TÍNH NĂNG NÂNG CẤP DELVERIUM (PHASE 4) ---');
+  const { RADIAL_EMOTES, RadialEmoteWheel } = await import('../src/ui/gameplay/RadialEmoteWheel.js');
+  assert(Array.isArray(RADIAL_EMOTES) && RADIAL_EMOTES.length === 8, 'RadialEmoteWheel có đủ 8 biểu cảm nhanh (Vẫy tay, Thả tim, Pháo hoa, Nhảy, Buggy, Cháy, Vỗ tay, Thắc mắc)');
+  assert(typeof RadialEmoteWheel === 'function', 'Class RadialEmoteWheel được xuất bản thành công');
+
+  const { ROOM_LIGHTING_PROFILES, LightingManager } = await import('../src/managers/LightingManager.js');
+  assert(ROOM_LIGHTING_PROFILES.server_dungeon && ROOM_LIGHTING_PROFILES.server_dungeon.darknessAlpha > 0.7, 'LightingManager cấu hình hồ sơ phòng tối server_dungeon chính xác');
+  assert(typeof LightingManager === 'function', 'Class LightingManager được xuất bản thành công');
+
+  const npcSource = fs.readFileSync(path.join(rootDir, 'src/entities/NPC.js'), 'utf8');
+  assert(npcSource.includes('lookAtPlayer(playerX, playerY)') && npcSource.includes('this.initialDirection'), 'NPC có cơ chế Smart Proximity lookAtPlayer 4 hướng và nhớ hướng ban đầu');
+
   console.log('\n--- 3. KIỂM TRA ĐỒNG BỘ DOM VÀ GIAO DIỆN (INDEX.HTML) ---');
   const htmlContent = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
 

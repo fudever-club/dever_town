@@ -235,9 +235,15 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       fire: '🔥',
       clap: '👏',
       dance: '🕺',
-      question: '❓'
+      question: '❓',
+      fireworks: '🎉',
+      buggy: '🐞'
     };
     const icon = emoteIcons[emoteId] || '✨';
+
+    if (emoteId === 'fireworks' && this.scene?.juiceManager) {
+      this.scene.juiceManager.spawnSparkles?.(this.x, this.y - 30, 20, '#f59e0b');
+    }
 
     if (this.emoteContainer) {
       this.emoteContainer.destroy();
