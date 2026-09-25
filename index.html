@@ -1022,8 +1022,15 @@
             <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
           </svg>
           <div>
-            <h2 class="modal-title">Tủ Đồ & Bộ Sưu Tập Nhân Vật FU-DEVER</h2>
-            <p class="modal-sub">Chọn nhân vật đại diện yêu thích (Nam, Nữ, Võ Sinh Vovinam, Cóc Vàng) và túi đồ cầm tay.</p>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <h2 class="modal-title">Tủ Đồ & Bộ Sưu Tập Nhân Vật FU-DEVER</h2>
+              <div class="wardrobe-coin-badge" id="wardrobe-user-dcoins" title="Số dư Dever Coin của bạn">
+                <span class="coin-icon">🪙</span>
+                <span class="coin-amount" id="wardrobe-dcoins-val">1,250</span>
+                <span class="coin-unit">D-Coin</span>
+              </div>
+            </div>
+            <p class="modal-sub">Chọn nhân vật đại diện yêu thích (Nam, Nữ, Mascot Buggy, Cóc Vàng) và túi đồ cầm tay.</p>
           </div>
         </div>
         <button type="button" id="wardrobe-modal-close" class="modal-close-btn">&times;</button>
@@ -1043,11 +1050,12 @@
         </div>
 
         <div class="wardrobe-options-panel">
-          <!-- 1. Tab Bar Phân Loại: Chung, Nam, Nữ -->
+          <!-- 1. Tab Bar Phân Loại: Tất Cả, Nam, Nữ, Mascot & Linh Vật -->
           <div class="wardrobe-tabs-header" id="wardrobe-tabs-container">
-            <button type="button" class="wardrobe-tab-btn active" data-tab="all">Chung (Tất Cả)</button>
+            <button type="button" class="wardrobe-tab-btn active" data-tab="all">Tất Cả</button>
             <button type="button" class="wardrobe-tab-btn" data-tab="male">Nhân Vật Nam</button>
             <button type="button" class="wardrobe-tab-btn" data-tab="female">Nhân Vật Nữ</button>
+            <button type="button" class="wardrobe-tab-btn" data-tab="special">Mascot & Linh Vật</button>
           </div>
 
           <!-- 2. Danh Sách Nhân Vật Hoàn Chỉnh -->

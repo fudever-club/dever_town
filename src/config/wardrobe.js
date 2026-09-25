@@ -268,15 +268,26 @@ export const CHARACTER_PRESETS = [
     spriteKey: 'char_frog_mascot',
     desc: 'Bộ mascot Cóc Vàng FPTU siêu đáng yêu, biểu tượng của sự may mắn, vượt qua mọi kỳ thi qua môn.',
     tags: ['Cóc Vàng', 'Mascot', 'May Mắn']
+  },
+  {
+    id: 'buggy_mascot',
+    name: 'Mascot Bọ Buggy FU-DEVER',
+    role: 'Linh Vật Chính Thức • FU-DEVER',
+    gender: 'unisex',
+    color: '#ef4444',
+    spriteKey: 'char_buggy_mascot',
+    desc: 'Chú bọ cánh cam Buggy đáng yêu với lớp cánh đỏ chấm bi đen, 2 râu anten tinh nghịch, biểu tượng của sự may mắn và sạch bug code.',
+    tags: ['Mascot', 'Buggy', 'FU-DEVER', 'Mới']
   }
 ];
 
 export const WARDROBE_CONFIG = {
-  // Danh sách Tab lọc theo giới tính
+  // Danh sách Tab lọc danh mục nhân vật
   tabs: [
-    { id: 'all', name: 'Chung (Tất Cả)', icon: '👥' },
-    { id: 'male', name: 'Nhân Vật Nam', icon: '👦' },
-    { id: 'female', name: 'Nhân Vật Nữ', icon: '👧' }
+    { id: 'all', name: 'Tất Cả' },
+    { id: 'male', name: 'Nhân Vật Nam' },
+    { id: 'female', name: 'Nhân Vật Nữ' },
+    { id: 'special', name: 'Mascot & Linh Vật' }
   ],
 
   // Hệ thống Nhân Vật Hoàn Chỉnh (Character Presets)

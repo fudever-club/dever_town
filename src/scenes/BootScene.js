@@ -40,6 +40,7 @@ export class BootScene extends Phaser.Scene {
 
     // 2C. Bộ Trang Phục Đặc Biệt (Special Outfits)
     this.load.spritesheet('char_frog_mascot', 'assets/characters/special_outfits/special_frog_mascot.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_buggy_mascot', 'assets/characters/special_outfits/special_buggy_mascot.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_mecha_suit', 'assets/characters/special_outfits/special_mecha_suit.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_wizard_robe', 'assets/characters/special_outfits/special_wizard_robe.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_vovinam_suit', 'assets/characters/special_outfits/special_vovinam_suit.png', { frameWidth: 48, frameHeight: 64 });
@@ -81,7 +82,7 @@ export class BootScene extends Phaser.Scene {
       'polo_dever', 'polo_fuda', 'aodai_fuda', 'suit_formal',
       'hoodie_gaming', 'jersey_sport', 'hoodie_terminal', 'apron_barista',
       // Special Outfits
-      'frog_mascot', 'mecha_suit', 'wizard_robe', 'vovinam_suit', 'leather_biker',
+      'frog_mascot', 'buggy_mascot', 'mecha_suit', 'wizard_robe', 'vovinam_suit', 'leather_biker',
       // 11 NPCs CLB
       'npc_chunhiem_nhat', 'npc_pho_hung', 'npc_thuky_anh', 'npc_barista_an', 'npc_hocthu_kiet',
       'npc_game_lead_thanh', 'npc_sukien_thang', 'npc_media_hai',

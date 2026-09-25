@@ -62,18 +62,41 @@ Nâng cấp toàn diện tạo hình của 10 NPC còn lại từ chuẩn Phase 
 ---
 
 ### 💡 PHASE 4: TÍCH HỢP CƠ CHẾ GAMEPLAY & QOL CẢM HỨNG TỪ DELVERIUM
-Nâng tầm trải nghiệm tương tác (Game Feel) và loại bỏ mọi rào cản gây ức chế (Frustration-Free QoL):
+Nâng tầm trải nghiệm tương tác (Game Feel), khám phá thám hiểm và xây dựng cộng đồng lấy cảm hứng từ game *Delverium*:
 
-1. **Hệ Thống Ánh Sáng Động 2D (Dynamic 2D Lighting & Character Aura):**
-   - Nhân vật tỏa ra vầng sáng ambient ấm áp dịu nhẹ quanh chân khi bước vào các khu vực thiếu sáng (Hành lang Tòa Alpha, Căn tin đêm, Phòng máy chủ).
-   - Trang phục Cyber Hacker và Mecha có đèn LED phát quang lập lòe theo nhịp thở.
-2. **Vòng Quay Biểu Cảm Nhanh (Radial Emote Wheel):**
-   - Giữ phím `Tab` (trên PC) hoặc nút cảm ứng tròn (trên Mobile) mở vòng tròn 8 biểu cảm nhanh (Vẫy tay, Thả tim, Đốt lửa, Vỗ tay, Nhảy múa, Sticker Buggy).
-3. **Tương Tác NPC Thông Minh & Tự Xoay Hướng (Smart Proximity NPC):**
-   - Khi người chơi tiến vào bán kính nhận diện ($1.5$ ô gạch), NPC tự động xoay người hướng về phía người chơi để chào hỏi.
-   - Hộp thoại hiển thị chân dung NPC neon spotlight rõ nét với tên và chức danh có dấu chuẩn xác 100%.
-4. **Hiệu Ứng Âm Thanh Bước Chân Đa Địa Hình (Juicy Footstep Audio):**
-   - Âm thanh gõ nhẹ trên sàn đá hoa sảnh chính, tiếng sột soạt lá cỏ bên ngoài sân khấu, tiếng lách cách trên sàn gỗ thư viện.
+#### 1. Hệ Thống Hầm Ngục Thám Hiểm (Bug Dungeon / Server Faults):
+- **Bối cảnh:** Khu vực tầng hầm ngầm bên dưới Tòa Alpha (Server Basement & Code Labrinth).
+- **Gameplay Vòng Lặp Thám Hiểm (Surface vs. Faults):**
+  - Người chơi lập đội co-op (1–4 người) đi xuống hầm ngục thám hiểm.
+  - Vượt qua các chướng ngại vật logic (Debug puzzle, tia laser firewall, đường dây mạng chập chờn).
+  - Tiêu diệt quái vật tượng trưng cho các lỗi lập trình (*Syntax Error, Null Pointer, Infinite Loop Bug, Memory Leak Slime*).
+  - Mở rương kho báu chứa tài nguyên thuật toán, bản thiết kế trang phục hiếm và lượng lớn **Dever Coin (D-Coin)**.
+
+#### 2. Cơ Chế Chiêu Mộ & Định Cư NPC Về 25 CLB FPTU (NPC Rescue & Club Settlement):
+- **Giải cứu & Thuyết phục NPC:** Trong các tầng sâu của Dungeon hoặc qua chuỗi nhiệm vụ sinh viên, người chơi tìm thấy và giải cứu các NPC tài năng (Tân sinh viên lạc lối, Senior Dev ẩn dật, Nghệ sĩ indie, Cầu thủ tự do...).
+- **Đưa NPC về định cư tại Booth 25 CLB:**
+  - Người chơi phân bổ NPC về đúng gian hàng CLB sở trường (ví dụ: Kéo NPC Coder về booth FU-DEVER, kéo NPC Dancer về F-Style, kéo NPC Nhạc cụ về FUDA Music Club, kéo NPC Võ thuật về Vovinam Club).
+  - **Lợi ích định cư:** Mỗi NPC định cư tại booth sẽ mở ra các tiện ích mới:
+    * Mở quầy shop vật phẩm/thức uống độc quyền của CLB đó.
+    * Mở minigame và workshop đặc trưng.
+    * Tạo điểm thưởng danh vọng (Club Reputation) và nguồn thu D-Coin thụ động hàng ngày cho CLB.
+
+#### 3. Hệ Thống Kinh Tế Dever Coin (D-Coin) & Tokenomics CLB:
+- **Tiền tệ cốt lõi `D-Coin`:**
+  - **Nguồn kiếm D-Coin (Inflow):** Thám hiểm vượt ải Dungeon, thắng minigames (bóng chuyền, cờ vua, barista, arcade), hoàn thành nhiệm vụ hàng ngày, duy trì chuỗi Bestie Streak.
+  - **Nơi tiêu dùng D-Coin (Outflow):** Mở khóa trang phục cao cấp trong Tủ Đồ (Wardrobe), mua vật phẩm cầm tay độc quyền (MacBook Pro, Ly cà phê muối, Gấu cóc bông), nâng cấp trang trí Booth CLB, mua vé tham gia giải đấu Arena đỉnh cao.
+
+#### 4. Trải Nghiệm Tương Tác Cốt Lõi (Game Feel & Frustration-Free QoL):
+- **Hệ Thống Ánh Sáng Động 2D (Dynamic 2D Lighting & Character Aura):**
+  - Vầng sáng ambient ấm áp dịu nhẹ quanh chân khi bước vào hầm ngục hoặc phòng tối (Phòng Server, Căn tin đêm).
+  - Trang phục Cyber Hacker và Mecha có đèn LED phát quang lập lòe theo nhịp thở.
+- **Vòng Quay Biểu Cảm Nhanh (Radial Emote Wheel):**
+  - Giữ phím `Tab` (PC) hoặc nút tròn cảm ứng (Mobile) mở vòng tròn 8 biểu cảm nhanh (Vẫy tay `👋`, Thả tim `💖`, Bắn pháo hoa `🎉`, Nhảy múa `💃`, Thả sticker Buggy).
+- **Tương Tác NPC Thông Minh & Tự Xoay Hướng (Smart Proximity NPC):**
+  - Khi người chơi tiến vào bán kính nhận diện ($1.5$ ô gạch), NPC tự động xoay người hướng về phía người chơi để chào hỏi.
+  - Hộp thoại hiển thị chân dung NPC neon spotlight rõ nét với tên và chức danh có dấu chuẩn xác 100%.
+- **Hiệu Ứng Âm Thanh Bước Chân Đa Địa Hình (Juicy Footstep Audio):**
+  - Âm thanh gõ nhẹ trên sàn đá hoa sảnh chính, tiếng sột soạt lá cỏ bên ngoài sân khấu, tiếng lách cách trên sàn gỗ thư viện, tiếng vang dội trong hầm ngục đá.
 
 ---
 
@@ -82,7 +105,7 @@ Nâng tầm trải nghiệm tương tác (Game Feel) và loại bỏ mọi rào 
    - Đảm bảo duy trì vững vàng tốc độ 60 FPS trên cả máy cấu hình phổ thông và điện thoại di động.
    - Kiểm tra rò rỉ bộ nhớ (Texture Memory Leaks) khi mở Tủ đồ và chuyển map liên tục.
 2. **Kiểm Thử Tự Động Playwright E2E:**
-   - Chạy toàn bộ test suites kiểm tra di chuyển 4 hướng, mở tủ đồ thay trang phục, tương tác NPC và tham gia minigames.
+   - Chạy toàn bộ test suites kiểm tra di chuyển 4 hướng, mở tủ đồ thay trang phục, tương tác NPC, Dungeon và minigames.
 3. **Quy Trình Đóng Gói & Bàn Giao:**
    - Luôn commit và push kiểm thử trên nhánh `develop_hung` trước.
    - Chỉ merge vào nhánh `main` khi có lệnh phê duyệt chính thức từ người dùng.
