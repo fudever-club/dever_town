@@ -79,13 +79,27 @@ export class NetworkStatusOverlay {
     });
   }
 
+  setStandaloneMode() {
+    this.isStandalone = true;
+    this.clearDisconnectTimer();
+    this.hideLagSpinner();
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+    if (this.pingBadgeEl) {
+      this.pingBadgeEl.className = 'network-ping-badge good';
+      this.pingBadgeEl.innerHTML = '<span class="ping-dot green"></span> Tham Quan';
+    }
+  }
+
   scheduleDisconnectWarning(title, sub) {
-    if (this.disconnectTimer) return;
+    if (this.isStandalone || this.disconnectTimer) return;
 
     // Chờ 4 giây nếu mất kết nối thực sự kéo dài mới hiện thông báo
     this.disconnectTimer = setTimeout(() => {
       if (!this.socketManager || !this.socketManager.isConnected) {
-        if (!this.isManuallyDismissed) {
+        if (!this.isManuallyDismissed && !this.isStandalone) {
           this.showLagSpinner(title, sub);
         }
       }
@@ -132,6 +146,12 @@ export class NetworkStatusOverlay {
 
   updateStatus(online, ping) {
     if (!this.pingBadgeEl) return;
+
+    if (this.isStandalone) {
+      this.pingBadgeEl.className = 'network-ping-badge good';
+      this.pingBadgeEl.innerHTML = '<span class="ping-dot green"></span> Tham Quan';
+      return;
+    }
 
     if (!online) {
       this.pingBadgeEl.className = 'network-ping-badge offline';

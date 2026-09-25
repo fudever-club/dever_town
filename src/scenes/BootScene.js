@@ -67,6 +67,16 @@ export class BootScene extends Phaser.Scene {
     this.load.spritesheet('char_sample_biker_rocker', 'assets/characters/samples_v2/sample_biker_rocker.png', { frameWidth: 48, frameHeight: 64 });
     this.load.spritesheet('char_sample_barista_an', 'assets/characters/samples_v2/sample_barista_an.png', { frameWidth: 48, frameHeight: 64 });
 
+    // 2F. Ảnh Chân Dung Chất Lượng Cao cho 11 NPC (Bust Portraits)
+    const npcsList = [
+      'npc_chunhiem_nhat', 'npc_pho_hung', 'npc_thuky_anh', 'npc_barista_an',
+      'npc_hocthu_kiet', 'npc_game_lead_thanh', 'npc_sukien_thang', 'npc_media_hai',
+      'npc_historian_duc', 'npc_backend_khoa', 'npc_algo_truyen'
+    ];
+    npcsList.forEach(id => {
+      this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
+    });
+
     // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
     TextureGenerator.generateAllCharacterSpritesheets(this);
 

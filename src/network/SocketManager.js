@@ -30,6 +30,20 @@ export class SocketManager {
       this.socket = null;
     }
 
+    // Nếu không có socket server (VD: chạy trên Vercel static không có biến môi trường VITE_SERVER_URL)
+    // Tự động chuyển sang chế độ Khám Phá Campus (Standalone Mode) để không gửi polling XHR gây lag và parse error
+    if (!GAME_CONFIG.NETWORK.SERVER_URL) {
+      this.isStandalone = true;
+      this.isConnected = false;
+      console.log('🎮 [Network] Chế độ Khám Phá Campus (Standalone Mode) kích hoạt — Tối ưu hóa mượt mà cho Vercel.');
+      this.updateConnectionStatus(true, 'standalone');
+      if (this.scene.networkStatusOverlay) {
+        this.scene.networkStatusOverlay.setStandaloneMode();
+      }
+      return;
+    }
+
+    this.isStandalone = false;
     const token = authService.getToken();
     const deviceId = authService.getDeviceId();
     console.log(`🔌 Kết nối tới Socket Server: ${GAME_CONFIG.NETWORK.SERVER_URL} (Device: ${deviceId.slice(0, 10)})`);
@@ -40,8 +54,9 @@ export class SocketManager {
         token: token || null,
         deviceId: deviceId
       },
-      reconnectionAttempts: 10,
-      reconnectionDelay: 2000
+      reconnectionAttempts: 3,
+      reconnectionDelay: 2500,
+      timeout: 6000
     });
 
     this.setupListeners();
@@ -56,6 +71,15 @@ export class SocketManager {
     if (this.scene.networkStatusOverlay) {
       this.scene.networkStatusOverlay.bindSocketEvents(this.socket);
     }
+
+    this.socket.on('reconnect_failed', () => {
+      console.warn('⚠️ [Socket] Máy chủ realtime chưa sẵn sàng, tự động chuyển sang Chế độ Tham Quan Campus.');
+      this.isStandalone = true;
+      this.updateConnectionStatus(true, 'standalone');
+      if (this.scene.networkStatusOverlay) {
+        this.scene.networkStatusOverlay.setStandaloneMode();
+      }
+    });
 
     this.socket.on('connect', () => {
       this.isConnected = true;
@@ -326,11 +350,14 @@ export class SocketManager {
     this.socket.emit('sendPrivateMessage', { targetSocketId, targetName, message });
   }
 
-  updateConnectionStatus(online) {
+  updateConnectionStatus(online, mode = 'multiplayer') {
     const statusText = document.querySelector('.status-text');
     const dot = document.querySelector('.dot');
     if (statusText && dot) {
-      if (online) {
+      if (mode === 'standalone') {
+        statusText.textContent = 'Khám Phá Campus';
+        dot.className = 'dot online';
+      } else if (online) {
         statusText.textContent = 'Online';
         dot.className = 'dot online';
       } else {

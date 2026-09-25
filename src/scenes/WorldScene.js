@@ -568,19 +568,8 @@ export class WorldScene extends Phaser.Scene {
 
       roomNPCs.forEach(cfg => {
         try {
-          // Nếu người chơi chính là Đặng Quang Nhật, thay thế NPC Chủ nhiệm bằng Thư Ký Nguyễn Thị Ngọc Ánh để tránh trùng 2 Chủ nhiệm
+          // Nếu người chơi chính là Đặng Quang Nhật, ẩn NPC Chủ nhiệm để tránh thấy bản thể sao chép
           if (cfg.id === 'npc_chunhiem_nhat' && isPlayerNhat) {
-            const thukyCfg = (NPC_CONFIG.main_hall || []).find(n => n.id === 'npc_thuky_anh');
-            if (thukyCfg) {
-              const npcX = thukyCfg.tileX * tileSize + tileSize / 2;
-              const npcY = thukyCfg.tileY * tileSize + tileSize / 2;
-              const npc = new NPC(this, npcX, npcY, thukyCfg);
-              this.npcGroup.push(npc);
-            }
-            return;
-          }
-          // Bỏ qua npc_thuky_anh nếu người chơi không phải Đặng Quang Nhật (giữ nguyên Chủ nhiệm)
-          if (cfg.id === 'npc_thuky_anh') {
             return;
           }
 

@@ -19,7 +19,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
     this.npcName = config.name || 'NPC';
     this.npcRole = config.role || '';
     this.dialogues = config.dialogues || {};
-    this.portrait = config.portrait || null;
+    this.portrait = config.portrait || `portrait_${config.id}`;
     this.currentDialogueId = config.startDialogue || Object.keys(config.dialogues)[0];
     
     // FSM States: 'idle' | 'aware' | 'talking'
