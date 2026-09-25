@@ -71,6 +71,9 @@ export class SportsArcade {
         localStorage.setItem('dever_penalty_streak', this.scores.footballStreak.toString());
         questManager.incrementProgress('penalty_goal', 1);
         questManager.incrementProgress('penalty_shootout', 1);
+        try {
+          questManager.addPoints?.(10, 'Sút phạt đền thành công');
+        } catch (_) {}
         if (this.scores.footballStreak >= 3) {
           this.options.onAchievement?.('striker');
         }
@@ -88,6 +91,9 @@ export class SportsArcade {
           localStorage.setItem('dever_basketball_high', this.scores.basketballHigh.toString());
         }
         questManager.incrementProgress('basketball_dunk', 1);
+        try {
+          questManager.addPoints?.(5, 'Ghi điểm bóng rổ');
+        } catch (_) {}
         this.updateHUD();
       }
     });
@@ -100,6 +106,9 @@ export class SportsArcade {
           this.scores.volleyballHigh = this.scores.volleyballRally;
           localStorage.setItem('dever_volleyball_high', this.scores.volleyballHigh.toString());
         }
+        try {
+          questManager.addPoints?.(5, 'Thắng điểm bóng chuyền');
+        } catch (_) {}
         this.updateHUD();
       }
     });
@@ -110,6 +119,10 @@ export class SportsArcade {
         this.scores.baristaScore = (this.scores.baristaScore || 0) + earnedTips;
         localStorage.setItem('dever_barista_score', this.scores.baristaScore.toString());
         questManager.incrementProgress('barista_coffee', 1);
+        try {
+          const rewardPts = Math.max(5, Math.min(30, earnedTips));
+          questManager.addPoints?.(rewardPts, 'Phục vụ đồ uống Barista');
+        } catch (_) {}
         this.updateHUD();
       }
     });
@@ -228,12 +241,14 @@ export class SportsArcade {
 
     this.handleCanvasClick = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
+      if (this.currentGame === 'barista') return;
       e.preventDefault();
       this.onActionTrigger();
     };
 
     this.handleCanvasTouch = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
+      if (this.currentGame === 'barista') return;
       e.preventDefault();
       this.onActionTrigger();
     };

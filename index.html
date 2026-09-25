@@ -1404,18 +1404,34 @@
       <!-- View Arcade: Retro Arcade & Minigames -->
       <div id="pane-arcade-games" class="interactive-pane hidden">
         <div class="arcade-workspace">
-          <div class="arcade-header">
-            <h3>Retro Arcade</h3>
+          <div class="arcade-header-box">
+            <div class="arcade-badge-row">
+              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE</span>
+              <span id="arcade-score-badge" class="sports-badge streak">Điểm: 0</span>
+              <span id="arcade-high-badge" class="sports-badge high">Kỷ lục: 0</span>
+            </div>
             <div class="arcade-tabs" id="arcade-nav-tabs">
               <button type="button" class="arcade-tab active" data-game="snake">Cyber Snake</button>
               <button type="button" class="arcade-tab" data-game="sokoban">Buggy Sokoban</button>
               <button type="button" class="arcade-tab" data-game="goldminer">FPTU Gold Miner</button>
             </div>
+            <p id="arcade-game-desc" class="sports-desc">Dùng phím mũi tên hoặc W/A/S/D để điều khiển rắn ăn táo và né va chạm. Phím SPACE để bứt tốc.</p>
           </div>
           <div class="arcade-arena">
-            <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
-            <div id="arcade-touch-controls" class="arcade-touch-controls hidden">
-               <!-- To be populated if needed -->
+            <div class="arcade-canvas-wrapper">
+              <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
+            </div>
+            <div id="arcade-touch-controls" class="arcade-touch-controls">
+              <div class="arcade-dpad">
+                <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
+                <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
+                <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
+                <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+              </div>
+              <div class="arcade-actions">
+                <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
+                <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+              </div>
             </div>
           </div>
         </div>
