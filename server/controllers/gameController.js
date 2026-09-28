@@ -55,13 +55,23 @@ export const gameController = {
         playerName: effectiveName
       });
 
+      const sanitizeEntry = (entry) => {
+        if (!entry) return null;
+        return {
+          playerName: entry.player_name || entry.playerName || 'Thành viên',
+          highScore: entry.high_score || entry.highScore || 0,
+          bestStreak: entry.best_streak || entry.bestStreak || 0,
+          lastPlayed: entry.last_played || entry.lastPlayed || null
+        };
+      };
+
       const leaderboard = await db.getLeaderboard(gameType, 5);
 
       return res.json({
         success: true,
         message: 'Cập nhật thành tích thành công!',
-        record: result,
-        leaderboard
+        record: sanitizeEntry(result),
+        leaderboard: (leaderboard || []).map(sanitizeEntry)
       });
     } catch (err) {
       console.error('❌ [Game Score Error]:', err);
@@ -80,10 +90,20 @@ export const gameController = {
       const db = getDB();
       const leaderboard = await db.getLeaderboard(gameType, limit);
 
+      const sanitizeEntry = (entry) => {
+        if (!entry) return null;
+        return {
+          playerName: entry.player_name || entry.playerName || 'Thành viên',
+          highScore: entry.high_score || entry.highScore || 0,
+          bestStreak: entry.best_streak || entry.bestStreak || 0,
+          lastPlayed: entry.last_played || entry.lastPlayed || null
+        };
+      };
+
       return res.json({
         success: true,
         gameType,
-        leaderboard
+        leaderboard: (leaderboard || []).map(sanitizeEntry)
       });
     } catch (err) {
       console.error('❌ [Game Leaderboard Error]:', err);
