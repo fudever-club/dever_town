@@ -43,8 +43,11 @@
     "start": "node server/server.js",
     "test:load": "node scripts/stress-test.js",
     "test:e2e": "playwright test",
+    "test:play": "node scripts/test_live_play_60s.js",
     "deploy:vercel": "vercel --prod",
-    "app:desktop": "electron electron/main.cjs"
+    "app:desktop": "electron electron/main.cjs",
+    "security:scan": "node scripts/security-scan.js",
+    "security:audit": "npm audit --omit=dev"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

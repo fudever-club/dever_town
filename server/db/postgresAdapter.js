@@ -60,6 +60,25 @@ export class PostgresDatabaseAdapter extends BaseDatabaseAdapter {
           expires_at BIGINT NOT NULL,
           attempts INTEGER DEFAULT 0
         );
+
+        -- Kích hoạt Row-Level Security (RLS) bảo vệ Database khi kết nối Supabase
+        ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE game_scores ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE password_resets ENABLE ROW LEVEL SECURITY;
+
+        -- Thiết lập chính sách bảo vệ mặc định cho Backend Service
+        DO $$
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'users' AND policyname = 'Allow server backend all on users') THEN
+            CREATE POLICY "Allow server backend all on users" ON users FOR ALL USING (true) WITH CHECK (true);
+          END IF;
+          IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'game_scores' AND policyname = 'Allow server backend all on game_scores') THEN
+            CREATE POLICY "Allow server backend all on game_scores" ON game_scores FOR ALL USING (true) WITH CHECK (true);
+          END IF;
+          IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'password_resets' AND policyname = 'Allow server backend all on password_resets') THEN
+            CREATE POLICY "Allow server backend all on password_resets" ON password_resets FOR ALL USING (true) WITH CHECK (true);
+          END IF;
+        END $$;
       `);
 
       console.log(`🐘 [PostgresDB] Đã kết nối thành công và khởi tạo bảng users, game_scores, password_resets.`);

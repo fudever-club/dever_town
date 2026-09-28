@@ -558,6 +558,7 @@ export class WorldScene extends Phaser.Scene {
       this.npcGroup.forEach(n => {
         try { n.destroy(); } catch (e) {}
       });
+      this.npcGroup = [];
     }
     // Chỉ spawn NPC của main_hall khi đang ở tầng 1 (floorIndex = 0)
     const isMainHallUpperFloor = roomId === 'main_hall' && (this.floorManager?.currentFloor || 0) > 0;

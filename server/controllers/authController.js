@@ -345,13 +345,21 @@ export const authController = {
         questMilestone,
         gameRecords
       } = req.body;
-      const db = getDB();
+      // Kiểm tra tính hợp lệ của deverPoints (chống hack số dư khống)
+      let sanitizedPoints = 0;
+      if (deverPoints !== undefined && deverPoints !== null) {
+        const num = Number(deverPoints);
+        if (isNaN(num) || num < 0 || num > 500000) {
+          return res.status(400).json({ success: false, message: 'Điểm thưởng Dever Points không hợp lệ (Phải từ 0 đến 500,000)!' });
+        }
+        sanitizedPoints = Math.floor(num);
+      }
 
       const updated = await db.syncFullUserProfile(req.user.id, {
         wardrobeConfig,
         inventoryItems,
         equippedItemId,
-        deverPoints,
+        deverPoints: sanitizedPoints,
         questsState,
         questDate,
         questMilestone,
@@ -379,10 +387,19 @@ export const authController = {
       const { wardrobeConfig, equippedItemId, deverPoints } = req.body;
       const db = getDB();
 
+      let sanitizedPoints = undefined;
+      if (deverPoints !== undefined && deverPoints !== null) {
+        const num = Number(deverPoints);
+        if (isNaN(num) || num < 0 || num > 500000) {
+          return res.status(400).json({ success: false, message: 'Điểm thưởng Dever Points không hợp lệ!' });
+        }
+        sanitizedPoints = Math.floor(num);
+      }
+
       const updated = await db.updateCustomization(req.user.id, {
         wardrobeConfig,
         equippedItemId,
-        deverPoints
+        deverPoints: sanitizedPoints
       });
 
       const safeUser = sanitizeUser(updated);

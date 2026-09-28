@@ -1,0 +1,38 @@
+rules:
+  - id: node-jwt-hardcoded-secret
+    languages: [javascript, typescript]
+    message: "Hardcoded secret string passed to jwt.sign or jwt.verify. Use process.env.JWT_SECRET instead."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: jwt.sign($PAYLOAD, "...", ...)
+          - pattern: jwt.verify($TOKEN, "...", ...)
+      - pattern-not: jwt.sign($PAYLOAD, process.env.$SECRET, ...)
+      - pattern-not: jwt.verify($TOKEN, process.env.$SECRET, ...)
+
+  - id: socket-role-client-assignment
+    languages: [javascript, typescript]
+    message: "Direct role assignment from client-controlled payload without server-side validation. Potential Privilege Escalation."
+    severity: ERROR
+    pattern: |
+      role: $DATA.role
+
+  - id: sql-string-concatenation
+    languages: [javascript, typescript]
+    message: "SQL query using string concatenation or template literals. Use parameterized queries ($1, $2...) to prevent SQL injection."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: $POOL.query(`... ${...} ...`, ...)
+          - pattern: $POOL.query("..." + $VAR, ...)
+      - pattern-not: $POOL.query("CREATE TABLE ...", ...)
+      - pattern-not: $POOL.query("ALTER TABLE ...", ...)
+
+  - id: dev-sensitive-data-logged
+    languages: [javascript, typescript]
+    message: "Potential logging of sensitive user fields (password, password_hash, token)."
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: console.log(..., $USER.password_hash, ...)
+          - pattern: console.log(..., $USER.password, ...)

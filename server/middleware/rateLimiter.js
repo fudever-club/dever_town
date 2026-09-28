@@ -20,7 +20,8 @@ export function createRateLimiter({
   }, 5 * 60 * 1000);
 
   return (req, res, next) => {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+    // Sử dụng req.ip chuẩn của Express (đã tin cậy qua app.set('trust proxy', 1)), chống giả mạo header X-Forwarded-For
+    const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
     const now = Date.now();
 
     let record = ipRequests.get(ip);

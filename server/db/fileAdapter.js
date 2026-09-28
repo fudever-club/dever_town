@@ -39,6 +39,13 @@ export class FileDatabaseAdapter extends BaseDatabaseAdapter {
   async seedDefaults() {
     this.users.clear();
 
+    // Trong môi trường Production, không tự động tạo tài khoản với mật khẩu mặc định yếu
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️ [FileDB] Môi trường Production: Bỏ qua tạo tài khoản mẫu để đảm bảo an toàn bảo mật.');
+      await this.saveToFile();
+      return;
+    }
+
     const adminHash = await bcrypt.hash('admin123', 10);
     const leaderHash = await bcrypt.hash('leader123', 10);
 
