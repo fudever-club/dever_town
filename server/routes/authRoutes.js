@@ -68,8 +68,16 @@ router.put('/customization', authenticateToken, authController.updateCustomizati
 router.get('/check-name', authController.checkName);
 
 /**
- * GET /api/auth/test-mail - Kiểm tra trạng thái gửi mail Resend
+ * GET /api/auth/test-mail - Kiểm tra trạng thái gửi mail Resend (Chỉ Quản trị viên Admin)
  */
-router.get('/test-mail', authController.testMail);
+router.get('/test-mail', authenticateToken, (req, res) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Chỉ Quản trị viên (Admin) mới có quyền thực hiện kiểm thử gửi mail.'
+    });
+  }
+  return authController.testMail(req, res);
+});
 
 export default router;

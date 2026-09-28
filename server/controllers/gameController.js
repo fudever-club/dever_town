@@ -1,8 +1,6 @@
 import { getDB } from '../db/index.js';
-import { sanitizeUser } from '../middleware/authMiddleware.js';
+import { sanitizeUser, JWT_SECRET } from '../middleware/authMiddleware.js';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dever_town_super_secret_jwt_key_2026';
 
 const VALID_GAME_TYPES = new Set([
   'football', 'basketball', 'volleyball', 'barista',

@@ -23,7 +23,7 @@ class PlayerManager {
       userId: authUser ? authUser.id : (data.userId || null),
       name: (authUser ? authUser.displayName : (data.name || `Khách #${socketId.substring(0, 4)}`)).normalize('NFC'),
       avatarId: wardrobeConfig ? socketId : (authUser ? authUser.avatarId : (data.avatarId || 'dev_hoodie')),
-      role: authUser ? authUser.role : (data.role || 'guest'),
+      role: authUser ? (authUser.role || 'dev') : 'guest', // Bảo mật: Khách vãng lai chỉ có role 'guest', không cho phép client tự gán role
       equippedItemId: equippedItemId,
       wardrobeConfig: wardrobeConfig,
       deviceId: data.deviceId || (authUser ? authUser.deviceId : null) || null,
@@ -37,6 +37,15 @@ class PlayerManager {
 
     this.players.set(socketId, player);
     return player;
+  }
+
+  /**
+   * Chuyển đổi dữ liệu player sang dạng công khai (loại bỏ trường nhạy cảm như deviceId)
+   */
+  toPublic(player) {
+    if (!player) return null;
+    const { deviceId, ...publicData } = player;
+    return publicData;
   }
 
   getPlayer(socketId) {
@@ -135,7 +144,7 @@ class PlayerManager {
     const result = {};
     for (const [id, p] of this.players.entries()) {
       if (!roomId || p.roomId === roomId) {
-        result[id] = p;
+        result[id] = this.toPublic(p);
       }
     }
     return result;

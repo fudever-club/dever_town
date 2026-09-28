@@ -240,7 +240,7 @@ export function setupSocketHandler(io) {
 
       const roomPlayers = playerManager.getAllPlayers(roomId);
       socket.emit('currentPlayers', roomPlayers);
-      socket.to(roomId).emit('newPlayer', player);
+      socket.to(roomId).emit('newPlayer', playerManager.toPublic(player));
       io.emit('roomCounts', playerManager.getRoomCounts());
     });
 
