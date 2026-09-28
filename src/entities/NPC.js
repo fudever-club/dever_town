@@ -79,7 +79,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
   }
   
   showIndicator() {
-    if (this.indicatorBubble) return;
+    if (this.indicatorBubble || !this.scene?.add) return;
     
     const container = this.scene.add.container(this.x, this.y - 44);
     container.setDepth(999998);
@@ -101,14 +101,16 @@ export class NPC extends Phaser.GameObjects.Sprite {
     }).setOrigin(0.5, 0.5);
     
     // Blink tween for dots
-    this.scene.tweens.add({
-      targets: dots,
-      alpha: { from: 1, to: 0.3 },
-      duration: 600,
-      ease: 'Sine.easeInOut',
-      yoyo: true,
-      repeat: -1
-    });
+    if (this.scene?.tweens) {
+      this.scene.tweens.add({
+        targets: dots,
+        alpha: { from: 1, to: 0.3 },
+        duration: 600,
+        ease: 'Sine.easeInOut',
+        yoyo: true,
+        repeat: -1
+      });
+    }
     
     container.add([bg, dots]);
     this.indicatorBubble = container;
@@ -139,6 +141,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
   }
   
   update(playerX, playerY) {
+    if (!this.scene || !this.active) return;
     const dist = Phaser.Math.Distance.Between(this.x, this.y, playerX, playerY);
     
     if (dist < this.proximityRadius) {

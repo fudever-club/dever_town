@@ -74,10 +74,17 @@ export class InteractionManager {
   interactCurrentZone() {
     if (!this.canInteract()) return false;
 
-    // Không kích hoạt zone nếu NPC Dialogue đang mở hoặc có NPC đang được trò chuyện
+    // Không kích hoạt zone nếu NPC Dialogue đang mở hoặc có NPC đang trò chuyện
     if (this.scene?.npcDialogueModal?.isOpen) return false;
-    const nearNPC = this.scene?.npcGroup?.find(npc => npc.state === 'aware' || npc.state === 'talking');
-    if (nearNPC) return false;
+    const isTalkingNPC = this.scene?.npcGroup?.some(npc => npc?.state === 'talking');
+    if (isTalkingNPC) return false;
+
+    // Nếu người chơi đang đứng sát một NPC trong tầm nói chuyện, ưu tiên hội thoại NPC
+    const player = this.scene?.player;
+    if (player && this.scene?.npcGroup) {
+      const closeNPC = this.scene.npcGroup.find(npc => npc?.active && npc.isPlayerNear && npc.isPlayerNear(player.x, player.y));
+      if (closeNPC) return false;
+    }
 
     // 1. Nếu đã có active zone trong tầm
     if (this.currentActiveZone) {
@@ -86,7 +93,6 @@ export class InteractionManager {
     }
 
     // 2. Tìm zone gần nhất trong phạm vi tương tác (tối đa 72px)
-    const player = this.scene?.player;
     if (!player) return false;
 
     const tileSize = 32;

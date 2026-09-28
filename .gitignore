@@ -23,3 +23,5 @@ test-results/
 server/data/telemetry_log.jsonl
 __pycache__/
 *.py[cod]
+playtest_60s_results/
+audit_gameplay/
