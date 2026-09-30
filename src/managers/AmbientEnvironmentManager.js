@@ -95,6 +95,52 @@ export class AmbientEnvironmentManager {
       ctx.fillRect(1, 1, 2, 2);
       this.scene.textures.addCanvas('particle_water', canvas);
     }
+
+    // 7. Đom đóm đêm (Fireflies)
+    if (!this.scene.textures.exists('particle_firefly')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 6;
+      canvas.height = 6;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createRadialGradient(3, 3, 0, 3, 3, 3);
+      grad.addColorStop(0, '#fef08a');
+      grad.addColorStop(0.5, '#bef264');
+      grad.addColorStop(1, 'rgba(190, 242, 100, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 6, 6);
+      this.scene.textures.addCanvas('particle_firefly', canvas);
+    }
+  }
+
+  /**
+   * Bật / Tắt hiệu ứng Đom Đóm đêm cho các khu vực ngoài trời
+   * @param {boolean} enabled
+   */
+  setFirefliesEnabled(enabled) {
+    if (enabled) {
+      if (this.fireflyEmitter) return;
+      const mapW = 800;
+      const mapH = 608;
+      this.fireflyEmitter = this.createEmitter('particle_firefly', {
+        x: { min: 40, max: mapW - 40 },
+        y: { min: 80, max: mapH - 60 },
+        lifespan: { min: 3500, max: 6000 },
+        speedX: { min: -18, max: 18 },
+        speedY: { min: -15, max: 15 },
+        scale: { start: 0.3, end: 1.1 },
+        alpha: { start: 0, end: 0.85, ease: 'Sine.easeInOut' },
+        quantity: 1,
+        frequency: 450,
+        blendMode: 'ADD'
+      });
+    } else {
+      if (this.fireflyEmitter) {
+        try { this.fireflyEmitter.destroy(); } catch (e) {}
+        const idx = this.activeEmitters.indexOf(this.fireflyEmitter);
+        if (idx !== -1) this.activeEmitters.splice(idx, 1);
+        this.fireflyEmitter = null;
+      }
+    }
   }
 
   /**

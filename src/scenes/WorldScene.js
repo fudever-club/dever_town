@@ -29,7 +29,8 @@ import {
   FriendRequestModal,
   FriendsListModal,
   AvatarSelectorModal,
-  UNLOCKABLE_AVATARS
+  UNLOCKABLE_AVATARS,
+  CampusTimeHUD
 } from '../ui/index.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -76,6 +77,7 @@ export class WorldScene extends Phaser.Scene {
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.lightingManager = new LightingManager(this);
+    this.campusTimeHUD = new CampusTimeHUD({ lightingManager: this.lightingManager });
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);
@@ -1397,6 +1399,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   shutdown() {
+    if (this.campusTimeHUD) {
+      this.campusTimeHUD.destroy();
+      this.campusTimeHUD = null;
+    }
+
     if (this.lightingManager) {
       this.lightingManager.destroy();
       this.lightingManager = null;

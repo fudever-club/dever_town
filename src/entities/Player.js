@@ -397,32 +397,21 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.currentDirection = 'down';
     }
 
-    const animPrefix = isMoving ? 'walk' : 'idle';
-    const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
-
-    try {
-      if (this.scene?.anims?.exists(animKey)) {
-        this.anims.play(animKey, true);
-      } else {
-        // TỰ ĐỘNG PHỤC HỒI HOẠT ẢNH: Nếu animKey chưa có, sinh ngay tức thì từ texture sẵn có
-        if (this.scene && this.avatarId) {
-          const charTexKey = `char_${this.avatarId}`;
-          if (this.scene.textures.exists(charTexKey)) {
-            TextureGenerator.createCharacterAnimations(this.scene, this.avatarId);
-            if (this.scene.anims.exists(animKey)) {
-              this.anims.play(animKey, true);
-            }
-          } else {
-            // Fallback quay đúng hướng của frame 4 hướng (down: 0, left: 4, right: 8, up: 12)
-            const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
-            this.setFrame(dirFrames[this.currentDirection] ?? 0);
+    if (isMoving) {
+      this._stoppedMovingTime = null;
+      const walkKey = `walk_${this.currentDirection}_${this.avatarId}`;
+      try {
+        if (this.scene?.anims?.exists(walkKey)) {
+          this.anims.play(walkKey, true);
+        } else if (this.scene && this.avatarId) {
+          TextureGenerator.createCharacterAnimations(this.scene, this.avatarId);
+          if (this.scene.anims.exists(walkKey)) {
+            this.anims.play(walkKey, true);
           }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
 
-    // Hiệu ứng nhún người (Squash & Stretch) hữu cơ khi di chuyển
-    if (isMoving) {
+      // Hiệu ứng nhún người (Squash & Stretch) hữu cơ khi di chuyển
       const bob = Math.sin(performance.now() / 85) * 0.05;
       this.scaleY = 1.0 + bob;
       this.scaleX = 1.0 - bob * 0.7;
@@ -457,8 +446,29 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.scene.audioManager.playFootstep(surface);
       }
     } else {
-      this.scaleY = 1.0;
-      this.scaleX = 1.0;
+      if (!this._stoppedMovingTime) {
+        this._stoppedMovingTime = performance.now();
+      }
+      const idleElapsed = performance.now() - this._stoppedMovingTime;
+      const breatheAnimKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
+      const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
+
+      try {
+        // Sau 500ms đứng yên, tự động chuyển sang nhịp thở nhẹ nhàng
+        if (idleElapsed > 500 && this.scene?.anims?.exists(breatheAnimKey)) {
+          this.anims.play(breatheAnimKey, true);
+        } else if (this.scene?.anims?.exists(defaultIdleKey)) {
+          this.anims.play(defaultIdleKey, true);
+        } else {
+          const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
+          this.setFrame(dirFrames[this.currentDirection] ?? 0);
+        }
+      } catch (e) {}
+
+      // Nhịp thở ngực hữu cơ (Micro Organic Breathing Pulse ±1.8%)
+      const breathe = Math.sin(performance.now() / 650) * 0.018;
+      this.scaleY = 1.0 + breathe;
+      this.scaleX = 1.0 - breathe * 0.4;
     }
 
     // Cập nhật vị trí bóng chân và độ co giãn nhẹ theo nhịp bước
