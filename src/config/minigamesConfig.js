@@ -478,24 +478,68 @@ export const BARISTA_CONFIG = {
 };
 
 // ==========================================
-// 5. 🐍 SNAKE 2.0 CONFIGURATION
+// 5. 🐍 SNAKE 3.0 (CYBER BUGGY SLITHER) CONFIGURATION
 // ==========================================
 export const SNAKE_CONFIG = {
   canvas: { width: 640, height: 360 },
   gridSize: 20,
   baseTickMs: 105,
-  boostTickMs: 50,
+  boostTickMs: 48,
   boostBurnCostSec: 2.0,
+  comboWindowSec: 3.5,
+  maxFoods: 4,
   items: {
-    apple: { pts: 10, grow: 1, color: '#ef4444', icon: 'apple' },
-    chili: { pts: 30, durationSec: 5, color: '#ea580c', icon: 'speed' },
-    magnet: { pts: 25, durationSec: 7, radiusGrid: 4, color: '#eab308', icon: 'magnet' },
-    ice_cream: { pts: 15, durationSec: 6, slowFactor: 1.6, color: '#38bdf8', icon: 'slow' }
+    strawberry: { id: 'strawberry', name: 'Dâu Tây Buggy', pts: 10, grow: 1, color: '#f43f5e', icon: 'strawberry' },
+    apple: { id: 'apple', name: 'Táo Đỏ', pts: 10, grow: 1, color: '#ef4444', icon: 'apple' },
+    dcoin: { id: 'dcoin', name: 'Đồng D-Coin', pts: 50, grow: 1, color: '#facc15', icon: 'dcoin', isRare: true },
+    chili: { id: 'chili', name: 'Ớt Lửa Nitro', pts: 30, durationSec: 5.5, speedMultiplier: 1.8, color: '#ea580c', icon: 'speed' },
+    ice: { id: 'ice', name: 'Đồng Hồ Băng', pts: 15, durationSec: 6.0, slowFactor: 1.6, color: '#38bdf8', icon: 'slow' },
+    ice_cream: { id: 'ice_cream', name: 'Đồng Hồ Băng', pts: 15, durationSec: 6.0, slowFactor: 1.6, color: '#38bdf8', icon: 'slow' },
+    magnet: { id: 'magnet', name: 'Nam Châm Siêu Dẫn', pts: 25, durationSec: 7.0, radiusGrid: 4.5, color: '#eab308', icon: 'magnet' }
+  },
+  theme: {
+    bg: '#090d16',
+    gridLine: 'rgba(56, 189, 248, 0.05)',
+    wallGlow: 'rgba(239, 68, 68, 0.5)',
+    headColor: '#10b981',
+    headBoostColor: '#f97316',
+    antennaColor: '#34d399',
+    eyeColor: '#ffffff',
+    pupilColor: '#0f172a',
+    bodyGradient: ['#10b981', '#059669', '#047857', '#065f46']
   }
 };
 
 // ==========================================
-// 6. ⛏️ GOLD MINER 2.0 CONFIGURATION
+// 6. 📦 SOKOBAN 3.0 (WAREHOUSE MASTER) CONFIGURATION
+// ==========================================
+export const SOKOBAN_CONFIG = {
+  canvas: { width: 640, height: 360 },
+  tileSize: 38,
+  slideDurationMs: 120,
+  iceSlideDelayMs: 70,
+  colors: {
+    bg: '#0b1120',
+    floor: '#1e293b',
+    floorGrid: 'rgba(255, 255, 255, 0.04)',
+    wallTop: '#475569',
+    wallFront: '#334155',
+    wallShadow: 'rgba(0, 0, 0, 0.35)',
+    iceFloor: '#38bdf8',
+    iceBorder: '#7dd3fc',
+    boxNormal: '#f59e0b',
+    boxTarget: '#16a34a',
+    boxBorderNormal: '#fbbf24',
+    boxBorderTarget: '#4ade80',
+    targetSocket: '#22c55e',
+    targetRing: 'rgba(34, 197, 94, 0.35)',
+    playerHoodie: '#f97316',
+    playerPants: '#1e293b'
+  }
+};
+
+// ==========================================
+// 7. ⛏️ GOLD MINER 3.0 CONFIGURATION
 // ==========================================
 export const GOLD_MINER_CONFIG = {
   canvas: { width: 640, height: 360 },

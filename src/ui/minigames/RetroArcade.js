@@ -161,21 +161,33 @@ export class RetroArcade {
     const code = e.code || '';
 
     if (this.currentGame === 'snake') {
-      if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.snakeEngine.setDirection(0, -1);
-      else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.snakeEngine.setDirection(0, 1);
-      else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.snakeEngine.setDirection(-1, 0);
-      else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.snakeEngine.setDirection(1, 0);
-      else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
-        this.snakeEngine.onActionTrigger();
+      if (this.snakeEngine.handleKeyDown) {
+        this.snakeEngine.handleKeyDown(e);
+      } else {
+        if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.snakeEngine.setDirection(0, -1);
+        else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.snakeEngine.setDirection(0, 1);
+        else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.snakeEngine.setDirection(-1, 0);
+        else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.snakeEngine.setDirection(1, 0);
+        else if (code === 'ShiftLeft' || code === 'ShiftRight') this.snakeEngine.setBoosting(true);
+        else if (code === 'KeyR' || key === 'r') this.snakeEngine.reset();
+        else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
+          this.snakeEngine.onActionTrigger();
+        }
       }
     } else if (this.currentGame === 'sokoban') {
-      if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.sokobanEngine.move(0, -1);
-      else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.sokobanEngine.move(0, 1);
-      else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.sokobanEngine.move(-1, 0);
-      else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.sokobanEngine.move(1, 0);
-      else if (key === 'u' || code === 'KeyU') this.sokobanEngine.undo();
-      else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
-        this.sokobanEngine.onActionTrigger();
+      if (this.sokobanEngine.handleKeyDown) {
+        this.sokobanEngine.handleKeyDown(e);
+      } else {
+        if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.sokobanEngine.move(0, -1);
+        else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.sokobanEngine.move(0, 1);
+        else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.sokobanEngine.move(-1, 0);
+        else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.sokobanEngine.move(1, 0);
+        else if (key === 'u' || code === 'KeyU' || key === 'z' || code === 'KeyZ' || code === 'Backspace') this.sokobanEngine.undo();
+        else if (key === 'r' || code === 'KeyR') this.sokobanEngine.restartLevel?.();
+        else if (key === 'l' || code === 'KeyL') this.sokobanEngine.toggleLevelSelect?.();
+        else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
+          this.sokobanEngine.onActionTrigger();
+        }
       }
     } else if (this.currentGame === 'goldminer') {
       if (this.goldMinerEngine.handleKeyDown) {
@@ -199,20 +211,38 @@ export class RetroArcade {
 
   handleKeyUp(e) {
     this.keys[e.key] = false;
+    const code = e.code || '';
+    if (this.currentGame === 'snake') {
+      if (code === 'ShiftLeft' || code === 'ShiftRight') {
+        this.snakeEngine.setBoosting(false);
+      }
+      if (this.snakeEngine.handleKeyUp) {
+        this.snakeEngine.handleKeyUp(e);
+      }
+    }
   }
 
   handleClick(e) {
     if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / (rect.width || 1);
+    const scaleY = this.canvas.height / (rect.height || 1);
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
     if (this.currentGame === 'snake') {
-      this.snakeEngine.onActionTrigger();
+      if (this.snakeEngine.handlePointerClick) {
+        this.snakeEngine.handlePointerClick(x, y);
+      } else {
+        this.snakeEngine.onActionTrigger();
+      }
     } else if (this.currentGame === 'sokoban') {
-      this.sokobanEngine.onActionTrigger();
+      if (this.sokobanEngine.handlePointerClick) {
+        this.sokobanEngine.handlePointerClick(x, y);
+      } else {
+        this.sokobanEngine.onActionTrigger();
+      }
     } else if (this.currentGame === 'goldminer') {
-      const rect = this.canvas.getBoundingClientRect();
-      const scaleX = this.canvas.width / rect.width;
-      const scaleY = this.canvas.height / rect.height;
-      const x = (e.clientX - rect.left) * scaleX;
-      const y = (e.clientY - rect.top) * scaleY;
       if (this.goldMinerEngine.handlePointerClick) {
         this.goldMinerEngine.handlePointerClick(x, y);
       } else {
