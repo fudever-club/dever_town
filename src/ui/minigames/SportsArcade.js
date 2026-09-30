@@ -219,6 +219,8 @@ export class SportsArcade {
       const { x, y } = this.getCanvasCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerDown(x, y);
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerDown?.(x, y);
       }
     };
 
@@ -229,19 +231,28 @@ export class SportsArcade {
         this.penaltyEngine.handlePointerMove(x, y);
       } else if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerMove(x, y);
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerMove?.(x, y);
       }
     };
 
     this.handlePointerUp = (e) => {
       if (!this.running) return;
+      const { x, y } = this.getCanvasCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerUp();
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerUp?.(x, y);
       }
     };
 
     this.handleCanvasClick = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
       if (this.currentGame === 'barista') return;
+      if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
+        this.basketballEngine.didPointerShoot = false;
+        return;
+      }
       e.preventDefault();
       this.onActionTrigger();
     };
@@ -249,6 +260,10 @@ export class SportsArcade {
     this.handleCanvasTouch = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
       if (this.currentGame === 'barista') return;
+      if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
+        this.basketballEngine.didPointerShoot = false;
+        return;
+      }
       e.preventDefault();
       this.onActionTrigger();
     };
@@ -371,6 +386,7 @@ export class SportsArcade {
       this.penaltyEngine.update(dt);
       this.syncFootballCompatibility();
     } else if (this.currentGame === 'basketball') {
+      this.basketballEngine.keys = this.keys;
       this.basketballEngine.update(dt);
     } else if (this.currentGame === 'volleyball') {
       this.volleyballEngine.keys = this.keys;

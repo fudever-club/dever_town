@@ -101,6 +101,51 @@ export const BASKETBALL_CONFIG = {
     speedY: 1.4,
     minY: 60,
     maxY: 160
+  },
+  // ==========================================
+  // CƠ CHẾ STREETBALL ARCADE SHOOTER 3.0
+  // ==========================================
+  theShooter: {
+    // Điều khiển kéo thả Slingshot
+    dragMaxDist: 110,
+    minSpeed: 10.5,
+    maxSpeed: 20.5,
+    minAngleDeg: 25,
+    maxAngleDeg: 85,
+    defaultAngleDeg: 55,
+    defaultPower: 0.65,
+    
+    // Tọa độ cầu thủ & bóng lúc nhồi bóng
+    player: {
+      x: 100,
+      floorY: 260
+    },
+    
+    // Lưới rổ vật lý đàn hồi lò xo
+    net: {
+      cols: 6,
+      rows: 5,
+      springStiffness: 0.18,
+      damping: 0.88,
+      depth: 38
+    },
+    
+    // Điểm số kỹ thuật chi tiết
+    scoring: {
+      normalBasket: 2,
+      bankShotBonus: 2, // Đập bảng mica vào rổ (+4đ)
+      swishBonus: 3,    // Xé lưới không chạm vành (+5đ)
+      onFireTier1: 3,   // 3 quả: Lửa cam x2
+      onFireTier2: 6    // 6 quả: Lửa xanh neon x3
+    },
+    
+    // Màu sắc sân bãi Streetball
+    court: {
+      floorColor: '#ea580c',
+      paintZoneColor: '#0284c7',
+      lineColor: 'rgba(255, 255, 255, 0.75)',
+      threePointRadius: 280
+    }
   }
 };
 
