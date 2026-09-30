@@ -172,6 +172,41 @@ export const VOLLEYBALL_CONFIG = {
     verticalPower: 8.8,
     jumpBoost: 2.2,
     extraVy: 2.2
+  },
+  // ==========================================
+  // CƠ CHẾ THE SPIKE (ARCADE VOLLEYBALL OVERHAUL)
+  // ==========================================
+  theSpike: {
+    // Vùng hồng tâm và căn nhịp
+    sweetSpotRadius: 56,
+    perfectTimingWindow: 0.10, // Giây sai số cho cú Boom Spike
+    hitStopDuration: 0.045,    // 45ms đóng băng khung hình va chạm
+    
+    // Tốc độ đập các cấp độ
+    boomSpikeSpeed: { vx: 12.2, vy: 9.2 },
+    goodSpikeSpeed: { vx: 9.4, vy: 7.4 },
+    tipSpikeSpeed: { vx: 5.2, vy: 3.8 },
+    
+    // Cứu bóng trượt sàn (Slide / Dive)
+    slideSpeed: 6.8,
+    slideDuration: 0.28,
+    slideCooldown: 0.75,
+    
+    // Game Feel: Jump Buffer & Coyote Time & Apex Hang
+    coyoteTime: 0.15,
+    jumpBufferTime: 0.20,
+    apexThreshold: 4.5,
+    apexGravityMultiplier: 0.5,
+    
+    // Giao diện sân bãi & Màu sắc
+    court: {
+      woodColor: '#d97706',
+      woodPlankDark: '#b45309',
+      lineColor: 'rgba(255, 255, 255, 0.85)',
+      attackLineX: 200,      // Vạch 3m sân người chơi
+      botAttackLineX: 440,   // Vạch 3m sân Bot
+      antennaHeight: 35
+    }
   }
 };
 
