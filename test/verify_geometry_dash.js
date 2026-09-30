@@ -107,7 +107,7 @@ assert(dashEngine.cameraX > 0, 'Camera tự động cuộn về phía trước')
 const ringEl = dashEngine.elements.find(el => el.type === 'ring');
 assert(ringEl !== undefined, 'Tồn tại Vòng Nhảy (Jump Ring) trong màn chơi');
 // Position cube right on the ring
-dashEngine.cameraX = ringEl.x - dashEngine.screenX - dashEngine.size / 2;
+dashEngine.cameraX = ringEl.x - dashEngine.size / 2;
 dashEngine.cube.y = ringEl.y - dashEngine.size / 2;
 dashEngine.cube.isGrounded = false;
 dashEngine.jump();
@@ -117,7 +117,7 @@ assert(dashEngine.cube.vy < 0, 'Vòng Nhảy đẩy Cube vọt lên trên');
 // 6. Jump Pad (Spring Bounce)
 const padEl = dashEngine.elements.find(el => el.type === 'pad' && el.color === 'yellow');
 assert(padEl !== undefined, 'Tồn tại Đệm Nhún (Jump Pad) trong màn chơi');
-dashEngine.cameraX = padEl.x - dashEngine.screenX + 5;
+dashEngine.cameraX = padEl.x + 5;
 dashEngine.cube.y = padEl.y - dashEngine.size;
 dashEngine.cube.vy = 20; // Falling onto pad
 dashEngine.update(0.016);
@@ -126,7 +126,7 @@ assert(dashEngine.cube.vy <= GEOMETRY_DASH_CONFIG.physics.jumpPadImpulse, 'Đệ
 // 7. Gravity Portal (Inverted Gravity)
 const portalUp = dashEngine.elements.find(el => el.type === 'portal' && el.portalType === 'gravity_up');
 assert(portalUp !== undefined, 'Tồn tại Cổng Đảo Trọng Lực (Gravity Portal) trong màn chơi');
-dashEngine.cameraX = portalUp.x - dashEngine.screenX;
+dashEngine.cameraX = portalUp.x;
 dashEngine.update(0.016);
 assert(dashEngine.cube.gravityDir === -1, 'Trọng lực được đảo ngược lên trần nhà (gravityDir = -1)');
 
@@ -134,7 +134,7 @@ assert(dashEngine.cube.gravityDir === -1, 'Trọng lực được đảo ngượ
 const blockEl = dashEngine.elements.find(el => el.type === 'block');
 assert(blockEl !== undefined, 'Tồn tại Khối Hộp (Block) trong màn chơi');
 dashEngine.cube.gravityDir = 1; // Normal gravity
-dashEngine.cameraX = blockEl.x - dashEngine.screenX + 4;
+dashEngine.cameraX = blockEl.x + 4;
 dashEngine.cube.y = blockEl.y - dashEngine.size;
 dashEngine.cube.vy = 20;
 dashEngine.update(0.016);
@@ -143,7 +143,7 @@ assert(dashEngine.cube.isGrounded === true, 'Tiếp đất thành công trên n�
 // 9. Spike Collision & Instant Death
 const spikeEl = dashEngine.elements.find(el => el.type === 'spike' && el.dir === 1);
 assert(spikeEl !== undefined, 'Tồn tại Gai Nhọn (Spike) trong màn chơi');
-dashEngine.cameraX = spikeEl.x - dashEngine.screenX;
+dashEngine.cameraX = spikeEl.x;
 dashEngine.cube.y = spikeEl.y - dashEngine.size + 4; // Overlap spike
 dashEngine.update(0.016);
 assert(dashEngine.state === 'dead', 'Va chạm vào gai nhọn kích hoạt trạng thái dead');

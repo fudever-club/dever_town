@@ -12,6 +12,7 @@ import { GoldMinerEngine } from './retro/GoldMinerEngine.js';
 import { FlappyBugEngine } from './retro/FlappyBugEngine.js';
 import { GeometryDashEngine } from './retro/GeometryDashEngine.js';
 import { Match3Engine } from './retro/Match3Engine.js';
+import { PacmanEngine } from './retro/PacmanEngine.js';
 import { questManager } from '../../managers/QuestManager.js';
 
 export class RetroArcade {
@@ -22,7 +23,7 @@ export class RetroArcade {
     this.width = canvas.width;
     this.height = canvas.height;
 
-    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug', 'geometrydash', 'match3'
+    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug', 'geometrydash', 'match3', 'pacman'
     this.isRunning = false;
     this.animationId = null;
 
@@ -38,7 +39,9 @@ export class RetroArcade {
       dashPercent: 0,
       dashHighPercent: parseInt(localStorage.getItem('dever_dash_best') || '0', 10),
       match3Score: 0,
-      match3High: parseInt(localStorage.getItem('dever_match3_high') || '0', 10)
+      match3High: parseInt(localStorage.getItem('dever_match3_high') || '0', 10),
+      pacmanScore: 0,
+      pacmanHigh: parseInt(localStorage.getItem('dever_pacman_high') || '0', 10)
     };
 
     // Common input state
@@ -156,6 +159,23 @@ export class RetroArcade {
         this.options.onScoreUpdate?.({ game: 'match3', score, high: this.scores.match3High });
       }
     });
+
+    this.pacmanEngine = new PacmanEngine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.pacmanScore = score;
+        if (score > this.scores.pacmanHigh) {
+          this.scores.pacmanHigh = score;
+          localStorage.setItem('dever_pacman_high', score.toString());
+        }
+        if (score >= 500) {
+          try {
+            questManager.incrementProgress?.('arcade_games_played', 1);
+            questManager.addPoints?.(25, 'Điểm số Cyber Pac-Man');
+          } catch (_) {}
+        }
+        this.options.onScoreUpdate?.({ game: 'pacman', score, high: this.scores.pacmanHigh });
+      }
+    });
   }
 
   initCompatibilityAdapters() {
@@ -165,6 +185,7 @@ export class RetroArcade {
     this.flappy = { score: 0 };
     this.dash = { percent: 0 };
     this.match3 = { score: 0 };
+    this.pacman = { score: 0 };
   }
 
   setGame(gameId) {
@@ -194,6 +215,7 @@ export class RetroArcade {
     else if (this.currentGame === 'flappybug') this.flappyBugEngine.reset();
     else if (this.currentGame === 'geometrydash') this.geometryDashEngine.reset();
     else if (this.currentGame === 'match3') this.match3Engine.resetGame();
+    else if (this.currentGame === 'pacman') this.pacmanEngine.reset();
 
     this.lastTime = performance.now();
     this.loop(this.lastTime);
@@ -293,6 +315,12 @@ export class RetroArcade {
       if (this.match3Engine.handleKeyDown) {
         this.match3Engine.handleKeyDown(e);
       }
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handleKeyDown) {
+        this.pacmanEngine.handleKeyDown(e);
+      } else {
+        this.pacmanEngine.onActionTrigger();
+      }
     }
   }
 
@@ -309,6 +337,10 @@ export class RetroArcade {
     } else if (this.currentGame === 'geometrydash') {
       if (this.geometryDashEngine.handleKeyUp) {
         this.geometryDashEngine.handleKeyUp(e);
+      }
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handleKeyUp) {
+        this.pacmanEngine.handleKeyUp(e);
       }
     }
   }
@@ -401,6 +433,12 @@ export class RetroArcade {
       }
     } else if (this.currentGame === 'match3') {
       this.match3Engine?.handlePointerUp(x, y);
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handlePointerClick) {
+        this.pacmanEngine.handlePointerClick(x, y);
+      } else {
+        this.pacmanEngine.onActionTrigger();
+      }
     }
   }
 
@@ -430,6 +468,8 @@ export class RetroArcade {
       this.geometryDashEngine.update(dt);
     } else if (this.currentGame === 'match3') {
       this.match3Engine.update(dt);
+    } else if (this.currentGame === 'pacman') {
+      this.pacmanEngine.update(dt);
     }
   }
 
@@ -452,6 +492,8 @@ export class RetroArcade {
       this.geometryDashEngine.render();
     } else if (this.currentGame === 'match3') {
       this.match3Engine.render();
+    } else if (this.currentGame === 'pacman') {
+      this.pacmanEngine.render();
     }
 
     this.juiceFX.render(this.ctx);
@@ -460,6 +502,7 @@ export class RetroArcade {
 
   moveUp() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, -1);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(0, -1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, -1);
     else if (this.currentGame === 'flappybug') this.flappyBugEngine?.flap();
     else if (this.currentGame === 'geometrydash') this.geometryDashEngine?.jump();
@@ -468,6 +511,7 @@ export class RetroArcade {
 
   moveDown() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, 1);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(0, 1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, 1);
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
     else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowDown' });
@@ -475,12 +519,14 @@ export class RetroArcade {
 
   moveLeft() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(-1, 0);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(-1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(-1, 0);
     else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowLeft' });
   }
 
   moveRight() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(1, 0);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(1, 0);
     else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowRight' });
   }
@@ -491,6 +537,7 @@ export class RetroArcade {
 
   triggerAction() {
     if (this.currentGame === 'snake') this.snakeEngine?.onActionTrigger();
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.onActionTrigger();
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.onActionTrigger();
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
     else if (this.currentGame === 'flappybug') this.flappyBugEngine?.onActionTrigger();

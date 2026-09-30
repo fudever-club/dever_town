@@ -246,7 +246,7 @@ export class GeometryDashEngine {
 
   doJump() {
     const phys = this.cfg.physics;
-    const worldCubeX = this.cameraX + this.screenX;
+    const worldCubeX = this.cameraX;
 
     // 1. Kiểm tra kích hoạt Vòng Nhảy (Jump Ring) trên không
     for (const el of this.elements) {
@@ -383,7 +383,7 @@ export class GeometryDashEngine {
     }
 
     // 5. Kiểm tra tiếp xúc sàn hoặc trần tự nhiên
-    const worldCubeX = this.cameraX + this.screenX;
+    const worldCubeX = this.cameraX;
     let groundedThisFrame = false;
 
     if (this.cube.gravityDir === 1) {
@@ -415,7 +415,7 @@ export class GeometryDashEngine {
       if (el.x < worldCubeX - 100 || el.x > worldCubeX + 160) continue;
 
       if (el.type === 'spike') {
-        // Va chạm Gai nhọn (Hitbox thu nhỏ 4px cho công bằng)
+        // Va chạm Gai nhọn (Hitbox thu nhỏ cho công bằng)
         if (this.checkSpikeCollision(cubeBox, el)) {
           this.triggerDeath();
           return;
@@ -473,19 +473,20 @@ export class GeometryDashEngine {
   }
 
   checkSpikeCollision(cube, spike) {
-    const inset = 4;
+    const insetX = 5;
+    const insetY = 3;
     // Kiểm tra overlap AABB thu nhỏ
-    const overlapX = cube.x + cube.w - inset > spike.x + inset && cube.x + inset < spike.x + spike.w - inset;
+    const overlapX = cube.x + cube.w - insetX > spike.x + insetX && cube.x + insetX < spike.x + spike.w - insetX;
     if (!overlapX) return false;
 
     if (spike.dir === 1) {
       // Gai mọc từ dưới lên: đỉnh gai tại spike.y - spike.h
-      const spikeTop = spike.y - spike.h;
-      return cube.y + cube.h - inset > spikeTop && cube.y + inset < spike.y;
+      const spikeTop = spike.y - spike.h + insetY;
+      return cube.y + cube.h > spikeTop && cube.y + insetY < spike.y;
     } else {
       // Gai chúc từ trên xuống: đáy gai tại spike.y + spike.h
-      const spikeBottom = spike.y + spike.h;
-      return cube.y + inset < spikeBottom && cube.y + cube.h - inset > spike.y;
+      const spikeBottom = spike.y + spike.h - insetY;
+      return cube.y < spikeBottom && cube.y + cube.h - insetY > spike.y;
     }
   }
 

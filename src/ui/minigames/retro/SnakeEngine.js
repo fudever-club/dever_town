@@ -51,6 +51,7 @@ export class SnakeEngine {
     this.tickTimer = 0;
     this.lerpProgress = 0;
     this.boostBurnTimer = 0;
+    this.inputQueue = [];
 
     // Combo Streak
     this.combo = 0;
@@ -120,9 +121,14 @@ export class SnakeEngine {
 
   setDirection(dx, dy) {
     if (this.gameOver) return;
+    const lastDir = this.inputQueue.length > 0 ? this.inputQueue[this.inputQueue.length - 1] : this.dir;
     // Không thể quay ngược đầu 180 độ
-    if (this.dir.x + dx === 0 && this.dir.y + dy === 0) return;
-    this.nextDir = { x: dx, y: dy };
+    if (lastDir.x + dx === 0 && lastDir.y + dy === 0) return;
+    // Không thêm hướng trùng lặp liên tiếp
+    if (lastDir.x === dx && lastDir.y === dy) return;
+    if (this.inputQueue.length < 2) {
+      this.inputQueue.push({ x: dx, y: dy });
+    }
   }
 
   setBoosting(boosting) {
@@ -215,12 +221,11 @@ export class SnakeEngine {
     }
 
     this.tickTimer += dt * 1000;
-    this.lerpProgress = Math.min(1.0, this.tickTimer / interval);
-
     if (this.tickTimer >= interval) {
-      this.tickTimer -= interval;
+      this.tickTimer %= interval;
       this.step();
     }
+    this.lerpProgress = Math.min(1.0, Math.max(0.0, this.tickTimer / interval));
 
     // Xả thân tăng tốc: hao hụt 1 đốt thân mỗi 2 giây khi chủ động boost
     if (this.isBoosting && this.snake.length > 4) {
@@ -283,6 +288,9 @@ export class SnakeEngine {
     // Lưu tọa độ trước để Lerp uốn lượn
     this.prevSnake = this.snake.map(s => ({ ...s }));
 
+    if (this.inputQueue.length > 0) {
+      this.nextDir = this.inputQueue.shift();
+    }
     this.dir = { ...this.nextDir };
     let newHeadX = this.snake[0].x + this.dir.x;
     let newHeadY = this.snake[0].y + this.dir.y;
@@ -330,6 +338,9 @@ export class SnakeEngine {
       const food = this.foods.splice(ateIndex, 1)[0];
       this.handleEat(food);
       this.spawnFood();
+      if (this.prevSnake.length < this.snake.length) {
+        this.prevSnake.push({ ...this.snake[this.snake.length - 1] });
+      }
     } else {
       // Không ăn mồi: bỏ đốt cuối
       this.snake.pop();
@@ -597,24 +608,51 @@ export class SnakeEngine {
     const t = this.lerpProgress;
     const bodyColors = SNAKE_CONFIG.theme?.bodyGradient || ['#10b981', '#059669', '#047857'];
 
-    // 1. Vẽ các đốt thân từ đuôi lên cổ
-    for (let i = this.snake.length - 1; i >= 1; i--) {
+    // 1. Tính tọa độ pixel nội suy mượt mà của tất cả các đốt
+    const pts = [];
+    for (let i = 0; i < this.snake.length; i++) {
       const cur = this.snake[i];
       const prev = this.prevSnake[i] || cur;
-
-      // Xử lý gián đoạn wrap-around
       let px = prev.x + (cur.x - prev.x) * t;
       let py = prev.y + (cur.y - prev.y) * t;
       if (Math.abs(cur.x - prev.x) > 1) px = cur.x;
       if (Math.abs(cur.y - prev.y) > 1) py = cur.y;
+      pts.push({
+        x: (px + 0.5) * this.grid,
+        y: (py + 0.5) * this.grid
+      });
+    }
 
-      const posX = (px + 0.5) * this.grid;
-      const posY = (py + 0.5) * this.grid;
+    // 2. Vẽ thân uốn lượn liền khối (Capsule Spine Connections)
+    for (let i = this.snake.length - 1; i >= 1; i--) {
+      const p1 = pts[i];
+      const p0 = pts[i - 1];
+      const dist = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+      if (dist <= this.grid * 1.5) {
+        const segRatio = (this.snake.length - i) / this.snake.length;
+        const radius = (this.grid / 2 - 1) * (0.55 + 0.45 * segRatio);
+        ctx.save();
+        ctx.strokeStyle = bodyColors[i % bodyColors.length];
+        ctx.lineWidth = radius * 1.9;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        if (this.speedBuffTimer > 0 || this.isBoosting) {
+          ctx.shadowColor = '#f97316';
+          ctx.shadowBlur = 6;
+        }
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p0.x, p0.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
 
-      // Bán kính thuôn nhỏ dần về phía đuôi
+    // 3. Vẽ các đốt thân hình cầu bo tròn và vi mạch
+    for (let i = this.snake.length - 1; i >= 1; i--) {
+      const p = pts[i];
       const segRatio = (this.snake.length - i) / this.snake.length;
       const radius = (this.grid / 2 - 1) * (0.55 + 0.45 * segRatio);
-
       const color = bodyColors[i % bodyColors.length];
 
       ctx.save();
@@ -624,29 +662,22 @@ export class SnakeEngine {
         ctx.shadowBlur = 6;
       }
       ctx.beginPath();
-      ctx.arc(posX, posY, Math.max(3, radius), 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, Math.max(3, radius), 0, Math.PI * 2);
       ctx.fill();
 
       // Hoa văn vi mạch ánh sáng trên lưng đốt thân
       if (i % 2 === 0) {
         ctx.fillStyle = '#a7f3d0';
         ctx.beginPath();
-        ctx.arc(posX, posY, Math.max(1.5, radius * 0.35), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, Math.max(1.5, radius * 0.35), 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
     }
 
-    // 2. Vẽ Đầu Linh Thú Buggy (Segment 0)
-    const headCur = this.snake[0];
-    const headPrev = this.prevSnake[0] || headCur;
-    let hx = headPrev.x + (headCur.x - headPrev.x) * t;
-    let hy = headPrev.y + (headCur.y - headPrev.y) * t;
-    if (Math.abs(headCur.x - headPrev.x) > 1) hx = headCur.x;
-    if (Math.abs(headCur.y - headPrev.y) > 1) hy = headCur.y;
-
-    const headPxX = (hx + 0.5) * this.grid;
-    const headPxY = (hy + 0.5) * this.grid;
+    // 4. Vẽ Đầu Linh Thú Buggy (Segment 0)
+    const headPxX = pts[0].x;
+    const headPxY = pts[0].y;
 
     ctx.save();
 

@@ -338,7 +338,7 @@ export const NPC_CONFIG = {
       id: 'npc_game_lead_thanh',
       name: 'Nguyễn Lê Đăng Thành',
       role: 'Trưởng Ban Game Development',
-      tileX: 20, tileY: 8,
+      tileX: 22, tileY: 8,
       direction: 'down',
       spriteConfig: {
         gender: 'male',

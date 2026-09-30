@@ -2048,6 +2048,10 @@ export class InteractiveModal {
       if (typeBadge) typeBadge.textContent = 'CYBER CANDY MATCH';
       if (descEl) descEl.textContent = 'Hoán đổi các viên ngọc lân cận (Click/Kéo thả) để tạo chuỗi 3 trở lên, tạo Kẹo Sọc, Kẹo Bọc và Cầu Vồng!';
       if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'pacman') {
+      if (typeBadge) typeBadge.textContent = 'CYBER PAC-MAN';
+      if (descEl) descEl.textContent = 'Dùng W/A/S/D hoặc Mũi Tên để điều khiển Pac-Buggy ăn hạt năng lượng, né ma và săn ma khi ăn Super D-Coin!';
+      if (btnUndo) btnUndo.classList.add('hidden');
     }
 
     if (this.retroArcade && this.retroArcade.scores) {
@@ -2058,6 +2062,7 @@ export class InteractiveModal {
       else if (game === 'flappybug') this.syncArcadeBadges(game, s.flappyScore, s.flappyHigh);
       else if (game === 'geometrydash') this.syncArcadeBadges(game, s.dashPercent, s.dashHighPercent);
       else if (game === 'match3') this.syncArcadeBadges(game, s.match3Score, s.match3High);
+      else if (game === 'pacman') this.syncArcadeBadges(game, s.pacmanScore, s.pacmanHigh);
     }
   }
 
