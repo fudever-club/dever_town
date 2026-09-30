@@ -28,18 +28,22 @@ function assert(condition, message) {
 
 console.log('--- BẮT ĐẦU KIỂM THỬ ASEPRITE 2D PIXEL ART & ANIMATION PIPELINE ---');
 
-// 1. Kiểm tra file asset tồn tại
-const devPngPath = path.resolve('public/assets/characters/aseprite/char_dev_gen10.png');
+// 1. Kiểm tra 10 file asset PNG và JSON tồn tại
+const asepriteIds = [
+  'char_dev_gen10', 'char_buggy_pro', 'char_frog_pro', 'char_vovinam_pro',
+  'char_mecha_pro', 'char_wizard_pro', 'char_biker_pro', 'char_aodai_pro',
+  'char_cyber_pro', 'char_barista_pro'
+];
+
+asepriteIds.forEach(id => {
+  const pngPath = path.resolve(`public/assets/characters/aseprite/${id}.png`);
+  const jsonPath = path.resolve(`public/assets/characters/aseprite/${id}.json`);
+  assert(fs.existsSync(pngPath), `File ${id}.png tồn tại`);
+  assert(fs.existsSync(jsonPath), `File ${id}.json tồn tại`);
+});
+
+// 2. Kiểm tra cấu trúc JSON Atlas Aseprite mẫu
 const devJsonPath = path.resolve('public/assets/characters/aseprite/char_dev_gen10.json');
-const buggyPngPath = path.resolve('public/assets/characters/aseprite/char_buggy_pro.png');
-const buggyJsonPath = path.resolve('public/assets/characters/aseprite/char_buggy_pro.json');
-
-assert(fs.existsSync(devPngPath), 'File char_dev_gen10.png tồn tại');
-assert(fs.existsSync(devJsonPath), 'File char_dev_gen10.json tồn tại');
-assert(fs.existsSync(buggyPngPath), 'File char_buggy_pro.png tồn tại');
-assert(fs.existsSync(buggyJsonPath), 'File char_buggy_pro.json tồn tại');
-
-// 2. Kiểm tra cấu trúc JSON Atlas Aseprite
 const devJson = JSON.parse(fs.readFileSync(devJsonPath, 'utf-8'));
 assert(devJson.meta && devJson.meta.app.includes('aseprite'), 'Metadata định danh chuẩn Aseprite');
 assert(devJson.meta.size.w === 384 && devJson.meta.size.h === 448, 'Kích thước sheet chuẩn 384x448 px');
@@ -99,14 +103,19 @@ assert(createdAnims.has('cheer_dev_gen10'), 'Đăng ký thành công cheer_dev_g
 const cheerAnim = createdAnims.get('cheer_dev_gen10');
 assert(cheerAnim.frames.length === 6, 'Hoạt ảnh cheer chứa đủ 6 frames');
 
-// 4. Kiểm tra danh mục Tủ Đồ (wardrobe.js)
-const devGen10Preset = CHARACTER_PRESETS.find(p => p.id === 'dev_gen10');
-assert(devGen10Preset !== undefined, 'dev_gen10 có mặt trong CHARACTER_PRESETS');
-assert(devGen10Preset && devGen10Preset.spriteKey === 'char_dev_gen10', 'dev_gen10 trỏ đúng spriteKey char_dev_gen10');
+// 4. Kiểm tra danh mục Tủ Đồ (wardrobe.js) cho cả 10 nhân vật Aseprite
+const wardrobeIds = [
+  'dev_gen10', 'buggy_pro', 'frog_pro', 'vovinam_pro',
+  'mecha_pro', 'wizard_pro', 'biker_pro', 'aodai_pro',
+  'cyber_pro', 'barista_pro'
+];
 
-const buggyProPreset = CHARACTER_PRESETS.find(p => p.id === 'buggy_pro');
-assert(buggyProPreset !== undefined, 'buggy_pro có mặt trong CHARACTER_PRESETS');
-assert(buggyProPreset && buggyProPreset.spriteKey === 'char_buggy_pro', 'buggy_pro trỏ đúng spriteKey char_buggy_pro');
+wardrobeIds.forEach(id => {
+  const preset = CHARACTER_PRESETS.find(p => p.id === id);
+  assert(preset !== undefined, `${id} có mặt trong CHARACTER_PRESETS`);
+  assert(preset && preset.spriteKey === `char_${id}`, `${id} trỏ đúng spriteKey char_${id}`);
+  assert(preset && preset.tags.includes('Aseprite 60FPS'), `${id} có tag chuẩn 'Aseprite 60FPS'`);
+});
 
 console.log(`\n========================================`);
 console.log(`KẾT QUẢ: ${passedTests}/${totalTests} TESTS PASSED!`);

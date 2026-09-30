@@ -267,19 +267,38 @@ def main():
     print("--- KHỞI ĐỘNG ASEPRITE 2D PIXEL ART & ANIMATION PIPELINE ---")
     output_dir = "public/assets/characters/aseprite"
     
-    # 1. Dev Hoodie Pro Gen 10
-    input_dev = "public/assets/characters/samples_v2/sample_dev_dever.png"
-    if os.path.exists(input_dev):
-        create_character_aseprite_package("char_dev_gen10", input_dev, output_dir)
-    else:
-        print(f"[ERROR] Không tìm thấy {input_dev}")
-        
-    # 2. Linh vật Buggy Pro
-    input_buggy = "public/assets/characters/special_outfits/special_buggy_mascot.png"
-    if os.path.exists(input_buggy):
-        create_character_aseprite_package("char_buggy_pro", input_buggy, output_dir)
-    else:
-        print(f"[ERROR] Không tìm thấy {input_buggy}")
+    characters_to_process = [
+        # 1. Dev Hoodie Pro Gen 10
+        ("char_dev_gen10", "public/assets/characters/samples_v2/sample_dev_dever.png"),
+        # 2. Linh vật Buggy Pro
+        ("char_buggy_pro", "public/assets/characters/special_outfits/special_buggy_mascot.png"),
+        # 3. Cóc Vàng Mascot Pro
+        ("char_frog_pro", "public/assets/characters/special_outfits/special_frog_mascot.png"),
+        # 4. Võ Phục Vovinam Đai Vàng Pro
+        ("char_vovinam_pro", "public/assets/characters/special_outfits/special_vovinam_suit.png"),
+        # 5. Cyber Mecha Android Pro
+        ("char_mecha_pro", "public/assets/characters/special_outfits/special_mecha_suit.png"),
+        # 6. Áo Choàng Pháp Sư Huyền Bí Pro
+        ("char_wizard_pro", "public/assets/characters/special_outfits/special_wizard_robe.png"),
+        # 7. Biker Rocker Da Pro
+        ("char_biker_pro", "public/assets/characters/special_outfits/special_leather_biker.png"),
+        # 8. Nữ Sinh Áo Dài Cam FPTU Pro
+        ("char_aodai_pro", "public/assets/characters/samples_v2/sample_fptu_female.png"),
+        # 9. Cyber Hacker Matrix Pro
+        ("char_cyber_pro", "public/assets/characters/samples_v2/sample_cyber_hacker.png"),
+        # 10. Tạp Dề Barista Căn Tin Pro
+        ("char_barista_pro", "public/assets/characters/samples_v2/sample_barista_an.png"),
+    ]
+    
+    count = 0
+    for char_id, src_path in characters_to_process:
+        if os.path.exists(src_path):
+            create_character_aseprite_package(char_id, src_path, output_dir)
+            count += 1
+        else:
+            print(f"[ERROR] Không tìm thấy {src_path}")
+            
+    print(f"\n[HOÀN TẤT] Đã xuất bản thành công {count}/{len(characters_to_process)} gói nhân vật Aseprite 60FPS!")
 
 if __name__ == '__main__':
     main()

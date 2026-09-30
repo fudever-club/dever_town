@@ -78,8 +78,14 @@ export class BootScene extends Phaser.Scene {
     });
 
     // 2G. Spritesheets & JSON Atlas Aseprite 2D Pixel 60FPS (8-Frame Walk Cycle & 4-Frame Breathing)
-    this.load.aseprite('char_dev_gen10', 'assets/characters/aseprite/char_dev_gen10.png', 'assets/characters/aseprite/char_dev_gen10.json');
-    this.load.aseprite('char_buggy_pro', 'assets/characters/aseprite/char_buggy_pro.png', 'assets/characters/aseprite/char_buggy_pro.json');
+    const asepriteCharacters = [
+      'char_dev_gen10', 'char_buggy_pro', 'char_frog_pro', 'char_vovinam_pro',
+      'char_mecha_pro', 'char_wizard_pro', 'char_biker_pro', 'char_aodai_pro',
+      'char_cyber_pro', 'char_barista_pro'
+    ];
+    asepriteCharacters.forEach(key => {
+      this.load.aseprite(key, `assets/characters/aseprite/${key}.png`, `assets/characters/aseprite/${key}.json`);
+    });
 
     // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
     TextureGenerator.generateAllCharacterSpritesheets(this);
@@ -104,8 +110,10 @@ export class BootScene extends Phaser.Scene {
       // 6 Mẫu Mới Gather.town v2 Polish
       'sample_dev_dever', 'sample_fptu_female', 'sample_cyber_hacker',
       'sample_wizard_sorceress', 'sample_biker_rocker', 'sample_barista_an',
-      // Aseprite 2D Pixel 60FPS
-      'dev_gen10', 'buggy_pro'
+      // Aseprite 2D Pixel 60FPS (10 Nhân vật)
+      'dev_gen10', 'buggy_pro', 'frog_pro', 'vovinam_pro',
+      'mecha_pro', 'wizard_pro', 'biker_pro', 'aodai_pro',
+      'cyber_pro', 'barista_pro'
     ];
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);

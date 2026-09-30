@@ -239,7 +239,15 @@
   <script>
     const ASEPRITE_SAMPLES = [
       { id: 'dev_gen10', name: 'Dev Hoodie Pro Gen 10', badge: 'Aseprite 60FPS', color: '#38bdf8', src: 'assets/characters/aseprite/char_dev_gen10.png', isAseprite: true },
-      { id: 'buggy_pro', name: 'Linh Vật Buggy Pro', badge: 'Aseprite 60FPS', color: '#ef4444', src: 'assets/characters/aseprite/char_buggy_pro.png', isAseprite: true }
+      { id: 'buggy_pro', name: 'Linh Vật Buggy Pro', badge: 'Aseprite 60FPS', color: '#ef4444', src: 'assets/characters/aseprite/char_buggy_pro.png', isAseprite: true },
+      { id: 'frog_pro', name: 'Cóc Vàng FPTU Pro', badge: 'Aseprite 60FPS', color: '#eab308', src: 'assets/characters/aseprite/char_frog_pro.png', isAseprite: true },
+      { id: 'vovinam_pro', name: 'Võ Phục Vovinam Pro', badge: 'Aseprite 60FPS', color: '#0284c7', src: 'assets/characters/aseprite/char_vovinam_pro.png', isAseprite: true },
+      { id: 'mecha_pro', name: 'Cyber Mecha AI Pro', badge: 'Aseprite 60FPS', color: '#0891b2', src: 'assets/characters/aseprite/char_mecha_pro.png', isAseprite: true },
+      { id: 'wizard_pro', name: 'Pháp Sư Huyền Bí Pro', badge: 'Aseprite 60FPS', color: '#4c1d95', src: 'assets/characters/aseprite/char_wizard_pro.png', isAseprite: true },
+      { id: 'biker_pro', name: 'Biker Rocker Đỏ Ruby Pro', badge: 'Aseprite 60FPS', color: '#e11d48', src: 'assets/characters/aseprite/char_biker_pro.png', isAseprite: true },
+      { id: 'aodai_pro', name: 'Nữ Sinh Áo Dài Cam Pro', badge: 'Aseprite 60FPS', color: '#ea580c', src: 'assets/characters/aseprite/char_aodai_pro.png', isAseprite: true },
+      { id: 'cyber_pro', name: 'Cyber Hacker Matrix Pro', badge: 'Aseprite 60FPS', color: '#06b6d4', src: 'assets/characters/aseprite/char_cyber_pro.png', isAseprite: true },
+      { id: 'barista_pro', name: 'Barista Căn Tin Pro', badge: 'Aseprite 60FPS', color: '#d97706', src: 'assets/characters/aseprite/char_barista_pro.png', isAseprite: true }
     ];
 
     const NEW_SAMPLES = [
@@ -501,7 +509,7 @@
 
         // Cập nhật hoạt ảnh chân bước
         animTimer += dt * 1000;
-        const isAse = (currentCharId === 'dev_gen10' || currentCharId === 'buggy_pro');
+        const isAse = ASEPRITE_SAMPLES.some(s => s.id === currentCharId);
         const frameLimit = isAse ? 8 : 4;
         const stepSpeed = isAse ? 85 : ANIM_SPEED;
         if (animTimer >= stepSpeed) {
@@ -579,7 +587,7 @@
         iCtx.translate(playerX, playerY + bobY);
         iCtx.scale(squashX, stretchY);
 
-        const isAse = (currentCharId === 'dev_gen10' || currentCharId === 'buggy_pro');
+        const isAse = ASEPRITE_SAMPLES.some(s => s.id === currentCharId);
         let srcX = 0;
         let srcY = 0;
 
