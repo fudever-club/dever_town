@@ -9,6 +9,7 @@ import { CanvasJuiceFX } from './common/CanvasJuiceFX.js';
 import { SnakeEngine } from './retro/SnakeEngine.js';
 import { SokobanEngine } from './retro/SokobanEngine.js';
 import { GoldMinerEngine } from './retro/GoldMinerEngine.js';
+import { FlappyBugEngine } from './retro/FlappyBugEngine.js';
 import { questManager } from '../../managers/QuestManager.js';
 
 export class RetroArcade {
@@ -19,7 +20,7 @@ export class RetroArcade {
     this.width = canvas.width;
     this.height = canvas.height;
 
-    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer'
+    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug'
     this.isRunning = false;
     this.animationId = null;
 
@@ -29,7 +30,9 @@ export class RetroArcade {
       snakeHigh: parseInt(localStorage.getItem('dever_snake_high') || '0', 10),
       sokobanLevel: parseInt(localStorage.getItem('dever_sokoban_level') || '1', 10),
       goldminerScore: 0,
-      goldminerHigh: parseInt(localStorage.getItem('dever_goldminer_high') || '0', 10)
+      goldminerHigh: parseInt(localStorage.getItem('dever_goldminer_high') || '0', 10),
+      flappyScore: 0,
+      flappyHigh: parseInt(localStorage.getItem('dever_flappy_high') || '0', 10)
     };
 
     // Common input state
@@ -95,12 +98,28 @@ export class RetroArcade {
         this.options.onScoreUpdate?.({ game: 'goldminer', score: cash, high: this.scores.goldminerHigh });
       }
     });
+
+    this.flappyBugEngine = new FlappyBugEngine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.flappyScore = score;
+        if (score > this.scores.flappyHigh) {
+          this.scores.flappyHigh = score;
+          localStorage.setItem('dever_flappy_high', score.toString());
+        }
+        questManager.incrementProgress?.('flappy_bug_score', 1);
+        try {
+          questManager.addPoints?.(10, 'Vượt chướng ngại vật Flappy Bug');
+        } catch (_) {}
+        this.options.onScoreUpdate?.({ game: 'flappybug', score, high: this.scores.flappyHigh });
+      }
+    });
   }
 
   initCompatibilityAdapters() {
     this.snake = { gameOver: false, score: 0 };
     this.sokoban = { level: 0, won: false };
     this.miner = { score: 0 };
+    this.flappy = { score: 0 };
   }
 
   setGame(gameId) {
@@ -125,6 +144,7 @@ export class RetroArcade {
     if (this.currentGame === 'snake') this.snakeEngine.reset();
     else if (this.currentGame === 'sokoban') this.sokobanEngine.loadLevel(this.sokobanEngine.currentLevelIndex);
     else if (this.currentGame === 'goldminer') this.goldMinerEngine.resetDay();
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine.reset();
 
     this.lastTime = performance.now();
     this.loop(this.lastTime);
@@ -206,6 +226,12 @@ export class RetroArcade {
       ) {
         this.goldMinerEngine.onActionTrigger();
       }
+    } else if (this.currentGame === 'flappybug') {
+      if (this.flappyBugEngine.handleKeyDown) {
+        this.flappyBugEngine.handleKeyDown(e);
+      } else {
+        this.flappyBugEngine.onActionTrigger();
+      }
     }
   }
 
@@ -248,6 +274,12 @@ export class RetroArcade {
       } else {
         this.goldMinerEngine.onActionTrigger();
       }
+    } else if (this.currentGame === 'flappybug') {
+      if (this.flappyBugEngine.handlePointerClick) {
+        this.flappyBugEngine.handlePointerClick(x, y);
+      } else {
+        this.flappyBugEngine.onActionTrigger();
+      }
     }
   }
 
@@ -271,6 +303,8 @@ export class RetroArcade {
       this.sokobanEngine.update(dt);
     } else if (this.currentGame === 'goldminer') {
       this.goldMinerEngine.update(dt);
+    } else if (this.currentGame === 'flappybug') {
+      this.flappyBugEngine.update(dt);
     }
   }
 
@@ -287,6 +321,8 @@ export class RetroArcade {
       this.sokobanEngine.render();
     } else if (this.currentGame === 'goldminer') {
       this.goldMinerEngine.render();
+    } else if (this.currentGame === 'flappybug') {
+      this.flappyBugEngine.render();
     }
 
     this.juiceFX.render(this.ctx);
@@ -296,6 +332,7 @@ export class RetroArcade {
   moveUp() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, -1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, -1);
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine?.flap();
   }
 
   moveDown() {
@@ -322,5 +359,6 @@ export class RetroArcade {
     if (this.currentGame === 'snake') this.snakeEngine?.onActionTrigger();
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.onActionTrigger();
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine?.onActionTrigger();
   }
 }

@@ -585,3 +585,44 @@ export const GOLD_MINER_CONFIG = {
     { day: 5, targetCash: 5800, timeSec: 60 }
   ]
 };
+
+// ==========================================
+// 8. 🪲 FLAPPY BUG CONFIGURATION
+// ==========================================
+export const FLAPPY_BUG_CONFIG = {
+  canvas: { width: 640, height: 360 },
+  physics: {
+    gravity: 920,
+    flapForce: -310,
+    maxDropSpeed: 440,
+    pipeSpeed: 140,
+    pipeIntervalSec: 1.85,
+    pipeWidth: 54,
+    pipeGap: 116,
+    groundHeight: 44
+  },
+  buggy: {
+    startX: 120,
+    startY: 160,
+    radius: 14
+  },
+  medals: {
+    bronze: 10,
+    silver: 25,
+    gold: 50,
+    platinum: 100
+  },
+  colors: {
+    skyTop: '#090d16',
+    skyBottom: '#1e1b4b',
+    ground: '#0f172a',
+    groundGrid: '#38bdf8',
+    pipeBody: '#1e293b',
+    pipeBorder: '#334155',
+    pipeGlow: '#06b6d4',
+    buggyShell: '#10b981',
+    buggySpots: '#fde047',
+    buggyWing: 'rgba(255, 255, 255, 0.65)'
+  }
+};
+

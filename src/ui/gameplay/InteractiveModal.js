@@ -2036,6 +2036,10 @@ export class InteractiveModal {
       if (typeBadge) typeBadge.textContent = 'FPTU GOLD MINER';
       if (descEl) descEl.textContent = 'Canh móc tời xoay đúng hướng và bấm SPACE để thả móc kéo vàng, kim cương và quà bí ẩn!';
       if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'flappybug') {
+      if (typeBadge) typeBadge.textContent = 'FLAPPY BUGGY';
+      if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để Buggy vỗ cánh bay qua các cột Server FPTU!';
+      if (btnUndo) btnUndo.classList.add('hidden');
     }
 
     if (this.retroArcade && this.retroArcade.scores) {
@@ -2043,6 +2047,7 @@ export class InteractiveModal {
       if (game === 'snake') this.syncArcadeBadges(game, s.snakeScore, s.snakeHigh);
       else if (game === 'sokoban') this.syncArcadeBadges(game, s.sokobanLevel, s.sokobanLevel);
       else if (game === 'goldminer') this.syncArcadeBadges(game, s.goldminerScore, s.goldminerHigh);
+      else if (game === 'flappybug') this.syncArcadeBadges(game, s.flappyScore, s.flappyHigh);
     }
   }
 
