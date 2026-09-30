@@ -135,6 +135,10 @@
       <div style="display: flex; align-items: center; gap: 10px;">
         <label for="charSelect" style="font-size: 13px; color: #cbd5e1;">Chọn nhân vật:</label>
         <select id="charSelect" style="background: #1e293b; color: #f8fafc; border: 1px solid #475569; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer;">
+          <optgroup label="🚀 Aseprite 2D Pixel 60FPS (8-Frame Walk & Idle Breath)">
+            <option value="dev_gen10">Dev Hoodie Pro Gen 10 [Aseprite 60FPS]</option>
+            <option value="buggy_pro">Linh Vật Buggy Pro [Aseprite 60FPS]</option>
+          </optgroup>
           <optgroup label="✨ 6 Mẫu Mới Gather.town v2">
             <option value="sample_dev_dever">1. Nam Dev FU-DEVER (V2 Remaster)</option>
             <option value="sample_fptu_female">2. Nữ Sinh FPTU Tươi Tắn (V2)</option>
@@ -201,6 +205,11 @@
     </div>
   </div>
 
+  <!-- 0. MẪU NHÂN VẬT ASEPRITE 2D PIXEL 60FPS -->
+  <div class="section-title">0. MẪU NHÂN VẬT ASEPRITE 2D PIXEL 60FPS (8-FRAME WALK & IDLE BREATH)</div>
+  <div class="grid" id="grid_aseprite" style="margin-bottom: 40px;"></div>
+
+  <div class="section-title">MẪU GATHER.TOWN V2 POLISH (6 SAMPLES)</div>
   <div class="grid" id="grid_new_samples" style="margin-bottom: 40px;"></div>
 
   <!-- 1. TRANG PHỤC ĐẶC BIỆT -->
@@ -228,6 +237,11 @@
   <div class="grid" id="grid_acc"></div>
 
   <script>
+    const ASEPRITE_SAMPLES = [
+      { id: 'dev_gen10', name: 'Dev Hoodie Pro Gen 10', badge: 'Aseprite 60FPS', color: '#38bdf8', src: 'assets/characters/aseprite/char_dev_gen10.png', isAseprite: true },
+      { id: 'buggy_pro', name: 'Linh Vật Buggy Pro', badge: 'Aseprite 60FPS', color: '#ef4444', src: 'assets/characters/aseprite/char_buggy_pro.png', isAseprite: true }
+    ];
+
     const NEW_SAMPLES = [
       { id: 'sample_dev_dever', name: '1. Nam Dev FU-DEVER', badge: 'Core Dev', color: '#0066CC', src: 'assets/characters/samples_v2/sample_dev_dever.png' },
       { id: 'sample_fptu_female', name: '2. Nữ Sinh FPTU Tươi Tắn', badge: 'Ambassador', color: '#f26f21', src: 'assets/characters/samples_v2/sample_fptu_female.png' },
@@ -351,22 +365,26 @@
         img.src = item.src;
         let frame = 0;
         img.onload = () => {
+          const totalFrames = item.isAseprite ? 8 : 4;
+          const intervalTime = item.isAseprite ? 85 : 160;
           setInterval(() => {
-            frame = (frame + 1) % 4;
+            frame = (frame + 1) % totalFrames;
             canvases.forEach((c, r) => {
               const ctx = c.getContext('2d');
               ctx.clearRect(0, 0, frameW, frameH);
+              const srcRow = item.isAseprite ? (r + 2) : r;
               ctx.drawImage(
                 img,
-                frame * frameW, r * frameH, frameW, frameH,
+                frame * frameW, srcRow * frameH, frameW, frameH,
                 0, 0, frameW, frameH
               );
             });
-          }, 160);
+          }, intervalTime);
         };
       });
     }
 
+    renderGroup(ASEPRITE_SAMPLES, 'grid_aseprite');
     renderGroup(NEW_SAMPLES, 'grid_new_samples');
     renderGroup(SPECIAL_OUTFITS, 'grid_special');
     renderGroup(NPCS, 'grid_npcs');
@@ -382,6 +400,7 @@
 
     const charImages = {};
     const ALL_PLAYABLE = [
+      ...ASEPRITE_SAMPLES,
       ...NEW_SAMPLES,
       ...SPECIAL_OUTFITS,
       ...NPCS,
@@ -482,9 +501,12 @@
 
         // Cập nhật hoạt ảnh chân bước
         animTimer += dt * 1000;
-        if (animTimer >= ANIM_SPEED) {
+        const isAse = (currentCharId === 'dev_gen10' || currentCharId === 'buggy_pro');
+        const frameLimit = isAse ? 8 : 4;
+        const stepSpeed = isAse ? 85 : ANIM_SPEED;
+        if (animTimer >= stepSpeed) {
           animTimer = 0;
-          animFrame = (animFrame + 1) % 4;
+          animFrame = (animFrame + 1) % frameLimit;
         }
       } else {
         isMoving = false;
@@ -557,8 +579,36 @@
         iCtx.translate(playerX, playerY + bobY);
         iCtx.scale(squashX, stretchY);
 
-        const srcX = animFrame * frameW;
-        const srcY = playerDir * frameH;
+        const isAse = (currentCharId === 'dev_gen10' || currentCharId === 'buggy_pro');
+        let srcX = 0;
+        let srcY = 0;
+
+        if (isAse) {
+          if (isMoving) {
+            // Row 2: down, Row 3: left, Row 4: right, Row 5: up
+            srcY = (playerDir + 2) * frameH;
+            srcX = (animFrame % 8) * frameW;
+          } else {
+            // Idle breathing & blinking (4 frames)
+            const idleF = Math.floor((now / 450) % 4);
+            if (playerDir === 0) { // down
+              srcY = 0 * frameH;
+              srcX = idleF * frameW;
+            } else if (playerDir === 3) { // up
+              srcY = 0 * frameH;
+              srcX = (4 + idleF) * frameW;
+            } else if (playerDir === 1) { // left
+              srcY = 1 * frameH;
+              srcX = idleF * frameW;
+            } else { // right
+              srcY = 1 * frameH;
+              srcX = (4 + idleF) * frameW;
+            }
+          }
+        } else {
+          srcX = animFrame * frameW;
+          srcY = playerDir * frameH;
+        }
 
         iCtx.drawImage(
           currentImg,

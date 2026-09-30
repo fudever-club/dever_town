@@ -1621,9 +1621,62 @@ export class TextureGenerator {
     ctx.restore();
   }
 
+  static createAnimationsFromAseprite(scene, avatarId, atlasJson) {
+    if (!scene || !scene.anims || !atlasJson?.meta?.frameTags) return;
+    const key = `char_${avatarId}`;
+    const frameKeys = Object.keys(atlasJson.frames || {});
+
+    atlasJson.meta.frameTags.forEach(tag => {
+      const tagFrames = [];
+      for (let idx = tag.from; idx <= tag.to; idx++) {
+        if (frameKeys[idx]) {
+          tagFrames.push({ key, frame: frameKeys[idx] });
+        }
+      }
+
+      if (tagFrames.length === 0) return;
+
+      const animKey = `${tag.name}_${avatarId}`;
+      if (scene.anims.exists(animKey)) scene.anims.remove(animKey);
+
+      let frameRate = 10;
+      if (tag.name.startsWith('walk')) frameRate = 12; // 8-frame Walk Cycle mượt mà
+      else if (tag.name.startsWith('idle')) frameRate = 2; // Nhịp thở thư thái
+      else if (tag.name === 'cheer') frameRate = 8; // Ăn mừng
+
+      scene.anims.create({
+        key: animKey,
+        frames: tagFrames,
+        frameRate,
+        repeat: -1
+      });
+
+      // Đăng ký tương thích cho Player.js
+      if (tag.name.startsWith('idle_')) {
+        const dir = tag.name.replace('idle_', '');
+        const breatheKey = `idle_breathe_${dir}_${avatarId}`;
+        if (scene.anims.exists(breatheKey)) scene.anims.remove(breatheKey);
+        scene.anims.create({
+          key: breatheKey,
+          frames: tagFrames,
+          frameRate: 2,
+          repeat: -1
+        });
+      }
+    });
+  }
+
   static createCharacterAnimations(scene, avatarId) {
     if (!scene || !scene.anims) return;
     const key = `char_${avatarId}`;
+
+    // Kiểm tra xem texture có nạp từ file Aseprite JSON Atlas không
+    const atlasJson = scene.cache?.json?.get?.(key);
+    if (atlasJson && atlasJson.meta && atlasJson.meta.frameTags) {
+      this.createAnimationsFromAseprite(scene, avatarId, atlasJson);
+      return;
+    }
+
     const dirs = [
       { name: 'down', row: 0 },
       { name: 'left', row: 1 },

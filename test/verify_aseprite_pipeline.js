@@ -1,0 +1,113 @@
+/**
+ * DEVER TOWN - ASEPRITE 2D PIXEL PIPELINE VERIFICATION SUITE
+ * Kiểm định toàn diện bộ asset và cơ chế diễn hoạt nhân vật Aseprite 60FPS:
+ * 1. File PNG Spritesheet và JSON Atlas tồn tại, đúng định dạng và kích thước chuẩn (384x448 px, 54 frames).
+ * 2. 9 Animation Tags chuẩn Aseprite (idle 4 hướng, walk 8 frames 4 hướng, cheer 6 frames).
+ * 3. TextureGenerator.createAnimationsFromAseprite đăng ký chính xác hoạt ảnh vào Phaser Scene.
+ * 4. Tương thích hoạt ảnh idle_breathe cho Player.js và đồng bộ danh mục Tủ Đồ.
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { TextureGenerator } from '../src/utils/TextureGenerator.js';
+import { CHARACTER_PRESETS } from '../src/config/wardrobe.js';
+
+let passedTests = 0;
+let totalTests = 0;
+
+function assert(condition, message) {
+  totalTests++;
+  if (condition) {
+    console.log(`[PASS] ${message}`);
+    passedTests++;
+  } else {
+    console.error(`[FAIL] ${message}`);
+    process.exitCode = 1;
+  }
+}
+
+console.log('--- BẮT ĐẦU KIỂM THỬ ASEPRITE 2D PIXEL ART & ANIMATION PIPELINE ---');
+
+// 1. Kiểm tra file asset tồn tại
+const devPngPath = path.resolve('public/assets/characters/aseprite/char_dev_gen10.png');
+const devJsonPath = path.resolve('public/assets/characters/aseprite/char_dev_gen10.json');
+const buggyPngPath = path.resolve('public/assets/characters/aseprite/char_buggy_pro.png');
+const buggyJsonPath = path.resolve('public/assets/characters/aseprite/char_buggy_pro.json');
+
+assert(fs.existsSync(devPngPath), 'File char_dev_gen10.png tồn tại');
+assert(fs.existsSync(devJsonPath), 'File char_dev_gen10.json tồn tại');
+assert(fs.existsSync(buggyPngPath), 'File char_buggy_pro.png tồn tại');
+assert(fs.existsSync(buggyJsonPath), 'File char_buggy_pro.json tồn tại');
+
+// 2. Kiểm tra cấu trúc JSON Atlas Aseprite
+const devJson = JSON.parse(fs.readFileSync(devJsonPath, 'utf-8'));
+assert(devJson.meta && devJson.meta.app.includes('aseprite'), 'Metadata định danh chuẩn Aseprite');
+assert(devJson.meta.size.w === 384 && devJson.meta.size.h === 448, 'Kích thước sheet chuẩn 384x448 px');
+assert(devJson.meta.frameTags && devJson.meta.frameTags.length === 9, 'Đầy đủ 9 Animation Tags Aseprite');
+
+const tagNames = devJson.meta.frameTags.map(t => t.name);
+const expectedTags = [
+  'idle_down', 'idle_up', 'idle_left', 'idle_right',
+  'walk_down', 'walk_left', 'walk_right', 'walk_up', 'cheer'
+];
+expectedTags.forEach(tag => {
+  assert(tagNames.includes(tag), `Chứa animation tag: ${tag}`);
+});
+
+const frameKeys = Object.keys(devJson.frames);
+assert(frameKeys.length === 54, `Tổng cộng đúng 54 frames diễn hoạt (thực tế: ${frameKeys.length})`);
+
+// Kiểm tra chi tiết 8 frames cho walk_down
+const walkDownTag = devJson.meta.frameTags.find(t => t.name === 'walk_down');
+assert(walkDownTag && (walkDownTag.to - walkDownTag.from + 1) === 8, 'walk_down có chu kỳ 8-frame walk cycle');
+
+// Kiểm tra 4 frames cho idle_down
+const idleDownTag = devJson.meta.frameTags.find(t => t.name === 'idle_down');
+assert(idleDownTag && (idleDownTag.to - idleDownTag.from + 1) === 4, 'idle_down có chu kỳ 4-frame breathing');
+
+// 3. Kiểm tra TextureGenerator.createAnimationsFromAseprite
+const createdAnims = new Map();
+const mockScene = {
+  anims: {
+    exists: (k) => createdAnims.has(k),
+    remove: (k) => createdAnims.delete(k),
+    create: (config) => {
+      createdAnims.set(config.key, config);
+      return config;
+    }
+  },
+  cache: {
+    json: {
+      get: (k) => (k === 'char_dev_gen10' ? devJson : null)
+    }
+  }
+};
+
+TextureGenerator.createAnimationsFromAseprite(mockScene, 'dev_gen10', devJson);
+
+assert(createdAnims.has('walk_down_dev_gen10'), 'Đăng ký thành công walk_down_dev_gen10');
+const walkAnim = createdAnims.get('walk_down_dev_gen10');
+assert(walkAnim.frames.length === 8, 'Hoạt ảnh bước đi chứa đủ 8 frames');
+assert(walkAnim.frameRate === 12, 'Tốc độ diễn hoạt bước đi 12 FPS chuẩn mượt 60 FPS');
+
+assert(createdAnims.has('idle_down_dev_gen10'), 'Đăng ký thành công idle_down_dev_gen10');
+const idleAnim = createdAnims.get('idle_down_dev_gen10');
+assert(idleAnim.frames.length === 4, 'Hoạt ảnh đứng yên chứa đủ 4 frames thở & chớp mắt');
+
+assert(createdAnims.has('idle_breathe_down_dev_gen10'), 'Đăng ký tương thích ngược idle_breathe_down_dev_gen10 cho Player.js');
+assert(createdAnims.has('cheer_dev_gen10'), 'Đăng ký thành công cheer_dev_gen10 (ăn mừng/emote)');
+const cheerAnim = createdAnims.get('cheer_dev_gen10');
+assert(cheerAnim.frames.length === 6, 'Hoạt ảnh cheer chứa đủ 6 frames');
+
+// 4. Kiểm tra danh mục Tủ Đồ (wardrobe.js)
+const devGen10Preset = CHARACTER_PRESETS.find(p => p.id === 'dev_gen10');
+assert(devGen10Preset !== undefined, 'dev_gen10 có mặt trong CHARACTER_PRESETS');
+assert(devGen10Preset && devGen10Preset.spriteKey === 'char_dev_gen10', 'dev_gen10 trỏ đúng spriteKey char_dev_gen10');
+
+const buggyProPreset = CHARACTER_PRESETS.find(p => p.id === 'buggy_pro');
+assert(buggyProPreset !== undefined, 'buggy_pro có mặt trong CHARACTER_PRESETS');
+assert(buggyProPreset && buggyProPreset.spriteKey === 'char_buggy_pro', 'buggy_pro trỏ đúng spriteKey char_buggy_pro');
+
+console.log(`\n========================================`);
+console.log(`KẾT QUẢ: ${passedTests}/${totalTests} TESTS PASSED!`);
+console.log(`========================================\n`);

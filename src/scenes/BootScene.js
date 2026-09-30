@@ -77,6 +77,10 @@ export class BootScene extends Phaser.Scene {
       this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
     });
 
+    // 2G. Spritesheets & JSON Atlas Aseprite 2D Pixel 60FPS (8-Frame Walk Cycle & 4-Frame Breathing)
+    this.load.aseprite('char_dev_gen10', 'assets/characters/aseprite/char_dev_gen10.png', 'assets/characters/aseprite/char_dev_gen10.json');
+    this.load.aseprite('char_buggy_pro', 'assets/characters/aseprite/char_buggy_pro.png', 'assets/characters/aseprite/char_buggy_pro.json');
+
     // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
     TextureGenerator.generateAllCharacterSpritesheets(this);
 
@@ -99,7 +103,9 @@ export class BootScene extends Phaser.Scene {
       'npc_historian_duc', 'npc_backend_khoa', 'npc_algo_truyen',
       // 6 Mẫu Mới Gather.town v2 Polish
       'sample_dev_dever', 'sample_fptu_female', 'sample_cyber_hacker',
-      'sample_wizard_sorceress', 'sample_biker_rocker', 'sample_barista_an'
+      'sample_wizard_sorceress', 'sample_biker_rocker', 'sample_barista_an',
+      // Aseprite 2D Pixel 60FPS
+      'dev_gen10', 'buggy_pro'
     ];
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);

@@ -6,6 +6,16 @@
 export const CHARACTER_PRESETS = [
   // --- NHÂN VẬT NAM (MALE CHARACTERS) ---
   {
+    id: 'dev_gen10',
+    name: 'Dev Hoodie Pro Gen 10 [Aseprite 60FPS]',
+    role: 'Top-tier Builder • Aseprite',
+    gender: 'male',
+    color: '#38bdf8',
+    spriteKey: 'char_dev_gen10',
+    desc: 'Thiết kế Aseprite 2D Pixel 60FPS siêu mượt mà: 8-frame walk cycle, nhịp thở nâng ngực và chớp mắt sống động.',
+    tags: ['Aseprite 60FPS', 'Mới', 'Gen 10']
+  },
+  {
     id: 'sample_dev_dever',
     name: 'Áo Hoodie Xanh Dev FU-DEVER',
     role: 'Trang Phục Coder • FU-DEVER',
@@ -278,6 +288,16 @@ export const CHARACTER_PRESETS = [
     spriteKey: 'char_buggy_mascot',
     desc: 'Chú bọ cánh cam Buggy đáng yêu với lớp cánh đỏ chấm bi đen, 2 râu anten tinh nghịch, biểu tượng của sự may mắn và sạch bug code.',
     tags: ['Mascot', 'Buggy', 'FU-DEVER', 'Mới']
+  },
+  {
+    id: 'buggy_pro',
+    name: 'Linh Vật Buggy Pro [Aseprite 60FPS]',
+    role: 'Linh Vật 60FPS • FU-DEVER',
+    gender: 'unisex',
+    color: '#ef4444',
+    spriteKey: 'char_buggy_pro',
+    desc: 'Linh vật Buggy chuyển động 8-frame Aseprite 60FPS siêu mượt, cánh vỗ bồng bềnh và nhịp thở ngộ nghĩnh.',
+    tags: ['Aseprite 60FPS', 'Buggy', 'Mascot']
   }
 ];
 
