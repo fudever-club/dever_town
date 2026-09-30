@@ -501,26 +501,43 @@ export const GOLD_MINER_CONFIG = {
   canvas: { width: 640, height: 360 },
   hook: {
     startX: 320,
-    startY: 50,
-    swingSpeed: 0.026,
-    maxAngle: Math.PI * 0.72,
-    shootSpeed: 7.6,
-    pullBaseSpeed: 6.2,
-    baseLength: 24
+    startY: 52,
+    swingSpeed: 0.024,
+    maxAngle: Math.PI * 0.74,
+    shootSpeed: 8.2,
+    pullBaseSpeed: 6.6,
+    baseLength: 26
   },
   minerals: {
-    gold_s: { name: 'Vàng Nhỏ', r: 11, val: 50, weight: 1.0, color: '#fbbf24' },
-    gold_m: { name: 'Vàng Vừa', r: 19, val: 160, weight: 2.3, color: '#f59e0b' },
-    gold_l: { name: 'Vàng Đại', r: 29, val: 500, weight: 4.9, color: '#d97706' },
-    diamond: { name: 'Kim Cương', r: 8, val: 600, weight: 0.7, color: '#38bdf8' },
-    rock: { name: 'Đá Cuội', r: 22, val: 15, weight: 4.4, color: '#78716c' },
-    tnt: { name: 'Thùng TNT', r: 16, val: 0, isBomb: true, blastRadius: 92, color: '#ef4444' },
-    mystery: { name: 'Túi Bí Ẩn', r: 14, isMystery: true, color: '#a855f7' }
+    gold_s: { name: 'Vàng Nhỏ', r: 12, val: 50, weight: 1.0, color: '#facc15', shine: '#fef08a' },
+    gold_m: { name: 'Vàng Vừa', r: 20, val: 160, weight: 2.2, color: '#eab308', shine: '#fef9c3' },
+    gold_l: { name: 'Vàng Đại', r: 30, val: 500, weight: 4.8, color: '#ca8a04', shine: '#ffffff' },
+    diamond: { name: 'Kim Cương', r: 9, val: 600, polishedVal: 900, weight: 0.6, color: '#38bdf8', shine: '#ffffff' },
+    rock_s: { name: 'Đá Nhỏ', r: 15, val: 12, weight: 3.0, color: '#78716c', shine: '#a8a29e' },
+    rock_l: { name: 'Đá Tảng', r: 25, val: 25, weight: 5.5, color: '#57534e', shine: '#78716c' },
+    tnt: { name: 'Thùng TNT', r: 17, val: 0, isBomb: true, blastRadius: 105, color: '#ef4444' },
+    mystery: { name: 'Túi Bí Ẩn', r: 15, isMystery: true, color: '#a855f7' }
+  },
+  mole: {
+    r: 12,
+    speed: 1.4,
+    valWithoutDiamond: 2,
+    valWithDiamond: 602,
+    color: '#78350f',
+    diamondChance: 0.55
   },
   shopItems: {
-    strength_drink: { id: 'strength', name: 'Nước Tăng Lực', price: 200, desc: 'Kéo vật nặng nhanh gấp 2.5 lần' },
-    dynamite: { id: 'dynamite', name: 'Thuốc Nổ Dynamite', price: 150, desc: 'Nhấn Space để nổ bỏ vật nặng khi đang kéo' },
-    diamond_polish: { id: 'polish', name: 'Đánh Bóng Kim Cương', price: 180, desc: 'Tăng giá trị kim cương lên $900' },
-    lucky_clover: { id: 'clover', name: 'Cỏ 4 Lá May Mắn', price: 120, desc: 'Túi bí ẩn luôn mở ra phần thưởng xịn' }
-  }
+    dynamite: { id: 'dynamite', name: 'Thuốc Nổ Dynamite', price: 150, maxHold: 5, desc: 'Bấm Space / Nút Nổ để phá hủy vật nặng khi đang kéo', icon: '🧨' },
+    strength_drink: { id: 'strength', name: 'Nước Tăng Lực', price: 200, desc: 'Kéo vật nặng nhanh gấp 2.5 lần trong ngày tiếp theo', icon: '⚡' },
+    diamond_polish: { id: 'polish', name: 'Đánh Bóng Kim Cương', price: 180, desc: 'Tăng giá trị Kim Cương từ $600 lên $900', icon: '💎' },
+    lucky_clover: { id: 'clover', name: 'Cỏ 4 Lá May Mắn', price: 120, desc: 'Túi bí ẩn luôn mở ra phần thưởng xịn ($400 - $800)', icon: '🍀' },
+    laser_sight: { id: 'laser', name: 'Kính Ngắm Laser', price: 160, desc: 'Chiếu tia laser định hướng góc bắn móc chuẩn xác', icon: '🎯' }
+  },
+  levels: [
+    { day: 1, targetCash: 650, timeSec: 60 },
+    { day: 2, targetCash: 1600, timeSec: 60 },
+    { day: 3, targetCash: 2800, timeSec: 60 },
+    { day: 4, targetCash: 4200, timeSec: 60 },
+    { day: 5, targetCash: 5800, timeSec: 60 }
+  ]
 };

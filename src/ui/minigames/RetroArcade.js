@@ -178,7 +178,9 @@ export class RetroArcade {
         this.sokobanEngine.onActionTrigger();
       }
     } else if (this.currentGame === 'goldminer') {
-      if (
+      if (this.goldMinerEngine.handleKeyDown) {
+        this.goldMinerEngine.handleKeyDown(e);
+      } else if (
         code === 'Space' ||
         key === ' ' ||
         code === 'Enter' ||
@@ -206,7 +208,16 @@ export class RetroArcade {
     } else if (this.currentGame === 'sokoban') {
       this.sokobanEngine.onActionTrigger();
     } else if (this.currentGame === 'goldminer') {
-      this.goldMinerEngine.onActionTrigger();
+      const rect = this.canvas.getBoundingClientRect();
+      const scaleX = this.canvas.width / rect.width;
+      const scaleY = this.canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+      if (this.goldMinerEngine.handlePointerClick) {
+        this.goldMinerEngine.handlePointerClick(x, y);
+      } else {
+        this.goldMinerEngine.onActionTrigger();
+      }
     }
   }
 
