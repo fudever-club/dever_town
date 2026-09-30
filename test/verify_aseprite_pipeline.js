@@ -28,11 +28,28 @@ function assert(condition, message) {
 
 console.log('--- BẮT ĐẦU KIỂM THỬ ASEPRITE 2D PIXEL ART & ANIMATION PIPELINE ---');
 
-// 1. Kiểm tra 10 file asset PNG và JSON tồn tại
+// 1. Kiểm tra toàn bộ 47 file asset PNG và JSON Aseprite tồn tại
 const asepriteIds = [
+  // 10 Pro Nhân vật Đặc quyền
   'char_dev_gen10', 'char_buggy_pro', 'char_frog_pro', 'char_vovinam_pro',
   'char_mecha_pro', 'char_wizard_pro', 'char_biker_pro', 'char_aodai_pro',
-  'char_cyber_pro', 'char_barista_pro'
+  'char_cyber_pro', 'char_barista_pro',
+  // 11 NPCs trong trường và quán Cóc
+  'char_npc_chunhiem_nhat', 'char_npc_pho_hung', 'char_npc_thuky_anh', 'char_npc_barista_an',
+  'char_npc_hocthu_kiet', 'char_npc_game_lead_thanh', 'char_npc_sukien_thang', 'char_npc_media_hai',
+  'char_npc_historian_duc', 'char_npc_backend_khoa', 'char_npc_algo_truyen',
+  // 12 Trang phục Sinh viên FPTU & Dev
+  'char_hoodie_fuda', 'char_polo_fuda', 'char_aodai_white', 'char_aodai_fuda',
+  'char_hoodie_dever', 'char_polo_dever', 'char_suit_formal', 'char_jersey_sport',
+  'char_hoodie_gaming', 'char_hoodie_terminal', 'char_apron_barista', 'char_tee_dev_black',
+  // 6 Trang phục Đặc biệt / Cosplay
+  'char_frog_mascot', 'char_buggy_mascot', 'char_mecha_suit', 'char_wizard_robe',
+  'char_vovinam_suit', 'char_leather_biker',
+  // 2 Nhân vật Gốc (Bases)
+  'char_base_male', 'char_base_female',
+  // 6 Mẫu Thế hệ V2
+  'char_sample_dev_dever', 'char_sample_fptu_female', 'char_sample_cyber_hacker',
+  'char_sample_wizard_sorceress', 'char_sample_biker_rocker', 'char_sample_barista_an'
 ];
 
 asepriteIds.forEach(id => {

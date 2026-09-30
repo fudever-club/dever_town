@@ -268,26 +268,64 @@ def main():
     output_dir = "public/assets/characters/aseprite"
     
     characters_to_process = [
-        # 1. Dev Hoodie Pro Gen 10
+        # --- 1. NHÂN VẬT PRO & MASCOT ĐỘC BẢN ---
         ("char_dev_gen10", "public/assets/characters/samples_v2/sample_dev_dever.png"),
-        # 2. Linh vật Buggy Pro
         ("char_buggy_pro", "public/assets/characters/special_outfits/special_buggy_mascot.png"),
-        # 3. Cóc Vàng Mascot Pro
         ("char_frog_pro", "public/assets/characters/special_outfits/special_frog_mascot.png"),
-        # 4. Võ Phục Vovinam Đai Vàng Pro
         ("char_vovinam_pro", "public/assets/characters/special_outfits/special_vovinam_suit.png"),
-        # 5. Cyber Mecha Android Pro
         ("char_mecha_pro", "public/assets/characters/special_outfits/special_mecha_suit.png"),
-        # 6. Áo Choàng Pháp Sư Huyền Bí Pro
         ("char_wizard_pro", "public/assets/characters/special_outfits/special_wizard_robe.png"),
-        # 7. Biker Rocker Da Pro
         ("char_biker_pro", "public/assets/characters/special_outfits/special_leather_biker.png"),
-        # 8. Nữ Sinh Áo Dài Cam FPTU Pro
         ("char_aodai_pro", "public/assets/characters/samples_v2/sample_fptu_female.png"),
-        # 9. Cyber Hacker Matrix Pro
         ("char_cyber_pro", "public/assets/characters/samples_v2/sample_cyber_hacker.png"),
-        # 10. Tạp Dề Barista Căn Tin Pro
         ("char_barista_pro", "public/assets/characters/samples_v2/sample_barista_an.png"),
+
+        # --- 2. TOÀN BỘ 11 NPC BAN QUẢN TRỊ & CỐ VẤN CLB FU-DEVER ---
+        ("char_npc_chunhiem_nhat", "public/assets/characters/npcs/npc_chunhiem_nhat.png"),
+        ("char_npc_pho_hung", "public/assets/characters/npcs/npc_pho_hung.png"),
+        ("char_npc_thuky_anh", "public/assets/characters/npcs/npc_thuky_anh.png"),
+        ("char_npc_barista_an", "public/assets/characters/npcs/npc_barista_an.png"),
+        ("char_npc_hocthu_kiet", "public/assets/characters/npcs/npc_hocthu_kiet.png"),
+        ("char_npc_game_lead_thanh", "public/assets/characters/npcs/npc_game_lead_thanh.png"),
+        ("char_npc_sukien_thang", "public/assets/characters/npcs/npc_sukien_thang.png"),
+        ("char_npc_media_hai", "public/assets/characters/npcs/npc_media_hai.png"),
+        ("char_npc_historian_duc", "public/assets/characters/npcs/npc_historian_duc.png"),
+        ("char_npc_backend_khoa", "public/assets/characters/npcs/npc_backend_khoa.png"),
+        ("char_npc_algo_truyen", "public/assets/characters/npcs/npc_algo_truyen.png"),
+
+        # --- 3. TOÀN BỘ 12 TRANG PHỤC HỌC ĐƯỜNG & ĐỒNG PHỤC SINH VIÊN ---
+        ("char_hoodie_fuda", "public/assets/characters/outfits/full_hoodie_fuda.png"),
+        ("char_polo_fuda", "public/assets/characters/outfits/full_polo_fuda.png"),
+        ("char_aodai_white", "public/assets/characters/outfits/full_aodai_white.png"),
+        ("char_aodai_fuda", "public/assets/characters/outfits/full_aodai_fuda.png"),
+        ("char_hoodie_dever", "public/assets/characters/outfits/full_hoodie_dever.png"),
+        ("char_polo_dever", "public/assets/characters/outfits/full_polo_dever.png"),
+        ("char_suit_formal", "public/assets/characters/outfits/full_suit_formal.png"),
+        ("char_jersey_sport", "public/assets/characters/outfits/full_jersey_sport.png"),
+        ("char_hoodie_gaming", "public/assets/characters/outfits/full_hoodie_gaming.png"),
+        ("char_hoodie_terminal", "public/assets/characters/outfits/full_hoodie_terminal.png"),
+        ("char_apron_barista", "public/assets/characters/outfits/full_apron_barista.png"),
+        ("char_tee_dev_black", "public/assets/characters/outfits/full_tee_dev_black.png"),
+
+        # --- 4. TRANG PHỤC ĐẶC BIỆT (SPECIAL OUTFITS) ---
+        ("char_frog_mascot", "public/assets/characters/special_outfits/special_frog_mascot.png"),
+        ("char_buggy_mascot", "public/assets/characters/special_outfits/special_buggy_mascot.png"),
+        ("char_mecha_suit", "public/assets/characters/special_outfits/special_mecha_suit.png"),
+        ("char_wizard_robe", "public/assets/characters/special_outfits/special_wizard_robe.png"),
+        ("char_vovinam_suit", "public/assets/characters/special_outfits/special_vovinam_suit.png"),
+        ("char_leather_biker", "public/assets/characters/special_outfits/special_leather_biker.png"),
+
+        # --- 5. PHÔI THÂN CHIBI CƠ BẢN (MODULAR BASES) ---
+        ("char_base_male", "public/assets/characters/bases/base_male.png"),
+        ("char_base_female", "public/assets/characters/bases/base_female.png"),
+
+        # --- 6. 6 MẪU GATHER.TOWN V2 POLISH ---
+        ("char_sample_dev_dever", "public/assets/characters/samples_v2/sample_dev_dever.png"),
+        ("char_sample_fptu_female", "public/assets/characters/samples_v2/sample_fptu_female.png"),
+        ("char_sample_cyber_hacker", "public/assets/characters/samples_v2/sample_cyber_hacker.png"),
+        ("char_sample_wizard_sorceress", "public/assets/characters/samples_v2/sample_wizard_sorceress.png"),
+        ("char_sample_biker_rocker", "public/assets/characters/samples_v2/sample_biker_rocker.png"),
+        ("char_sample_barista_an", "public/assets/characters/samples_v2/sample_barista_an.png"),
     ]
     
     count = 0
