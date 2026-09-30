@@ -51,10 +51,70 @@ export const FOOTBALL_CONFIG = {
     streakBonus: 40
   },
   bullseyes: [
-    { x: 215, y: 108, r: 14, pts: 150, name: 'Góc Chữ A Trái' },
-    { x: 425, y: 108, r: 14, pts: 150, name: 'Góc Chữ A Phải' },
-    { x: 320, y: 100, r: 12, pts: 120, name: 'Xà Ngang Tâm' }
-  ]
+    { x: 215, y: 108, r: 14, pts: 250, name: 'Góc Chữ A Trái' },
+    { x: 425, y: 108, r: 14, pts: 250, name: 'Góc Chữ A Phải' },
+    { x: 320, y: 100, r: 12, pts: 180, name: 'Xà Ngang Tâm' }
+  ],
+  // ==========================================
+  // GOLAZO DUEL 3.0 ADVANCED PARAMETERS
+  // ==========================================
+  theGolazo: {
+    stadium: {
+      skyColorTop: '#05081c',
+      skyColorBottom: '#0d173b',
+      floodlightIntensity: 0.18,
+      ledText: 'FU-DEVER • WORK HARD - PLAY HARD • FPT UNIVERSITY DA NANG',
+      crowdFlashCount: 45
+    },
+    pitch: {
+      grassStripe1: '#15803d',
+      grassStripe2: '#166534',
+      lineColor: 'rgba(255, 255, 255, 0.88)'
+    },
+    striker: {
+      jerseyColor: '#f26f21',
+      shortsColor: '#0f172a',
+      socksColor: '#f26f21',
+      hairColor: '#1e1b4b',
+      number: '10',
+      runupOffsetX: 32,
+      runupOffsetY: 30,
+      runupDuration: 0.22
+    },
+    goalkeeper: {
+      jerseyColor: '#eab308',
+      shortsColor: '#1e293b',
+      glovesColor: '#ef4444',
+      idleBobSpeed: 4.5,
+      diveSpeed: 3.2,
+      reachRadius: 48
+    },
+    wall: {
+      enabledAfterStreak: 2,
+      count: 3,
+      jerseyColor: '#4338ca',
+      jumpMax: 28,
+      jumpSpeed: 5.2,
+      width: 58,
+      height: 38
+    },
+    ball: {
+      radius: 8.5,
+      maxCurve: 75,
+      knuckleJitter: 12,
+      regularDuration: 0.62,
+      panenkaDuration: 1.15,
+      hitStopDuration: 40
+    },
+    technicalScoring: {
+      topCorner: 250,
+      inOffPost: 200,
+      curvedGolazo: 180,
+      panenka: 160,
+      regularGoal: 100,
+      gkSave: 150
+    }
+  }
 };
 
 // ==========================================

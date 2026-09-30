@@ -221,6 +221,8 @@ export class SportsArcade {
         this.baristaEngine.handlePointerDown(x, y);
       } else if (this.currentGame === 'basketball') {
         this.basketballEngine.handlePointerDown?.(x, y);
+      } else if (this.currentGame === 'football') {
+        this.penaltyEngine.handlePointerDown?.(x, y);
       }
     };
 
@@ -243,6 +245,8 @@ export class SportsArcade {
         this.baristaEngine.handlePointerUp();
       } else if (this.currentGame === 'basketball') {
         this.basketballEngine.handlePointerUp?.(x, y);
+      } else if (this.currentGame === 'football') {
+        this.penaltyEngine.handlePointerUp?.(x, y);
       }
     };
 
@@ -251,6 +255,9 @@ export class SportsArcade {
       if (this.currentGame === 'barista') return;
       if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
         this.basketballEngine.didPointerShoot = false;
+        return;
+      }
+      if (this.currentGame === 'football' && this.penaltyEngine.isDragging) {
         return;
       }
       e.preventDefault();
@@ -262,6 +269,9 @@ export class SportsArcade {
       if (this.currentGame === 'barista') return;
       if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
         this.basketballEngine.didPointerShoot = false;
+        return;
+      }
+      if (this.currentGame === 'football' && this.penaltyEngine.isDragging) {
         return;
       }
       e.preventDefault();
@@ -383,6 +393,7 @@ export class SportsArcade {
     this.juiceFX.update(dt);
 
     if (this.currentGame === 'football') {
+      this.penaltyEngine.handleKeyboardControls?.(this.keys, dt);
       this.penaltyEngine.update(dt);
       this.syncFootballCompatibility();
     } else if (this.currentGame === 'basketball') {
