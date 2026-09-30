@@ -191,6 +191,10 @@ export class SportsArcade {
       }
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = true;
       if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = true;
+
+      if (this.currentGame === 'barista') {
+        this.baristaEngine.handleKeyDown?.(e);
+      }
     };
 
     this.handleKeyUp = (e) => {
@@ -200,6 +204,10 @@ export class SportsArcade {
       }
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = false;
       if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = false;
+
+      if (this.currentGame === 'barista') {
+        this.baristaEngine.handleKeyUp?.(e);
+      }
     };
 
     this.getCanvasCoords = (e) => {

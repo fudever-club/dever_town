@@ -329,10 +329,12 @@ export const BARISTA_CONFIG = {
       avatarColor: '#38bdf8',
       patienceSec: 45,
       targetIce: 3,
+      isHot: false,
+      hasEspressoExtraction: true,
       layers: [
-        { name: 'Sữa Đặc', color: '#fef08a', targetPct: 20 },
-        { name: 'Cốt Cà Phê Phin', color: '#451a03', targetPct: 50 },
-        { name: 'Kem Béo Muối Hồng', color: '#fdf2f8', targetPct: 30 }
+        { name: 'Sữa Đặc', color: '#fef08a', targetPct: 20, targetMl: 40 },
+        { name: 'Cốt Cà Phê Phin', color: '#451a03', targetPct: 50, targetMl: 100 },
+        { name: 'Kem Béo Muối Hồng', color: '#fdf2f8', targetPct: 30, targetMl: 60 }
       ],
       topping: 'Bột Cacao Mịn',
       tipBase: 150
@@ -345,13 +347,51 @@ export const BARISTA_CONFIG = {
       avatarColor: '#f472b6',
       patienceSec: 40,
       targetIce: 3,
+      isHot: false,
+      hasEspressoExtraction: false,
       layers: [
-        { name: 'Sữa Đặc', color: '#fef08a', targetPct: 25 },
-        { name: 'Sữa Tươi Thanh Trùng', color: '#f8fafc', targetPct: 45 },
-        { name: 'Bọt Cafe Bồng Bềnh', color: '#78350f', targetPct: 30 }
+        { name: 'Sữa Đặc', color: '#fef08a', targetPct: 25, targetMl: 50 },
+        { name: 'Sữa Tươi Thanh Trùng', color: '#f8fafc', targetPct: 45, targetMl: 90 },
+        { name: 'Bọt Cafe Bồng Bềnh', color: '#78350f', targetPct: 30, targetMl: 60 }
       ],
       topping: 'Không Topping',
       tipBase: 130
+    },
+    cafe_trung: {
+      id: 'cafe_trung',
+      name: 'Cà Phê Trứng Hà Nội',
+      dialogue: '1 ly Cà Phê Trứng vàng óng béo ngậy cho giảng viên chấm đồ án SE cả ngày không mỏi!',
+      customer: 'Thầy Trưởng Bộ Môn',
+      avatarColor: '#eab308',
+      patienceSec: 48,
+      targetIce: 0,
+      isHot: true,
+      hasEspressoExtraction: true,
+      layers: [
+        { name: 'Cốt Espresso Nóng Đậm', color: '#3d1c06', targetPct: 40, targetMl: 80 },
+        { name: 'Kem Trứng Bông Mịn', color: '#fef08a', targetPct: 60, targetMl: 120 }
+      ],
+      topping: 'Bột Quế Thơm',
+      tipBase: 165
+    },
+    matcha_latte: {
+      id: 'matcha_latte',
+      name: 'Matcha Kem Cheese FPTU',
+      dialogue: '1 ly Matcha Latte xanh mướt phủ kem cheese mặn mặn tiếp sức chạy sự kiện!',
+      customer: 'Chủ Tịch CLB Sự Kiện',
+      avatarColor: '#10b981',
+      patienceSec: 42,
+      targetIce: 3,
+      isHot: false,
+      hasEspressoExtraction: false,
+      layers: [
+        { name: 'Siro Đường Mía', color: '#fde047', targetPct: 15, targetMl: 30 },
+        { name: 'Sữa Tươi Tiệt Trùng', color: '#f8fafc', targetPct: 45, targetMl: 90 },
+        { name: 'Cốt Matcha Nhật Bản', color: '#15803d', targetPct: 25, targetMl: 50 },
+        { name: 'Kem Cheese Mặn', color: '#fef9c3', targetPct: 15, targetMl: 30 }
+      ],
+      topping: 'Bột Matcha Xanh',
+      tipBase: 155
     },
     tra_dao_cam_sa: {
       id: 'tra_dao_cam_sa',
@@ -361,10 +401,12 @@ export const BARISTA_CONFIG = {
       avatarColor: '#fbbf24',
       patienceSec: 38,
       targetIce: 4,
+      isHot: false,
+      hasEspressoExtraction: false,
       layers: [
-        { name: 'Siro Đào Vàng', color: '#fb923c', targetPct: 25 },
-        { name: 'Cốt Trà Đen Cam Sả', color: '#b45309', targetPct: 65 },
-        { name: 'Lớp Nước Tươi', color: '#fdba74', targetPct: 10 }
+        { name: 'Siro Đào Vàng', color: '#fb923c', targetPct: 25, targetMl: 50 },
+        { name: 'Cốt Trà Đen Cam Sả', color: '#b45309', targetPct: 65, targetMl: 130 },
+        { name: 'Lớp Nước Cam Tươi', color: '#fdba74', targetPct: 10, targetMl: 20 }
       ],
       topping: 'Lát Đào Tươi',
       tipBase: 140
@@ -377,10 +419,12 @@ export const BARISTA_CONFIG = {
       avatarColor: '#a78bfa',
       patienceSec: 50,
       targetIce: 3,
+      isHot: false,
+      hasEspressoExtraction: false,
       layers: [
-        { name: 'Trân Châu Hoàng Kim', color: '#78350f', targetPct: 25 },
-        { name: 'Trà Sữa Oolong', color: '#d97706', targetPct: 55 },
-        { name: 'Váng Sữa Macchiato', color: '#fffbeb', targetPct: 20 }
+        { name: 'Trân Châu Hoàng Kim', color: '#78350f', targetPct: 25, targetMl: 50 },
+        { name: 'Trà Sữa Oolong', color: '#d97706', targetPct: 55, targetMl: 110 },
+        { name: 'Váng Sữa Macchiato', color: '#fffbeb', targetPct: 20, targetMl: 40 }
       ],
       topping: 'Trân Châu Giòn',
       tipBase: 160
@@ -391,6 +435,45 @@ export const BARISTA_CONFIG = {
     maxGoodTexture: 90,
     overwhiskLimit: 96,
     whiskSpeed: 1.4
+  },
+  craft3: {
+    barTheme: {
+      woodTop: '#5a2d0c',
+      woodFront: '#3d1c06',
+      woodTrim: '#854d0e',
+      edisonWarmth: 'rgba(251, 191, 36, 0.18)',
+      machineSteel: '#94a3b8',
+      machineDark: '#334155',
+      gaugeGold: '#fbbf24'
+    },
+    tamping: {
+      minGoodForce: 14,
+      maxGoodForce: 22,
+      perfectForce: 18,
+      fillRate: 18,
+      extractionDuration: 2.2
+    },
+    layering: {
+      pourSpeedPctPerSec: 55,
+      waveFrequency: 8.5,
+      waveDamping: 0.92,
+      tolerancePct: 6
+    },
+    steaming: {
+      minGoodTemp: 58,
+      maxGoodTemp: 68,
+      targetTemp: 63,
+      tempRate: 12.0,
+      minGoodTexture: 72,
+      maxGoodTexture: 90,
+      targetTexture: 82,
+      textureRate: 18.0
+    },
+    rating: {
+      perfectStarBonus: 1.5,
+      goodStarBonus: 1.2,
+      standardBonus: 1.0
+    }
   }
 };
 
