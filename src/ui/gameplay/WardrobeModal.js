@@ -309,8 +309,23 @@ export class WardrobeModal {
         const srcTex = this.scene.textures.get(prebakedKey);
         const srcImg = srcTex.getSourceImage();
         if (srcImg) {
-          const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[currentDir] ?? 0;
-          tempCtx.drawImage(srcImg, 0, dirRow * 64, 48, 64, 0, 0, 48, 64);
+          let srcX = 0;
+          let srcY = 0;
+          if (srcImg.width === 384) {
+            const dirCoords = {
+              'down': { col: 0, row: 0 },
+              'up': { col: 4, row: 0 },
+              'left': { col: 0, row: 1 },
+              'right': { col: 4, row: 1 }
+            }[currentDir] || { col: 0, row: 0 };
+            srcX = dirCoords.col * 48;
+            srcY = dirCoords.row * 64;
+          } else {
+            const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[currentDir] ?? 0;
+            srcX = 0;
+            srcY = dirRow * 64;
+          }
+          tempCtx.drawImage(srcImg, srcX, srcY, 48, 64, 0, 0, 48, 64);
           rendered = true;
 
           // Vẽ vật phẩm cầm tay (in-hand equipment) đè lên tay
