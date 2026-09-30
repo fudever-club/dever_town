@@ -58,12 +58,26 @@ export class LightingManager {
     this.lightGraphics = this.scene.add.graphics();
     this.lightGraphics.setDepth(999990); // Nằm trên bản đồ & nhân vật, dưới HUD UI
 
+    // Lớp Bloom / Phát quang thứ cấp (Additive Luminous Layer) tạo hiệu ứng hào quang thực
+    if (this.scene.add.graphics) {
+      try {
+        this.bloomGraphics = this.scene.add.graphics();
+        this.bloomGraphics.setDepth(999992);
+        if (this.bloomGraphics.setBlendMode) {
+          this.bloomGraphics.setBlendMode('ADD');
+        }
+      } catch (e) {}
+    }
+
     this.scene.scale?.on?.('resize', this.handleResize, this);
   }
 
   handleResize() {
     if (this.lightGraphics) {
       this.lightGraphics.clear();
+    }
+    if (this.bloomGraphics) {
+      this.bloomGraphics.clear();
     }
   }
 
@@ -279,11 +293,18 @@ export class LightingManager {
         this.lightGraphics.clear();
         this.lightGraphics.setVisible(false);
       }
+      if (this.bloomGraphics && this.bloomGraphics.visible) {
+        this.bloomGraphics.clear();
+        this.bloomGraphics.setVisible(false);
+      }
       return;
     }
 
     if (!this.lightGraphics.visible) {
       this.lightGraphics.setVisible(true);
+    }
+    if (this.bloomGraphics && !this.bloomGraphics.visible) {
+      this.bloomGraphics.setVisible(true);
     }
 
     const cam = this.scene.cameras?.main;
@@ -295,6 +316,9 @@ export class LightingManager {
     const generalFlicker = Math.sin(this.flickerTimer * 3.5) * 0.03;
 
     this.lightGraphics.clear();
+    if (this.bloomGraphics) {
+      this.bloomGraphics.clear();
+    }
 
     // 1. Phủ màn đêm / bóng tối toàn màn hình theo viewport camera
     const viewLeft = cam.scrollX - 60;
@@ -322,7 +346,26 @@ export class LightingManager {
       }
       const intensity = light.intensity * intensityFactor;
 
-      this.drawSoftLightCone(light.x, light.y, rad, light.color, intensity);
+      switch (light.type) {
+        case 'street_lamp':
+          this.renderStreetLamp(light, rad, intensity);
+          break;
+        case 'neon':
+          this.renderNeonLight(light, rad, intensity);
+          break;
+        case 'statue':
+          this.renderStatueLight(light, rad, intensity);
+          break;
+        case 'desk_lamp':
+          this.renderDeskLamp(light, rad, intensity);
+          break;
+        case 'ceiling_light':
+          this.renderCeilingLight(light, rad, intensity);
+          break;
+        default:
+          this.drawSoftLightCone(light.x, light.y, rad, light.color, intensity);
+          break;
+      }
     });
 
     // 3. Quầng sáng theo chân nhân vật (Foot Aura) - Mặc định TẮT theo phản hồi người dùng
@@ -361,28 +404,195 @@ export class LightingManager {
   }
 
   /**
-   * Vẽ quầng sáng mềm mại đa tầng (Multi-ring Falloff), xua tan bóng tối tự nhiên
-   * @param {number} cx Tọa độ tâm X
-   * @param {number} cy Tọa độ tâm Y
-   * @param {number} maxRadius Bán kính cực đại
-   * @param {number} colorHex Màu ánh sáng
-   * @param {number} intensity Cường độ sáng (0.0 - 1.0)
+   * Helper tương thích chéo: Vẽ Elip nếu có, fallback vẽ Circle nếu chạy trong unit test mock
    */
-  drawSoftLightCone(cx, cy, maxRadius, colorHex, intensity = 1.0) {
-    const steps = 7;
+  drawEllipseOrCircleOn(targetGraphics, cx, cy, rx, ry) {
+    if (!targetGraphics) return;
+    if (targetGraphics.fillEllipse) {
+      targetGraphics.fillEllipse(cx, cy, rx * 2, ry * 2);
+    } else {
+      targetGraphics.fillCircle(cx, cy, rx);
+    }
+  }
+
+  /**
+   * Vẽ quầng sáng Elip mềm mại đa tầng (28 micro-steps) với đường cong Hermite mượt mà,
+   * triệt tiêu hoàn toàn viền gãy (Zero Banding), tạo cảm giác ánh sáng khói sương tự nhiên như Sea of Stars & Delverium.
+   */
+  drawSoftLightEllipse(cx, cy, radiusX, radiusY, colorHex, intensity = 1.0) {
+    const steps = 28;
     for (let i = steps; i >= 1; i--) {
-      const stepRadius = (maxRadius / steps) * i;
-      // Công thức falloff lũy thừa mềm mại (Inverse Square approximation)
-      const factor = (steps - i + 1) / steps;
-      const stepAlpha = (0.24 * Math.pow(factor, 1.4)) * intensity;
+      const t = i / steps;
+      const rx = radiusX * t;
+      const ry = radiusY * t;
+
+      // Hermite Falloff: f(t) = (1 - t^2)^2 (mượt mà, triệt tiêu viền cứng ở mép)
+      const factor = Math.max(0, 1 - t * t);
+      const smoothFactor = factor * factor;
+      const stepAlpha = (0.016 * smoothFactor) * intensity;
 
       this.lightGraphics.fillStyle(colorHex, stepAlpha);
-      this.lightGraphics.fillCircle(cx, cy, stepRadius);
+      this.drawEllipseOrCircleOn(this.lightGraphics, cx, cy, rx, ry);
     }
 
-    // Điểm nhấn lõi sáng rực ở tâm (Core Hotspot)
-    this.lightGraphics.fillStyle(0xffffff, 0.18 * intensity);
-    this.lightGraphics.fillCircle(cx, cy, maxRadius * 0.18);
+    // Core Hotspot (lõi sáng ấm áp ở tâm)
+    const coreAlpha = Math.min(0.35, 0.14 * intensity);
+    this.lightGraphics.fillStyle(0xffffff, coreAlpha);
+    this.drawEllipseOrCircleOn(this.lightGraphics, cx, cy, radiusX * 0.22, radiusY * 0.22);
+  }
+
+  /**
+   * Tương thích ngược: Vẽ quầng sáng mềm mại với góc nhìn 2.5D nghiêng (Aspect 1.5 : 1)
+   */
+  drawSoftLightCone(cx, cy, maxRadius, colorHex, intensity = 1.0) {
+    const aspectY = 0.65;
+    this.drawSoftLightEllipse(cx, cy, maxRadius, maxRadius * aspectY, colorHex, intensity);
+  }
+
+  /**
+   * Đèn đường / Cột đèn (Streetlamp):
+   * 1. Chùm sáng hình nón (Volumetric Light Beam) từ bóng đèn đỉnh cột rọi xuống.
+   * 2. Vũng sáng Elip 2.5D trên mặt đất dưới chân cột (Ground Light Pool).
+   * 3. Vầng hào quang phát sáng (Corona & Hotspot) ngay tại bóng đèn trên đỉnh cột.
+   */
+  renderStreetLamp(light, rad, intensity) {
+    const fixtureY = light.y - 22; // Vị trí bóng đèn trên đỉnh cột
+    const groundY = light.y + 26;  // Vị trí vũng sáng rọi xuống mặt đất
+    const color = light.color || 0xfef08a;
+
+    // 1. Chùm sáng hình nón từ đèn xuống đất (Volumetric Downward Light Beam)
+    if (this.lightGraphics.fillPoints) {
+      const beamSteps = 6;
+      for (let b = 1; b <= beamSteps; b++) {
+        const spread = b / beamSteps;
+        const topW = 4 + 4 * spread;
+        const botW = (rad * 0.72) * spread;
+        const beamAlpha = (0.015 * (1 - spread * 0.55)) * intensity;
+
+        this.lightGraphics.fillStyle(color, beamAlpha);
+        this.lightGraphics.fillPoints([
+          { x: light.x - topW, y: fixtureY },
+          { x: light.x + topW, y: fixtureY },
+          { x: light.x + botW, y: groundY },
+          { x: light.x - botW, y: groundY }
+        ]);
+      }
+    }
+
+    // 2. Vũng sáng Elip 2.5D trên mặt đất (Ground Light Pool)
+    const groundRadiusX = rad * 1.05;
+    const groundRadiusY = rad * 0.62;
+    this.drawSoftLightEllipse(light.x, groundY, groundRadiusX, groundRadiusY, color, intensity);
+
+    // 3. Vầng hào quang (Corona & Hotspot) ngay tại bóng đèn trên đỉnh cột
+    const coronaAlpha = Math.min(0.45, 0.22 * intensity);
+    this.lightGraphics.fillStyle(color, coronaAlpha);
+    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, fixtureY, 18, 14);
+
+    this.lightGraphics.fillStyle(0xfffbeb, Math.min(0.75, 0.45 * intensity));
+    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, fixtureY, 7, 5);
+
+    // 4. Lớp Bloom phát quang (Additive)
+    if (this.bloomGraphics) {
+      this.bloomGraphics.fillStyle(color, 0.22 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, fixtureY, 20, 16);
+      this.bloomGraphics.fillStyle(0xfffbeb, 0.4 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, fixtureY, 8, 6);
+    }
+  }
+
+  /**
+   * Biển hiệu Neon (DEVER Club Neon, Server Rack, Máy Arcade):
+   * Tỏa ánh sáng dạng thanh ngang / capsule với độ rực Cyber rực rỡ và tia phát quang.
+   */
+  renderNeonLight(light, rad, intensity) {
+    const color = light.color || 0x38bdf8;
+    const spanW = rad * 1.3;
+    const spanH = rad * 0.65;
+
+    // Vầng sáng ngang đa tầng
+    this.drawSoftLightEllipse(light.x, light.y, spanW, spanH, color, intensity);
+
+    // Lõi đèn Neon ống phát quang rực rỡ
+    const coreW = Math.min(spanW * 0.7, 70);
+    const coreH = Math.min(spanH * 0.4, 18);
+    const coreAlpha = Math.min(0.55, 0.28 * intensity);
+
+    if (this.lightGraphics.fillRoundedRect) {
+      this.lightGraphics.fillStyle(0xe0f2fe, coreAlpha);
+      this.lightGraphics.fillRoundedRect(light.x - coreW / 2, light.y - coreH / 2, coreW, coreH, 8);
+    } else {
+      this.lightGraphics.fillStyle(0xe0f2fe, coreAlpha);
+      this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y, coreW / 2, coreH / 2);
+    }
+
+    if (this.bloomGraphics) {
+      this.bloomGraphics.fillStyle(color, 0.28 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, spanW * 0.8, spanH * 0.8);
+      this.bloomGraphics.fillStyle(0xe0f2fe, 0.45 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, coreW * 0.4, coreH * 0.5);
+    }
+  }
+
+  /**
+   * Tượng linh vật Cóc Vàng FUDA:
+   * Vầng hào quang vàng kim linh thiêng, lan tỏa ánh sáng quý phái trên quảng trường.
+   */
+  renderStatueLight(light, rad, intensity) {
+    const goldColor = light.color || 0xfbbf24;
+    const poolRx = rad * 1.15;
+    const poolRy = rad * 0.75;
+
+    // Vũng sáng vàng kim trên nền gạch
+    this.drawSoftLightEllipse(light.x, light.y + 12, poolRx, poolRy, goldColor, intensity * 0.95);
+
+    // Hào quang tâm tượng
+    this.lightGraphics.fillStyle(0xfef08a, Math.min(0.5, 0.25 * intensity));
+    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y - 6, 24, 18);
+
+    if (this.bloomGraphics) {
+      this.bloomGraphics.fillStyle(0xfbbf24, 0.25 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, poolRx * 0.6, poolRy * 0.6);
+      this.bloomGraphics.fillStyle(0xfef08a, 0.38 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y - 6, 16, 12);
+    }
+  }
+
+  /**
+   * Đèn bàn / Quầy Barista Căn tin & Quầy Bánh:
+   * Ánh sáng vàng mật ong ấm cúng, trải đều trên mặt quầy gỗ.
+   */
+  renderDeskLamp(light, rad, intensity) {
+    const warmColor = light.color || 0xfde68a;
+    const poolRx = rad * 1.1;
+    const poolRy = rad * 0.7;
+
+    this.drawSoftLightEllipse(light.x, light.y + 8, poolRx, poolRy, warmColor, intensity);
+
+    this.lightGraphics.fillStyle(0xfffbeb, Math.min(0.4, 0.18 * intensity));
+    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y, 16, 10);
+
+    if (this.bloomGraphics) {
+      this.bloomGraphics.fillStyle(warmColor, 0.2 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y + 8, poolRx * 0.5, poolRy * 0.5);
+    }
+  }
+
+  /**
+   * Đèn trần phòng học / Phòng Lab:
+   * Ánh sáng phủ rộng, dịu mắt, xua tan bóng tối phòng trong nhà.
+   */
+  renderCeilingLight(light, rad, intensity) {
+    const techColor = light.color || 0xf1f5f9;
+    const poolRx = rad * 1.12;
+    const poolRy = rad * 0.8;
+
+    this.drawSoftLightEllipse(light.x, light.y, poolRx, poolRy, techColor, intensity * 0.85);
+
+    if (this.bloomGraphics) {
+      this.bloomGraphics.fillStyle(techColor, 0.12 * intensity);
+      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, poolRx * 0.45, poolRy * 0.45);
+    }
   }
 
   /**
@@ -435,6 +645,10 @@ export class LightingManager {
     if (this.lightGraphics) {
       this.lightGraphics.destroy();
       this.lightGraphics = null;
+    }
+    if (this.bloomGraphics) {
+      this.bloomGraphics.destroy();
+      this.bloomGraphics = null;
     }
     this.timeListeners.clear();
   }
