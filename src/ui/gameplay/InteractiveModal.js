@@ -10,6 +10,7 @@ import { authService } from '../../services/AuthService.js';
 import { voiceService } from '../../services/VoiceService.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { FPTU_CLUBS } from '../../config/fptuClubs.js';
+import { clubSettlementManager, TALENT_ROSTER_DEF } from '../../managers/ClubSettlementManager.js';
 
 export class InteractiveModal {
   /**
@@ -2392,35 +2393,71 @@ export class InteractiveModal {
         </div>
 
         <div class="club-detail-section">
-          <h4 class="club-section-title">Chiêu Mộ & Tuyển Quân</h4>
-          <p class="club-section-desc"><strong>Vị trí & Cơ hội phát triển:</strong> ${escapeHtml(club.roles || 'Tất cả sinh viên FPTU đam mê học hỏi và cống hiến')}</p>
+          <h4 class="club-section-title">Hệ Thống Định Cư CLB (Delverium Settlement)</h4>
+          <p class="club-section-desc">Chiêu mộ và định cư các sinh viên tài năng về gian hàng CLB để nâng cao Danh Vọng và tạo nguồn thu D-Coin thụ động.</p>
           ${(() => {
-            const clubId = zoneData.clubId || 'dever';
-            let recruitedClubs = [];
-            try {
-              recruitedClubs = JSON.parse(localStorage.getItem('dever_recruited_clubs') || '[]');
-            } catch (e) {
-              recruitedClubs = [];
-            }
-            const isRecruited = recruitedClubs.includes(clubId);
+            const clubId = zoneData.clubId || 'itsc';
+            const settlement = clubSettlementManager.getClubSettlement(clubId);
+            const availableTalents = clubSettlementManager.getAvailableTalents();
+            const accumulated = clubSettlementManager.getAccumulatedCoins();
+            const tierNames = { 1: 'Khởi Sắc', 2: 'Tinh Hoa (+25% D-Coin)', 3: 'Huyền Thoại (+50% D-Coin)' };
 
-            return isRecruited ? `
-              <div class="club-recruit-box">
-                <div class="club-recruit-info">
-                  <h5>Đại Diện CLB Đã Định Cư</h5>
-                  <p>CLB đã chiêu mộ thành công NPC đại diện thường trực tại gian hàng Tòa Alpha.</p>
+            let slotsHtml = '';
+            for (let i = 0; i < settlement.maxSlots; i++) {
+              const member = settlement.members[i];
+              if (member) {
+                const isAffinity = member.affinities && member.affinities.includes(clubId);
+                const memberYield = (member.baseYieldPerMin || 0.5) * (isAffinity ? 2.0 : 1.0) * (settlement.level === 3 ? 1.5 : (settlement.level === 2 ? 1.25 : 1.0));
+                slotsHtml += `
+                  <div class="club-settlement-slot-card">
+                    <div class="club-slot-member-top">
+                      <img src="assets/characters/aseprite/${member.avatarKey}.png" class="club-slot-avatar-img" alt="${escapeHtml(member.name)}" />
+                      <div class="club-slot-member-meta">
+                        <span class="club-slot-member-name">${escapeHtml(member.name)}</span>
+                        <span class="club-slot-member-title">${escapeHtml(member.title)}</span>
+                      </div>
+                    </div>
+                    ${isAffinity ? `<span class="club-slot-affinity-tag">Đúng Chuyên Môn (+100% Sản Lượng)</span>` : ''}
+                    <div class="club-slot-actions">
+                      <span class="club-slot-yield-val">+${memberYield.toFixed(1)} D-Coin/phút</span>
+                      <button type="button" class="btn-unstation-talent" data-talent-id="${member.id}" data-club-id="${clubId}">Rút Về</button>
+                    </div>
+                  </div>
+                `;
+              } else {
+                slotsHtml += `
+                  <div class="club-settlement-slot-card empty-slot">
+                    <span style="font-size: 11px; color: #64748b; margin-bottom: 6px;">Ô Định Cư Trống (${i + 1}/${settlement.maxSlots})</span>
+                    ${availableTalents.length > 0 ? `
+                      <button type="button" class="btn-primary-sm btn-open-station-picker" data-club-id="${clubId}" style="background: ${club.themeColor}; font-size: 11px; padding: 4px 10px;">
+                        Định Cư Thành Viên
+                      </button>
+                    ` : `
+                      <span style="font-size: 10px; color: #94a3b8;">(Hết tài năng chờ - Săn thêm ở Hầm Ngục)</span>
+                    `}
+                  </div>
+                `;
+              }
+            }
+
+            return `
+              <div class="club-settlement-overview">
+                <div class="club-settlement-header">
+                  <span class="club-settlement-tier">Cấp ${settlement.level} • ${tierNames[settlement.level]} (${settlement.reputation} Danh Vọng)</span>
+                  <span class="club-settlement-yield-rate">Sản Lượng Gian Hàng: +${settlement.yieldPerMin.toFixed(1)} D-Coin/phút</span>
                 </div>
-                <span class="club-recruit-badge">Đang Thường Trực</span>
-              </div>
-            ` : `
-              <div class="club-recruit-box">
-                <div class="club-recruit-info">
-                  <h5>Chiêu Mộ Đại Diện CLB</h5>
-                  <p>Dùng 500 D-Coin để chiêu mộ 1 NPC sinh viên tài năng về đại diện thường trực tại gian hàng.</p>
+                <div class="club-settlement-slots-grid">
+                  ${slotsHtml}
                 </div>
-                <button type="button" class="btn-primary-sm" id="btn-recruit-club-npc" style="background: ${club.themeColor};">
-                  Chiêu Mộ (500 D-Coin)
-                </button>
+                <div class="club-passive-yield-banner">
+                  <div class="club-passive-yield-info">
+                    <span>Tổng D-Coin Thụ Động Chờ Thu Hoạch: +${accumulated.toLocaleString('vi-VN')} D-Coin</span>
+                    <span>Sản lượng toàn campus: +${clubSettlementManager.getTotalYieldPerMinute().toFixed(1)} D-Coin/phút</span>
+                  </div>
+                  <button type="button" class="btn-claim-settlement-coins" id="btn-claim-settlement" ${accumulated <= 0 ? 'disabled' : ''}>
+                    Thu Hoạch Tất Cả
+                  </button>
+                </div>
               </div>
             `;
           })()}
@@ -2429,33 +2466,52 @@ export class InteractiveModal {
         ${managementSection}
       `;
 
-      // Xử lý sự kiện chiêu mộ đại diện CLB
-      const recruitBtn = document.getElementById('btn-recruit-club-npc');
-      if (recruitBtn) {
-        recruitBtn.onclick = () => {
-          const clubId = zoneData.clubId || 'dever';
-          let recruitedClubs = [];
-          try {
-            recruitedClubs = JSON.parse(localStorage.getItem('dever_recruited_clubs') || '[]');
-          } catch (e) {
-            recruitedClubs = [];
+      // Xử lý rút thành viên khỏi CLB
+      bodyEl.querySelectorAll('.btn-unstation-talent').forEach(btn => {
+        btn.onclick = () => {
+          const talentId = btn.getAttribute('data-talent-id');
+          const clubId = btn.getAttribute('data-club-id');
+          const res = clubSettlementManager.unstationTalent(talentId, clubId);
+          if (res.success) {
+            audioManager.playClick?.();
+            this.setupClubBoothView(zoneData);
           }
-          const currentCoins = parseInt(localStorage.getItem('dever_points') || '1250', 10);
-          if (currentCoins < 500) {
-            alert('Bạn cần tối thiểu 500 D-Coin để chiêu mộ đại diện. Hãy xuống Hầm Ngục Server Faults để săn thêm bọ code nhé!');
+        };
+      });
+
+      // Xử lý định cư thành viên mới vào CLB
+      bodyEl.querySelectorAll('.btn-open-station-picker').forEach(btn => {
+        btn.onclick = () => {
+          const clubId = btn.getAttribute('data-club-id');
+          const available = clubSettlementManager.getAvailableTalents();
+          if (available.length === 0) {
+            alert('Không có nhân vật nào trong danh sách chờ. Hãy xuống Hầm Ngục Server Faults để giải cứu thêm sinh viên tài năng!');
             return;
           }
-          const newCoins = currentCoins - 500;
-          localStorage.setItem('dever_points', newCoins.toString());
-          recruitedClubs.push(clubId);
-          localStorage.setItem('dever_recruited_clubs', JSON.stringify(recruitedClubs));
+          const matchAffinity = available.find(t => t.affinities && t.affinities.includes(clubId)) || available[0];
+          const confirmMsg = `Bạn có muốn định cư ${matchAffinity.name} (${matchAffinity.title}) về CLB này không?${matchAffinity.affinities?.includes(clubId) ? ' (ĐÚNG CHUYÊN MÔN: +100% Sản Lượng D-Coin)' : ''}`;
+          if (confirm(confirmMsg)) {
+            const res = clubSettlementManager.stationTalent(matchAffinity.id, clubId);
+            if (res.success) {
+              this.setupClubBoothView(zoneData);
+            } else {
+              alert(res.message);
+            }
+          }
+        };
+      });
 
-          const coinEl = document.getElementById('wardrobe-dcoins-val');
-          if (coinEl) coinEl.textContent = newCoins.toLocaleString('vi-VN');
-
-          audioManager.playSuccess();
-          alert(`Chiêu mộ NPC đại diện cho CLB [${club.prefix}] ${club.nameVi} thành công! Đã trừ 500 D-Coin.`);
-          this.setupClubBoothView(zoneData);
+      // Xử lý thu hoạch D-Coin thụ động
+      const claimBtn = document.getElementById('btn-claim-settlement');
+      if (claimBtn) {
+        claimBtn.onclick = () => {
+          const res = clubSettlementManager.claimPassiveCoins();
+          if (res.success) {
+            alert(res.message);
+            this.setupClubBoothView(zoneData);
+          } else {
+            alert(res.message);
+          }
         };
       }
 
@@ -2625,10 +2681,27 @@ export class InteractiveModal {
             const coinEl = document.getElementById('wardrobe-dcoins-val');
             if (coinEl) coinEl.textContent = currentPoints.toLocaleString('vi-VN');
 
+            // Kiểm tra giải cứu tài năng mới từ Bug Dungeon
+            const lockedTalents = TALENT_ROSTER_DEF.filter(t => {
+              const available = clubSettlementManager.getAvailableTalents().some(a => a.id === t.id);
+              let stationed = false;
+              for (const c in clubSettlementManager.settlements) {
+                if (clubSettlementManager.settlements[c]?.memberIds?.includes(t.id)) stationed = true;
+              }
+              return !available && !stationed;
+            });
+
+            let rescueText = '';
+            if (lockedTalents.length > 0) {
+              const rescued = lockedTalents[0];
+              clubSettlementManager.unlockTalent(rescued.id);
+              rescueText = `<br/><span style="color: #facc15; font-weight: 700;">[GIẢI CỨU THÀNH CÔNG]</span> Bạn đã giải cứu: <strong>${escapeHtml(rescued.name)}</strong> (${escapeHtml(rescued.title)})! Hãy đến gian hàng CLB để định cư thành viên này và nhận D-Coin thụ động mỗi ngày!`;
+            }
+
             if (feedbackEl) {
               feedbackEl.style.display = 'block';
               feedbackEl.className = 'bug-action-feedback success';
-              feedbackEl.textContent = `Khắc phục lỗi thành công! Bạn nhận được +${reward} D-Coin. Số dư hiện tại: ${currentPoints.toLocaleString('vi-VN')} D-Coin.`;
+              feedbackEl.innerHTML = `Khắc phục lỗi thành công! Bạn nhận được +${reward} D-Coin. Số dư hiện tại: ${currentPoints.toLocaleString('vi-VN')} D-Coin.${rescueText}`;
             }
 
             fixBtn.textContent = 'Đã Khắc Phục Thành Công';

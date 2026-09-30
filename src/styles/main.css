@@ -7833,6 +7833,210 @@ body {
   border-radius: 6px;
 }
 
+/* --- DELVERIUM CLUB SETTLEMENT SYSTEM --- */
+.club-settlement-overview {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.club-settlement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+
+.club-settlement-tier {
+  font-size: 13px;
+  font-weight: 700;
+  color: #facc15;
+}
+
+.club-settlement-yield-rate {
+  font-size: 12px;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.club-settlement-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.club-settlement-slot-card {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.club-settlement-slot-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.club-settlement-slot-card.empty-slot {
+  border-style: dashed;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 110px;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.club-slot-member-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.club-slot-avatar-img {
+  width: 36px;
+  height: 48px;
+  object-fit: cover;
+  object-position: 0 0;
+  border-radius: 4px;
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  image-rendering: pixelated;
+}
+
+.club-slot-member-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.club-slot-member-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.club-slot-member-title {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.club-slot-affinity-tag {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.club-slot-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.club-slot-yield-val {
+  font-size: 11px;
+  color: #facc15;
+  font-weight: 600;
+}
+
+.btn-unstation-talent {
+  background: transparent;
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #fb7185;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-unstation-talent:hover {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fff;
+}
+
+.club-passive-yield-banner {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(56, 189, 248, 0.08));
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.club-passive-yield-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.club-passive-yield-info span:first-child {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fef08a;
+}
+
+.club-passive-yield-info span:last-child {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.btn-claim-settlement-coins {
+  background: #eab308;
+  color: #0f172a;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-claim-settlement-coins:hover:not(:disabled) {
+  background: #facc15;
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.4);
+}
+
+.btn-claim-settlement-coins:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 .club-lightbox-footer {
   padding: 10px 18px;

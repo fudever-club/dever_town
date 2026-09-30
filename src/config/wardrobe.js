@@ -6,6 +6,16 @@
 export const CHARACTER_PRESETS = [
   // --- NHÂN VẬT NAM (MALE CHARACTERS) ---
   {
+    id: 'dev_gen10',
+    name: 'Dev Hoodie Pro Gen 10 [Aseprite 60FPS]',
+    role: 'Top-tier Builder • Aseprite',
+    gender: 'male',
+    color: '#38bdf8',
+    spriteKey: 'char_dev_gen10',
+    desc: 'Thiết kế Aseprite 2D Pixel 60FPS siêu mượt mà: 8-frame walk cycle, nhịp thở nâng ngực và chớp mắt sống động.',
+    tags: ['Aseprite 60FPS', 'Mới', 'Gen 10']
+  },
+  {
     id: 'sample_dev_dever',
     name: 'Áo Hoodie Xanh Dev FU-DEVER',
     role: 'Trang Phục Coder • FU-DEVER',
@@ -278,6 +288,96 @@ export const CHARACTER_PRESETS = [
     spriteKey: 'char_buggy_mascot',
     desc: 'Chú bọ cánh cam Buggy đáng yêu với lớp cánh đỏ chấm bi đen, 2 râu anten tinh nghịch, biểu tượng của sự may mắn và sạch bug code.',
     tags: ['Mascot', 'Buggy', 'FU-DEVER', 'Mới']
+  },
+  {
+    id: 'buggy_pro',
+    name: 'Linh Vật Buggy Pro [Aseprite 60FPS]',
+    role: 'Linh Vật 60FPS • FU-DEVER',
+    gender: 'unisex',
+    color: '#ef4444',
+    spriteKey: 'char_buggy_pro',
+    desc: 'Linh vật Buggy chuyển động 8-frame Aseprite 60FPS siêu mượt, cánh vỗ bồng bềnh và nhịp thở ngộ nghĩnh.',
+    tags: ['Aseprite 60FPS', 'Buggy', 'Mascot']
+  },
+  {
+    id: 'frog_pro',
+    name: 'Cóc Vàng FPTU Pro [Aseprite 60FPS]',
+    role: 'Mascot May Mắn • Aseprite 60FPS',
+    gender: 'unisex',
+    color: '#eab308',
+    spriteKey: 'char_frog_pro',
+    desc: 'Bộ mascot Cóc Vàng FPTU chuyển động nhún nhảy 8-frame cực mượt, rước lộc qua môn điểm A+.',
+    tags: ['Aseprite 60FPS', 'Cóc Vàng', 'Mascot']
+  },
+  {
+    id: 'vovinam_pro',
+    name: 'Võ Phục Vovinam Pro [Aseprite 60FPS]',
+    role: 'Việt Võ Đạo • Aseprite 60FPS',
+    gender: 'unisex',
+    color: '#0284c7',
+    spriteKey: 'char_vovinam_pro',
+    desc: 'Võ phục Vovinam xanh lam truyền thống, hoàng đai đung đưa theo chu kỳ 8-frame bước chân thượng võ.',
+    tags: ['Aseprite 60FPS', 'Vovinam', 'Võ Thuật']
+  },
+  {
+    id: 'mecha_pro',
+    name: 'Cyber Mecha AI Pro [Aseprite 60FPS]',
+    role: 'Sci-Fi Android • Aseprite 60FPS',
+    gender: 'unisex',
+    color: '#0891b2',
+    spriteKey: 'char_mecha_pro',
+    desc: 'Chiến giáp Mecha tương lai hợp kim cyan, nhịp thở LED neon lập lòe và bước di chuyển cơ khí dứt khoát.',
+    tags: ['Aseprite 60FPS', 'Mecha', 'AI']
+  },
+  {
+    id: 'wizard_pro',
+    name: 'Pháp Sư Huyền Bí Pro [Aseprite 60FPS]',
+    role: 'Magic Developer • Aseprite 60FPS',
+    gender: 'unisex',
+    color: '#4c1d95',
+    spriteKey: 'char_wizard_pro',
+    desc: 'Áo choàng pháp sư tím thướt tha 8-frame, sao vàng lấp lánh và nhịp thở huyền bí triệu hồi code sạch.',
+    tags: ['Aseprite 60FPS', 'Pháp Sư', 'Magic']
+  },
+  {
+    id: 'biker_pro',
+    name: 'Biker Rocker Đỏ Ruby Pro [Aseprite 60FPS]',
+    role: 'Rebel Edge • Aseprite 60FPS',
+    gender: 'male',
+    color: '#e11d48',
+    spriteKey: 'char_biker_pro',
+    desc: 'Tóc spiky đỏ ruby rực lửa, áo da đinh tán cá tính với bước di chuyển 8-frame dứt khoát phong cách đường phố.',
+    tags: ['Aseprite 60FPS', 'Biker', 'Streetwear']
+  },
+  {
+    id: 'aodai_pro',
+    name: 'Nữ Sinh Áo Dài Cam Pro [Aseprite 60FPS]',
+    role: 'Nữ Sinh FPTU • Aseprite 60FPS',
+    gender: 'female',
+    color: '#ea580c',
+    spriteKey: 'char_aodai_pro',
+    desc: 'Tà áo dài lụa cam FPTU thướt tha bay theo bước chân 8-frame, kính cận tri thức và nét đẹp truyền thống thanh lịch.',
+    tags: ['Aseprite 60FPS', 'Áo Dài', 'FPTU']
+  },
+  {
+    id: 'cyber_pro',
+    name: 'Cyber Hacker Matrix Pro [Aseprite 60FPS]',
+    role: 'Matrix Specialist • Aseprite 60FPS',
+    gender: 'male',
+    color: '#06b6d4',
+    spriteKey: 'char_cyber_pro',
+    desc: 'Mắt dị sắc cyan-gold, bomber viền mạch điện Matrix phát quang theo nhịp thở 4-frame sống động.',
+    tags: ['Aseprite 60FPS', 'Cyber', 'Security']
+  },
+  {
+    id: 'barista_pro',
+    name: 'Barista Căn Tin Pro [Aseprite 60FPS]',
+    role: 'Pha Chế Cà Phê • Aseprite 60FPS',
+    gender: 'male',
+    color: '#d97706',
+    spriteKey: 'char_barista_pro',
+    desc: 'Tạp dề pha chế thêu Cóc Vàng, bước đi 8-frame êm ái và biểu cảm chào đón ấm áp bên quầy cà phê muối.',
+    tags: ['Aseprite 60FPS', 'Barista', 'Căn Tin']
   }
 ];
 

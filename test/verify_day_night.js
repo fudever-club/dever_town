@@ -133,13 +133,22 @@ assert(nightAtmosphere.isNight === true, '21:00 là ban đêm');
 assert(nightAtmosphere.darknessAlpha >= 0.65, 'Ban đêm màn đêm phủ mờ với độ tối chuẩn (>= 0.65)');
 assert(nightAtmosphere.streetLightsOn === true, 'Ban đêm đèn đường bật sáng toàn diện');
 
-// 4. Kiểm tra phòng trong nhà (dever_lab)
+// 4. Kiểm tra phòng trong nhà (dever_lab, canteen_cafe, server_dungeon)
 lighting.setRoom('dever_lab');
 const labAtmosphere = lighting.computeAtmosphere(12.0);
 assert(labAtmosphere.isOutdoor === false, 'dever_lab được nhận diện là phòng trong nhà');
 assert(labAtmosphere.darknessAlpha >= 0.25, 'dever_lab duy trì độ tối phòng lab công nghệ');
 
-// 5. Kiểm tra Nguồn Sáng Tĩnh (Static Point Lights)
+// Ban đêm trong phòng có nightIndoorLightsOn (canteen_cafe, dever_lab)
+const labNightAtmosphere = lighting.computeAtmosphere(21.0);
+assert(labNightAtmosphere.nightIndoorLightsOn === true, 'Ban đêm dever_lab tự động kích hoạt nightIndoorLightsOn');
+assert(labNightAtmosphere.darknessAlpha <= 0.30, 'Ban đêm dever_lab không bị tối mịt nhờ hệ thống đèn trần');
+
+lighting.setRoom('server_dungeon');
+const dungeonNightAtmosphere = lighting.computeAtmosphere(21.0);
+assert(dungeonNightAtmosphere.nightIndoorLightsOn === false, 'Hầm server_dungeon giữ bóng tối âm u (nightIndoorLightsOn = false)');
+
+// 5. Kiểm tra Nguồn Sáng Tĩnh & Đèn Trần (Static Point Lights & Ceiling Lights)
 assert(STATIC_LIGHT_SOURCES.main_hall.length >= 5, 'main_hall có ít nhất 5 điểm sáng tĩnh');
 const statueLight = STATIC_LIGHT_SOURCES.main_hall.find(l => l.type === 'statue');
 assert(statueLight && statueLight.color === 0xfbbf24, 'Tượng Cóc Vàng phát ánh sáng vàng kim');
@@ -148,7 +157,16 @@ const neonLight = STATIC_LIGHT_SOURCES.main_hall.find(l => l.type === 'neon');
 assert(neonLight && neonLight.color === 0x38bdf8, 'Biển hiệu Neon DEVER phát ánh sáng xanh Cyber');
 
 assert(STATIC_LIGHT_SOURCES.sports_complex.length >= 4, 'sports_complex có 4 đèn cao áp sân');
-assert(STATIC_LIGHT_SOURCES.canteen_cafe.length >= 3, 'canteen_cafe có điểm sáng quầy barista');
+assert(STATIC_LIGHT_SOURCES.canteen_cafe.length >= 5, 'canteen_cafe có đầy đủ quầy barista và đèn trần Edison');
+assert(STATIC_LIGHT_SOURCES.dever_lab.some(l => l.type === 'ceiling_light'), 'dever_lab có đèn trần huỳnh quang công nghệ');
+assert(STATIC_LIGHT_SOURCES.web_room && STATIC_LIGHT_SOURCES.web_room.length >= 3, 'web_room có cấu hình nguồn sáng tĩnh');
+assert(STATIC_LIGHT_SOURCES.media_hub && STATIC_LIGHT_SOURCES.media_hub.length >= 3, 'media_hub có cấu hình nguồn sáng tĩnh');
+assert(STATIC_LIGHT_SOURCES.academic_hub && STATIC_LIGHT_SOURCES.academic_hub.length >= 3, 'academic_hub có cấu hình nguồn sáng tĩnh');
+assert(STATIC_LIGHT_SOURCES.hall_of_fame && STATIC_LIGHT_SOURCES.hall_of_fame.length >= 3, 'hall_of_fame có cấu hình nguồn sáng tĩnh');
+assert(STATIC_LIGHT_SOURCES.memory_room && STATIC_LIGHT_SOURCES.memory_room.length >= 3, 'memory_room có cấu hình nguồn sáng tĩnh');
+
+// Kiểm tra loại bỏ Foot Aura dưới chân nhân vật
+assert(lighting.enableFootAura === false, 'enableFootAura mặc định là false theo phản hồi người dùng');
 
 // 6. Kiểm tra Chuyển Đổi Chế Độ Thời Gian (Time Modes)
 lighting.setTimeMode('manual');

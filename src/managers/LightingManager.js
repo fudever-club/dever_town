@@ -46,6 +46,9 @@ export class LightingManager {
     this.timeListeners = new Set();
     this.lastFirefliesState = null;
 
+    // Quầng sáng chân nhân vật (Foot Aura / Lantern) - Mặc định TẮT theo phản hồi người dùng
+    this.enableFootAura = false;
+
     this.init();
   }
 
@@ -199,12 +202,19 @@ export class LightingManager {
 
     if (!roomProp.isOutdoor) {
       // Phòng trong nhà: Kết hợp độ tối cơ bản trong phòng và sắc thái bên ngoài
-      const indoorColor = roomProp.indoorAmbientColor || 0x090d16;
+      const nightIndoorLights = roomProp.nightIndoorLightsOn !== false;
+      const indoorColor = (isNightNow && nightIndoorLights && roomProp.nightIndoorAmbientColor)
+        ? roomProp.nightIndoorAmbientColor
+        : (roomProp.indoorAmbientColor || 0x090d16);
       finalColor = indoorColor;
       
-      // Ban đêm trong nhà có thể tối hơn một chút nếu tắt bớt đèn, nhưng có đèn huỳnh quang duy trì
-      const nightBonus = isNightNow ? 0.12 : 0.0;
-      finalDarkness = Math.min(0.85, roomProp.indoorBaseDarkness + nightBonus);
+      // Ban đêm trong nhà: Nếu bật hệ thống đèn phòng ban đêm (nightIndoorLightsOn), không gian ấm cúng và sáng sủa
+      if (isNightNow && nightIndoorLights) {
+        finalDarkness = Math.min(0.28, roomProp.indoorBaseDarkness);
+      } else {
+        const nightBonus = isNightNow ? 0.12 : 0.0;
+        finalDarkness = Math.min(0.85, roomProp.indoorBaseDarkness + nightBonus);
+      }
     }
 
     return {
@@ -216,7 +226,8 @@ export class LightingManager {
       lampGlowAlpha: lampGlowAlpha,
       isNight: isNightNow,
       isOutdoor: roomProp.isOutdoor,
-      streetLightsOn: isNightNow || (curPeriod.streetLightsOn && lampGlowAlpha > 0.4)
+      streetLightsOn: isNightNow || (curPeriod.streetLightsOn && lampGlowAlpha > 0.4),
+      nightIndoorLightsOn: isNightNow && (!roomProp.isOutdoor) && (roomProp.nightIndoorLightsOn !== false)
     };
   }
 
@@ -302,41 +313,47 @@ export class LightingManager {
 
       const lightFlicker = Math.sin(this.flickerTimer * 4 + light.x) * (light.flicker || 0.02);
       const rad = light.radius * (1 + lightFlicker);
-      const intensity = light.intensity * (light.type === 'street_lamp' ? lampGlowAlpha : 1.0);
+      
+      let intensityFactor = 1.0;
+      if (light.type === 'street_lamp') {
+        intensityFactor = lampGlowAlpha;
+      } else if (light.type === 'ceiling_light') {
+        intensityFactor = this.isNight ? 1.0 : 0.75;
+      }
+      const intensity = light.intensity * intensityFactor;
 
       this.drawSoftLightCone(light.x, light.y, rad, light.color, intensity);
     });
 
-    // 3. Vầng sáng ngọn đèn lồng / aura ấm theo chân người chơi (Player Aura)
-    if (player && player.active) {
-      const px = player.x;
-      const py = player.y + 16; // Ngay dưới chân
-      const playerRadius = 90 * (1 + generalFlicker);
-      
-      // Màu ánh sáng của người chơi (vàng ấm dịu hoặc xanh công nghệ)
-      const playerLightColor = (player.role === 'admin' || player.role === 'leader') ? 0xfef08a : 0xffedd5;
-      this.drawSoftLightCone(px, py, playerRadius, playerLightColor, 0.85);
-    }
+    // 3. Quầng sáng theo chân nhân vật (Foot Aura) - Mặc định TẮT theo phản hồi người dùng
+    // Chỉ kích hoạt nếu enableFootAura được bật rõ ràng (ví dụ người chơi nhặt được đèn bão/đuốc)
+    if (this.enableFootAura) {
+      if (player && player.active) {
+        const px = player.x;
+        const py = player.y + 16;
+        const playerRadius = 90 * (1 + generalFlicker);
+        const playerLightColor = (player.role === 'admin' || player.role === 'leader') ? 0xfef08a : 0xffedd5;
+        this.drawSoftLightCone(px, py, playerRadius, playerLightColor, 0.85);
+      }
 
-    // 4. Vầng sáng dưới chân các NPC xung quanh (nếu người chơi ở gần)
-    if (this.scene.npcGroup && player) {
-      this.scene.npcGroup.forEach(npc => {
-        if (npc.active && npc.visible) {
-          const dist = Math.hypot(player.x - npc.x, player.y - npc.y);
-          if (dist < 380) {
-            this.drawSoftLightCone(npc.x, npc.y + 16, 68, 0xfef08a, 0.65);
+      if (this.scene.npcGroup && player) {
+        this.scene.npcGroup.forEach(npc => {
+          if (npc.active && npc.visible) {
+            const dist = Math.hypot(player.x - npc.x, player.y - npc.y);
+            if (dist < 380) {
+              this.drawSoftLightCone(npc.x, npc.y + 16, 68, 0xfef08a, 0.65);
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    // 5. Vầng sáng dưới chân Remote Players (Multiplayer)
-    if (this.scene.remotePlayers && player) {
-      for (const remote of this.scene.remotePlayers.values()) {
-        if (remote.active && remote.visible) {
-          const dist = Math.hypot(player.x - remote.x, player.y - remote.y);
-          if (dist < 380) {
-            this.drawSoftLightCone(remote.x, remote.y + 16, 65, 0x67e8f9, 0.6);
+      if (this.scene.remotePlayers && player) {
+        for (const remote of this.scene.remotePlayers.values()) {
+          if (remote.active && remote.visible) {
+            const dist = Math.hypot(player.x - remote.x, player.y - remote.y);
+            if (dist < 380) {
+              this.drawSoftLightCone(remote.x, remote.y + 16, 65, 0x67e8f9, 0.6);
+            }
           }
         }
       }

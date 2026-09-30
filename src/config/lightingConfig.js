@@ -95,67 +95,86 @@ export const ROOM_LIGHT_PROPERTIES = {
     isOutdoor: false,
     indoorBaseDarkness: 0.30,
     indoorAmbientColor: 0x090d16,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x0f172a,
     allowWeather: false
   },
   canteen_cafe: {
     isOutdoor: false,
     indoorBaseDarkness: 0.15,
     indoorAmbientColor: 0x0f172a,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1e1b2e,
     allowWeather: false
   },
   library_lounge: {
     isOutdoor: false,
     indoorBaseDarkness: 0.18,
     indoorAmbientColor: 0x17120a,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1c1917,
     allowWeather: false
   },
   server_dungeon: {
     isOutdoor: false,
     indoorBaseDarkness: 0.75,
     indoorAmbientColor: 0x030712,
+    nightIndoorLightsOn: false,
     allowWeather: false
   },
   memory_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.25,
     indoorAmbientColor: 0x110b29,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1a1236,
     allowWeather: false
   },
   game_arcade: {
     isOutdoor: false,
     indoorBaseDarkness: 0.35,
     indoorAmbientColor: 0x1e0b36,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x250e42,
     allowWeather: false
   },
   web_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.20,
     indoorAmbientColor: 0x0a101f,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x0e1b33,
     allowWeather: false
   },
   media_hub: {
     isOutdoor: false,
     indoorBaseDarkness: 0.22,
     indoorAmbientColor: 0x0c0e1a,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x13162b,
     allowWeather: false
   },
   academic_hub: {
     isOutdoor: false,
     indoorBaseDarkness: 0.15,
     indoorAmbientColor: 0x0c0e1a,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x101626,
     allowWeather: false
   },
   hall_of_fame: {
     isOutdoor: false,
     indoorBaseDarkness: 0.20,
     indoorAmbientColor: 0x181005,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x241708,
     allowWeather: false
   }
 };
 
 /**
  * Nguồn sáng tĩnh (Static Point Lights) trên từng bản đồ
- * type: 'street_lamp' | 'neon' | 'statue' | 'desk_lamp' | 'torch'
+ * type: 'street_lamp' | 'neon' | 'statue' | 'desk_lamp' | 'ceiling_light' | 'torch'
  */
 export const STATIC_LIGHT_SOURCES = {
   main_hall: [
@@ -186,37 +205,96 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 120, y: 480, radius: 120, color: 0xf1f5f9, intensity: 0.95, type: 'street_lamp', flicker: 0.01 },
     { x: 680, y: 480, radius: 120, color: 0xf1f5f9, intensity: 0.95, type: 'street_lamp', flicker: 0.01 }
   ],
+  campus_hall: [
+    // 4 Đèn cột khuôn viên trường FPT
+    { x: 180, y: 160, radius: 95, color: 0xfef08a, intensity: 0.9, type: 'street_lamp', flicker: 0.02 },
+    { x: 620, y: 160, radius: 95, color: 0xfef08a, intensity: 0.9, type: 'street_lamp', flicker: 0.02 },
+    { x: 180, y: 460, radius: 95, color: 0xfef08a, intensity: 0.9, type: 'street_lamp', flicker: 0.02 },
+    { x: 620, y: 460, radius: 95, color: 0xfef08a, intensity: 0.9, type: 'street_lamp', flicker: 0.02 }
+  ],
   canteen_cafe: [
     // Quầy Barista & Máy pha cà phê
     { x: 400, y: 160, radius: 110, color: 0xfef08a, intensity: 0.9, type: 'desk_lamp', flicker: 0.02 },
     // Quầy bánh ngọt
     { x: 250, y: 180, radius: 85, color: 0xfde68a, intensity: 0.8, type: 'desk_lamp', flicker: 0.02 },
     // Tủ bán hàng tự động
-    { x: 620, y: 180, radius: 80, color: 0x38bdf8, intensity: 0.85, type: 'neon', flicker: 0.03 }
+    { x: 620, y: 180, radius: 80, color: 0x38bdf8, intensity: 0.85, type: 'neon', flicker: 0.03 },
+    // Hệ thống Đèn trần Edison ấm áp ban đêm
+    { x: 280, y: 340, radius: 110, color: 0xfef3c7, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 520, y: 340, radius: 110, color: 0xfef3c7, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 400, y: 480, radius: 115, color: 0xfde68a, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ],
   dever_lab: [
     // Dãy Server Rack chính
     { x: 180, y: 120, radius: 95, color: 0x38bdf8, intensity: 0.9, type: 'neon', flicker: 0.06 },
     { x: 620, y: 120, radius: 95, color: 0xa855f7, intensity: 0.9, type: 'neon', flicker: 0.06 },
     // Bàn Hackathon Đội Alpha
-    { x: 400, y: 280, radius: 100, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.03 }
+    { x: 400, y: 280, radius: 100, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.03 },
+    // Hệ thống Đèn trần huỳnh quang công nghệ ban đêm
+    { x: 280, y: 200, radius: 115, color: 0xe0f2fe, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 520, y: 200, radius: 115, color: 0xe0f2fe, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 400, y: 440, radius: 120, color: 0x38bdf8, intensity: 0.88, type: 'ceiling_light', flicker: 0.03 }
   ],
   server_dungeon: [
     // Máy chủ trung tâm nhấp nháy
     { x: 400, y: 200, radius: 120, color: 0x38bdf8, intensity: 0.95, type: 'neon', flicker: 0.08 },
     { x: 200, y: 350, radius: 80, color: 0xef4444, intensity: 0.85, type: 'neon', flicker: 0.07 },
-    { x: 600, y: 350, radius: 80, color: 0x10b981, intensity: 0.85, type: 'neon', flicker: 0.07 }
+    { x: 600, y: 350, radius: 80, color: 0x10b981, intensity: 0.85, type: 'neon', flicker: 0.07 },
+    { x: 400, y: 460, radius: 85, color: 0x38bdf8, intensity: 0.75, type: 'neon', flicker: 0.08 }
   ],
   game_arcade: [
     // Máy Game Thùng Pacman & Retro
     { x: 220, y: 150, radius: 90, color: 0xfacc15, intensity: 0.9, type: 'neon', flicker: 0.05 },
     { x: 400, y: 150, radius: 90, color: 0xec4899, intensity: 0.9, type: 'neon', flicker: 0.05 },
-    { x: 580, y: 150, radius: 90, color: 0x06b6d4, intensity: 0.9, type: 'neon', flicker: 0.05 }
+    { x: 580, y: 150, radius: 90, color: 0x06b6d4, intensity: 0.9, type: 'neon', flicker: 0.05 },
+    // Dãy máy arcade thứ hai & Đèn trần Cyber Arcade
+    { x: 220, y: 350, radius: 95, color: 0x38bdf8, intensity: 0.9, type: 'neon', flicker: 0.05 },
+    { x: 580, y: 350, radius: 95, color: 0xa855f7, intensity: 0.9, type: 'neon', flicker: 0.05 },
+    { x: 400, y: 280, radius: 120, color: 0xf43f5e, intensity: 0.9, type: 'ceiling_light', flicker: 0.03 }
   ],
   library_lounge: [
     // Đèn đọc sách thư viện
     { x: 240, y: 220, radius: 85, color: 0xfef3c7, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
     { x: 560, y: 220, radius: 85, color: 0xfef3c7, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
-    { x: 400, y: 360, radius: 95, color: 0xfde68a, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 }
+    { x: 400, y: 360, radius: 95, color: 0xfde68a, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
+    // Đèn chùm trung tâm thư viện & Dãy đèn đọc sách ban đêm
+    { x: 400, y: 160, radius: 120, color: 0xfef9c3, intensity: 0.9, type: 'ceiling_light', flicker: 0.01 },
+    { x: 200, y: 440, radius: 105, color: 0xfef08a, intensity: 0.88, type: 'ceiling_light', flicker: 0.01 },
+    { x: 600, y: 440, radius: 105, color: 0xfef08a, intensity: 0.88, type: 'ceiling_light', flicker: 0.01 }
+  ],
+  web_room: [
+    // Không gian Web Development
+    { x: 400, y: 160, radius: 120, color: 0x38bdf8, intensity: 0.92, type: 'ceiling_light', flicker: 0.03 },
+    { x: 220, y: 280, radius: 95, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
+    { x: 580, y: 280, radius: 95, color: 0x60a5fa, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
+    { x: 400, y: 440, radius: 110, color: 0x93c5fd, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
+  ],
+  media_hub: [
+    // Media & Design Studio
+    { x: 400, y: 150, radius: 125, color: 0xa855f7, intensity: 0.95, type: 'neon', flicker: 0.04 },
+    { x: 240, y: 280, radius: 100, color: 0xc084fc, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
+    { x: 560, y: 280, radius: 100, color: 0xf472b6, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
+    { x: 400, y: 440, radius: 110, color: 0xe879f9, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
+  ],
+  academic_hub: [
+    // Hub Học thuật & Đội tuyển ICPC
+    { x: 400, y: 160, radius: 120, color: 0xfef08a, intensity: 0.92, type: 'ceiling_light', flicker: 0.02 },
+    { x: 220, y: 300, radius: 100, color: 0xfde68a, intensity: 0.88, type: 'desk_lamp', flicker: 0.02 },
+    { x: 580, y: 300, radius: 100, color: 0xfde68a, intensity: 0.88, type: 'desk_lamp', flicker: 0.02 },
+    { x: 400, y: 450, radius: 115, color: 0xfef9c3, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
+  ],
+  hall_of_fame: [
+    // Đại sảnh Vinh danh & Truyền thống
+    { x: 400, y: 160, radius: 130, color: 0xfbbf24, intensity: 0.95, type: 'statue', flicker: 0.03 },
+    { x: 220, y: 260, radius: 105, color: 0xfde047, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 580, y: 260, radius: 105, color: 0xfde047, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 },
+    { x: 400, y: 440, radius: 115, color: 0xfef08a, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 }
+  ],
+  memory_room: [
+    // Phòng Kỷ niệm & Truyền thống Gen 1-10
+    { x: 400, y: 160, radius: 120, color: 0xc084fc, intensity: 0.92, type: 'neon', flicker: 0.04 },
+    { x: 240, y: 300, radius: 100, color: 0xf472b6, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
+    { x: 560, y: 300, radius: 100, color: 0x818cf8, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
+    { x: 400, y: 450, radius: 110, color: 0xd8b4fe, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ]
 };

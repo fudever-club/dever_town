@@ -240,8 +240,23 @@ export class PlayerProfileModal {
           const srcTex = gameScene.textures.get(prebakedKey);
           const srcImg = srcTex.getSourceImage();
           if (srcImg) {
-            const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[dir] || 0;
-            tempCtx.drawImage(srcImg, fIdx * 48, dirRow * 64, 48, 64, 0, hopY, 48, 64);
+            let srcX = 0;
+            let srcY = 0;
+            if (srcImg.width === 384) {
+              const dirCoords = {
+                'down': { col: 0, row: 0 },
+                'up': { col: 4, row: 0 },
+                'left': { col: 0, row: 1 },
+                'right': { col: 4, row: 1 }
+              }[dir] || { col: 0, row: 0 };
+              srcX = (dirCoords.col + (fIdx % 4)) * 48;
+              srcY = dirCoords.row * 64;
+            } else {
+              const dirRow = { 'down': 0, 'left': 1, 'right': 2, 'up': 3 }[dir] || 0;
+              srcX = fIdx * 48;
+              srcY = dirRow * 64;
+            }
+            tempCtx.drawImage(srcImg, srcX, srcY, 48, 64, 0, hopY, 48, 64);
             usedPrebaked = true;
 
             if (config.inHandItem && config.inHandItem !== 'none') {

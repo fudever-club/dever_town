@@ -870,13 +870,6 @@ export class TextureGenerator {
 
     const frameW = 48;
     const frameH = 64;
-    const cols = 4;
-    const rows = 4;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = frameW * cols;
-    canvas.height = frameH * rows;
-    const ctx = canvas.getContext('2d');
 
     const config = {
       gender: wardrobeConfig.gender || 'male',
@@ -894,22 +887,58 @@ export class TextureGenerator {
       inHandItem: wardrobeConfig.inHandItem || wardrobeConfig.equippedItemId || null
     };
 
-    // 1. Kiểm tra xem outfit/character được chọn có tương ứng với Spritesheet Gather.town HD đã preload không
+    // 1. Kiểm tra xem outfit/character được chọn có tương ứng với Spritesheet Aseprite/Gather.town HD đã preload không
     const outfitId = wardrobeConfig.characterId || wardrobeConfig.outfitId || 'hoodie_dever';
     const normalizedOutfitId = outfitId === 'barista_apron' ? 'apron_barista' : outfitId;
     const prebakedKey = normalizedOutfitId ? (normalizedOutfitId.startsWith('char_') ? normalizedOutfitId : `char_${normalizedOutfitId}`) : null;
 
-    let usedPrebaked = false;
+    let srcImg = null;
+    let isAseprite = false;
     if (prebakedKey && scene && scene.textures && scene.textures.exists(prebakedKey)) {
       try {
         const srcTex = scene.textures.get(prebakedKey);
-        const srcImg = srcTex.getSourceImage();
-        if (srcImg) {
-          ctx.drawImage(srcImg, 0, 0, canvas.width, canvas.height);
-          usedPrebaked = true;
+        srcImg = srcTex.getSourceImage();
+        if (srcImg && srcImg.width === 384) {
+          isAseprite = true;
+        }
+      } catch (e) {}
+    }
 
-          // Vẽ vật phẩm cầm tay (in-hand equipment) lên trên bộ Chibi spritesheet đã preload
-          if (config.inHandItem && config.inHandItem !== 'none') {
+    const cols = isAseprite ? 8 : 4;
+    const rows = isAseprite ? 7 : 4;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = frameW * cols;
+    canvas.height = frameH * rows;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    let usedPrebaked = false;
+    if (srcImg) {
+      try {
+        ctx.drawImage(srcImg, 0, 0);
+        usedPrebaked = true;
+
+        // Vẽ vật phẩm cầm tay (in-hand equipment) lên trên bộ Chibi spritesheet đã preload
+        if (config.inHandItem && config.inHandItem !== 'none') {
+          if (isAseprite) {
+            // Row 0: idle_down (0-3), idle_up (4-7)
+            for (let c = 0; c < 4; c++) this.drawInHandEquipment(ctx, c * frameW, 0, 'down', c, config.inHandItem);
+            for (let c = 4; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, 0, 'up', c - 4, config.inHandItem);
+            // Row 1: idle_left (0-3), idle_right (4-7)
+            for (let c = 0; c < 4; c++) this.drawInHandEquipment(ctx, c * frameW, frameH, 'left', c, config.inHandItem);
+            for (let c = 4; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, frameH, 'right', c - 4, config.inHandItem);
+            // Row 2: walk_down (0-7)
+            for (let c = 0; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, 2 * frameH, 'down', c % 4, config.inHandItem);
+            // Row 3: walk_left (0-7)
+            for (let c = 0; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, 3 * frameH, 'left', c % 4, config.inHandItem);
+            // Row 4: walk_right (0-7)
+            for (let c = 0; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, 4 * frameH, 'right', c % 4, config.inHandItem);
+            // Row 5: walk_up (0-7)
+            for (let c = 0; c < 8; c++) this.drawInHandEquipment(ctx, c * frameW, 5 * frameH, 'up', c % 4, config.inHandItem);
+            // Row 6: cheer (0-5)
+            for (let c = 0; c < 6; c++) this.drawInHandEquipment(ctx, c * frameW, 6 * frameH, 'down', 0, config.inHandItem);
+          } else {
             const directions = ['down', 'left', 'right', 'up'];
             for (let r = 0; r < rows; r++) {
               const dir = directions[r];
@@ -937,10 +966,25 @@ export class TextureGenerator {
       ? `${textureKey}_v${Date.now()}`
       : textureKey;
 
-    scene.textures.addSpriteSheet(actualKey, canvas, {
-      frameWidth: frameW,
-      frameHeight: frameH
-    });
+    if (isAseprite) {
+      const baseAtlasJson = scene.cache?.json?.get?.(prebakedKey);
+      if (baseAtlasJson) {
+        if (scene.cache?.json) {
+          scene.cache.json.add(actualKey, baseAtlasJson);
+        }
+        scene.textures.addAtlas(actualKey, canvas, baseAtlasJson);
+      } else {
+        scene.textures.addSpriteSheet(actualKey, canvas, {
+          frameWidth: frameW,
+          frameHeight: frameH
+        });
+      }
+    } else {
+      scene.textures.addSpriteSheet(actualKey, canvas, {
+        frameWidth: frameW,
+        frameHeight: frameH
+      });
+    }
 
     this.createCharacterAnimations(scene, actualKey.replace('char_', ''));
 
@@ -1621,9 +1665,62 @@ export class TextureGenerator {
     ctx.restore();
   }
 
+  static createAnimationsFromAseprite(scene, avatarId, atlasJson) {
+    if (!scene || !scene.anims || !atlasJson?.meta?.frameTags) return;
+    const key = `char_${avatarId}`;
+    const frameKeys = Object.keys(atlasJson.frames || {});
+
+    atlasJson.meta.frameTags.forEach(tag => {
+      const tagFrames = [];
+      for (let idx = tag.from; idx <= tag.to; idx++) {
+        if (frameKeys[idx]) {
+          tagFrames.push({ key, frame: frameKeys[idx] });
+        }
+      }
+
+      if (tagFrames.length === 0) return;
+
+      const animKey = `${tag.name}_${avatarId}`;
+      if (scene.anims.exists(animKey)) scene.anims.remove(animKey);
+
+      let frameRate = 10;
+      if (tag.name.startsWith('walk')) frameRate = 12; // 8-frame Walk Cycle mượt mà
+      else if (tag.name.startsWith('idle')) frameRate = 2; // Nhịp thở thư thái
+      else if (tag.name === 'cheer') frameRate = 8; // Ăn mừng
+
+      scene.anims.create({
+        key: animKey,
+        frames: tagFrames,
+        frameRate,
+        repeat: -1
+      });
+
+      // Đăng ký tương thích cho Player.js
+      if (tag.name.startsWith('idle_')) {
+        const dir = tag.name.replace('idle_', '');
+        const breatheKey = `idle_breathe_${dir}_${avatarId}`;
+        if (scene.anims.exists(breatheKey)) scene.anims.remove(breatheKey);
+        scene.anims.create({
+          key: breatheKey,
+          frames: tagFrames,
+          frameRate: 2,
+          repeat: -1
+        });
+      }
+    });
+  }
+
   static createCharacterAnimations(scene, avatarId) {
     if (!scene || !scene.anims) return;
     const key = `char_${avatarId}`;
+
+    // Kiểm tra xem texture có nạp từ file Aseprite JSON Atlas không
+    const atlasJson = scene.cache?.json?.get?.(key);
+    if (atlasJson && atlasJson.meta && atlasJson.meta.frameTags) {
+      this.createAnimationsFromAseprite(scene, avatarId, atlasJson);
+      return;
+    }
+
     const dirs = [
       { name: 'down', row: 0 },
       { name: 'left', row: 1 },

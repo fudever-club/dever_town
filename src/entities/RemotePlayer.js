@@ -321,10 +321,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
 
     this.currentDirection = this.targetDirection;
 
-    // Tự động kích hoạt animation walk nếu đang di chuyển hoặc khoảng cách còn xa
+    // Tự động kích hoạt animation walk nếu đang di chuyển hoặc idle/breathe khi đứng yên
     const isVisiblyMoving = this.targetMoving || distSq > 4;
-    const animPrefix = isVisiblyMoving ? 'walk' : 'idle';
-    const animKey = `${animPrefix}_${this.currentDirection}_${this.avatarId}`;
+    const breatheKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
+    const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
+    const animKey = isVisiblyMoving
+      ? `walk_${this.currentDirection}_${this.avatarId}`
+      : (this.scene?.anims?.exists(breatheKey) ? breatheKey : defaultIdleKey);
 
     try {
       if (this.scene?.anims?.exists(animKey)) {
