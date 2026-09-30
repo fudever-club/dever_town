@@ -67,7 +67,11 @@ export class VolleyballRallyEngine {
       isGrounded: true,
       touches: 0,
       pose: 'idle',
-      jumpTargetX: 520
+      jumpTargetX: 520,
+      spikeCooldown: 0,
+      slideTimer: 0,
+      slideCooldown: 0,
+      slideDir: -1
     };
 
     this.ball = {
@@ -249,6 +253,8 @@ export class VolleyballRallyEngine {
     if (this.slideCooldownTimer > 0) this.slideCooldownTimer -= dt;
     if (this.jumpBufferTimer > 0) this.jumpBufferTimer -= dt;
     if (this.player.spikeCooldown > 0) this.player.spikeCooldown -= dt;
+    if (this.bot.spikeCooldown > 0) this.bot.spikeCooldown -= dt;
+    if (this.bot.slideCooldown > 0) this.bot.slideCooldown -= dt;
 
     // 3. Trạng thái giao bóng
     if (this.state === 'serving_player') {
@@ -420,19 +426,121 @@ export class VolleyballRallyEngine {
       });
     }
 
-    // 11. Va chạm đầu Bot AI & Chắn bóng trên lưới (Block)
-    const botHeadX = this.bot.x;
-    const botHeadY = this.bot.y - 26;
-    const distB = Math.hypot(this.ball.x - botHeadX, this.ball.y - botHeadY);
-    if (distB < this.ball.radius + cfg.player.headRadius && this.ball.vy > 0) {
-      const angle = Math.atan2(this.ball.y - botHeadY, this.ball.x - botHeadX);
-      this.ball.vx = -Math.abs(Math.cos(angle) * 7.4) - 1.4;
-      this.ball.vy = -Math.abs(Math.sin(angle) * 8.8) - 2.2;
-      this.ball.isSpiked = false;
-      this.ball.isBoomSpike = false;
-      this.rallyCount++;
-      audioManager.playKick(0.9);
-      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#f59e0b');
+    // 11. Va chạm bóng với Bot AI (Spike, Bump/Receive, Diving Dig, Net Block)
+    if (this.ball.x >= cfg.net.x - 10) {
+      let botHit = false;
+
+      // A. Bot Chắn bóng trên lưới (Net Block)
+      if (
+        !this.bot.isGrounded &&
+        this.bot.x <= cfg.net.x + 65 &&
+        this.ball.x <= cfg.net.x + 35 &&
+        this.ball.y <= cfg.net.y + 25 &&
+        Math.hypot(this.ball.x - this.bot.x, this.ball.y - (this.bot.y - 28)) < 38
+      ) {
+        this.ball.vx = -(4.2 + Math.random() * 2.2);
+        this.ball.vy = 2.8 + Math.random() * 2.4;
+        this.ball.isSpiked = false;
+        this.ball.isBoomSpike = false;
+        this.rallyCount++;
+        audioManager.playKick(1.25);
+        this.juiceFX.shake(6, 0.16);
+        this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 10, '#ef4444');
+        this.juiceFX.spawnFloatingText('BLOCKED! 🚫', cfg.net.x, cfg.net.y - 20, {
+          color: '#ef4444',
+          size: 16,
+          fontWeight: '900'
+        });
+        botHit = true;
+      }
+
+      // B. Bot Đập bóng trên không (Airborne Spike Smash)
+      if (!botHit && !this.bot.isGrounded && this.bot.vy < 3.2 && this.bot.spikeCooldown <= 0) {
+        const dxSpike = this.ball.x - this.bot.x;
+        const dySpike = this.ball.y - (this.bot.y - 28);
+        const distSpike = Math.hypot(dxSpike, dySpike);
+
+        if (distSpike < 46) {
+          this.bot.pose = 'spike_swing';
+          this.bot.spikeCooldown = 0.45;
+
+          const isHardSpike = Math.random() < 0.65;
+          if (isHardSpike) {
+            // Đập bóng cắm chéo sân người chơi
+            this.ball.vx = -(7.8 + Math.random() * 2.0);
+            this.ball.vy = 4.0 + Math.random() * 2.8;
+            this.ball.isSpiked = true;
+            this.ball.isBoomSpike = false;
+            this.juiceFX.shake(6, 0.18);
+            this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 12, '#f59e0b');
+            this.juiceFX.spawnFloatingText('BOT SPIKE! ⚡', this.bot.x, this.bot.y - 35, {
+              color: '#f59e0b',
+              size: 15,
+              fontWeight: '800'
+            });
+          } else {
+            // Đập bổng sâu về cuối sân người chơi
+            this.ball.vx = -(8.2 + Math.random() * 1.6);
+            this.ball.vy = -6.2;
+            this.ball.isSpiked = true;
+            this.ball.isBoomSpike = false;
+            this.juiceFX.shake(4, 0.12);
+            this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#f59e0b');
+          }
+
+          this.rallyCount++;
+          audioManager.playKick(1.2);
+          this.hitStopTimer = 0.035;
+          botHit = true;
+        }
+      }
+
+      // C. Bot Trượt sàn Cứu bóng (Diving Dig)
+      if (!botHit && this.bot.pose === 'slide' && this.ball.y >= cfg.floorY - 30 && this.ball.y <= cfg.floorY + 5) {
+        const dxSlide = Math.abs(this.ball.x - this.bot.x);
+        if (dxSlide < 45 && this.ball.vy > 0) {
+          this.ball.vx = -(5.8 + Math.random() * 1.6);
+          this.ball.vy = -10.6; // Cầu vồng bổng giải nguy
+          this.ball.isSpiked = false;
+          this.ball.isBoomSpike = false;
+          this.rallyCount++;
+          audioManager.playKick(1.1);
+          this.juiceFX.shake(4, 0.12);
+          this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 10, '#38bdf8');
+          this.juiceFX.spawnFloatingText('BOT DIVING DIG! 🛡️', this.bot.x, this.bot.y - 25, {
+            color: '#38bdf8',
+            size: 14,
+            fontWeight: '800'
+          });
+          botHit = true;
+        }
+      }
+
+      // D. Bot Đỡ bước 1 / Tâng bóng (Standing Bump / Receive)
+      if (!botHit && this.bot.pose !== 'slide') {
+        const dxBump = Math.abs(this.ball.x - this.bot.x);
+        const dyBump = this.ball.y - (this.bot.y - 24);
+        if (
+          dxBump < 36 &&
+          dyBump >= -38 && dyBump <= 28 &&
+          this.ball.vy > 0
+        ) {
+          // Tâng bóng bổng cầu vồng chuẩn xác sang sân người chơi
+          this.ball.vx = -(6.0 + Math.random() * 1.6);
+          this.ball.vy = -(9.8 + Math.random() * 1.5);
+          this.ball.isSpiked = false;
+          this.ball.isBoomSpike = false;
+          this.rallyCount++;
+          audioManager.playKick(0.95);
+          this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#f59e0b');
+          this.juiceFX.spawnFloatingText('+1 Bot Đỡ Bóng', this.bot.x, this.bot.y - 25, {
+            color: '#f59e0b',
+            size: 13,
+            fontWeight: '700'
+          });
+          botHit = true;
+        }
+      }
     }
 
     // 12. Va chạm lưới giữa sân
@@ -464,64 +572,125 @@ export class VolleyballRallyEngine {
   }
 
   updateBotAI(dt, cfg) {
-    // Dự đoán điểm rơi Parabol đơn giản
-    let predictedLandingX = this.ball.x;
-    if (this.ball.vx > 0.5 && this.ball.y < cfg.floorY) {
-      const remainingH = Math.max(10, cfg.floorY - this.ball.y);
-      const estTime = Math.sqrt((2 * remainingH) / cfg.gravity) * 0.85;
-      predictedLandingX = this.ball.x + this.ball.vx * estTime;
+    const spikeCfg = cfg.theSpike;
+    const net = cfg.net;
+    const floorY = cfg.floorY;
+
+    // 1. Phán đoán quỹ đạo và điểm rơi của bóng bằng công thức vật lý chính xác
+    let predictedLandingX = this.bot.x;
+    const isBallHeadingToBot = this.ball.vx > 0.3 || this.ball.x > net.x - 30;
+
+    if (this.ball.y < floorY) {
+      const g = cfg.gravity;
+      const h = floorY - this.ball.y;
+      const disc = this.ball.vy * this.ball.vy + 2 * g * h;
+      if (disc >= 0) {
+        const timeToFloor = (-this.ball.vy + Math.sqrt(disc)) / g;
+        predictedLandingX = this.ball.x + this.ball.vx * timeToFloor;
+      }
     }
 
-    const targetX = Math.max(cfg.net.x + 35, Math.min(predictedLandingX, 595));
+    // Giới hạn điểm rơi an toàn trong nửa sân Bot [net.x + 35, 600]
+    const targetX = Math.max(net.x + 35, Math.min(predictedLandingX, 600));
 
-    if (this.ball.x > cfg.net.x - 30) {
-      // Bóng đang bên phần sân Bot
-      if (this.bot.x < targetX - 5) {
-        this.bot.x += cfg.botTiers.medium.moveSpeed;
-        this.bot.pose = 'run';
-      } else if (this.bot.x > targetX + 5) {
-        this.bot.x -= cfg.botTiers.medium.moveSpeed;
-        this.bot.pose = 'run';
-      } else if (this.bot.isGrounded) {
+    // Cập nhật trạng thái trượt sàn của Bot nếu đang trượt
+    if (this.bot.slideTimer > 0) {
+      this.bot.slideTimer -= dt;
+      this.bot.x += this.bot.slideDir * (spikeCfg.slideSpeed * 0.95);
+      this.bot.x = Math.max(net.x + 30, Math.min(605, this.bot.x));
+      this.bot.pose = 'slide';
+      if (Math.random() < 0.3) {
+        this.juiceFX.spawnSparkles(this.bot.x, floorY, 2, '#fde68a');
+      }
+      if (this.bot.slideTimer <= 0) {
         this.bot.pose = 'idle';
       }
+    } else if (isBallHeadingToBot && this.ball.x > net.x - 40) {
+      // BÓNG ĐANG Ở PHẦN SÂN BOT HOẶC BAY SANG SÂN BOT
+      const dxToTarget = targetX - this.bot.x;
+      const distToTarget = Math.abs(dxToTarget);
 
-      // Bot nhảy đập bóng nếu bóng ở độ cao đẹp
+      // A. KIỂM TRA ĐIỀU KIỆN TRƯỢT SÀN CỨU BÓNG (Bot Slide / Diving Dig)
+      // Khi bóng sắp chạm đất (y > 225) mà bot còn cách điểm rơi 30px - 95px
       if (
         this.bot.isGrounded &&
-        Math.abs(this.ball.x - this.bot.x) < 36 &&
-        this.ball.y < 210 &&
-        this.ball.y > 140 &&
-        Math.random() < 0.4
+        this.ball.y > 225 &&
+        distToTarget > 32 &&
+        distToTarget < 95 &&
+        this.bot.slideCooldown <= 0
       ) {
-        this.bot.vy = -8.5;
-        this.bot.isGrounded = false;
-        this.bot.pose = 'jump_arch';
+        this.bot.slideTimer = spikeCfg.slideDuration;
+        this.bot.slideCooldown = 1.2;
+        this.bot.slideDir = dxToTarget > 0 ? 1 : -1;
+        this.bot.pose = 'slide';
+        audioManager.playKick(0.8);
+      } else {
+        // B. DI CHUYỂN BÌNH THƯỜNG / CHẠY VỀ ĐIỂM ĐÓN BÓNG
+        const botSpeed = distToTarget > 50 ? 4.8 : 3.8;
+        if (dxToTarget > 6) {
+          this.bot.x += botSpeed;
+          if (this.bot.isGrounded) this.bot.pose = 'run';
+        } else if (dxToTarget < -6) {
+          this.bot.x -= botSpeed;
+          if (this.bot.isGrounded) this.bot.pose = 'run';
+        } else if (this.bot.isGrounded && this.bot.pose !== 'spike_swing') {
+          this.bot.pose = 'idle';
+        }
+
+        // C. QUYẾT ĐỊNH BẬT NHẢY ĐẬP BÓNG (Bot Spike Smash)
+        // Khi bóng ở độ cao thích hợp (y trong khoảng 140 - 200) và bot gần bóng
+        const isSweetHeight = this.ball.y >= 140 && this.ball.y <= 200;
+        const isNearBallX = Math.abs(this.ball.x - this.bot.x) < 42;
+        if (
+          this.bot.isGrounded &&
+          isSweetHeight &&
+          isNearBallX &&
+          this.bot.spikeCooldown <= 0
+        ) {
+          this.bot.vy = -8.8;
+          this.bot.isGrounded = false;
+          this.bot.pose = 'jump_arch';
+          audioManager.playKick(0.7);
+        }
       }
     } else {
-      // Bóng đang bên sân người chơi: Bot lùi về phòng thủ hoặc dâng lên lưới chắn bóng (Block)
+      // BÓNG ĐANG Ở SÂN NGƯỜI CHƠI
       const isPlayerSpiking = this.ball.isSpiked || this.ball.isBoomSpike;
-      if (isPlayerSpiking && this.bot.isGrounded && Math.random() < 0.3) {
-        // Nhảy chắn bóng
-        this.bot.x = Math.max(this.bot.x - 2, cfg.net.x + 40);
-        this.bot.vy = -7.8;
-        this.bot.isGrounded = false;
-        this.bot.pose = 'jump_arch';
+      if (isPlayerSpiking && this.ball.x > net.x - 70 && this.bot.isGrounded) {
+        // Bám lưới nhảy chắn bóng (Net Block)
+        const blockX = net.x + 38;
+        if (this.bot.x > blockX + 6) this.bot.x -= 3.6;
+        else if (this.bot.x < blockX - 6) this.bot.x += 3.6;
+        else {
+          this.bot.vy = -8.2;
+          this.bot.isGrounded = false;
+          this.bot.pose = 'jump_arch';
+        }
       } else {
+        // Trở về vị trí phòng ngự trung tâm sân (homeX = 490)
         const homeX = 490;
-        if (this.bot.x < homeX - 4) this.bot.x += 1.8;
-        else if (this.bot.x > homeX + 4) this.bot.x -= 1.8;
-        if (this.bot.isGrounded) this.bot.pose = 'idle';
+        if (this.bot.x < homeX - 6) {
+          this.bot.x += 2.4;
+          if (this.bot.isGrounded) this.bot.pose = 'run';
+        } else if (this.bot.x > homeX + 6) {
+          this.bot.x -= 2.4;
+          if (this.bot.isGrounded) this.bot.pose = 'run';
+        } else if (this.bot.isGrounded && this.bot.pose !== 'spike_swing') {
+          this.bot.pose = 'idle';
+        }
       }
     }
 
-    // Trọng lực bot
+    // 2. Trọng lực và hạ cánh của Bot
     this.bot.vy += cfg.gravity;
     this.bot.y += this.bot.vy;
-    if (this.bot.y >= cfg.floorY) {
-      this.bot.y = cfg.floorY;
+    if (this.bot.y >= floorY) {
+      this.bot.y = floorY;
       this.bot.vy = 0;
       this.bot.isGrounded = true;
+      if (this.bot.pose === 'jump_arch' || this.bot.pose === 'spike_swing') {
+        this.bot.pose = 'idle';
+      }
     }
   }
 
