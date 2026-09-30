@@ -44,10 +44,10 @@ export class InputController {
   setupGlobalFocusManager() {
     if (typeof document === 'undefined') return;
 
-    // Khi người dùng focus vào ô nhập liệu
+    // Khi người dùng focus vào ô nhập liệu hoặc dropdown select
     document.addEventListener('focusin', (e) => {
       const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
         if (!e.target.closest('.hidden') && !e.target.closest('.fade-out')) {
           if (this.scene?.input?.keyboard) {
             this.scene.input.keyboard.enabled = false;
@@ -59,10 +59,10 @@ export class InputController {
       }
     });
 
-    // Khi người dùng click ra ngoài ô nhập liệu
+    // Khi người dùng click ra ngoài ô nhập liệu / select
     document.addEventListener('focusout', (e) => {
       const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) {
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) {
         setTimeout(() => {
           if (!this.isTypingActive() && !this.isModalOpen()) {
             this.enableInput();
@@ -73,7 +73,7 @@ export class InputController {
 
     // Khi click chuột ở bất kỳ đâu ngoài ô gõ văn bản -> Tự động khôi phục điều khiển game
     window.addEventListener('pointerdown', (e) => {
-      const isTypingField = e.target.closest('input, textarea, [contenteditable="true"]');
+      const isTypingField = e.target.closest('input, textarea, select, [contenteditable="true"]');
       if (!isTypingField && !this.isModalOpen()) {
         this.enableInput();
         const canvas = document.querySelector('#game-container canvas');
@@ -96,7 +96,7 @@ export class InputController {
     const activeEl = document.activeElement;
     if (!activeEl) return false;
 
-    const isField = activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable;
+    const isField = activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT' || activeEl.isContentEditable;
     if (!isField) return false;
 
     // Nếu ô nhập liệu đang nằm trong một modal bị ẩn (hidden / fade-out) -> tự động blur và không tính là đang gõ

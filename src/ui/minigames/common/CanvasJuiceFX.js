@@ -106,6 +106,27 @@ export class CanvasJuiceFX {
     }
   }
 
+  /** Bụi cỏ sân bóng / tiếp đất thể thao */
+  spawnDust(x, y, count = 8, color = 'rgba(255, 255, 255, 0.65)') {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.PI * 0.8 + Math.random() * Math.PI * 0.4;
+      const speed = 15 + Math.random() * 45;
+      this.particles.push({
+        type: 'dust',
+        x: x + (Math.random() - 0.5) * 10,
+        y: y + (Math.random() - 0.5) * 4,
+        vx: (Math.random() - 0.5) * speed,
+        vy: -Math.random() * speed * 0.6,
+        gravity: 25,
+        color,
+        size: 2 + Math.random() * 3,
+        alpha: 0.8,
+        life: 0.45,
+        maxLife: 0.45
+      });
+    }
+  }
+
   update(dt) {
     // 1. Cập nhật Screen Shake
     if (this.shakeDuration > 0) {
@@ -176,6 +197,11 @@ export class CanvasJuiceFX {
         ctx.fill();
       } else if (p.type === 'steam') {
         ctx.fillStyle = p.color + (p.alpha * 0.35) + ')';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.type === 'dust') {
+        ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();

@@ -187,10 +187,16 @@ export class SportsArcade {
       if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
         this.keys.space = true;
         this.keys.up = true;
-        this.onActionTrigger();
+        if (this.currentGame !== 'barista') {
+          this.onActionTrigger();
+        }
       }
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = true;
       if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = true;
+
+      if (this.currentGame === 'barista') {
+        this.baristaEngine.handleKeyDown?.(e);
+      }
     };
 
     this.handleKeyUp = (e) => {
@@ -200,6 +206,10 @@ export class SportsArcade {
       }
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = false;
       if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = false;
+
+      if (this.currentGame === 'barista') {
+        this.baristaEngine.handleKeyUp?.(e);
+      }
     };
 
     this.getCanvasCoords = (e) => {
@@ -219,6 +229,10 @@ export class SportsArcade {
       const { x, y } = this.getCanvasCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerDown(x, y);
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerDown?.(x, y);
+      } else if (this.currentGame === 'football') {
+        this.penaltyEngine.handlePointerDown?.(x, y);
       }
     };
 
@@ -229,19 +243,33 @@ export class SportsArcade {
         this.penaltyEngine.handlePointerMove(x, y);
       } else if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerMove(x, y);
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerMove?.(x, y);
       }
     };
 
     this.handlePointerUp = (e) => {
       if (!this.running) return;
+      const { x, y } = this.getCanvasCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerUp();
+      } else if (this.currentGame === 'basketball') {
+        this.basketballEngine.handlePointerUp?.(x, y);
+      } else if (this.currentGame === 'football') {
+        this.penaltyEngine.handlePointerUp?.(x, y);
       }
     };
 
     this.handleCanvasClick = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
       if (this.currentGame === 'barista') return;
+      if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
+        this.basketballEngine.didPointerShoot = false;
+        return;
+      }
+      if (this.currentGame === 'football' && this.penaltyEngine.isDragging) {
+        return;
+      }
       e.preventDefault();
       this.onActionTrigger();
     };
@@ -249,6 +277,13 @@ export class SportsArcade {
     this.handleCanvasTouch = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
       if (this.currentGame === 'barista') return;
+      if (this.currentGame === 'basketball' && this.basketballEngine.didPointerShoot) {
+        this.basketballEngine.didPointerShoot = false;
+        return;
+      }
+      if (this.currentGame === 'football' && this.penaltyEngine.isDragging) {
+        return;
+      }
       e.preventDefault();
       this.onActionTrigger();
     };
@@ -257,6 +292,7 @@ export class SportsArcade {
   setGame(gameType) {
     this.currentGame = gameType;
     this.particles = [];
+    this.activationGraceUntil = Date.now() + 350;
     if (gameType === 'football') this.penaltyEngine.resetStriker();
     else if (gameType === 'basketball') this.basketballEngine.reset();
     else if (gameType === 'volleyball') this.volleyballEngine.resetServe('player');
@@ -368,9 +404,11 @@ export class SportsArcade {
     this.juiceFX.update(dt);
 
     if (this.currentGame === 'football') {
+      this.penaltyEngine.handleKeyboardControls?.(this.keys, dt);
       this.penaltyEngine.update(dt);
       this.syncFootballCompatibility();
     } else if (this.currentGame === 'basketball') {
+      this.basketballEngine.keys = this.keys;
       this.basketballEngine.update(dt);
     } else if (this.currentGame === 'volleyball') {
       this.volleyballEngine.keys = this.keys;

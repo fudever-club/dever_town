@@ -29,7 +29,8 @@ import {
   FriendRequestModal,
   FriendsListModal,
   AvatarSelectorModal,
-  UNLOCKABLE_AVATARS
+  UNLOCKABLE_AVATARS,
+  CampusTimeHUD
 } from '../ui/index.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -76,6 +77,7 @@ export class WorldScene extends Phaser.Scene {
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.lightingManager = new LightingManager(this);
+    this.campusTimeHUD = new CampusTimeHUD({ lightingManager: this.lightingManager });
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);
@@ -627,8 +629,15 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const roomSelector = document.getElementById('room-selector');
-    if (roomSelector && roomSelector.value !== roomId) {
-      roomSelector.value = roomId;
+    if (roomSelector) {
+      if (roomSelector.value !== roomId) {
+        roomSelector.value = roomId;
+      }
+      if (typeof document !== 'undefined' && document.activeElement === roomSelector) {
+        roomSelector.blur();
+        const canvas = this.game?.canvas || document.querySelector('#game-container canvas');
+        if (canvas) canvas.focus();
+      }
     }
 
     if (notifySocket && this.socketManager) {
@@ -851,8 +860,19 @@ export class WorldScene extends Phaser.Scene {
       },
       onTeleportTo: (p) => {
         if (this.player && p && p.x !== undefined && p.y !== undefined) {
-          this.player.setPosition(p.x + 24, p.y);
-          if (this.player.body) this.player.body.reset(p.x + 24, p.y);
+          const targetX = p.x + 24;
+          const targetY = p.y;
+          this.teleportGraceUntil = performance.now() + 3500;
+          this.lastTeleportTime = performance.now();
+          if (p.roomId && p.roomId !== this.currentRoomId) {
+            this.loadRoom(p.roomId, targetX, targetY, true);
+          } else {
+            this.player.setPosition(targetX, targetY);
+            if (this.player.body) {
+              this.player.body.reset(targetX, targetY);
+              this.player.body.setVelocity(0, 0);
+            }
+          }
           if (this.audioManager) this.audioManager.playTeleport();
         }
       }
@@ -1059,18 +1079,60 @@ export class WorldScene extends Phaser.Scene {
     // 7. Quick Room Selector
     const roomSelector = document.getElementById('room-selector');
     if (roomSelector) {
+      let lastSelectorSwitch = 0;
+
       roomSelector.addEventListener('change', (e) => {
+        const now = performance.now();
+        // Chống kích hoạt đúp / spam phím liên tục trong 800ms
+        if (now - lastSelectorSwitch < 800) {
+          if (roomSelector.value !== this.currentRoomId) {
+            roomSelector.value = this.currentRoomId;
+          }
+          return;
+        }
+
         const targetRoom = e.target.value;
         if (targetRoom && targetRoom !== this.currentRoomId) {
           const mapData = MAPS_CONFIG[targetRoom];
           if (mapData) {
+            lastSelectorSwitch = now;
             this.isTeleporting = false;
-            this.teleportGraceUntil = performance.now() + 3500;
-            this.lastTeleportTime = performance.now();
+            this.teleportGraceUntil = now + 3500;
+            this.lastTeleportTime = now;
             if (this.player && this.player.body) {
               this.player.body.setVelocity(0, 0);
+              this.player.stopMovement();
             }
             this.loadRoom(targetRoom, mapData.spawnPoint.x, mapData.spawnPoint.y, true);
+          }
+        }
+
+        // BẮT BUỘC: Lập tức nhả focus khỏi dropdown và trả lại focus cho Canvas game
+        // Ngăn chặn trình duyệt bắt phím WASD / Mũi tên để tìm kiếm (type-ahead) sang phòng khác (ví dụ: phím 'A' nhảy sang Arcade)
+        roomSelector.blur();
+        const canvas = this.game?.canvas || document.querySelector('#game-container canvas');
+        if (canvas) {
+          canvas.focus();
+        }
+        if (this.inputController) {
+          this.inputController.enableInput();
+        }
+      });
+
+      // Ngăn chặn các phím điều khiển game (WASD, Mũi tên, Space) kích hoạt type-ahead hoặc đổi phòng trên <select>
+      roomSelector.addEventListener('keydown', (e) => {
+        const movementCodes = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'];
+        const movementKeys = ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D'];
+        if (movementCodes.includes(e.code) || movementKeys.includes(e.key)) {
+          e.preventDefault();
+          e.stopPropagation();
+          roomSelector.blur();
+          const canvas = this.game?.canvas || document.querySelector('#game-container canvas');
+          if (canvas) {
+            canvas.focus();
+          }
+          if (this.inputController) {
+            this.inputController.enableInput();
           }
         }
       });
@@ -1337,6 +1399,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   shutdown() {
+    if (this.campusTimeHUD) {
+      this.campusTimeHUD.destroy();
+      this.campusTimeHUD = null;
+    }
+
     if (this.lightingManager) {
       this.lightingManager.destroy();
       this.lightingManager = null;

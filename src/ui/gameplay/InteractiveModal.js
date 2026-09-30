@@ -2036,6 +2036,22 @@ export class InteractiveModal {
       if (typeBadge) typeBadge.textContent = 'FPTU GOLD MINER';
       if (descEl) descEl.textContent = 'Canh móc tời xoay đúng hướng và bấm SPACE để thả móc kéo vàng, kim cương và quà bí ẩn!';
       if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'flappybug') {
+      if (typeBadge) typeBadge.textContent = 'FLAPPY BUGGY';
+      if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để Buggy vỗ cánh bay qua các cột Server FPTU!';
+      if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'geometrydash') {
+      if (typeBadge) typeBadge.textContent = 'DEVER DASH 3.0';
+      if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để nhảy qua bẫy gai neon, đệm nhún và cổng đảo trọng lực!';
+      if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'match3') {
+      if (typeBadge) typeBadge.textContent = 'CYBER CANDY MATCH';
+      if (descEl) descEl.textContent = 'Hoán đổi các viên ngọc lân cận (Click/Kéo thả) để tạo chuỗi 3 trở lên, tạo Kẹo Sọc, Kẹo Bọc và Cầu Vồng!';
+      if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'pacman') {
+      if (typeBadge) typeBadge.textContent = 'CYBER PAC-MAN';
+      if (descEl) descEl.textContent = 'Dùng W/A/S/D hoặc Mũi Tên để điều khiển Pac-Buggy ăn hạt năng lượng, né ma và săn ma khi ăn Super D-Coin!';
+      if (btnUndo) btnUndo.classList.add('hidden');
     }
 
     if (this.retroArcade && this.retroArcade.scores) {
@@ -2043,6 +2059,10 @@ export class InteractiveModal {
       if (game === 'snake') this.syncArcadeBadges(game, s.snakeScore, s.snakeHigh);
       else if (game === 'sokoban') this.syncArcadeBadges(game, s.sokobanLevel, s.sokobanLevel);
       else if (game === 'goldminer') this.syncArcadeBadges(game, s.goldminerScore, s.goldminerHigh);
+      else if (game === 'flappybug') this.syncArcadeBadges(game, s.flappyScore, s.flappyHigh);
+      else if (game === 'geometrydash') this.syncArcadeBadges(game, s.dashPercent, s.dashHighPercent);
+      else if (game === 'match3') this.syncArcadeBadges(game, s.match3Score, s.match3High);
+      else if (game === 'pacman') this.syncArcadeBadges(game, s.pacmanScore, s.pacmanHigh);
     }
   }
 
@@ -2050,10 +2070,14 @@ export class InteractiveModal {
     const scoreBadge = document.getElementById('arcade-score-badge');
     const highBadge = document.getElementById('arcade-high-badge');
     if (scoreBadge && score !== undefined) {
-      scoreBadge.textContent = game === 'sokoban' ? `Màn: ${score}` : `Điểm: ${score}`;
+      if (game === 'sokoban') scoreBadge.textContent = `Màn: ${score}`;
+      else if (game === 'geometrydash') scoreBadge.textContent = `Tiến độ: ${score}%`;
+      else scoreBadge.textContent = `Điểm: ${score}`;
     }
     if (highBadge && high !== undefined) {
-      highBadge.textContent = game === 'sokoban' ? `Kỷ lục Màn: ${high}` : `Kỷ lục: ${high}`;
+      if (game === 'sokoban') highBadge.textContent = `Kỷ lục Màn: ${high}`;
+      else if (game === 'geometrydash') highBadge.textContent = `Kỷ lục: ${high}%`;
+      else highBadge.textContent = `Kỷ lục: ${high}`;
     }
   }
 

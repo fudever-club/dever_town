@@ -9,6 +9,10 @@ import { CanvasJuiceFX } from './common/CanvasJuiceFX.js';
 import { SnakeEngine } from './retro/SnakeEngine.js';
 import { SokobanEngine } from './retro/SokobanEngine.js';
 import { GoldMinerEngine } from './retro/GoldMinerEngine.js';
+import { FlappyBugEngine } from './retro/FlappyBugEngine.js';
+import { GeometryDashEngine } from './retro/GeometryDashEngine.js';
+import { Match3Engine } from './retro/Match3Engine.js';
+import { PacmanEngine } from './retro/PacmanEngine.js';
 import { questManager } from '../../managers/QuestManager.js';
 
 export class RetroArcade {
@@ -19,7 +23,7 @@ export class RetroArcade {
     this.width = canvas.width;
     this.height = canvas.height;
 
-    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer'
+    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug', 'geometrydash', 'match3', 'pacman'
     this.isRunning = false;
     this.animationId = null;
 
@@ -29,7 +33,15 @@ export class RetroArcade {
       snakeHigh: parseInt(localStorage.getItem('dever_snake_high') || '0', 10),
       sokobanLevel: parseInt(localStorage.getItem('dever_sokoban_level') || '1', 10),
       goldminerScore: 0,
-      goldminerHigh: parseInt(localStorage.getItem('dever_goldminer_high') || '0', 10)
+      goldminerHigh: parseInt(localStorage.getItem('dever_goldminer_high') || '0', 10),
+      flappyScore: 0,
+      flappyHigh: parseInt(localStorage.getItem('dever_flappy_high') || '0', 10),
+      dashPercent: 0,
+      dashHighPercent: parseInt(localStorage.getItem('dever_dash_best') || '0', 10),
+      match3Score: 0,
+      match3High: parseInt(localStorage.getItem('dever_match3_high') || '0', 10),
+      pacmanScore: 0,
+      pacmanHigh: parseInt(localStorage.getItem('dever_pacman_high') || '0', 10)
     };
 
     // Common input state
@@ -38,6 +50,10 @@ export class RetroArcade {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
 
     this.lastTime = 0;
 
@@ -69,8 +85,8 @@ export class RetroArcade {
     });
 
     this.sokobanEngine = new SokobanEngine(this.canvas, this.juiceFX, {
-      onScoreUpdate: (score) => {
-        const curLvl = (this.sokobanEngine.currentLevelIndex || 0) + 1;
+      onScoreUpdate: (lvl) => {
+        const curLvl = typeof lvl === 'number' && lvl > 0 ? lvl : (this.sokobanEngine?.currentLevelIndex ?? 0) + 1;
         this.scores.sokobanLevel = Math.max(this.scores.sokobanLevel, curLvl);
         localStorage.setItem('dever_sokoban_level', this.scores.sokobanLevel.toString());
         questManager.incrementProgress?.('sokoban_puzzle', 1);
@@ -95,12 +111,81 @@ export class RetroArcade {
         this.options.onScoreUpdate?.({ game: 'goldminer', score: cash, high: this.scores.goldminerHigh });
       }
     });
+
+    this.flappyBugEngine = new FlappyBugEngine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.flappyScore = score;
+        if (score > this.scores.flappyHigh) {
+          this.scores.flappyHigh = score;
+          localStorage.setItem('dever_flappy_high', score.toString());
+        }
+        questManager.incrementProgress?.('flappy_bug_score', 1);
+        try {
+          questManager.addPoints?.(10, 'Vượt chướng ngại vật Flappy Bug');
+        } catch (_) {}
+        this.options.onScoreUpdate?.({ game: 'flappybug', score, high: this.scores.flappyHigh });
+      }
+    });
+
+    this.geometryDashEngine = new GeometryDashEngine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (pct) => {
+        this.scores.dashPercent = pct;
+        if (pct > this.scores.dashHighPercent) {
+          this.scores.dashHighPercent = pct;
+          localStorage.setItem('dever_dash_best', pct.toString());
+        }
+        if (pct > 0 && pct % 20 === 0) {
+          try {
+            questManager.addPoints?.(15, 'Tiến độ Dever Dash');
+          } catch (_) {}
+        }
+        this.options.onScoreUpdate?.({ game: 'geometrydash', score: pct, high: this.scores.dashHighPercent });
+      }
+    });
+
+    this.match3Engine = new Match3Engine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.match3Score = score;
+        if (score > this.scores.match3High) {
+          this.scores.match3High = score;
+          localStorage.setItem('dever_match3_high', score.toString());
+        }
+        if (score >= 1500) {
+          try {
+            questManager.incrementProgress?.('arcade_games_played', 1);
+            questManager.addPoints?.(20, 'Đạt sao Cyber Match');
+          } catch (_) {}
+        }
+        this.options.onScoreUpdate?.({ game: 'match3', score, high: this.scores.match3High });
+      }
+    });
+
+    this.pacmanEngine = new PacmanEngine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.pacmanScore = score;
+        if (score > this.scores.pacmanHigh) {
+          this.scores.pacmanHigh = score;
+          localStorage.setItem('dever_pacman_high', score.toString());
+        }
+        if (score >= 500) {
+          try {
+            questManager.incrementProgress?.('arcade_games_played', 1);
+            questManager.addPoints?.(25, 'Điểm số Cyber Pac-Man');
+          } catch (_) {}
+        }
+        this.options.onScoreUpdate?.({ game: 'pacman', score, high: this.scores.pacmanHigh });
+      }
+    });
   }
 
   initCompatibilityAdapters() {
     this.snake = { gameOver: false, score: 0 };
     this.sokoban = { level: 0, won: false };
     this.miner = { score: 0 };
+    this.flappy = { score: 0 };
+    this.dash = { percent: 0 };
+    this.match3 = { score: 0 };
+    this.pacman = { score: 0 };
   }
 
   setGame(gameId) {
@@ -118,13 +203,19 @@ export class RetroArcade {
 
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
-    this.canvas.addEventListener('mousedown', this.handleClick);
-    this.canvas.addEventListener('touchstart', this.handleClick);
+    this.canvas.addEventListener('mousedown', this.handleMouseDown);
+    this.canvas.addEventListener('mouseup', this.handleMouseUp);
+    this.canvas.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+    this.canvas.addEventListener('touchend', this.handleTouchEnd, { passive: true });
 
     // Reset game hiện tại
     if (this.currentGame === 'snake') this.snakeEngine.reset();
     else if (this.currentGame === 'sokoban') this.sokobanEngine.loadLevel(this.sokobanEngine.currentLevelIndex);
     else if (this.currentGame === 'goldminer') this.goldMinerEngine.resetDay();
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine.reset();
+    else if (this.currentGame === 'geometrydash') this.geometryDashEngine.reset();
+    else if (this.currentGame === 'match3') this.match3Engine.resetGame();
+    else if (this.currentGame === 'pacman') this.pacmanEngine.reset();
 
     this.lastTime = performance.now();
     this.loop(this.lastTime);
@@ -139,8 +230,10 @@ export class RetroArcade {
 
     window.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('keyup', this.handleKeyUp);
-    this.canvas.removeEventListener('mousedown', this.handleClick);
-    this.canvas.removeEventListener('touchstart', this.handleClick);
+    this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+    this.canvas.removeEventListener('mouseup', this.handleMouseUp);
+    this.canvas.removeEventListener('touchstart', this.handleTouchStart);
+    this.canvas.removeEventListener('touchend', this.handleTouchEnd);
   }
 
   handleKeyDown(e) {
@@ -161,24 +254,38 @@ export class RetroArcade {
     const code = e.code || '';
 
     if (this.currentGame === 'snake') {
-      if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.snakeEngine.setDirection(0, -1);
-      else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.snakeEngine.setDirection(0, 1);
-      else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.snakeEngine.setDirection(-1, 0);
-      else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.snakeEngine.setDirection(1, 0);
-      else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
-        this.snakeEngine.onActionTrigger();
+      if (this.snakeEngine.handleKeyDown) {
+        this.snakeEngine.handleKeyDown(e);
+      } else {
+        if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.snakeEngine.setDirection(0, -1);
+        else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.snakeEngine.setDirection(0, 1);
+        else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.snakeEngine.setDirection(-1, 0);
+        else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.snakeEngine.setDirection(1, 0);
+        else if (code === 'ShiftLeft' || code === 'ShiftRight') this.snakeEngine.setBoosting(true);
+        else if (code === 'KeyR' || key === 'r') this.snakeEngine.reset();
+        else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
+          this.snakeEngine.onActionTrigger();
+        }
       }
     } else if (this.currentGame === 'sokoban') {
-      if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.sokobanEngine.move(0, -1);
-      else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.sokobanEngine.move(0, 1);
-      else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.sokobanEngine.move(-1, 0);
-      else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.sokobanEngine.move(1, 0);
-      else if (key === 'u' || code === 'KeyU') this.sokobanEngine.undo();
-      else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
-        this.sokobanEngine.onActionTrigger();
+      if (this.sokobanEngine.handleKeyDown) {
+        this.sokobanEngine.handleKeyDown(e);
+      } else {
+        if (key === 'w' || code === 'ArrowUp' || key === 'arrowup' || code === 'KeyW') this.sokobanEngine.move(0, -1);
+        else if (key === 's' || code === 'ArrowDown' || key === 'arrowdown' || code === 'KeyS') this.sokobanEngine.move(0, 1);
+        else if (key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyA') this.sokobanEngine.move(-1, 0);
+        else if (key === 'd' || code === 'ArrowRight' || key === 'arrowright' || code === 'KeyD') this.sokobanEngine.move(1, 0);
+        else if (key === 'u' || code === 'KeyU' || key === 'z' || code === 'KeyZ' || code === 'Backspace') this.sokobanEngine.undo();
+        else if (key === 'r' || code === 'KeyR') this.sokobanEngine.restartLevel?.();
+        else if (key === 'l' || code === 'KeyL') this.sokobanEngine.toggleLevelSelect?.();
+        else if (code === 'Space' || code === 'KeyE' || key === 'e' || key === 'enter' || code === 'Enter') {
+          this.sokobanEngine.onActionTrigger();
+        }
       }
     } else if (this.currentGame === 'goldminer') {
-      if (
+      if (this.goldMinerEngine.handleKeyDown) {
+        this.goldMinerEngine.handleKeyDown(e);
+      } else if (
         code === 'Space' ||
         key === ' ' ||
         code === 'Enter' ||
@@ -192,21 +299,146 @@ export class RetroArcade {
       ) {
         this.goldMinerEngine.onActionTrigger();
       }
+    } else if (this.currentGame === 'flappybug') {
+      if (this.flappyBugEngine.handleKeyDown) {
+        this.flappyBugEngine.handleKeyDown(e);
+      } else {
+        this.flappyBugEngine.onActionTrigger();
+      }
+    } else if (this.currentGame === 'geometrydash') {
+      if (this.geometryDashEngine.handleKeyDown) {
+        this.geometryDashEngine.handleKeyDown(e);
+      } else {
+        this.geometryDashEngine.onActionTrigger();
+      }
+    } else if (this.currentGame === 'match3') {
+      if (this.match3Engine.handleKeyDown) {
+        this.match3Engine.handleKeyDown(e);
+      }
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handleKeyDown) {
+        this.pacmanEngine.handleKeyDown(e);
+      } else {
+        this.pacmanEngine.onActionTrigger();
+      }
     }
   }
 
   handleKeyUp(e) {
     this.keys[e.key] = false;
+    const code = e.code || '';
+    if (this.currentGame === 'snake') {
+      if (code === 'ShiftLeft' || code === 'ShiftRight') {
+        this.snakeEngine.setBoosting(false);
+      }
+      if (this.snakeEngine.handleKeyUp) {
+        this.snakeEngine.handleKeyUp(e);
+      }
+    } else if (this.currentGame === 'geometrydash') {
+      if (this.geometryDashEngine.handleKeyUp) {
+        this.geometryDashEngine.handleKeyUp(e);
+      }
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handleKeyUp) {
+        this.pacmanEngine.handleKeyUp(e);
+      }
+    }
+  }
+
+  getCanvasCoords(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / (rect.width || 1);
+    const scaleY = this.canvas.height / (rect.height || 1);
+    const clientX = e.touches ? (e.touches[0] || e.changedTouches?.[0])?.clientX || 0 : e.clientX;
+    const clientY = e.touches ? (e.touches[0] || e.changedTouches?.[0])?.clientY || 0 : e.clientY;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  handleMouseDown(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerDown(coords.x, coords.y);
+    } else {
+      this.handleClick(e);
+    }
+  }
+
+  handleMouseUp(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerUp(coords.x, coords.y);
+    }
+  }
+
+  handleTouchStart(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerDown(coords.x, coords.y);
+    } else {
+      this.handleClick(e);
+    }
+  }
+
+  handleTouchEnd(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerUp(coords.x, coords.y);
+    }
   }
 
   handleClick(e) {
     if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / (rect.width || 1);
+    const scaleY = this.canvas.height / (rect.height || 1);
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
     if (this.currentGame === 'snake') {
-      this.snakeEngine.onActionTrigger();
+      if (this.snakeEngine.handlePointerClick) {
+        this.snakeEngine.handlePointerClick(x, y);
+      } else {
+        this.snakeEngine.onActionTrigger();
+      }
     } else if (this.currentGame === 'sokoban') {
-      this.sokobanEngine.onActionTrigger();
+      if (this.sokobanEngine.handlePointerClick) {
+        this.sokobanEngine.handlePointerClick(x, y);
+      } else {
+        this.sokobanEngine.onActionTrigger();
+      }
     } else if (this.currentGame === 'goldminer') {
-      this.goldMinerEngine.onActionTrigger();
+      if (this.goldMinerEngine.handlePointerClick) {
+        this.goldMinerEngine.handlePointerClick(x, y);
+      } else {
+        this.goldMinerEngine.onActionTrigger();
+      }
+    } else if (this.currentGame === 'flappybug') {
+      if (this.flappyBugEngine.handlePointerClick) {
+        this.flappyBugEngine.handlePointerClick(x, y);
+      } else {
+        this.flappyBugEngine.onActionTrigger();
+      }
+    } else if (this.currentGame === 'geometrydash') {
+      if (this.geometryDashEngine.handlePointerClick) {
+        this.geometryDashEngine.handlePointerClick(x, y);
+      } else {
+        this.geometryDashEngine.onActionTrigger();
+      }
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine?.handlePointerUp(x, y);
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handlePointerClick) {
+        this.pacmanEngine.handlePointerClick(x, y);
+      } else {
+        this.pacmanEngine.onActionTrigger();
+      }
     }
   }
 
@@ -230,6 +462,14 @@ export class RetroArcade {
       this.sokobanEngine.update(dt);
     } else if (this.currentGame === 'goldminer') {
       this.goldMinerEngine.update(dt);
+    } else if (this.currentGame === 'flappybug') {
+      this.flappyBugEngine.update(dt);
+    } else if (this.currentGame === 'geometrydash') {
+      this.geometryDashEngine.update(dt);
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine.update(dt);
+    } else if (this.currentGame === 'pacman') {
+      this.pacmanEngine.update(dt);
     }
   }
 
@@ -246,6 +486,14 @@ export class RetroArcade {
       this.sokobanEngine.render();
     } else if (this.currentGame === 'goldminer') {
       this.goldMinerEngine.render();
+    } else if (this.currentGame === 'flappybug') {
+      this.flappyBugEngine.render();
+    } else if (this.currentGame === 'geometrydash') {
+      this.geometryDashEngine.render();
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine.render();
+    } else if (this.currentGame === 'pacman') {
+      this.pacmanEngine.render();
     }
 
     this.juiceFX.render(this.ctx);
@@ -254,23 +502,33 @@ export class RetroArcade {
 
   moveUp() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, -1);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(0, -1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, -1);
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine?.flap();
+    else if (this.currentGame === 'geometrydash') this.geometryDashEngine?.jump();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowUp' });
   }
 
   moveDown() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, 1);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(0, 1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, 1);
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowDown' });
   }
 
   moveLeft() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(-1, 0);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(-1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(-1, 0);
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowLeft' });
   }
 
   moveRight() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(1, 0);
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(1, 0);
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowRight' });
   }
 
   undo() {
@@ -279,7 +537,11 @@ export class RetroArcade {
 
   triggerAction() {
     if (this.currentGame === 'snake') this.snakeEngine?.onActionTrigger();
+    else if (this.currentGame === 'pacman') this.pacmanEngine?.onActionTrigger();
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.onActionTrigger();
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
+    else if (this.currentGame === 'flappybug') this.flappyBugEngine?.onActionTrigger();
+    else if (this.currentGame === 'geometrydash') this.geometryDashEngine?.onActionTrigger();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'Space' });
   }
 }
