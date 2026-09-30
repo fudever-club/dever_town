@@ -165,30 +165,30 @@ export const NPC_CONFIG = {
   ],
   dever_lab: [
     {
-      id: 'npc_game_lead_thanh',
-      name: 'Nguyễn Lê Đăng Thành',
-      role: 'Trưởng Ban Game Development',
+      id: 'npc_algo_truyen',
+      name: 'Phạm Đức Truyền',
+      role: 'Algorithm Lead • Đội Tuyển ICPC',
       tileX: 15, tileY: 8,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
-        hairstyle: 'wolf_cut',
-        hairColor: '#7f1d1d',
-        skinTone: 'skin_natural',
+        hairstyle: 'undercut',
+        hairColor: '#0284c7',
+        skinTone: 'skin_fair',
         outfitType: 'hoodie',
-        hoodieColor: '#dc2626',
-        collarColor: '#991b1b',
-        pantsColor: '#18181b',
-        accessory: 'headphones_rgb',
-        expression: 'expr_cool'
+        hoodieColor: '#0369a1',
+        collarColor: '#075985',
+        pantsColor: '#1e293b',
+        accessory: 'glasses_smart',
+        expression: 'expr_focus'
       },
       startDialogue: 'line_1',
       dialogues: {
         line_1: {
           lines: [
-            'Hello bro! Mình là Thành, lead của Game Dev Sub-team.',
-            'Thế giới DEVER TOWN mà bạn đang trải nghiệm được xây dựng bằng Phaser 3 và Socket.io đó!',
-            'Nếu bạn đam mê thiết kế gameplay, pixel art hay game mechanics, vào team mình cùng chiến nhé!'
+            'Chào bạn! Bạn có niềm đam mê với Competitive Programming hay thuật toán không?',
+            'Đội tuyển ICPC FU-DEVER thường xuyên tổ chức luyện tập và thi đấu trên đấu trường dever-arena.',
+            'Giải thuật không hề khô khan, quan trọng là tư duy tối ưu để thuật toán chạy trong O(n log n)!'
           ],
           nextDialogue: 'line_1'
         }
@@ -335,30 +335,30 @@ export const NPC_CONFIG = {
   ],
   game_arcade: [
     {
-      id: 'npc_algo_truyen',
-      name: 'Phạm Đức Truyền',
-      role: 'Algorithm Lead • Đội Tuyển ICPC',
-      tileX: 12, tileY: 8,
+      id: 'npc_game_lead_thanh',
+      name: 'Nguyễn Lê Đăng Thành',
+      role: 'Trưởng Ban Game Development',
+      tileX: 20, tileY: 8,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
-        hairstyle: 'undercut',
-        hairColor: '#0284c7',
-        skinTone: 'skin_fair',
+        hairstyle: 'wolf_cut',
+        hairColor: '#7f1d1d',
+        skinTone: 'skin_natural',
         outfitType: 'hoodie',
-        hoodieColor: '#0369a1',
-        collarColor: '#075985',
-        pantsColor: '#1e293b',
-        accessory: 'glasses_smart',
-        expression: 'expr_focus'
+        hoodieColor: '#dc2626',
+        collarColor: '#991b1b',
+        pantsColor: '#18181b',
+        accessory: 'headphones_rgb',
+        expression: 'expr_cool'
       },
       startDialogue: 'line_1',
       dialogues: {
         line_1: {
           lines: [
-            'Chào bạn! Bạn có niềm đam mê với Competitive Programming hay thuật toán không?',
-            'Đội tuyển ICPC FU-DEVER thường xuyên tổ chức luyện tập và thi đấu trên đấu trường dever-arena.',
-            'Giải thuật không hề khô khan, quan trọng là tư duy tối ưu để thuật toán chạy trong O(n log n)!'
+            'Hello bro! Mình là Thành, lead của Game Dev Sub-team.',
+            'Thế giới DEVER TOWN mà bạn đang trải nghiệm được xây dựng bằng Phaser 3 và Socket.io đó!',
+            'Nếu bạn đam mê thiết kế gameplay, pixel art hay game mechanics, vào team mình cùng chiến nhé!'
           ],
           nextDialogue: 'line_1'
         }

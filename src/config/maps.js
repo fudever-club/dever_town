@@ -238,8 +238,8 @@ export const MAPS_CONFIG = {
       [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
       [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
@@ -261,7 +261,10 @@ export const MAPS_CONFIG = {
       { id: 'zone_arcade_sokoban', type: 'arcade_games', defaultGame: 'sokoban', tileX: 10, tileY: 4, name: 'Máy Game: Buggy Đẩy Hộp (Sokoban)', label: 'Chơi Đẩy Hộp' },
       { id: 'zone_arcade_goldminer', type: 'arcade_games', defaultGame: 'goldminer', tileX: 16, tileY: 4, name: 'Máy Game: Cóc Vàng Đào Kho Báu', label: 'Chơi Đào Vàng' },
       { id: 'zone_arcade_robot_hub', type: 'robot_showcase', tileX: 21, tileY: 4, name: 'Trạm Trưng Bày & Tải Game Robot CLB', label: 'Tải Game Robot' },
-      { id: 'zone_arcade_meeting', type: 'meeting_stage', tileX: 12, tileY: 10, name: 'Bàn Đấu Game & Livestream', label: 'Livestream Game' }
+      { id: 'zone_arcade_flappybug', type: 'arcade_games', defaultGame: 'flappybug', tileX: 4, tileY: 8, name: 'Máy Game: Flappy Buggy', label: 'Chơi Flappy Bug' },
+      { id: 'zone_arcade_geometrydash', type: 'arcade_games', defaultGame: 'geometrydash', tileX: 10, tileY: 8, name: 'Máy Game: Dever Dash 3.0', label: 'Chơi Dever Dash' },
+      { id: 'zone_arcade_match3', type: 'arcade_games', defaultGame: 'match3', tileX: 16, tileY: 8, name: 'Máy Game: Cyber Candy Match', label: 'Chơi Cyber Match' },
+      { id: 'zone_arcade_meeting', type: 'meeting_stage', tileX: 12, tileY: 11, name: 'Bàn Đấu Game & Livestream', label: 'Livestream Game' }
     ]
   },
 

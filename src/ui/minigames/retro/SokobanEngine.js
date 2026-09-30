@@ -72,7 +72,7 @@ export class SokobanEngine {
     this.offsetY = Math.floor((this.canvas.height - this.rows * this.tileSize) / 2) + 12;
 
     this.checkDeadlocks();
-    this.callbacks.onScoreUpdate?.(0);
+    this.callbacks.onScoreUpdate?.(this.currentLevelIndex + 1);
   }
 
   restartLevel() {

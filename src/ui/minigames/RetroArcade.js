@@ -82,8 +82,8 @@ export class RetroArcade {
     });
 
     this.sokobanEngine = new SokobanEngine(this.canvas, this.juiceFX, {
-      onScoreUpdate: (score) => {
-        const curLvl = (this.sokobanEngine.currentLevelIndex || 0) + 1;
+      onScoreUpdate: (lvl) => {
+        const curLvl = typeof lvl === 'number' && lvl > 0 ? lvl : (this.sokobanEngine?.currentLevelIndex ?? 0) + 1;
         this.scores.sokobanLevel = Math.max(this.scores.sokobanLevel, curLvl);
         localStorage.setItem('dever_sokoban_level', this.scores.sokobanLevel.toString());
         questManager.incrementProgress?.('sokoban_puzzle', 1);
@@ -140,7 +140,22 @@ export class RetroArcade {
       }
     });
 
-    this.match3Engine = new Match3Engine(this.canvas, this);
+    this.match3Engine = new Match3Engine(this.canvas, this.juiceFX, {
+      onScoreUpdate: (score) => {
+        this.scores.match3Score = score;
+        if (score > this.scores.match3High) {
+          this.scores.match3High = score;
+          localStorage.setItem('dever_match3_high', score.toString());
+        }
+        if (score >= 1500) {
+          try {
+            questManager.incrementProgress?.('arcade_games_played', 1);
+            questManager.addPoints?.(20, 'Đạt sao Cyber Match');
+          } catch (_) {}
+        }
+        this.options.onScoreUpdate?.({ game: 'match3', score, high: this.scores.match3High });
+      }
+    });
   }
 
   initCompatibilityAdapters() {
@@ -415,12 +430,6 @@ export class RetroArcade {
       this.geometryDashEngine.update(dt);
     } else if (this.currentGame === 'match3') {
       this.match3Engine.update(dt);
-      this.scores.match3Score = this.match3Engine.score;
-      if (this.scores.match3Score > this.scores.match3High) {
-        this.scores.match3High = this.scores.match3Score;
-        localStorage.setItem('dever_match3_high', this.scores.match3High.toString());
-      }
-      this.options.onScoreUpdate?.({ game: 'match3', score: this.scores.match3Score, high: this.scores.match3High });
     }
   }
 

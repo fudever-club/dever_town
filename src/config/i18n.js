@@ -110,6 +110,9 @@ export const TRANSLATIONS = {
       zone_arcade_snake: 'Rắn Săn Mồi Cyber Snake',
       zone_arcade_sokoban: 'Buggy Đẩy Hộp Sokoban',
       zone_arcade_goldminer: 'Cóc Vàng Đào Kho Báu',
+      zone_arcade_flappybug: 'Máy Game: Flappy Buggy',
+      zone_arcade_geometrydash: 'Máy Game: Dever Dash 3.0',
+      zone_arcade_match3: 'Máy Game: Cyber Candy Match',
       zone_arcade_robot_hub: 'Trạm Tải Game Robot',
       zone_arcade_meeting: 'Bàn Game & Livestream',
 
@@ -298,6 +301,9 @@ export const TRANSLATIONS = {
       zone_arcade_snake: 'Arcade: Cyber Snake',
       zone_arcade_sokoban: 'Arcade: Buggy Sokoban',
       zone_arcade_goldminer: 'Arcade: FPTU Gold Miner',
+      zone_arcade_flappybug: 'Arcade: Flappy Buggy',
+      zone_arcade_geometrydash: 'Arcade: Dever Dash 3.0',
+      zone_arcade_match3: 'Arcade: Cyber Candy Match',
       zone_arcade_robot_hub: 'Club Robot Games Download',
       zone_arcade_meeting: 'Game Match & Livestream Desk',
 
