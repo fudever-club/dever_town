@@ -663,4 +663,68 @@ export const GEOMETRY_DASH_CONFIG = {
   }
 };
 
+// ==========================================
+// 10. 🍬 CYBER CANDY MATCH-3 CONFIGURATION
+// ==========================================
+export const MATCH3_CONFIG = {
+  canvas: { width: 640, height: 360 },
+  grid: {
+    rows: 8,
+    cols: 8,
+    cellSize: 36,
+    cellGap: 2,
+    startX: 170,
+    startY: 29
+  },
+  rules: {
+    movesLimit: 25,
+    targetScores: {
+      star1: 1500,
+      star2: 3200,
+      star3: 5500
+    },
+    points: {
+      match3: 60,
+      match4: 150,
+      match5_L: 250,
+      match5_line: 500,
+      comboBonus: 40
+    }
+  },
+  timings: {
+    swapDurationMs: 140,
+    fallSpeedPxPerSec: 460,
+    hintIdleTimeMs: 4500,
+    juiceTextDurationMs: 1100
+  },
+  specialTypes: {
+    NONE: 0,
+    STRIPED_H: 1,
+    STRIPED_V: 2,
+    WRAPPED: 3,
+    COLOR_BOMB: 4
+  },
+  gemTypes: [
+    { id: 0, name: 'Ruby Core', color: '#ef4444', glow: '#f87171', shape: 'diamond' },
+    { id: 1, name: 'Sapphire Chip', color: '#06b6d4', glow: '#67e8f9', shape: 'hexagon' },
+    { id: 2, name: 'Emerald Bug', color: '#10b981', glow: '#6ee7b7', shape: 'circle' },
+    { id: 3, name: 'Topaz Bit', color: '#f59e0b', glow: '#fcd34d', shape: 'square' },
+    { id: 4, name: 'Amethyst Byte', color: '#a855f7', glow: '#c084fc', shape: 'triangle' },
+    { id: 5, name: 'Cyber Star', color: '#ec4899', glow: '#f472b6', shape: 'star' }
+  ],
+  colors: {
+    bgTop: '#0a0d1a',
+    bgBottom: '#18122B',
+    boardBg: 'rgba(15, 23, 42, 0.88)',
+    boardBorder: '#475569',
+    cellBg: 'rgba(30, 41, 59, 0.65)',
+    cellBorder: 'rgba(71, 85, 105, 0.45)',
+    selectedBorder: '#facc15',
+    hintBorder: '#38bdf8',
+    panelBg: 'rgba(15, 23, 42, 0.75)',
+    panelBorder: '#334155'
+  }
+};
+
+
 

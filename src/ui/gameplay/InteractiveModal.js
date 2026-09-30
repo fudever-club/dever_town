@@ -2044,6 +2044,10 @@ export class InteractiveModal {
       if (typeBadge) typeBadge.textContent = 'DEVER DASH 3.0';
       if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để nhảy qua bẫy gai neon, đệm nhún và cổng đảo trọng lực!';
       if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'match3') {
+      if (typeBadge) typeBadge.textContent = 'CYBER CANDY MATCH';
+      if (descEl) descEl.textContent = 'Hoán đổi các viên ngọc lân cận (Click/Kéo thả) để tạo chuỗi 3 trở lên, tạo Kẹo Sọc, Kẹo Bọc và Cầu Vồng!';
+      if (btnUndo) btnUndo.classList.add('hidden');
     }
 
     if (this.retroArcade && this.retroArcade.scores) {
@@ -2053,6 +2057,7 @@ export class InteractiveModal {
       else if (game === 'goldminer') this.syncArcadeBadges(game, s.goldminerScore, s.goldminerHigh);
       else if (game === 'flappybug') this.syncArcadeBadges(game, s.flappyScore, s.flappyHigh);
       else if (game === 'geometrydash') this.syncArcadeBadges(game, s.dashPercent, s.dashHighPercent);
+      else if (game === 'match3') this.syncArcadeBadges(game, s.match3Score, s.match3High);
     }
   }
 

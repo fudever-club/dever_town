@@ -11,6 +11,7 @@ import { SokobanEngine } from './retro/SokobanEngine.js';
 import { GoldMinerEngine } from './retro/GoldMinerEngine.js';
 import { FlappyBugEngine } from './retro/FlappyBugEngine.js';
 import { GeometryDashEngine } from './retro/GeometryDashEngine.js';
+import { Match3Engine } from './retro/Match3Engine.js';
 import { questManager } from '../../managers/QuestManager.js';
 
 export class RetroArcade {
@@ -21,7 +22,7 @@ export class RetroArcade {
     this.width = canvas.width;
     this.height = canvas.height;
 
-    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug', 'geometrydash'
+    this.currentGame = 'snake'; // 'snake', 'sokoban', 'goldminer', 'flappybug', 'geometrydash', 'match3'
     this.isRunning = false;
     this.animationId = null;
 
@@ -35,7 +36,9 @@ export class RetroArcade {
       flappyScore: 0,
       flappyHigh: parseInt(localStorage.getItem('dever_flappy_high') || '0', 10),
       dashPercent: 0,
-      dashHighPercent: parseInt(localStorage.getItem('dever_dash_best') || '0', 10)
+      dashHighPercent: parseInt(localStorage.getItem('dever_dash_best') || '0', 10),
+      match3Score: 0,
+      match3High: parseInt(localStorage.getItem('dever_match3_high') || '0', 10)
     };
 
     // Common input state
@@ -44,6 +47,10 @@ export class RetroArcade {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
 
     this.lastTime = 0;
 
@@ -132,6 +139,8 @@ export class RetroArcade {
         this.options.onScoreUpdate?.({ game: 'geometrydash', score: pct, high: this.scores.dashHighPercent });
       }
     });
+
+    this.match3Engine = new Match3Engine(this.canvas, this);
   }
 
   initCompatibilityAdapters() {
@@ -140,6 +149,7 @@ export class RetroArcade {
     this.miner = { score: 0 };
     this.flappy = { score: 0 };
     this.dash = { percent: 0 };
+    this.match3 = { score: 0 };
   }
 
   setGame(gameId) {
@@ -157,8 +167,10 @@ export class RetroArcade {
 
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
-    this.canvas.addEventListener('mousedown', this.handleClick);
-    this.canvas.addEventListener('touchstart', this.handleClick);
+    this.canvas.addEventListener('mousedown', this.handleMouseDown);
+    this.canvas.addEventListener('mouseup', this.handleMouseUp);
+    this.canvas.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+    this.canvas.addEventListener('touchend', this.handleTouchEnd, { passive: true });
 
     // Reset game hiện tại
     if (this.currentGame === 'snake') this.snakeEngine.reset();
@@ -166,6 +178,7 @@ export class RetroArcade {
     else if (this.currentGame === 'goldminer') this.goldMinerEngine.resetDay();
     else if (this.currentGame === 'flappybug') this.flappyBugEngine.reset();
     else if (this.currentGame === 'geometrydash') this.geometryDashEngine.reset();
+    else if (this.currentGame === 'match3') this.match3Engine.resetGame();
 
     this.lastTime = performance.now();
     this.loop(this.lastTime);
@@ -180,8 +193,10 @@ export class RetroArcade {
 
     window.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('keyup', this.handleKeyUp);
-    this.canvas.removeEventListener('mousedown', this.handleClick);
-    this.canvas.removeEventListener('touchstart', this.handleClick);
+    this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+    this.canvas.removeEventListener('mouseup', this.handleMouseUp);
+    this.canvas.removeEventListener('touchstart', this.handleTouchStart);
+    this.canvas.removeEventListener('touchend', this.handleTouchEnd);
   }
 
   handleKeyDown(e) {
@@ -259,6 +274,10 @@ export class RetroArcade {
       } else {
         this.geometryDashEngine.onActionTrigger();
       }
+    } else if (this.currentGame === 'match3') {
+      if (this.match3Engine.handleKeyDown) {
+        this.match3Engine.handleKeyDown(e);
+      }
     }
   }
 
@@ -276,6 +295,54 @@ export class RetroArcade {
       if (this.geometryDashEngine.handleKeyUp) {
         this.geometryDashEngine.handleKeyUp(e);
       }
+    }
+  }
+
+  getCanvasCoords(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / (rect.width || 1);
+    const scaleY = this.canvas.height / (rect.height || 1);
+    const clientX = e.touches ? (e.touches[0] || e.changedTouches?.[0])?.clientX || 0 : e.clientX;
+    const clientY = e.touches ? (e.touches[0] || e.changedTouches?.[0])?.clientY || 0 : e.clientY;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  handleMouseDown(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerDown(coords.x, coords.y);
+    } else {
+      this.handleClick(e);
+    }
+  }
+
+  handleMouseUp(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerUp(coords.x, coords.y);
+    }
+  }
+
+  handleTouchStart(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerDown(coords.x, coords.y);
+    } else {
+      this.handleClick(e);
+    }
+  }
+
+  handleTouchEnd(e) {
+    if (!this.isRunning || Date.now() < this.activationGraceUntil) return;
+    if (this.currentGame === 'match3') {
+      const coords = this.getCanvasCoords(e);
+      this.match3Engine?.handlePointerUp(coords.x, coords.y);
     }
   }
 
@@ -317,6 +384,8 @@ export class RetroArcade {
       } else {
         this.geometryDashEngine.onActionTrigger();
       }
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine?.handlePointerUp(x, y);
     }
   }
 
@@ -344,6 +413,14 @@ export class RetroArcade {
       this.flappyBugEngine.update(dt);
     } else if (this.currentGame === 'geometrydash') {
       this.geometryDashEngine.update(dt);
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine.update(dt);
+      this.scores.match3Score = this.match3Engine.score;
+      if (this.scores.match3Score > this.scores.match3High) {
+        this.scores.match3High = this.scores.match3Score;
+        localStorage.setItem('dever_match3_high', this.scores.match3High.toString());
+      }
+      this.options.onScoreUpdate?.({ game: 'match3', score: this.scores.match3Score, high: this.scores.match3High });
     }
   }
 
@@ -364,6 +441,8 @@ export class RetroArcade {
       this.flappyBugEngine.render();
     } else if (this.currentGame === 'geometrydash') {
       this.geometryDashEngine.render();
+    } else if (this.currentGame === 'match3') {
+      this.match3Engine.render();
     }
 
     this.juiceFX.render(this.ctx);
@@ -375,22 +454,26 @@ export class RetroArcade {
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, -1);
     else if (this.currentGame === 'flappybug') this.flappyBugEngine?.flap();
     else if (this.currentGame === 'geometrydash') this.geometryDashEngine?.jump();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowUp' });
   }
 
   moveDown() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(0, 1);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(0, 1);
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowDown' });
   }
 
   moveLeft() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(-1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(-1, 0);
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowLeft' });
   }
 
   moveRight() {
     if (this.currentGame === 'snake') this.snakeEngine?.setDirection(1, 0);
     else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(1, 0);
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'ArrowRight' });
   }
 
   undo() {
@@ -403,5 +486,6 @@ export class RetroArcade {
     else if (this.currentGame === 'goldminer') this.goldMinerEngine?.onActionTrigger();
     else if (this.currentGame === 'flappybug') this.flappyBugEngine?.onActionTrigger();
     else if (this.currentGame === 'geometrydash') this.geometryDashEngine?.onActionTrigger();
+    else if (this.currentGame === 'match3') this.match3Engine?.handleKeyDown({ code: 'Space' });
   }
 }
