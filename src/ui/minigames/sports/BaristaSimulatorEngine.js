@@ -91,15 +91,24 @@ export class BaristaSimulatorEngine {
   // INPUT & GESTURE HANDLING
   // ==========================================
 
+  acceptOrder() {
+    const now = Date.now();
+    this.station = this.recipe.hasEspressoExtraction ? 'tamping' : 'layering';
+    this.actionCooldownUntil = now + 400;
+    this.isTamping = false;
+    this.isPouringLiquid = false;
+    this.isSteaming = false;
+    this.isHoldingAction = false;
+    audioManager.playClick();
+    this.juiceFX?.spawnFloatingText('Bắt Đầu Đơn Hàng!', 320, 160, { color: '#38bdf8' });
+  }
+
   onActionTrigger() {
     const now = Date.now();
     if (now < this.actionCooldownUntil) return;
 
     if (this.station === 'order') {
-      this.station = this.recipe.hasEspressoExtraction ? 'tamping' : 'layering';
-      this.actionCooldownUntil = now + 400;
-      audioManager.playClick();
-      this.juiceFX?.spawnFloatingText('Bắt Đầu Đơn Hàng!', 320, 160, { color: '#38bdf8' });
+      this.acceptOrder();
     } else if (this.station === 'layering') {
       // Nếu chưa đủ đá thì bấm nút sẽ thả thêm đá
       if (this.currentIce < this.recipe.targetIce) {
@@ -113,6 +122,8 @@ export class BaristaSimulatorEngine {
       if (isGood) {
         this.station = 'latte_art';
         this.actionCooldownUntil = now + 500;
+        this.isSteaming = false;
+        this.isHoldingAction = false;
         audioManager.playVictory();
         this.juiceFX?.spawnFloatingText('Bọt Kem Sánh Mịn Đạt Chuẩn!', 320, 140, { color: '#22c55e' });
       }
@@ -135,13 +146,42 @@ export class BaristaSimulatorEngine {
 
   handleKeyDown(e) {
     if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'Enter') {
+      const now = Date.now();
+      if (now < this.actionCooldownUntil) return;
+
+      if (this.station === 'order') {
+        this.acceptOrder();
+        return; // Dừng ngay lập tức, không để lọt xuống tamping/layering của cùng một lần nhấn!
+      }
+
+      if (this.station === 'result') {
+        this.actionCooldownUntil = now + 400;
+        this.nextDrink();
+        return;
+      }
+
       this.isHoldingAction = true;
       if (this.station === 'tamping' && !this.tampingLocked && !this.isExtracting) {
         this.isTamping = true;
-      } else if (this.station === 'layering' && this.currentIce >= this.recipe.targetIce) {
-        this.isPouringLiquid = true;
+      } else if (this.station === 'layering') {
+        if (this.currentIce < this.recipe.targetIce) {
+          this.addIceCube();
+          this.actionCooldownUntil = now + 250;
+        } else {
+          this.isPouringLiquid = true;
+        }
       } else if (this.station === 'steaming') {
         this.isSteaming = true;
+      } else if (this.station === 'latte_art') {
+        if (this.lattePours.length === 0) {
+          this.autoPourLatteArt();
+          this.actionCooldownUntil = now + 350;
+        } else if (!this.hasTopping && this.recipe.topping !== 'Không Topping') {
+          this.applyTopping();
+          this.actionCooldownUntil = now + 350;
+        } else {
+          this.finishDrink();
+        }
       }
     }
   }
@@ -165,7 +205,8 @@ export class BaristaSimulatorEngine {
     if (now < this.actionCooldownUntil) return;
 
     if (this.station === 'order') {
-      this.onActionTrigger();
+      this.acceptOrder();
+      return;
     } else if (this.station === 'tamping') {
       if (!this.tampingLocked && !this.isExtracting) {
         this.isTamping = true;
@@ -173,6 +214,7 @@ export class BaristaSimulatorEngine {
     } else if (this.station === 'layering') {
       if (this.currentIce < this.recipe.targetIce) {
         this.addIceCube();
+        this.actionCooldownUntil = now + 250;
       } else {
         this.isPouringLiquid = true;
       }

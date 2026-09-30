@@ -187,7 +187,9 @@ export class SportsArcade {
       if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Enter' || e.key === ' ' || e.key === 'Enter') {
         this.keys.space = true;
         this.keys.up = true;
-        this.onActionTrigger();
+        if (this.currentGame !== 'barista') {
+          this.onActionTrigger();
+        }
       }
       if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.key === 'a' || e.key === 'A') this.keys.left = true;
       if (e.code === 'ArrowRight' || e.code === 'KeyD' || e.key === 'd' || e.key === 'D') this.keys.right = true;
@@ -290,6 +292,7 @@ export class SportsArcade {
   setGame(gameType) {
     this.currentGame = gameType;
     this.particles = [];
+    this.activationGraceUntil = Date.now() + 350;
     if (gameType === 'football') this.penaltyEngine.resetStriker();
     else if (gameType === 'basketball') this.basketballEngine.reset();
     else if (gameType === 'volleyball') this.volleyballEngine.resetServe('player');

@@ -84,6 +84,7 @@ export class VolleyballRallyEngine {
       isBoomSpike: false
     };
 
+    this.lastTouch = servingSide; // 'player' | 'bot'
     this.botServeTimer = 0.85;
     this.ballTrails = [];
     this.hitStopTimer = 0;
@@ -99,6 +100,7 @@ export class VolleyballRallyEngine {
     if (this.state === 'serving_player') {
       // Phát bóng bổng đầy uy lực
       this.state = 'rally';
+      this.lastTouch = 'player';
       this.ball.vx = cfg.serve.playerVx;
       this.ball.vy = cfg.serve.playerVy;
       this.player.vy = cfg.serve.playerJumpVy;
@@ -170,19 +172,32 @@ export class VolleyballRallyEngine {
   }
 
   executeTheSpike(dx, dy, dist) {
-    const spikeCfg = VOLLEYBALL_CONFIG.theSpike;
+    const cfg = VOLLEYBALL_CONFIG;
+    const spikeCfg = cfg.theSpike;
     this.player.pose = 'spike_swing';
     this.player.spikeCooldown = 0.25;
+    this.lastTouch = 'player';
 
     // Đánh giá nhịp đập: Perfect Boom Spike vs Good Spike vs Tip
     // Đập chuẩn khi cầu thủ ở quanh đỉnh nhảy (|vy| thấp) và bóng ở phía trước trên đầu (dx: 8..35, dy: -35..-10)
     const isApexStrike = Math.abs(this.player.vy) < spikeCfg.apexThreshold;
     const isOptimalZone = dx >= 5 && dx <= 38 && dy <= -8 && dy >= -36;
 
+    // Tính toán quỹ đạo vật lý đảm bảo bóng luôn vượt qua trên mép lưới an toàn
+    const netX = cfg.net.x; // 320
+    const netTopY = cfg.net.y; // 185
+    const distToNet = Math.max(16, netX - this.ball.x);
+    const g = cfg.gravity;
+
     if (isApexStrike && isOptimalZone) {
       // ⚡ 1. PERFECT BOOM SPIKE (Cực phẩm Haikyuu / The Spike)
-      this.ball.vx = spikeCfg.boomSpikeSpeed.vx;
-      this.ball.vy = spikeCfg.boomSpikeSpeed.vy;
+      const vx = spikeCfg.boomSpikeSpeed.vx || 12.8;
+      const tNet = distToNet / vx;
+      const targetNetY = netTopY - 28; // Luôn cao hơn đỉnh lưới ít nhất 28px
+      const reqVy = (targetNetY - this.ball.y - 0.5 * g * tNet * tNet) / tNet;
+
+      this.ball.vx = vx;
+      this.ball.vy = Math.min(-1.5, reqVy);
       this.ball.isSpiked = true;
       this.ball.isBoomSpike = true;
 
@@ -200,8 +215,13 @@ export class VolleyballRallyEngine {
       });
     } else if (dist < 45) {
       // 💥 2. GOOD POWER SPIKE
-      this.ball.vx = spikeCfg.goodSpikeSpeed.vx;
-      this.ball.vy = spikeCfg.goodSpikeSpeed.vy;
+      const vx = spikeCfg.goodSpikeSpeed.vx || 10.4;
+      const tNet = distToNet / vx;
+      const targetNetY = netTopY - 32; // Luôn cao hơn đỉnh lưới 32px
+      const reqVy = (targetNetY - this.ball.y - 0.5 * g * tNet * tNet) / tNet;
+
+      this.ball.vx = vx;
+      this.ball.vy = Math.min(-2.0, reqVy);
       this.ball.isSpiked = true;
       this.ball.isBoomSpike = false;
 
@@ -216,8 +236,13 @@ export class VolleyballRallyEngine {
       });
     } else {
       // 🪶 3. FEINT / TIP SHOT (Bỏ nhỏ tinh tế qua đầu chắn)
-      this.ball.vx = spikeCfg.tipSpikeSpeed.vx;
-      this.ball.vy = -spikeCfg.tipSpikeSpeed.vy;
+      const vx = spikeCfg.tipSpikeSpeed.vx || 5.8;
+      const tNet = distToNet / vx;
+      const targetNetY = netTopY - 24; // Cao hơn đỉnh lưới 24px
+      const reqVy = (targetNetY - this.ball.y - 0.5 * g * tNet * tNet) / tNet;
+
+      this.ball.vx = vx;
+      this.ball.vy = Math.min(-3.0, reqVy);
       this.ball.isSpiked = false;
       this.ball.isBoomSpike = false;
 
@@ -229,6 +254,17 @@ export class VolleyballRallyEngine {
         fontWeight: '700'
       });
     }
+  }
+
+  computeBotReturnVx(targetX, vy) {
+    const cfg = VOLLEYBALL_CONFIG;
+    const g = cfg.gravity;
+    const h = Math.max(10, cfg.floorY - this.ball.y);
+    const disc = vy * vy + 2 * g * h;
+    const tFlight = disc >= 0 ? (-vy + Math.sqrt(disc)) / g : 35;
+    const reqVx = (targetX - this.ball.x) / Math.max(12, tFlight);
+    // Giới hạn an toàn để không bắn vọt ra ngoài màn hình và luôn rơi trúng phần sân chơi
+    return Math.max(-8.5, Math.min(-3.2, reqVx));
   }
 
   update(dt) {
@@ -258,7 +294,7 @@ export class VolleyballRallyEngine {
 
     // 3. Trạng thái giao bóng
     if (this.state === 'serving_player') {
-      if (this.keys.left && this.player.x > 60) this.player.x -= cfg.player.moveSpeed;
+      if (this.keys.left && this.player.x > 35) this.player.x -= cfg.player.moveSpeed;
       if (this.keys.right && this.player.x < cfg.net.x - 30) this.player.x += cfg.player.moveSpeed;
       this.ball.x = this.player.x + 14;
       this.ball.y = this.player.y - 38;
@@ -270,8 +306,10 @@ export class VolleyballRallyEngine {
       this.botServeTimer -= dt;
       if (this.botServeTimer <= 0) {
         this.state = 'rally';
-        this.ball.vx = cfg.serve.botVx;
+        this.lastTouch = 'bot';
+        const targetX = 145 + Math.random() * 65;
         this.ball.vy = cfg.serve.botVy;
+        this.ball.vx = this.computeBotReturnVx(targetX, this.ball.vy);
         this.bot.vy = cfg.serve.botJumpVy;
         this.bot.isGrounded = false;
         this.bot.pose = 'jump_arch';
@@ -287,7 +325,7 @@ export class VolleyballRallyEngine {
     if (this.isSliding) {
       this.slideTimer -= dt;
       this.player.x += this.slideDir * spikeCfg.slideSpeed;
-      this.player.x = Math.max(45, Math.min(cfg.net.x - 28, this.player.x));
+      this.player.x = Math.max(18, Math.min(cfg.net.x - 28, this.player.x));
       this.player.pose = 'slide';
 
       // Tạo bụi trượt sàn
@@ -301,7 +339,7 @@ export class VolleyballRallyEngine {
       }
     } else {
       let isMoving = false;
-      if (this.keys.left && this.player.x > 45) {
+      if (this.keys.left && this.player.x > 32) {
         this.player.x -= cfg.player.moveSpeed;
         isMoving = true;
       }
@@ -358,6 +396,24 @@ export class VolleyballRallyEngine {
     this.ball.y += this.ball.vy;
     this.ballRotation += this.ball.vx * 0.08;
 
+    // Cơ chế The Spike Dive: Khi đập bóng đã vượt qua đỉnh lưới sang sân đối phương, bóng cắm dốc xuống sàn
+    if (this.ball.x > cfg.net.x + 4 && this.ball.x < cfg.net.x + 80) {
+      if (this.ball.isBoomSpike) {
+        this.ball.vy = Math.max(this.ball.vy, 6.2);
+      } else if (this.ball.isSpiked) {
+        this.ball.vy = Math.max(this.ball.vy, 4.2);
+      }
+    }
+
+    // Giới hạn biên màn hình tránh bóng bay khỏi tầm mắt người chơi
+    if (this.ball.x < 18) {
+      this.ball.x = 18;
+      if (this.ball.vx < 0) this.ball.vx = -this.ball.vx * 0.4;
+    } else if (this.ball.x > 622) {
+      this.ball.x = 622;
+      if (this.ball.vx > 0) this.ball.vx = -this.ball.vx * 0.4;
+    }
+
     // Lưu vệt bóng sau (After-image)
     if (this.ball.isSpiked || Math.hypot(this.ball.vx, this.ball.vy) > 8.0) {
       this.ballTrails.unshift({
@@ -389,6 +445,7 @@ export class VolleyballRallyEngine {
     if (this.isSliding && this.ball.y >= cfg.floorY - 26 && this.ball.y <= cfg.floorY + 5) {
       const dxSlide = this.ball.x - this.player.x;
       if (Math.abs(dxSlide) < 32 && this.ball.vy > 0) {
+        this.lastTouch = 'player';
         this.ball.vx = 4.2;
         this.ball.vy = -10.6; // Nảy bổng hình cầu vồng cứu thua
         this.ball.isSpiked = false;
@@ -410,6 +467,7 @@ export class VolleyballRallyEngine {
     const headY = this.player.y - 26;
     const distP = Math.hypot(this.ball.x - headX, this.ball.y - headY);
     if (!this.isSliding && distP < this.ball.radius + cfg.player.headRadius && this.ball.vy > 0) {
+      this.lastTouch = 'player';
       const angle = Math.atan2(this.ball.y - headY, this.ball.x - headX);
       const jumpBoost = !this.player.isGrounded ? 2.4 : 0;
       this.ball.vx = Math.cos(angle) * (7.8 + jumpBoost);
@@ -438,8 +496,9 @@ export class VolleyballRallyEngine {
         this.ball.y <= cfg.net.y + 25 &&
         Math.hypot(this.ball.x - this.bot.x, this.ball.y - (this.bot.y - 28)) < 38
       ) {
-        this.ball.vx = -(4.2 + Math.random() * 2.2);
-        this.ball.vy = 2.8 + Math.random() * 2.4;
+        this.lastTouch = 'bot';
+        this.ball.vx = -(3.8 + Math.random() * 1.8);
+        this.ball.vy = 2.4 + Math.random() * 2.0;
         this.ball.isSpiked = false;
         this.ball.isBoomSpike = false;
         this.rallyCount++;
@@ -461,14 +520,16 @@ export class VolleyballRallyEngine {
         const distSpike = Math.hypot(dxSpike, dySpike);
 
         if (distSpike < 46) {
+          this.lastTouch = 'bot';
           this.bot.pose = 'spike_swing';
           this.bot.spikeCooldown = 0.45;
 
           const isHardSpike = Math.random() < 0.65;
           if (isHardSpike) {
-            // Đập bóng cắm chéo sân người chơi
-            this.ball.vx = -(7.8 + Math.random() * 2.0);
-            this.ball.vy = 4.0 + Math.random() * 2.8;
+            // Đập bóng cắm chéo sân người chơi (targetX từ 130 đến 210)
+            const targetX = 130 + Math.random() * 80;
+            this.ball.vy = 3.6 + Math.random() * 2.2;
+            this.ball.vx = this.computeBotReturnVx(targetX, this.ball.vy);
             this.ball.isSpiked = true;
             this.ball.isBoomSpike = false;
             this.juiceFX.shake(6, 0.18);
@@ -479,9 +540,10 @@ export class VolleyballRallyEngine {
               fontWeight: '800'
             });
           } else {
-            // Đập bổng sâu về cuối sân người chơi
-            this.ball.vx = -(8.2 + Math.random() * 1.6);
-            this.ball.vy = -6.2;
+            // Đập bổng sâu về cuối sân người chơi (targetX từ 85 đến 145)
+            const targetX = 85 + Math.random() * 60;
+            this.ball.vy = -5.8;
+            this.ball.vx = this.computeBotReturnVx(targetX, this.ball.vy);
             this.ball.isSpiked = true;
             this.ball.isBoomSpike = false;
             this.juiceFX.shake(4, 0.12);
@@ -499,8 +561,10 @@ export class VolleyballRallyEngine {
       if (!botHit && this.bot.pose === 'slide' && this.ball.y >= cfg.floorY - 30 && this.ball.y <= cfg.floorY + 5) {
         const dxSlide = Math.abs(this.ball.x - this.bot.x);
         if (dxSlide < 45 && this.ball.vy > 0) {
-          this.ball.vx = -(5.8 + Math.random() * 1.6);
-          this.ball.vy = -10.6; // Cầu vồng bổng giải nguy
+          this.lastTouch = 'bot';
+          const targetX = 135 + Math.random() * 75; // [135, 210]
+          this.ball.vy = -9.8;
+          this.ball.vx = this.computeBotReturnVx(targetX, this.ball.vy);
           this.ball.isSpiked = false;
           this.ball.isBoomSpike = false;
           this.rallyCount++;
@@ -525,9 +589,10 @@ export class VolleyballRallyEngine {
           dyBump >= -38 && dyBump <= 28 &&
           this.ball.vy > 0
         ) {
-          // Tâng bóng bổng cầu vồng chuẩn xác sang sân người chơi
-          this.ball.vx = -(6.0 + Math.random() * 1.6);
-          this.ball.vy = -(9.8 + Math.random() * 1.5);
+          this.lastTouch = 'bot';
+          const targetX = 150 + Math.random() * 65; // [150, 215]
+          this.ball.vy = -(8.6 + Math.random() * 1.4);
+          this.ball.vx = this.computeBotReturnVx(targetX, this.ball.vy);
           this.ball.isSpiked = false;
           this.ball.isBoomSpike = false;
           this.rallyCount++;
@@ -552,17 +617,38 @@ export class VolleyballRallyEngine {
       this.ball.x - this.ball.radius <= netRight &&
       this.ball.y >= net.y
     ) {
-      if (this.ball.x < net.x) {
-        this.ball.x = netLeft - this.ball.radius - 3;
-        this.ball.vx = -Math.abs(this.ball.vx) * cfg.netBounce.restitutionX - cfg.netBounce.extraVx;
+      // Nếu chạm vào mép trên cùng của lưới (băng viền trắng top 14px): Lăn qua lưới (Tape Roll / Net In)
+      if (this.ball.y <= net.y + 14) {
+        audioManager.playKick(0.5);
+        this.juiceFX.shake(2, 0.08);
+        this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 8, '#ffffff');
+        this.juiceFX.spawnFloatingText('NET ROLL! 🏐', net.x, net.y - 25, {
+          color: '#fbbf24',
+          size: 14,
+          fontWeight: '800'
+        });
+        if (this.ball.vx > 0) {
+          this.ball.x = netRight + this.ball.radius + 2;
+          this.ball.vx = Math.max(3.6, this.ball.vx * 0.7);
+          this.ball.vy = 2.4;
+        } else {
+          this.ball.x = netLeft - this.ball.radius - 2;
+          this.ball.vx = -Math.max(3.6, Math.abs(this.ball.vx) * 0.7);
+          this.ball.vy = 2.4;
+        }
       } else {
-        this.ball.x = netRight + this.ball.radius + 3;
-        this.ball.vx = Math.abs(this.ball.vx) * cfg.netBounce.restitutionX + cfg.netBounce.extraVx;
+        if (this.ball.x < net.x) {
+          this.ball.x = netLeft - this.ball.radius - 3;
+          this.ball.vx = -Math.abs(this.ball.vx) * cfg.netBounce.restitutionX - cfg.netBounce.extraVx;
+        } else {
+          this.ball.x = netRight + this.ball.radius + 3;
+          this.ball.vx = Math.abs(this.ball.vx) * cfg.netBounce.restitutionX + cfg.netBounce.extraVx;
+        }
+        this.ball.vy = -Math.abs(this.ball.vy) * cfg.netBounce.restitutionY - cfg.netBounce.extraVy;
+        audioManager.playKick(0.6);
+        this.juiceFX.shake(3, 0.1);
+        this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#ffffff');
       }
-      this.ball.vy = -Math.abs(this.ball.vy) * cfg.netBounce.restitutionY - cfg.netBounce.extraVy;
-      audioManager.playKick(0.6);
-      this.juiceFX.shake(3, 0.1);
-      this.juiceFX.spawnSparkles(this.ball.x, this.ball.y, 6, '#ffffff');
     }
 
     // 13. Bóng chạm sàn
@@ -698,7 +784,35 @@ export class VolleyballRallyEngine {
     this.state = 'scored';
     const cfg = VOLLEYBALL_CONFIG;
 
-    if (this.ball.x > cfg.net.x) {
+    // Sân thi đấu chuẩn trong vạch: x từ 48 đến 592
+    const isOutOfBounds = this.ball.x < 48 || this.ball.x > 592;
+
+    let playerWonPoint = false;
+    let pointReason = '';
+
+    if (isOutOfBounds) {
+      // BÓNG NGOÀI SÂN (OUT)
+      // Người chạm bóng cuối cùng sẽ làm mất điểm cho đối thủ!
+      if (this.lastTouch === 'player') {
+        playerWonPoint = false;
+        pointReason = 'OUT! BÓNG NGOÀI SÂN';
+      } else {
+        playerWonPoint = true;
+        pointReason = 'OUT! ĐỐI THỦ ĐÁNH RA NGOÀI';
+      }
+    } else {
+      // BÓNG TRONG SÂN (IN)
+      // Bóng rơi sân nào thì đối phương ghi điểm
+      if (this.ball.x > cfg.net.x) {
+        playerWonPoint = true;
+        pointReason = this.ball.isBoomSpike ? '⚡ BOOM SPIKE ĐIỂM!' : 'ĐIỂM CHO BẠN!';
+      } else {
+        playerWonPoint = false;
+        pointReason = 'ĐỐI THỦ GHI ĐIỂM!';
+      }
+    }
+
+    if (playerWonPoint) {
       // Người chơi ghi điểm!
       this.playerScore++;
       this.servingSide = 'player';
@@ -706,19 +820,22 @@ export class VolleyballRallyEngine {
       this.juiceFX.shake(6, 0.2);
       this.juiceFX.spawnConfetti(this.ball.x, this.ball.y, 30);
       const bonusPts = this.ball.isBoomSpike ? 25 : 10;
-      this.juiceFX.spawnFloatingText(`ĐIỂM CHO BẠN! +${this.rallyCount * 10 + bonusPts}đ`, 320, 130, {
+      const earned = this.rallyCount * 10 + bonusPts;
+      this.juiceFX.spawnFloatingText(`${pointReason} +${earned}đ`, 320, 130, {
         color: '#22c55e',
-        size: 22,
+        size: 21,
         fontWeight: '900'
       });
-      this.callbacks.onScoreUpdate?.(this.rallyCount * 10 + bonusPts);
+      this.callbacks.onScoreUpdate?.(earned);
       this.rallyCount = 0;
     } else {
       // Bot ghi điểm
       this.botScore++;
       this.servingSide = 'bot';
       this.rallyCount = 0;
-      this.juiceFX.spawnFloatingText('ĐỐI THỦ GHI ĐIỂM!', 320, 130, {
+      audioManager.playKick(0.5);
+      this.juiceFX.shake(4, 0.15);
+      this.juiceFX.spawnFloatingText(pointReason, 320, 130, {
         color: '#ef4444',
         size: 20,
         fontWeight: '800'

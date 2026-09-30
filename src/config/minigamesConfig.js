@@ -287,10 +287,10 @@ export const VOLLEYBALL_CONFIG = {
     perfectTimingWindow: 0.10, // Giây sai số cho cú Boom Spike
     hitStopDuration: 0.045,    // 45ms đóng băng khung hình va chạm
     
-    // Tốc độ đập các cấp độ
-    boomSpikeSpeed: { vx: 12.2, vy: 9.2 },
-    goodSpikeSpeed: { vx: 9.4, vy: 7.4 },
-    tipSpikeSpeed: { vx: 5.2, vy: 3.8 },
+    // Tốc độ đập các cấp độ (Tính toán động đảm bảo qua lưới)
+    boomSpikeSpeed: { vx: 12.8, vy: -2.8 },
+    goodSpikeSpeed: { vx: 10.4, vy: -2.0 },
+    tipSpikeSpeed: { vx: 5.8, vy: -4.5 },
     
     // Cứu bóng trượt sàn (Slide / Dive)
     slideSpeed: 6.8,
