@@ -626,3 +626,41 @@ export const FLAPPY_BUG_CONFIG = {
   }
 };
 
+// ==========================================
+// 9. 📐 GEOMETRY DASH (DEVER DASH) CONFIGURATION
+// ==========================================
+export const GEOMETRY_DASH_CONFIG = {
+  canvas: { width: 640, height: 360 },
+  physics: {
+    baseSpeed: 330,
+    gravity: 1950,
+    jumpImpulse: -560,
+    jumpPadImpulse: -740,
+    cubeSize: 28,
+    groundY: 300,
+    ceilingY: 52,
+    respawnDelaySec: 0.28
+  },
+  colors: {
+    bgTop: '#050510',
+    bgBottom: '#180e29',
+    ground: '#0c0f1d',
+    groundGrid: '#a855f7',
+    cubeBody: '#06b6d4',
+    cubeCore: '#facc15',
+    cubeBorder: '#ffffff',
+    spikeFill: '#ef4444',
+    spikeGlow: '#f87171',
+    blockBody: '#1e1b4b',
+    blockBorder: '#818cf8',
+    padYellow: '#facc15',
+    padPink: '#f43f5e',
+    portalGravity: '#38bdf8',
+    portalSpeed: '#a855f7'
+  },
+  level: {
+    lengthPx: 10200
+  }
+};
+
+

@@ -2040,6 +2040,10 @@ export class InteractiveModal {
       if (typeBadge) typeBadge.textContent = 'FLAPPY BUGGY';
       if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để Buggy vỗ cánh bay qua các cột Server FPTU!';
       if (btnUndo) btnUndo.classList.add('hidden');
+    } else if (game === 'geometrydash') {
+      if (typeBadge) typeBadge.textContent = 'DEVER DASH 3.0';
+      if (descEl) descEl.textContent = 'Bấm SPACE / Mũi Tên Lên / Click Chuột để nhảy qua bẫy gai neon, đệm nhún và cổng đảo trọng lực!';
+      if (btnUndo) btnUndo.classList.add('hidden');
     }
 
     if (this.retroArcade && this.retroArcade.scores) {
@@ -2048,6 +2052,7 @@ export class InteractiveModal {
       else if (game === 'sokoban') this.syncArcadeBadges(game, s.sokobanLevel, s.sokobanLevel);
       else if (game === 'goldminer') this.syncArcadeBadges(game, s.goldminerScore, s.goldminerHigh);
       else if (game === 'flappybug') this.syncArcadeBadges(game, s.flappyScore, s.flappyHigh);
+      else if (game === 'geometrydash') this.syncArcadeBadges(game, s.dashPercent, s.dashHighPercent);
     }
   }
 
@@ -2055,10 +2060,14 @@ export class InteractiveModal {
     const scoreBadge = document.getElementById('arcade-score-badge');
     const highBadge = document.getElementById('arcade-high-badge');
     if (scoreBadge && score !== undefined) {
-      scoreBadge.textContent = game === 'sokoban' ? `Màn: ${score}` : `Điểm: ${score}`;
+      if (game === 'sokoban') scoreBadge.textContent = `Màn: ${score}`;
+      else if (game === 'geometrydash') scoreBadge.textContent = `Tiến độ: ${score}%`;
+      else scoreBadge.textContent = `Điểm: ${score}`;
     }
     if (highBadge && high !== undefined) {
-      highBadge.textContent = game === 'sokoban' ? `Kỷ lục Màn: ${high}` : `Kỷ lục: ${high}`;
+      if (game === 'sokoban') highBadge.textContent = `Kỷ lục Màn: ${high}`;
+      else if (game === 'geometrydash') highBadge.textContent = `Kỷ lục: ${high}%`;
+      else highBadge.textContent = `Kỷ lục: ${high}`;
     }
   }
 
