@@ -2332,4 +2332,57 @@ export class TextureGenerator {
     scene.textures.addCanvas(key, canvas);
     return key;
   }
+
+  /**
+   * Sinh overlay cánh tay cho emote body-animation (vẫy tay, power pose, dance).
+   * Palette: da #fbd1a2/#e8a06f, tay áo khoác DEVER #1d4ed8/#3b82f6, sáng từ trên-trái.
+   * Origin xoay quanh vai: (0.5, 0.875).
+   */
+  static generateEmoteOverlays(scene) {
+    const SKIN = '#fbd1a2', SKIN_D = '#e8a06f', SKIN_L = '#ffe3c2';
+    const SLEEVE = '#1d4ed8', SLEEVE_L = '#3b82f6', SLEEVE_D = '#1e3a8a';
+
+    const makeTex = (key, w, h, drawFn) => {
+      if (scene.textures.exists(key)) scene.textures.remove(key);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      drawFn(ctx);
+      scene.textures.addCanvas(key, canvas);
+    };
+
+    // Vẽ 1 cánh tay giơ lên trong khung w×h, gốc vai tại (ox, oy)
+    const drawArm = (ctx, ox, oy) => {
+      // Bàn tay mở (8×8)
+      ctx.fillStyle = SKIN;
+      ctx.fillRect(ox - 4, oy - 23, 8, 8);
+      ctx.fillStyle = SKIN_L; // highlight trên
+      ctx.fillRect(ox - 4, oy - 23, 8, 1);
+      // Rãnh ngón tay
+      ctx.fillStyle = SKIN_D;
+      for (let fx = ox - 2; fx <= ox + 3; fx += 2) ctx.fillRect(fx, oy - 22, 1, 4);
+      // Cổ tay
+      ctx.fillStyle = SKIN;
+      ctx.fillRect(ox - 2, oy - 15, 4, 3);
+      ctx.fillStyle = SKIN_D;
+      ctx.fillRect(ox - 2, oy - 13, 4, 1);
+      // Tay áo khoác DEVER (10×12)
+      ctx.fillStyle = SLEEVE;
+      ctx.fillRect(ox - 5, oy - 12, 10, 12);
+      ctx.fillStyle = SLEEVE_L; // sáng trái
+      ctx.fillRect(ox - 5, oy - 12, 2, 12);
+      ctx.fillStyle = SLEEVE_D; // tối phải (sel-out)
+      ctx.fillRect(ox + 3, oy - 12, 2, 12);
+      ctx.fillRect(ox - 5, oy - 1, 10, 1);
+    };
+
+    // 1 tay vẫy: 16×24, vai tại (8, 21)
+    makeTex('emote_arm_wave', 16, 24, (ctx) => drawArm(ctx, 8, 21));
+
+    // 2 tay chữ V (power pose): 32×24, giữa 2 vai tại (16, 21)
+    makeTex('emote_arms_power', 32, 24, (ctx) => {
+      drawArm(ctx, 8, 21);
+      drawArm(ctx, 24, 21);
+    });
+  }
 }

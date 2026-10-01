@@ -1,6 +1,7 @@
 /**
  * EmoteBar: Thanh phản ứng & biểu cảm nhanh (HotKey [G] hoặc Chạm trên Mobile)
- * Hỗ trợ 6 biểu cảm hoạt ảnh: Vẫy tay, Thả tim, Cháy quá, Vỗ tay, Nhảy múa và Thắc mắc.
+ * Hỗ trợ 8 biểu cảm: Vẫy tay (tay vẫy động), Thả tim, Cháy quá, Vỗ tay,
+ * Nhảy múa (dance step), Gật đầu, Power pose và Thắc mắc.
  */
 import { audioManager } from '../../utils/AudioManager.js';
 
@@ -10,7 +11,9 @@ export const EMOTE_DEFINITIONS = [
   { id: 'fire', label: 'Cháy Quá', icon: '🔥', hotkey: '3' },
   { id: 'clap', label: 'Vỗ Tay', icon: '👏', hotkey: '4' },
   { id: 'dance', label: 'Nhảy Múa', icon: '🕺', hotkey: '5' },
-  { id: 'question', label: 'Thắc Mắc', icon: '❓', hotkey: '6' }
+  { id: 'question', label: 'Thắc Mắc', icon: '❓', hotkey: '6' },
+  { id: 'nod', label: 'Gật Đầu', icon: '👍', hotkey: '7' },
+  { id: 'power', label: 'Power Pose', icon: '💪', hotkey: '8' }
 ];
 
 export class EmoteBar {
@@ -83,7 +86,7 @@ export class EmoteBar {
         return;
       }
 
-      if (this.isOpen && ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'].includes(e.code)) {
+      if (this.isOpen && ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8'].includes(e.code)) {
         e.preventDefault();
         const index = parseInt(e.code.replace('Digit', ''), 10) - 1;
         const emote = EMOTE_DEFINITIONS[index];

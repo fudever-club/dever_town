@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
   if (!str) return '';
@@ -235,6 +236,8 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       fire: '🔥',
       clap: '👏',
       dance: '🕺',
+      nod: '👍',
+      power: '💪',
       question: '❓',
       fireworks: '🎉',
       buggy: '🐞'
@@ -281,26 +284,14 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       }
     });
 
-    // If dance, play a fun wiggle bounce animation on sprite
-    if (emoteId === 'dance') {
-      const origY = this.y;
-      this.scene.tweens.add({
-        targets: this,
-        angle: { from: -8, to: 8 },
-        y: origY - 6,
-        yoyo: true,
-        repeat: 5,
-        duration: 120,
-        ease: 'Sine.easeInOut',
-        onComplete: () => {
-          this.setAngle(0);
-          this.y = origY;
-        }
-      });
+    // Body emotes (wave/nod/power/dance): overlay tay pixel + squash/tween
+    if (isBodyEmote(emoteId)) {
+      playBodyEmote(this.scene, this, emoteId);
     }
   }
 
   update(time, delta = 16.67) {
+    syncEmoteOverlays(this);
     const prevX = this.x;
     const prevY = this.y;
     const distSq = (this.targetX - this.x) * (this.targetX - this.x) + (this.targetY - this.y) * (this.targetY - this.y);
