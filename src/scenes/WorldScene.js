@@ -32,6 +32,7 @@ import {
   UNLOCKABLE_AVATARS,
   CampusTimeHUD
 } from '../ui/index.js';
+import { DAY_NIGHT_CYCLE_ENABLED } from '../config/lightingConfig.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
 import { InteractionManager } from '../managers/InteractionManager.js';
@@ -77,7 +78,10 @@ export class WorldScene extends Phaser.Scene {
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
     this.lightingManager = new LightingManager(this);
-    this.campusTimeHUD = new CampusTimeHUD({ lightingManager: this.lightingManager });
+    // L2: tắt chu kỳ ngày/đêm thì không cần HUD đồng hồ (luôn sáng như gather.town)
+    this.campusTimeHUD = DAY_NIGHT_CYCLE_ENABLED
+      ? new CampusTimeHUD({ lightingManager: this.lightingManager })
+      : null;
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);

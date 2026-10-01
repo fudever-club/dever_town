@@ -4,6 +4,14 @@
  * Tuân thủ Notion Superpowers Framework: Tách rời tham số cân bằng và cấu hình thế giới.
  */
 
+/**
+ * Bật/tắt chu kỳ ngày & đêm.
+ * false = L2: game luôn sáng như gather.town, không có bóng tối theo giờ.
+ * (Quyết định của Hung 2026-10-01: bỏ day/night vì sửa mãi không ổn.)
+ * Đặt true để bật lại chu kỳ ngày/đêm kiểu Stardew (lightmap).
+ */
+export const DAY_NIGHT_CYCLE_ENABLED = false;
+
 export const DAY_NIGHT_PERIODS = {
   DAWN: {
     id: 'dawn',
