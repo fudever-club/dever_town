@@ -698,6 +698,22 @@ export class InteractiveModal {
       });
       this.updateLocalVideoDisplay();
 
+      // Phase 1b: đăng ký nguồn vị trí cho spatial voice
+      this.voiceService.setPositionProvider(() => {
+        const ws = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+        if (!ws || !ws.player) return { local: null, remotes: new Map() };
+        const remotes = new Map();
+        if (ws.remotePlayers) {
+          ws.remotePlayers.forEach((rp, socketId) => {
+            remotes.set(socketId, { x: rp.x, y: rp.y });
+          });
+        }
+        return {
+          local: { x: ws.player.x, y: ws.player.y, roomId: ws.currentRoomId },
+          remotes
+        };
+      });
+
       try {
         if (typeof audioManager.playSuccess === 'function') {
           audioManager.playSuccess();

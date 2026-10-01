@@ -1,7 +1,12 @@
+import { SPATIAL_VOICE_CONFIG, computeSpatialVolume } from '../config/audioZones.js';
+
 /**
  * DEVER TOWN - Voice & Video Service (Discord-Style WebRTC P2P Mesh)
  * Kết nối âm thanh & hình ảnh trực tiếp không độ trễ giữa người chơi trong phòng.
  * Không phụ thuộc dịch vụ bên thứ ba (Jitsi/Zoom/8x8), hoạt động 100% tự nhiên.
+ *
+ * Phase 1b: Spatial voice — âm lượng remote theo khoảng cách + private areas
+ * (xem src/config/audioZones.js).
  */
 
 const RTC_CONFIG = {
@@ -35,6 +40,11 @@ export class VoiceService {
     this.analyserNodes = new Map(); // id -> AnalyserNode
     this.checkVolumeInterval = null;
     this.isLocalSpeaking = false;
+
+    // Phase 1b: Spatial voice — provider vị trí do WorldScene cung cấp
+    // provider(): { local: {x, y, roomId} | null, remotes: Map<socketId, {x, y}> }
+    this.positionProvider = null;
+    this.spatialInterval = null;
 
     // Callbacks
     this.onPeersUpdated = null;
@@ -418,6 +428,9 @@ export class VoiceService {
     this.isJoined = true;
     if (this.onStatusChanged) this.onStatusChanged('connected', this.peers.size + 1);
 
+    // Phase 1b: bật spatial voice nếu đã có position provider
+    this.startSpatialAudio();
+
     return {
       success: true,
       localStream: this.localStream,
@@ -739,10 +752,70 @@ export class VoiceService {
   /**
    * Rời kênh & Giải phóng 100% tài nguyên phần cứng (Micro, Camera, WebRTC)
    */
+  /**
+   * Phase 1b: Đăng ký nguồn vị trí người chơi (do WorldScene cung cấp).
+   * provider là hàm trả về { local: {x, y, roomId} | null, remotes: Map<socketId, {x, y}> }
+   */
+  setPositionProvider(provider) {
+    this.positionProvider = provider;
+    if (provider && this.isJoined) this.startSpatialAudio();
+  }
+
+  /**
+   * Phase 1b: Bắt đầu vòng cập nhật âm lượng theo khoảng cách.
+   */
+  startSpatialAudio() {
+    this.stopSpatialAudio();
+    if (!SPATIAL_VOICE_CONFIG.enabled || !this.positionProvider) return;
+    this.spatialInterval = setInterval(() => this.updateSpatialVolumes(), SPATIAL_VOICE_CONFIG.updateIntervalMs);
+    // Cập nhật ngay lần đầu để không chờ 1 chu kỳ
+    this.updateSpatialVolumes();
+  }
+
+  stopSpatialAudio() {
+    if (this.spatialInterval) {
+      clearInterval(this.spatialInterval);
+      this.spatialInterval = null;
+    }
+  }
+
+  /**
+   * Phase 1b: Tính và áp âm lượng cho từng remote peer dựa trên vị trí.
+   * Dùng HTMLAudioElement.volume (0..1) — đơn giản, không đụng tới analyser
+   * (analyser đọc trực tiếp từ stream nên speaking detection không bị ảnh hưởng).
+   */
+  updateSpatialVolumes() {
+    if (!this.positionProvider || !this.isJoined) return;
+    let snapshot = null;
+    try {
+      snapshot = this.positionProvider();
+    } catch (e) {
+      return;
+    }
+    if (!snapshot || !snapshot.local) {
+      // Không có vị trí local: giữ nguyên âm lượng hiện tại
+      return;
+    }
+    const { local, remotes } = snapshot;
+    this.remoteAudioElements.forEach((audioEl, socketId) => {
+      const remotePos = remotes ? remotes.get(socketId) : null;
+      let volume = 1;
+      if (remotePos) {
+        volume = computeSpatialVolume(local, remotePos, local.roomId);
+      }
+      // Làm mượt: không nhảy volume đột ngột quá 0.35 mỗi chu kỳ
+      const cur = audioEl.volume;
+      const next = Math.max(0, Math.min(1, volume));
+      audioEl.volume = cur + Math.max(-0.35, Math.min(0.35, next - cur));
+    });
+  }
+
   leave() {
     if (!this.isJoined) return;
 
     console.log(`🔇 [VoiceService] Rời phòng ${this.meetingId} và dọn dẹp tài nguyên.`);
+
+    this.stopSpatialAudio();
 
     if (this.checkVolumeInterval) {
       clearInterval(this.checkVolumeInterval);
