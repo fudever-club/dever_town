@@ -50,6 +50,7 @@ import { CampusTicker } from '../ui/common/CampusTicker.js';
 import { TilePool } from '../utils/TilePool.js';
 import { telemetry } from '../utils/Telemetry.js';
 import { FloorManager } from '../managers/FloorManager.js';
+import { SceneTransitionManager } from '../managers/SceneTransitionManager.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -85,6 +86,7 @@ export class WorldScene extends Phaser.Scene {
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
     this.floorManager = new FloorManager(this);
+    this.transitionManager = new SceneTransitionManager(this);
 
     // 1. Khởi tạo Local Player
     const user = authService.getUser();
@@ -682,24 +684,36 @@ export class WorldScene extends Phaser.Scene {
 
     telemetry.track('room_visit', { room_id: portalData.targetRoomId });
 
-    // Hiệu ứng chớp sáng trắng nhanh (Pokemon GBA flash) trước khi fade to black
-    this.cameras.main.flash(70, 255, 255, 255, false);
-    this.time.delayedCall(70, () => {
-      this.cameras.main.fadeOut(180, 11, 15, 25);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.loadRoom(
-          portalData.targetRoomId,
-          portalData.targetSpawn.x,
-          portalData.targetSpawn.y,
-          true
-        );
-        this.cameras.main.fadeIn(250, 11, 15, 25);
-        this.cameras.main.once('camerafadeincomplete', () => {
-          this.isTeleporting = false;
-          this.teleportGraceUntil = performance.now() + 2000;
+    // Hiệu ứng chuyển cảnh kiểu Pokémon: flash trắng nhanh rồi pixel-dissolve
+    // (Bayer dithering, không mờ nhòe canvas). Swap phòng ở giữa lúc đen toàn màn.
+    const doSwap = () => {
+      this.loadRoom(
+        portalData.targetRoomId,
+        portalData.targetSpawn.x,
+        portalData.targetSpawn.y,
+        true
+      );
+    };
+    if (this.transitionManager) {
+      this.transitionManager.transition(doSwap).then(() => {
+        this.isTeleporting = false;
+        this.teleportGraceUntil = performance.now() + 2000;
+      });
+    } else {
+      // Fallback nếu chưa có transitionManager
+      this.cameras.main.flash(70, 255, 255, 255, false);
+      this.time.delayedCall(70, () => {
+        this.cameras.main.fadeOut(180, 11, 15, 25);
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+          doSwap();
+          this.cameras.main.fadeIn(250, 11, 15, 25);
+          this.cameras.main.once('camerafadeincomplete', () => {
+            this.isTeleporting = false;
+            this.teleportGraceUntil = performance.now() + 2000;
+          });
         });
       });
-    });
+    }
   }
 
   createHUD() {
