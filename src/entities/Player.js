@@ -77,6 +77,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
+    // Bộ đếm animation mượt — khởi tạo 0 để tránh NaN scale ở frame đầu
+    this._turnT = 0;      // tiến trình squash khi đổi hướng
+    this._settleT = 0;    // tiến trình settle khi vừa dừng
+    this._wasMoving = false;
+
     // Shadow ellipse dưới chân — vị trí y+30 tính từ origin sprite (64/2=32, chân tại +32)
     this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
