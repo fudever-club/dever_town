@@ -173,6 +173,56 @@ export const ROOM_LIGHT_PROPERTIES = {
 };
 
 /**
+ * Cấu hình quầng sáng đèn đường — Sprite-based Soft Glow
+ * Dùng texture radial gradient vẽ sẵn một lần + blend ADD để:
+ *  - Ánh sáng mượt tuyệt đối (GPU nội suy gradient, không còn viền gãy/banding của 28 lớp ellipse)
+ *  - Hòa lẫn vào môi trường (ADD làm sáng xuyên qua lớp bóng tối, chi tiết map vẫn thấy được)
+ *  - Màu ấm dịu, tự pha theo buổi (bình minh ngả hồng, hoàng hôn ngả cam)
+ * Tuân thủ Notion Superpowers Framework: mọi thông số tuning nằm ở config, không hardcode trong update/render.
+ */
+export const LAMP_GLOW_CONFIG = {
+  textures: {
+    warmGlowKey: 'dever_glow_warm', // radial gradient: lõi trắng ấm -> giữa hổ phách -> rìa trong suốt
+    beamKey: 'dever_glow_beam',     // gradient dọc: sáng ở đầu đèn, mờ dần xuống đất + mềm 2 biên ngang
+    size: 256
+  },
+  // Vũng sáng trên mặt đất dưới chân cột đèn
+  groundPool: {
+    radiusScaleX: 1.18, // nhân với light.radius -> nửa chiều rộng
+    radiusScaleY: 0.68,  // nhân với light.radius -> nửa chiều cao (phối cảnh 2.5D)
+    baseAlpha: 0.5,      // alpha = min(maxAlpha, baseAlpha * intensity + floor)
+    maxAlpha: 0.72,
+    alphaFloor: 0.06
+  },
+  // Hào quang ngay tại bóng đèn (điểm phát sáng mà mắt người nhận ra "đây là cái đèn")
+  headHalo: {
+    radius: 36,         // bán kính cơ sở (px), co giãn nhẹ theo flicker
+    squashY: 0.85,       // bóp nhẹ theo trục Y cho giống bầu đèn
+    baseAlpha: 0.62,
+    maxAlpha: 0.9,
+    alphaFloor: 0.08,
+    coreTint: 0xfffbeb   // lõi gần như trắng ấm
+  },
+  // Chùm sáng từ bóng đèn rọi xuống đất
+  beam: {
+    widthScale: 0.95,   // nhân với light.radius
+    minWidth: 24,
+    height: 56,
+    baseAlpha: 0.3,
+    maxAlpha: 0.48
+  },
+  // Màu đèn hài hòa theo buổi: lerp(màu đèn gốc, màu ambient hiện tại, blendToAmbient)
+  tintByPeriod: {
+    dawn:     { color: 0xffd9a0, blendToAmbient: 0.38 }, // bình minh: ngả hồng hòa vào trời hồng
+    day:      { color: 0xffd9a0, blendToAmbient: 0.0 },
+    sunset:   { color: 0xffd9a0, blendToAmbient: 0.25 }, // hoàng hôn: ngả cam
+    night:    { color: 0xffd9a0, blendToAmbient: 0.12 }, // đêm: hổ phách ấm dịu
+    midnight: { color: 0xffd2a0, blendToAmbient: 0.15 }
+  },
+  spriteDepth: 999991 // nằm trên lớp bóng tối (999990), dưới lớp bloom (999992)
+};
+
+/**
  * Nguồn sáng tĩnh (Static Point Lights) trên từng bản đồ
  * type: 'street_lamp' | 'neon' | 'statue' | 'desk_lamp' | 'ceiling_light' | 'torch'
  */

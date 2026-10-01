@@ -11,10 +11,11 @@
 import {
   DAY_NIGHT_PERIODS,
   ROOM_LIGHT_PROPERTIES,
-  STATIC_LIGHT_SOURCES
+  STATIC_LIGHT_SOURCES,
+  LAMP_GLOW_CONFIG
 } from '../config/lightingConfig.js';
 
-export { DAY_NIGHT_PERIODS, ROOM_LIGHT_PROPERTIES, STATIC_LIGHT_SOURCES };
+export { DAY_NIGHT_PERIODS, ROOM_LIGHT_PROPERTIES, STATIC_LIGHT_SOURCES, LAMP_GLOW_CONFIG };
 
 export class LightingManager {
   /**
@@ -49,6 +50,13 @@ export class LightingManager {
     // Quầng sáng chân nhân vật (Foot Aura / Lantern) - Mặc định TẮT theo phản hồi người dùng
     this.enableFootAura = false;
 
+    // Pool sprite quầng sáng đèn đường (sprite-based soft glow).
+    // Mỗi đèn đường có 3 sprite: vũng sáng mặt đất (pool), hào quang đầu đèn (halo), chùm sáng (beam).
+    // Nếu môi trường không hỗ trợ (unit test mock), pool rỗng và code tự fallback sang vẽ graphics cũ.
+    this.glowTexturesReady = false;
+    this.lampGlowEntries = [];
+    this.lampSpritesBuiltForRoom = null;
+
     this.init();
   }
 
@@ -82,12 +90,196 @@ export class LightingManager {
   }
 
   /**
+   * Vẽ sẵn (pre-render) 1 lần duy nhất 2 texture gradient cho hệ đèn đường:
+   *  - dever_glow_warm: radial gradient mượt (lõi trắng ấm -> hổ phách -> trong suốt ở rìa)
+   *  - dever_glow_beam: gradient dọc cho chùm sáng (sáng ở đầu đèn, mờ dần xuống đất)
+   * Dùng Canvas 2D API nên gradient mượt tuyệt đối, GPU chỉ việc nội suy khi scale.
+   * @returns {boolean} true nếu texture sẵn sàng
+   */
+  ensureGlowTextures() {
+    if (this.glowTexturesReady) return true;
+    try {
+      const texManager = this.scene?.textures;
+      if (!texManager || typeof texManager.createCanvas !== 'function' || typeof texManager.exists !== 'function') {
+        return false;
+      }
+      const cfg = LAMP_GLOW_CONFIG.textures;
+
+      // 1. Radial glow ấm
+      if (!texManager.exists(cfg.warmGlowKey)) {
+        const S = cfg.size;
+        const canvasTex = texManager.createCanvas(cfg.warmGlowKey, S, S);
+        if (!canvasTex) return false;
+        const ctx = (typeof canvasTex.getContext === 'function') ? canvasTex.getContext() : canvasTex.context;
+        if (!ctx) return false;
+        ctx.clearRect(0, 0, S, S);
+        const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+        g.addColorStop(0.0, 'rgba(255,250,235,0.95)');
+        g.addColorStop(0.18, 'rgba(255,236,180,0.55)');
+        g.addColorStop(0.45, 'rgba(255,220,150,0.22)');
+        g.addColorStop(0.75, 'rgba(255,210,140,0.07)');
+        g.addColorStop(1.0, 'rgba(255,205,135,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, S, S);
+        if (typeof canvasTex.refresh === 'function') canvasTex.refresh();
+      }
+
+      // 2. Beam dọc (sáng trên -> mờ dưới) + mềm 2 biên ngang
+      if (!texManager.exists(cfg.beamKey)) {
+        const W = 128, H = 256;
+        const canvasTex = texManager.createCanvas(cfg.beamKey, W, H);
+        if (!canvasTex) return false;
+        const ctx = (typeof canvasTex.getContext === 'function') ? canvasTex.getContext() : canvasTex.context;
+        if (!ctx) return false;
+        ctx.clearRect(0, 0, W, H);
+        const vg = ctx.createLinearGradient(0, 0, 0, H);
+        vg.addColorStop(0, 'rgba(255,244,214,0.55)');
+        vg.addColorStop(0.6, 'rgba(255,236,190,0.18)');
+        vg.addColorStop(1, 'rgba(255,230,180,0)');
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+        // Làm mềm biên trái/phải để chùm sáng không có cạnh cứng
+        ctx.globalCompositeOperation = 'destination-in';
+        const hg = ctx.createLinearGradient(0, 0, W, 0);
+        hg.addColorStop(0, 'rgba(0,0,0,0)');
+        hg.addColorStop(0.25, 'rgba(0,0,0,1)');
+        hg.addColorStop(0.75, 'rgba(0,0,0,1)');
+        hg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = hg;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'source-over';
+        if (typeof canvasTex.refresh === 'function') canvasTex.refresh();
+      }
+
+      this.glowTexturesReady = true;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Dựng lại pool sprite cho đèn đường của phòng hiện tại.
+   * Gọi khi đổi phòng; lần đầu gọi lazy trong renderLighting khi scene đã sẵn sàng.
+   */
+  rebuildLampSprites() {
+    for (const e of this.lampGlowEntries) {
+      try { e.pool?.destroy(); } catch (_) {}
+      try { e.halo?.destroy(); } catch (_) {}
+      try { e.beam?.destroy(); } catch (_) {}
+    }
+    this.lampGlowEntries = [];
+    this.lampSpritesBuiltForRoom = this.currentRoom;
+
+    if (!this.ensureGlowTextures()) return;
+    const add = this.scene?.add;
+    if (!add || typeof add.image !== 'function') return;
+
+    const cfg = LAMP_GLOW_CONFIG;
+    const staticLights = STATIC_LIGHT_SOURCES[this.currentRoom] || [];
+    for (const light of staticLights) {
+      if (light.type !== 'street_lamp') continue;
+      try {
+        const pool = add.image(light.x, light.y + 26, cfg.textures.warmGlowKey);
+        const halo = add.image(light.x, light.y - 22, cfg.textures.warmGlowKey);
+        const beam = add.image(light.x, light.y - 22, cfg.textures.beamKey);
+        beam.setOrigin(0.5, 0); // chùm sáng tỏa từ đầu đèn xuống
+        for (const img of [pool, halo, beam]) {
+          img.setDepth(cfg.spriteDepth);
+          if (typeof img.setBlendMode === 'function') img.setBlendMode('ADD');
+          img.setVisible(false);
+        }
+        this.lampGlowEntries.push({ light, pool, halo, beam });
+      } catch (e) {
+        // Đèn lỗi thì bỏ qua sprite, renderLighting sẽ fallback sang graphics
+      }
+    }
+  }
+
+  setLampSpritesVisible(v) {
+    for (const e of this.lampGlowEntries) {
+      try {
+        e.pool?.setVisible(v);
+        e.halo?.setVisible(v);
+        e.beam?.setVisible(v);
+      } catch (_) {}
+    }
+  }
+
+  /**
+   * Màu đèn hài hòa theo buổi: pha màu đèn gốc về phía màu ambient hiện tại
+   * (bình minh ngả hồng, hoàng hôn ngả cam) để ánh đèn "thuộc về" môi trường.
+   */
+  getLampTint() {
+    const tintCfg = LAMP_GLOW_CONFIG.tintByPeriod;
+    const periodId = this.currentAtmosphere?.period?.id || 'night';
+    const t = tintCfg[periodId] || tintCfg.night;
+    const ambient = (this.currentAtmosphere && typeof this.currentAtmosphere.ambientColor === 'number')
+      ? this.currentAtmosphere.ambientColor
+      : 0x090e24;
+    return this.lerpColor(t.color, ambient, t.blendToAmbient);
+  }
+
+  /**
+   * Cập nhật sprite quầng sáng đèn đường mỗi frame: alpha/scale/tint theo flicker
+   * hữu cơ (mỗi đèn lệch pha nhau) và cường độ theo giờ trong ngày.
+   */
+  updateLampGlowSprites({ streetLightsOn, isOutdoor, lampGlowAlpha, darknessAlpha }) {
+    if (this.lampGlowEntries.length === 0) return;
+    const cfg = LAMP_GLOW_CONFIG;
+    const tint = this.getLampTint();
+
+    for (const entry of this.lampGlowEntries) {
+      const { light, pool, halo, beam } = entry;
+      const on = streetLightsOn || !isOutdoor;
+      const visible = on && darknessAlpha > 0.01 && lampGlowAlpha > 0.02;
+      if (!visible) {
+        if (pool.visible) {
+          pool.setVisible(false);
+          halo.setVisible(false);
+          beam.setVisible(false);
+        }
+        continue;
+      }
+      if (!pool.visible) {
+        pool.setVisible(true);
+        halo.setVisible(true);
+        beam.setVisible(true);
+      }
+
+      // Flicker hữu cơ: mỗi đèn lệch pha theo vị trí, không nhấp nháy đồng bộ
+      const flick = 1 + Math.sin(this.flickerTimer * 3.2 + light.x * 0.63 + light.y * 0.41) * (light.flicker ?? 0.02);
+      const intensity = Math.max(0, light.intensity * lampGlowAlpha * flick);
+
+      // 1. Vũng sáng mặt đất: lớn, mềm, ADD xuyên qua lớp tối -> chi tiết map vẫn thấy
+      const poolW = light.radius * 2 * cfg.groundPool.radiusScaleX * flick;
+      const poolH = light.radius * 2 * cfg.groundPool.radiusScaleY * flick;
+      pool.setDisplaySize(poolW, poolH);
+      pool.setAlpha(Math.min(cfg.groundPool.maxAlpha, cfg.groundPool.baseAlpha * intensity + cfg.groundPool.alphaFloor));
+      pool.setTint(tint);
+
+      // 2. Hào quang đầu đèn: lõi gần trắng ấm, là điểm mắt người nhận ra "cái đèn đang sáng"
+      const haloD = cfg.headHalo.radius * 2 * flick;
+      halo.setDisplaySize(haloD, haloD * cfg.headHalo.squashY);
+      halo.setAlpha(Math.min(cfg.headHalo.maxAlpha, cfg.headHalo.baseAlpha * intensity + cfg.headHalo.alphaFloor));
+      halo.setTint(cfg.headHalo.coreTint);
+
+      // 3. Chùm sáng: trụ mềm từ bóng đèn xuống đất
+      const beamW = Math.max(cfg.beam.minWidth, light.radius * cfg.beam.widthScale);
+      beam.setDisplaySize(beamW, cfg.beam.height);
+      beam.setAlpha(Math.min(cfg.beam.maxAlpha, cfg.beam.baseAlpha * intensity));
+      beam.setTint(tint);
+    }
+  }
+
+  /**
    * Thiết lập phòng hiện tại
    * @param {string} roomId
    */
   setRoom(roomId) {
     this.currentRoom = roomId;
     this.updateAtmosphere();
+    this.rebuildLampSprites();
   }
 
   /**
@@ -240,7 +432,7 @@ export class LightingManager {
       lampGlowAlpha: lampGlowAlpha,
       isNight: isNightNow,
       isOutdoor: roomProp.isOutdoor,
-      streetLightsOn: isNightNow || (curPeriod.streetLightsOn && lampGlowAlpha > 0.4),
+      streetLightsOn: isNightNow || (curPeriod.streetLightsOn && lampGlowAlpha > 0.15),
       nightIndoorLightsOn: isNightNow && (!roomProp.isOutdoor) && (roomProp.nightIndoorLightsOn !== false)
     };
   }
@@ -297,7 +489,13 @@ export class LightingManager {
         this.bloomGraphics.clear();
         this.bloomGraphics.setVisible(false);
       }
+      this.setLampSpritesVisible(false);
       return;
+    }
+
+    // Lazy-build pool sprite đèn đường khi scene đã sẵn sàng (bỏ qua trong unit test mock)
+    if (this.lampSpritesBuiltForRoom !== this.currentRoom) {
+      this.rebuildLampSprites();
     }
 
     if (!this.lightGraphics.visible) {
@@ -330,10 +528,13 @@ export class LightingManager {
     this.lightGraphics.fillRect(viewLeft, viewTop, viewWidth, viewHeight);
 
     // 2. Vẽ các nguồn sáng tĩnh (Static Light Sources) của phòng hiện tại
+    // Đèn đường dùng sprite soft-glow khi pool sẵn sàng, các loại khác giữ nguyên graphics.
+    const useLampSprites = this.lampGlowEntries.length > 0 && this.lampSpritesBuiltForRoom === this.currentRoom;
     const staticLights = STATIC_LIGHT_SOURCES[this.currentRoom] || [];
     staticLights.forEach(light => {
       // Chỉ bật đèn đường khi trời tối hoặc trong phòng tối
       if (light.type === 'street_lamp' && !streetLightsOn && isOutdoor) return;
+      if (light.type === 'street_lamp' && useLampSprites) return; // sprite lo phần này
 
       const lightFlicker = Math.sin(this.flickerTimer * 4 + light.x) * (light.flicker || 0.02);
       const rad = light.radius * (1 + lightFlicker);
@@ -367,6 +568,11 @@ export class LightingManager {
           break;
       }
     });
+
+    // 2b. Cập nhật sprite quầng sáng đèn đường (mượt + hòa môi trường), nếu pool sẵn sàng
+    if (useLampSprites) {
+      this.updateLampGlowSprites({ streetLightsOn, isOutdoor, lampGlowAlpha, darknessAlpha });
+    }
 
     // 3. Quầng sáng theo chân nhân vật (Foot Aura) - Mặc định TẮT theo phản hồi người dùng
     // Chỉ kích hoạt nếu enableFootAura được bật rõ ràng (ví dụ người chơi nhặt được đèn bão/đuốc)
@@ -642,6 +848,13 @@ export class LightingManager {
     if (this.scene?.scale) {
       this.scene.scale.off('resize', this.handleResize, this);
     }
+    for (const e of this.lampGlowEntries) {
+      try { e.pool?.destroy(); } catch (_) {}
+      try { e.halo?.destroy(); } catch (_) {}
+      try { e.beam?.destroy(); } catch (_) {}
+    }
+    this.lampGlowEntries = [];
+    this.lampSpritesBuiltForRoom = null;
     if (this.lightGraphics) {
       this.lightGraphics.destroy();
       this.lightGraphics = null;
