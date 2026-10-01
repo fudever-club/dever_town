@@ -2,6 +2,7 @@ import { playerManager } from './playerManager.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
 import { setupVoiceHandler } from './voiceHandler.js';
+import { setupQuizHandler } from './quizHandler.js';
 import { createSocketRateLimiter, createCooldownLimiter } from '../utils/rateLimiter.js';
 
 // Theo dõi số kết nối Socket từ mỗi IP (Chống socket DDoS / bot flood)
@@ -97,6 +98,9 @@ export function setupSocketHandler(io) {
 
     // Khởi tạo Voice/Video Signaling cho socket
     const { handleVoiceLeave } = setupVoiceHandler(io, socket);
+
+    // Khởi tạo Quiz Engine multiplayer (Phase 1c)
+    setupQuizHandler(io, socket);
 
 
     /**

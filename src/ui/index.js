@@ -20,6 +20,7 @@ export { RetroArcade } from './minigames/RetroArcade.js';
 export { SportsArcade } from './minigames/SportsArcade.js';
 export { PomodoroTimer } from './minigames/PomodoroTimer.js';
 export { SpeedCodeDuel } from './minigames/SpeedCodeDuel.js';
+export { QuizMultiplayerModal } from './minigames/QuizMultiplayerModal.js';
 
 // 4. Common, HUD & Controls
 export { ChatBox } from './common/ChatBox.js';

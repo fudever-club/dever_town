@@ -8,6 +8,7 @@ import { RetroArcade } from '../minigames/RetroArcade.js';
 import { ROBOT_GAMES } from '../../config/robotGames.js';
 import { authService } from '../../services/AuthService.js';
 import { voiceService } from '../../services/VoiceService.js';
+import { QuizMultiplayerModal } from '../minigames/QuizMultiplayerModal.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { FPTU_CLUBS } from '../../config/fptuClubs.js';
 import { clubSettlementManager, TALENT_ROSTER_DEF } from '../../managers/ClubSettlementManager.js';
@@ -662,6 +663,31 @@ export class InteractiveModal {
       const pName = currentScene?.player?.name || authService.getUser()?.displayName || 'Bạn';
       localAvatar.innerHTML = `<span class="avatar-initials">${this.getAvatarInitials(pName)}</span>`;
     }
+
+    // Phase 1c: nút mở Quiz multiplayer từ phòng họp
+    const quizBtn = document.getElementById('quiz-open-btn');
+    if (quizBtn && !quizBtn.dataset.bound) {
+      quizBtn.dataset.bound = '1';
+      quizBtn.addEventListener('click', () => {
+        this.openQuizModal();
+      });
+    }
+  }
+
+  /**
+   * Phase 1c: Mở modal Quiz multiplayer (host tại phòng hiện tại).
+   */
+  openQuizModal() {
+    if (!this.quizModal) {
+      const currentScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+      const socket = currentScene?.socketManager?.socket;
+      if (!socket) {
+        console.warn('[Quiz] Chua ket noi server, khong mo duoc Quiz.');
+        return;
+      }
+      this.quizModal = new QuizMultiplayerModal({ socket });
+    }
+    this.quizModal.openAsHost(this.currentRoomId || 'meeting_room');
   }
 
   async handleJoinVoiceRoom() {
