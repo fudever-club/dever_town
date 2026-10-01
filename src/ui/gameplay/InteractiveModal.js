@@ -565,6 +565,82 @@ export class InteractiveModal {
         audioManager.playClick();
       });
     }
+
+    // 7. Phase 1d: Nút Giơ Tay / Hạ Tay
+    const handBtn = document.getElementById('btn-raise-hand');
+    if (handBtn && !handBtn.dataset.initialized) {
+      handBtn.dataset.initialized = 'true';
+      handBtn.addEventListener('click', () => {
+        const vs = this.voiceService;
+        if (!vs.isJoined) return;
+        vs.raiseHand(!vs.handRaised);
+        this.updateHandButton(vs.handRaised);
+        audioManager.playClick();
+      });
+    }
+  }
+
+  /**
+   * Phase 1d: Cập nhật trạng thái nút giơ tay.
+   */
+  updateHandButton(raised) {
+    const handBtn = document.getElementById('btn-raise-hand');
+    const handText = document.getElementById('hand-text');
+    if (handBtn) handBtn.classList.toggle('active', !!raised);
+    if (handText) handText.textContent = raised ? 'Hạ Tay' : 'Giơ Tay';
+    const localTile = document.getElementById('voice-tile-local');
+    if (localTile) localTile.classList.toggle('hand-raised', !!raised);
+  }
+
+  /**
+   * Phase 1d: Có người giơ/hạ tay — cập nhật badge trên tile.
+   */
+  handleHandChanged(socketId, raised) {
+    const vs = this.voiceService;
+    const isLocal = vs.socket && socketId === vs.socket.id;
+    const tileId = isLocal ? 'voice-tile-local' : `voice-tile-${socketId}`;
+    const tile = document.getElementById(tileId);
+    if (tile) {
+      tile.classList.toggle('hand-raised', !!raised);
+      let badge = tile.querySelector('.tile-hand-badge');
+      if (raised && !badge) {
+        badge = document.createElement('span');
+        badge.className = 'tile-hand-badge';
+        badge.title = 'Đang giơ tay xin phát biểu';
+        badge.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>`;
+        tile.appendChild(badge);
+      } else if (!raised && badge) {
+        badge.remove();
+      }
+    }
+    if (isLocal) this.updateHandButton(raised);
+  }
+
+  /**
+   * Phase 1d: Spotlight thay đổi — phóng to tile người được ghim.
+   */
+  handleSpotlightChanged(spotlightedId) {
+    document.querySelectorAll('.voice-tile.spotlighted').forEach(t => t.classList.remove('spotlighted'));
+    if (spotlightedId) {
+      const vs = this.voiceService;
+      const isLocal = vs.socket && spotlightedId === vs.socket.id;
+      const tile = document.getElementById(isLocal ? 'voice-tile-local' : `voice-tile-${spotlightedId}`);
+      if (tile) tile.classList.add('spotlighted');
+    }
+  }
+
+  /**
+   * Phase 1d: Bị host moderate.
+   */
+  handleModeration(kind, reason) {
+    if (kind === 'muted_by_host') {
+      this.updateVoiceControlUI({ micMuted: true });
+    } else if (kind === 'kicked') {
+      const lobby = document.getElementById('voice-lobby');
+      if (lobby) lobby.classList.remove('hidden');
+      const active = document.getElementById('voice-active-room');
+      if (active) active.classList.add('hidden');
+    }
   }
 
   setupMeetingView(zoneData) {
@@ -628,7 +704,12 @@ export class InteractiveModal {
           if (notice) notice.classList.add('hidden');
           this.updateVoiceControlUI({ micMuted, videoMuted });
           this.updateLocalVideoDisplay();
-        }
+        },
+        // Phase 1d: raise-hand / spotlight / moderation / host
+        onHandChanged: (socketId, raised) => this.handleHandChanged(socketId, raised),
+        onSpotlightChanged: (spotlightedId) => this.handleSpotlightChanged(spotlightedId),
+        onModeration: (kind, reason) => this.handleModeration(kind, reason),
+        onHostChanged: () => this.renderRemotePeerTiles(Array.from(this.voiceService.peers.values())),
       });
     }
 
@@ -884,9 +965,23 @@ export class InteractiveModal {
       const tile = document.createElement('div');
       tile.className = 'voice-tile';
       tile.id = `voice-tile-${peer.socketId}`;
+      // Phase 1d: trạng thái giơ tay / spotlight
+      if (peer.handRaised) tile.classList.add('hand-raised');
+      if (this.voiceService.spotlightedId === peer.socketId) tile.classList.add('spotlighted');
 
       const initials = this.getAvatarInitials(peer.name);
       const micSvg = peer.micMuted ? SVG_MIC_OFF : SVG_MIC_ON;
+      const handBadge = peer.handRaised
+        ? `<span class="tile-hand-badge" title="Đang giơ tay xin phát biểu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span>`
+        : '';
+
+      // Phase 1d: nút moderation cho host (tắt mic / mời ra)
+      const isHost = this.voiceService.isVoiceHost();
+      const modBtns = isHost ? `
+        <div class="tile-mod-actions">
+          <button type="button" class="tile-mod-btn" data-action="mute" data-sid="${peer.socketId}" title="Tắt mic người này">Tắt Mic</button>
+          <button type="button" class="tile-mod-btn danger" data-action="kick" data-sid="${peer.socketId}" title="Mời ra khỏi phòng thoại">Mời Ra</button>
+        </div>` : '';
 
       tile.innerHTML = `
         <div class="tile-video-wrap">
@@ -895,6 +990,7 @@ export class InteractiveModal {
             <div class="tile-avatar-circle"><span class="avatar-initials">${initials}</span></div>
           </div>
         </div>
+        ${handBadge}
         <div class="tile-overlay-bar">
           <div class="tile-name-group">
             <span class="tile-mic-icon" id="mic-${peer.socketId}">${micSvg}</span>
@@ -902,9 +998,20 @@ export class InteractiveModal {
             <span class="tile-role-pill">${escapeHtml((peer.role || 'member').toUpperCase())}</span>
           </div>
         </div>
+        ${modBtns}
       `;
 
       container.appendChild(tile);
+
+      // Phase 1d: host bấm vào tile để spotlight / bỏ spotlight
+      if (isHost) {
+        tile.style.cursor = 'pointer';
+        tile.addEventListener('click', (e) => {
+          if (e.target.closest('.tile-mod-btn')) return; // không trigger khi bấm nút mod
+          const cur = this.voiceService.spotlightedId;
+          this.voiceService.setSpotlight(cur === peer.socketId ? null : peer.socketId);
+        });
+      }
 
       // Nếu đã có video stream từ trước, gắn lại srcObject
       const existingStream = this.voiceService.remoteStreams.get(peer.socketId);
@@ -917,6 +1024,17 @@ export class InteractiveModal {
           if (wrap) wrap.classList.add('hidden');
         }
       }
+    });
+
+    // Phase 1d: gắn sự kiện cho nút moderation
+    container.querySelectorAll('.tile-mod-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.dataset.sid;
+        const action = btn.dataset.action;
+        if (action === 'kick' && !confirm('Mời người này ra khỏi phòng thoại?')) return;
+        this.voiceService.moderatePeer(sid, action);
+      });
     });
   }
 

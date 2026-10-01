@@ -10852,3 +10852,36 @@ body {
   margin-top: 10px; padding: 8px 12px; background: #fef3c7; color: #92400e;
   border-radius: 8px; font-size: 13px;
 }
+
+/* ===== Phase 1d: Raise-hand / Spotlight / Moderation ===== */
+.voice-tile { position: relative; }
+.voice-tile .tile-hand-badge {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #fbbf24; color: #78350f;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  animation: hand-wave 1.2s ease-in-out infinite;
+}
+@keyframes hand-wave {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(10deg); }
+}
+.voice-tile.hand-raised { outline: 2px solid #fbbf24; outline-offset: 2px; }
+.voice-tile.spotlighted {
+  outline: 3px solid #4f46e5; outline-offset: 2px;
+  transform: scale(1.04); z-index: 2;
+}
+#btn-raise-hand.active { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+.tile-mod-actions {
+  position: absolute; bottom: 34px; left: 6px; right: 6px; z-index: 3;
+  display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s;
+}
+.voice-tile:hover .tile-mod-actions { opacity: 1; }
+.tile-mod-btn {
+  flex: 1; padding: 4px 6px; font-size: 11px; font-weight: 600;
+  border: 1px solid #cbd5e1; border-radius: 6px; background: rgba(255,255,255,0.95);
+  color: #334155; cursor: pointer;
+}
+.tile-mod-btn.danger { border-color: #fca5a5; color: #b91c1c; }
+.tile-mod-btn:hover { background: #f1f5f9; }
