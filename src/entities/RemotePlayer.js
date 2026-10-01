@@ -301,6 +301,8 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
   }
 
   update(time, delta = 16.67) {
+    const prevX = this.x;
+    const prevY = this.y;
     const distSq = (this.targetX - this.x) * (this.targetX - this.x) + (this.targetY - this.y) * (this.targetY - this.y);
 
     if (distSq > 10000) {
@@ -335,8 +337,22 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       }
     } catch (e) {}
 
+    // --- Đồng bộ walk cycle với tốc độ nội suy thực tế (chống trượt chân) ---
+    // Đo quãng đường đã đi trong frame này để ước lượng px/giây.
+    const dtSec = Math.max(delta, 1) / 1000;
+    const movedPx = Math.hypot(this.x - prevX, this.y - prevY);
+    const pxPerSec = movedPx / dtSec;
     if (isVisiblyMoving) {
-      const bob = Math.sin(performance.now() / 85) * 0.05;
+      this.anims.timeScale = Phaser.Math.Clamp(pxPerSec / 160, 0.2, 1.25);
+    } else {
+      this.anims.timeScale = 1;
+    }
+
+    if (isVisiblyMoving) {
+      // Squash & stretch đồng bộ KHUNG HÌNH (2 nhịp/vòng 8 frame), thay cho sin tự do
+      let walkProg = 0;
+      try { walkProg = this.anims.getProgress?.() ?? 0; } catch (e) {}
+      const bob = Math.sin(walkProg * Math.PI * 4) * 0.04;
       this.scaleY = 1.0 + bob;
       this.scaleX = 1.0 - bob * 0.7;
     } else {
@@ -348,8 +364,14 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.shadowEllipse) {
       this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
-      const shadowBob = isVisiblyMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
-      this.shadowEllipse.setScale(shadowBob, 1.0);
+      let shadowScale = 1.0;
+      if (isVisiblyMoving) {
+        try {
+          const p = this.anims.getProgress?.() ?? 0;
+          shadowScale = 0.94 + (0.5 + 0.5 * Math.sin(p * Math.PI * 4)) * 0.06;
+        } catch (e) {}
+      }
+      this.shadowEllipse.setScale(shadowScale, 1.0);
     }
 
     if (this.lastX !== this.x || this.lastY !== this.y) {

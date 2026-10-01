@@ -385,8 +385,29 @@ export class Player extends Phaser.GameObjects.Sprite {
     const speed = baseSpeed * (this.speedMultiplier ?? 1.0);
     const { vector, left, right, up, down, isMoving } = inputData;
 
-    this.body.setVelocity(vector.x * speed, vector.y * speed);
+    // --- Delta time độc lập khung hình (mượt ở mọi FPS) ---
+    const deltaMs = this.scene?.sys?.game?.loop?.delta ?? 16.67;
+    const dt = Math.min(deltaMs, 50) / 1000;
 
+    // --- 1. EASED ACCELERATION / DECELERATION ---
+    // Thay setVelocity tức thì bằng tiệm cận hàm mũ: tăng tốc ~120ms, dừng ~150ms.
+    // Cảm giác: nhân vật có trọng lượng, không còn "teleport" mỗi khi nhấn phím.
+    const targetVx = vector.x * speed;
+    const targetVy = vector.y * speed;
+    const easeRate = isMoving ? 12 : 16;
+    const k = 1 - Math.exp(-easeRate * dt);
+    let vx = Phaser.Math.Linear(this.body.velocity.x, targetVx, k);
+    let vy = Phaser.Math.Linear(this.body.velocity.y, targetVy, k);
+    // Triệt tiêu rung động vi mô khi gần dừng hẳn
+    if (!isMoving && Math.hypot(vx, vy) < 8) { vx = 0; vy = 0; }
+    this.body.setVelocity(vx, vy);
+
+    const actualSpeed = Math.hypot(this.body.velocity.x, this.body.velocity.y);
+    const speedRatio = Phaser.Math.Clamp(actualSpeed / speed, 0, 1.2);
+    const visuallyMoving = actualSpeed > 12;
+
+    // --- 2. TURN ANTICIPATION: "cú nảy" nhẹ khi đổi hướng ---
+    const prevDir = this.currentDirection;
     if (left) {
       this.currentDirection = 'left';
     } else if (right) {
@@ -396,9 +417,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     } else if (down) {
       this.currentDirection = 'down';
     }
+    if (this.currentDirection !== prevDir) {
+      this._turnT = 1; // trigger cú squash 120ms
+    }
+    if (this._turnT > 0) this._turnT = Math.max(0, this._turnT - dt * 8);
+    const turnSquash = Math.sin(this._turnT * Math.PI) * 0.05;
 
     if (isMoving) {
       this._stoppedMovingTime = null;
+      this._wasMoving = true;
       const walkKey = `walk_${this.currentDirection}_${this.avatarId}`;
       try {
         if (this.scene?.anims?.exists(walkKey)) {
@@ -411,10 +438,18 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
       } catch (e) {}
 
-      // Hiệu ứng nhún người (Squash & Stretch) hữu cơ khi di chuyển
-      const bob = Math.sin(performance.now() / 85) * 0.05;
-      this.scaleY = 1.0 + bob;
-      this.scaleX = 1.0 - bob * 0.7;
+      // --- 3. WALK CYCLE ĐỒNG BỘ TỐC ĐỘ (chống trượt chân) ---
+      // timeScale co giãn theo vận tốc thực: tăng tốc/giiảm tốc thì chân cũng nhanh/chậm theo.
+      this.anims.timeScale = Phaser.Math.Clamp(speedRatio, 0.15, 1.15);
+
+      // --- 4. SQUASH & STRETCH ĐỒNG BỘ KHUNG HÌNH ---
+      // Dùng tiến trình vòng walk (0..1) thay cho sin(performance.now()) tự do:
+      // nhún người khớp chính xác từng bước chân, 2 nhịp/vòng 8 frame.
+      let walkProg = 0;
+      try { walkProg = this.anims.getProgress?.() ?? 0; } catch (e) {}
+      const bob = Math.sin(walkProg * Math.PI * 4) * 0.04;
+      this.scaleY = 1.0 + bob - turnSquash * 0.6;
+      this.scaleX = 1.0 - bob * 0.7 - turnSquash;
 
       // Xác định chất liệu mặt sàn dưới chân (cỏ, gỗ, đá, cyber)
       const tileX = Math.floor(this.x / 32);
@@ -449,6 +484,15 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (!this._stoppedMovingTime) {
         this._stoppedMovingTime = performance.now();
       }
+      // --- 5. SETTLE KHI VỪA DỪNG: lún nhẹ rồi nảy lại trong ~180ms ---
+      if (this._wasMoving) {
+        this._wasMoving = false;
+        this._settleT = 1;
+      }
+      if (this._settleT > 0) this._settleT = Math.max(0, this._settleT - dt * 5.5);
+      const settleDip = Math.sin(this._settleT * Math.PI) * 0.05;
+
+      this.anims.timeScale = 1; // idle luôn chạy đúng nhịp thở gốc
       const idleElapsed = performance.now() - this._stoppedMovingTime;
       const breatheAnimKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
       const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
@@ -465,18 +509,24 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
       } catch (e) {}
 
-      // Nhịp thở ngực hữu cơ (Micro Organic Breathing Pulse ±1.8%)
+      // Nhịp thở ngực hữu cơ (Micro Organic Breathing Pulse ±1.8%) + settle
       const breathe = Math.sin(performance.now() / 650) * 0.018;
-      this.scaleY = 1.0 + breathe;
-      this.scaleX = 1.0 - breathe * 0.4;
+      this.scaleY = 1.0 + breathe - settleDip;
+      this.scaleX = 1.0 - breathe * 0.4 + settleDip * 0.6;
     }
 
-    // Cập nhật vị trí bóng chân và độ co giãn nhẹ theo nhịp bước
+    // Bóng chân đồng bộ nhịp bước (co lại khi nhân vật nhún lên)
     if (this.shadowEllipse) {
       this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
-      const shadowBob = isMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
-      this.shadowEllipse.setScale(shadowBob, 1.0);
+      let shadowScale = 1.0;
+      if (visuallyMoving) {
+        try {
+          const p = this.anims.getProgress?.() ?? 0;
+          shadowScale = 0.94 + (0.5 + 0.5 * Math.sin(p * Math.PI * 4)) * 0.06;
+        } catch (e) {}
+      }
+      this.shadowEllipse.setScale(shadowScale, 1.0);
     }
 
     // Hiệu ứng LED Breathing cho Cyber Mecha & Sparkling Eye Glint cho Cóc Vàng FUDA
