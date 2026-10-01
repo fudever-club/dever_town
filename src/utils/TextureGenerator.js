@@ -62,6 +62,10 @@ export class TextureGenerator {
     this.drawSofa(ctx, 36 * tileSize, 0, tileSize); // 36: Sofa Phòng Sinh Hoạt (Obstacle)
     this.drawWardrobe(ctx, 37 * tileSize, 0, tileSize); // 37: Tủ Quần Áo KTX (Obstacle)
 
+    // 38-39: Nội thất phòng họp Gather.town — Phòng Họp CLB & Lab Code
+    this.drawConferenceTable(ctx, 38 * tileSize, 0, tileSize); // 38: Bàn Họp Hội Nghị Chữ U (Obstacle)
+    this.drawProjectorScreen(ctx, 39 * tileSize, 0, tileSize); // 39: Màn Chiếu Projector (Obstacle)
+
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
     }
@@ -1017,6 +1021,70 @@ export class TextureGenerator {
     ctx.fillStyle = 'rgba(0,0,0,0.15)';
     ctx.fillRect(x + 8, y + 8, 5, 1);
     ctx.fillRect(x + 19, y + 20, 5, 1);
+  }
+
+  // 38: Bàn Họp Hội Nghị (Obstacle) — nhìn từ trên xuống, bàn gỗ dài + ghế
+  static drawConferenceTable(ctx, x, y, size) {
+    // Sàn gỗ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Mặt bàn gỗ dài (ngang)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 4, y + 10, size - 8, 12);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 5, y + 11, size - 10, 10);
+    // Vân gỗ + điểm nhấn giữa (khay tài liệu)
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(x + 8, y + 14, size - 16, 1);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + size / 2 - 3, y + 13, 6, 6); // tập tài liệu trắng
+
+    // Ghế 2 bên (4 ghế)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 6, y + 4, 6, 5);
+    ctx.fillRect(x + size - 12, y + 4, 6, 5);
+    ctx.fillRect(x + 6, y + 23, 6, 5);
+    ctx.fillRect(x + size - 12, y + 23, 6, 5);
+    // Tựa ghế
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 6, y + 2, 6, 2);
+    ctx.fillRect(x + size - 12, y + 2, 6, 2);
+    ctx.fillRect(x + 6, y + 28, 6, 2);
+    ctx.fillRect(x + size - 12, y + 28, 6, 2);
+  }
+
+  // 39: Màn Chiếu Projector (Obstacle) — màn chiếu + chân đứng, có slide
+  static drawProjectorScreen(ctx, x, y, size) {
+    // Sàn
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Chân đứng 2 bên
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 5, y + 6, 2, size - 10);
+    ctx.fillRect(x + size - 7, y + 6, 2, size - 10);
+
+    // Màn chiếu trắng
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(x + 7, y + 6, size - 14, 16);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 7, y + 6, size - 14, 16);
+
+    // Slide đang chiếu: tiêu đề + biểu đồ cột pixel
+    ctx.fillStyle = '#1d4ed8';
+    ctx.fillRect(x + 10, y + 9, 10, 2); // dòng tiêu đề
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 10, y + 13, 3, 6);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 14, y + 15, 3, 4);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 18, y + 12, 3, 7);
+
+    // Đèn projector phía dưới
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + size / 2 - 4, y + 26, 8, 4);
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(x + size / 2 - 2, y + 27, 4, 2); // tia sáng
   }
 
   /**

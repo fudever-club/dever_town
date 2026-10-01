@@ -51,7 +51,9 @@ export class RoomBanner {
       canteen_cafe: '☕',
       dorm_room: '🛏️',
       classroom: '🏫',
-      pc_room: '🖥️'
+      pc_room: '🖥️',
+      meeting_room: '🤝',
+      code_lab: '💻'
     };
     return icons[roomId] || '📍';
   }
