@@ -21,7 +21,7 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
       opts.map(o => ({ id: o.id, value: o.value, text: o.textContent.trim() }))
     );
 
-    expect(options.length).toBe(9);
+    expect(options.length).toBe(12);
     for (const opt of options) {
       // Nhãn ngắn gọn <= 28 ký tự, không bao giờ bị cắt dấu ba chấm
       expect(opt.text.length).toBeLessThanOrEqual(28);
@@ -32,6 +32,13 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
     const arcadeOpt = options.find(o => o.value === 'game_arcade');
     expect(arcadeOpt).toBeDefined();
     expect(arcadeOpt.text).toContain('Arcade & Robot');
+
+    // 3 phòng mới từ commit 653e69a (Gather.town-style rooms)
+    for (const roomId of ['dorm_room', 'classroom', 'pc_room']) {
+      const opt = options.find(o => o.value === roomId);
+      expect(opt).toBeDefined();
+      expect(opt.text.length).toBeLessThanOrEqual(28);
+    }
   });
 
   test('02. Merged portal labels in Main Hall and Library Lounge prevent label collision', async ({ page }) => {
@@ -87,7 +94,7 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
     expect(badgeIntegrity.isBadgeRestored).toBe(true);
   });
 
-  test('04. Campus Map modal displays all 9 locations without truncation', async ({ page }) => {
+  test('04. Campus Map modal displays all 10 locations without truncation', async ({ page }) => {
     // Mở modal Campus Map bằng interactiveModal.show
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
@@ -104,10 +111,10 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
     await expect(modal).toBeVisible();
 
     const items = page.locator('.campus-loc-item');
-    await expect(items).toHaveCount(9);
+    await expect(items).toHaveCount(10);
 
-    // Kiểm tra item số 9 (Sân Bóng Đá & Thể Thao)
-    const item9 = items.nth(8);
-    await expect(item9).toContainText('Sân Bóng Đá');
+    // Kiểm tra item Sân Thể Thao (Bóng Đá & Bóng Rổ) ở vị trí số 7 tab Newbie K22
+    const sportItem = items.nth(6);
+    await expect(sportItem).toContainText('Sân Thể Thao');
   });
 });

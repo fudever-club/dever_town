@@ -205,7 +205,9 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
       const arcade = scene.interactiveModal.sportsArcade;
       arcade.stop();
       arcade.scores.footballStreak = 2;
-      arcade.football.state = 'shooting';
+      // PenaltyShootoutEngine dùng state 'flight' cho quỹ đạo bóng
+      // (state machine cũ 'shooting' đã bị refactor)
+      arcade.football.state = 'flight';
       arcade.football.ball.progress = 0.99;
       arcade.football.ball.startX = 320;
       arcade.football.ball.startY = 305;

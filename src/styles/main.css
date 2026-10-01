@@ -5415,6 +5415,7 @@ body {
     padding: 2px 3px !important;
     width: 100vw !important;
     box-sizing: border-box !important;
+    gap: 0 !important;
   }
 
   /* Ẩn các nút trùng lặp đã có trên phím cảm ứng touch controls để thanh header không bao giờ tràn mép */
@@ -5429,6 +5430,24 @@ body {
   .header-actions {
     gap: 3px !important;
     flex-shrink: 0 !important;
+  }
+
+  /* Nút header chỉ hiện icon trên màn hình nhỏ để header không tràn ở 375px.
+     Nhãn chữ ẩn đi, icon vẫn giữ nguyên chức năng (xem qua title/tooltip);
+     điểm D-Coin vẫn xem được ở Daily Goal HUD trên mobile. */
+  .header-actions .btn-primary-sm span,
+  .header-actions .btn-icon-square span {
+    display: none !important;
+  }
+  .header-actions .btn-primary-sm,
+  .header-actions .btn-icon-square,
+  .header-actions #header-quests-btn {
+    width: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    overflow: hidden !important;
   }
 
   .btn-primary-sm, .btn-ghost, .btn-icon-square {
@@ -5453,6 +5472,14 @@ body {
   .campus-map-workspace {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
+  }
+}
+
+/* Màn hình rất nhỏ (<=360px): ẩn room selector trên header
+   (vẫn chuyển phòng được qua portal và bản đồ) để header không tràn */
+@media (max-width: 360px) {
+  #main-header .room-nav-container {
+    display: none !important;
   }
 }
 
