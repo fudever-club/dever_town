@@ -439,7 +439,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       } catch (e) {}
 
       // --- 3. WALK CYCLE ĐỒNG BỘ TỐC ĐỘ (chống trượt chân) ---
-      // timeScale co giãn theo vận tốc thực: tăng tốc/giiảm tốc thì chân cũng nhanh/chậm theo.
+      // timeScale co giãn theo vận tốc thực: tăng tốc/giảm tốc thì chân cũng nhanh/chậm theo.
       this.anims.timeScale = Phaser.Math.Clamp(speedRatio, 0.15, 1.15);
 
       // --- 4. SQUASH & STRETCH ĐỒNG BỘ KHUNG HÌNH ---
