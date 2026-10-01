@@ -9,13 +9,14 @@
  */
 
 import {
+  DAY_NIGHT_CYCLE_ENABLED,
   DAY_NIGHT_PERIODS,
   ROOM_LIGHT_PROPERTIES,
   STATIC_LIGHT_SOURCES,
   LAMP_GLOW_CONFIG
 } from '../config/lightingConfig.js';
 
-export { DAY_NIGHT_PERIODS, ROOM_LIGHT_PROPERTIES, STATIC_LIGHT_SOURCES, LAMP_GLOW_CONFIG };
+export { DAY_NIGHT_CYCLE_ENABLED, DAY_NIGHT_PERIODS, ROOM_LIGHT_PROPERTIES, STATIC_LIGHT_SOURCES, LAMP_GLOW_CONFIG };
 
 export class LightingManager {
   /**
@@ -328,6 +329,8 @@ export class LightingManager {
    * @param {'realtime'|'fast_cycle'|'manual'} mode
    */
   setTimeMode(mode) {
+    // L2: chu kỳ ngày/đêm đã tắt — bỏ qua mọi đổi chế độ thời gian
+    if (!DAY_NIGHT_CYCLE_ENABLED) return;
     if (['realtime', 'fast_cycle', 'manual'].includes(mode)) {
       this.timeMode = mode;
       if (typeof localStorage !== 'undefined') {
@@ -343,6 +346,8 @@ export class LightingManager {
    * @param {number} minute (0 - 59)
    */
   setTime(hour, minute = 0) {
+    // L2: chu kỳ ngày/đêm đã tắt — bỏ qua mọi đặt giờ
+    if (!DAY_NIGHT_CYCLE_ENABLED) return;
     this.manualHour = Math.max(0, Math.min(23.99, hour + minute / 60));
     this.timeMode = 'manual';
     if (typeof localStorage !== 'undefined') {
@@ -502,8 +507,19 @@ export class LightingManager {
   }
 
   updateAtmosphere() {
-    this.currentAtmosphere = this.computeAtmosphere(this.currentHour);
-    this.isNight = this.currentAtmosphere.isNight;
+    // L2: tắt chu kỳ ngày/đêm — luôn dùng ánh sáng ban ngày tĩnh (12:00),
+    // game sáng như gather.town, không bóng tối theo giờ.
+    const hourForAtmo = DAY_NIGHT_CYCLE_ENABLED ? this.currentHour : 12;
+    this.currentAtmosphere = this.computeAtmosphere(hourForAtmo);
+    if (!DAY_NIGHT_CYCLE_ENABLED) {
+      // L2: ép sáng hoàn toàn — kể cả phòng trong nhà (bỏ indoorBaseDarkness)
+      this.currentAtmosphere.darknessAlpha = 0;
+      this.currentAtmosphere.lampGlowAlpha = 0;
+      this.currentAtmosphere.streetLightsOn = false;
+      this.currentAtmosphere.nightIndoorLightsOn = false;
+      this.currentAtmosphere.isNight = false;
+    }
+    this.isNight = DAY_NIGHT_CYCLE_ENABLED && this.currentAtmosphere.isNight;
 
     // Tự động kích hoạt đom đóm nếu là ban đêm ở ngoài trời
     const shouldEnableFireflies = this.currentAtmosphere.isOutdoor && this.isNight;
