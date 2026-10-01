@@ -49,7 +49,8 @@ export class RoomBanner {
       sports_complex: '⚽',
       canteen_cafe: '☕',
       dorm_room: '🛏️',
-      meeting_room: '🤝',
+      meeting_room: '📍',
+      server_dungeon: '📍'
     };
     return icons[roomId] || '📍';
   }
