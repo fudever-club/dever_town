@@ -75,6 +75,12 @@ export class QuizEngine {
       else this._emit('lobby_update', { players, hostId });
     });
 
+    // Dedicated joined response: guest learns its quizId reliably
+    s.on('quiz:joined', ({ quizId }) => {
+      this.quizId = quizId;
+      if (this.state === S.IDLE) this._setState(S.LOBBY, { quizId });
+    });
+
     s.on('quiz:countdown', ({ seconds }) => {
       this._setState(S.COUNTDOWN, { seconds });
     });

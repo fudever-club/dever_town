@@ -220,6 +220,8 @@ export function setupQuizHandler(io, socket) {
       socketId: socket.id, name, score: 0, combo: 0, correctCount: 0,
     });
     socket._currentQuizId = quizId;
+    // Dedicated joined response carrying the ID (guest client sets engine.quizId from this)
+    socket.emit('quiz:joined', { quizId });
     emitToQuiz(io, session, 'quiz:lobby', {
       players: [...session.players.values()].map(p => ({ socketId: p.socketId, name: p.name })),
       hostId: session.hostId,

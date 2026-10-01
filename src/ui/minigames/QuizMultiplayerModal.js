@@ -161,7 +161,10 @@ export class QuizMultiplayerModal {
       </div>`;
     const startBtn = this.body.querySelector('#quiz-start-btn');
     if (startBtn) startBtn.addEventListener('click', () => this.engine.start());
-    this.body.querySelector('#quiz-leave-btn').addEventListener('click', () => this.renderSetup());
+    this.body.querySelector('#quiz-leave-btn').addEventListener('click', () => {
+      this.engine.leave();
+      this.renderSetup();
+    });
   }
 
   renderCountdown(seconds) {
@@ -259,7 +262,10 @@ export class QuizMultiplayerModal {
         <button type="button" class="quiz-btn-primary" id="quiz-again-btn">Về Sảnh Chờ</button>
         <button type="button" class="quiz-btn-secondary" id="quiz-close2-btn">Đóng</button>
       </div>`;
-    this.body.querySelector('#quiz-again-btn').addEventListener('click', () => this.renderSetup());
+    this.body.querySelector('#quiz-again-btn').addEventListener('click', () => {
+      this.engine.leave();
+      this.renderSetup();
+    });
     this.body.querySelector('#quiz-close2-btn').addEventListener('click', () => this.close());
   }
 
