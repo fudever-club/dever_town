@@ -48,10 +48,8 @@ export const MAPS_CONFIG = {
       { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
       { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
       { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-      { tileX: 7, tileY: 0, targetRoomId: 'pc_room', targetSpawn: { x: 384, y: 400 }, label: 'Phòng PC Cyber' },
       { tileX: 18, tileY: 0, targetRoomId: 'classroom', targetSpawn: { x: 384, y: 400 }, label: 'Lớp Học' },
       { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
-      { tileX: 14, tileY: 0, targetRoomId: 'code_lab', targetSpawn: { x: 400, y: 336 }, label: 'Lab Code' }
     ],
     zones: [
       { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -98,10 +96,8 @@ export const MAPS_CONFIG = {
           { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
           { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
           { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-          { tileX: 7, tileY: 0, targetRoomId: 'pc_room', targetSpawn: { x: 384, y: 400 }, label: 'Phòng PC Cyber' },
           { tileX: 18, tileY: 0, targetRoomId: 'classroom', targetSpawn: { x: 384, y: 400 }, label: 'Lớp Học' },
           { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
-          { tileX: 14, tileY: 0, targetRoomId: 'code_lab', targetSpawn: { x: 400, y: 336 }, label: 'Lab Code' }
         ],
         zones: [
           { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -895,43 +891,6 @@ export const MAPS_CONFIG = {
     ]
   },
 
-  pc_room: {
-    id: 'pc_room',
-    name: 'Phòng PC Cyber - DEVER Gaming & Dev',
-    description: 'Dàn PC để bàn cấu hình cao cho dev và gaming, bao quanh bởi server rack hiện đại.',
-    spawnPoint: { x: 400, y: 352 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  9,  9,  9,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  8,  1,  1,  1,  8,  1,  1,  1,  8,  1,  1,  1,  8,  1,  1,  1,  8,  1,  1,  1,  8,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
-    portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 240, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 240, y: 80 }, label: 'Về Sảnh Chính' }
-    ],
-    zones: [
-      { id: 'zone_pc_code1', type: 'code_editor', tileX: 3, tileY: 4, name: 'Trạm PC Dev 01', label: 'Code & Chạy Thử' },
-      { id: 'zone_pc_code2', type: 'code_editor', tileX: 12, tileY: 6, name: 'Trạm PC Dev 02', label: 'Code & Chạy Thử' },
-      { id: 'zone_pc_server', type: 'club_website', tileX: 5, tileY: 2, name: 'Tủ Server DEVER', label: 'Hạ Tầng CLB' }
-    ]
-  },
-
   meeting_room: {
     id: 'meeting_room',
     name: 'Phòng Họp CLB FU-DEVER - Meeting Suite',
@@ -968,43 +927,5 @@ export const MAPS_CONFIG = {
       { id: 'zone_meet_board', type: 'whiteboard_slides', tileX: 1, tileY: 1, name: 'Bảng Trắng Phòng Họp', label: 'Ghi Chú Họp' }
     ]
   },
-
-  code_lab: {
-    id: 'code_lab',
-    name: 'Lab Code FU-DEVER - Phòng Thực Hành Lập Trình',
-    description: 'Lab thực hành lập trình: dãy trạm PC dev, tủ server và bảng kiến trúc cho buổi workshop code.',
-    spawnPoint: { x: 400, y: 336 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  9,  8,  9,  9,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  1,  1, 35,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 33, 33, 33,  1, 33, 33, 33,  1, 33, 33, 33,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
-    portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 464, y: 96 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 464, y: 96 }, label: 'Về Sảnh Chính' }
-    ],
-    zones: [
-      { id: 'zone_codelab_pc1', type: 'code_editor', tileX: 3, tileY: 4, name: 'Trạm Lab Code 01', label: 'Code & Chạy Thử' },
-      { id: 'zone_codelab_pc2', type: 'code_editor', tileX: 11, tileY: 6, name: 'Trạm Lab Code 02', label: 'Code & Chạy Thử' },
-      { id: 'zone_codelab_board', type: 'whiteboard_slides', tileX: 22, tileY: 4, name: 'Bảng Kiến Trúc Lab Code', label: 'Sơ Đồ Hệ Thống' },
-      { id: 'zone_codelab_server', type: 'club_website', tileX: 5, tileY: 2, name: 'Rack Server Lab Code', label: 'Hạ Tầng CLB' }
-    ]
-  }
 };
 

@@ -36,9 +36,7 @@ export const TRANSLATIONS = {
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Ký Túc Xá',
       classroom: 'Lớp Học',
-      pc_room: 'Phòng PC Cyber',
       meeting_room: 'Phòng Họp CLB',
-      code_lab: 'Lab Code'
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -54,9 +52,7 @@ export const TRANSLATIONS = {
       game_arcade: 'Sang Arcade & Robot',
       dorm_room: 'Sang Ký Túc Xá',
       classroom: 'Sang Lớp Học',
-      pc_room: 'Sang Phòng PC Cyber',
       meeting_room: 'Sang Phòng Họp CLB',
-      code_lab: 'Sang Lab Code'
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -248,9 +244,7 @@ export const TRANSLATIONS = {
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Dormitory',
       classroom: 'Classroom',
-      pc_room: 'PC Cyber Room',
       meeting_room: 'Club Meeting Room',
-      code_lab: 'Code Lab'
     },
 
     // Portals (Ground portals)
@@ -266,9 +260,7 @@ export const TRANSLATIONS = {
       game_arcade: 'To Arcade & Robot',
       dorm_room: 'To Dormitory',
       classroom: 'To Classroom',
-      pc_room: 'To PC Cyber Room',
       meeting_room: 'To Club Meeting Room',
-      code_lab: 'To Code Lab'
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)
@@ -500,7 +492,6 @@ class I18nManager {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
         'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade',
-        'dorm_room', 'classroom', 'pc_room'
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);

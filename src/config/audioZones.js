@@ -28,14 +28,6 @@ export const PRIVATE_AREAS = {
     },
   ],
   // Lab code: dãy bàn PC là vùng kín cho pair-programming
-  code_lab: [
-    {
-      id: 'codelab_bench_private',
-      name: 'Khu Pair Programming',
-      // tiles x:2-16, y:3-7  ->  px
-      x1: 64, y1: 96, x2: 544, y2: 256,
-    },
-  ],
   // Các phòng khác chưa có private area — bổ sung khi cần
 };
 

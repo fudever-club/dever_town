@@ -15,7 +15,6 @@ ok(SPATIAL_VOICE_CONFIG.updateIntervalMs >= 100, 'update interval không quá nh
 
 // 2. Private areas cho 2 phòng mới
 ok(Array.isArray(PRIVATE_AREAS.meeting_room) && PRIVATE_AREAS.meeting_room.length >= 1, 'meeting_room có private area');
-ok(Array.isArray(PRIVATE_AREAS.code_lab) && PRIVATE_AREAS.code_lab.length >= 1, 'code_lab có private area');
 
 // 3. findPrivateArea
 const meetArea = PRIVATE_AREAS.meeting_room[0];

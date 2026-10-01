@@ -342,9 +342,7 @@ export class AmbientEnvironmentManager {
       game_arcade: { ambientTint: 0x3b0764, alpha: 0.08 },    // Arcade tím neon
       dorm_room: { ambientTint: 0xfef3c7, alpha: 0.05 },      // KTX đèn vàng ấm cúng
       classroom: { ambientTint: 0xffffff, alpha: 0 },         // Lớp học sáng rõ
-      pc_room: { ambientTint: 0x0f172a, alpha: 0.07 },        // Phòng PC xanh cyber
       meeting_room: { ambientTint: 0xfef9c3, alpha: 0.04 },   // Phòng họp vàng ấm
-      code_lab: { ambientTint: 0x0f172a, alpha: 0.06 },        // Lab code xanh dương
       academic_hub: { ambientTint: 0xffffff, alpha: 0 }
     };
 
