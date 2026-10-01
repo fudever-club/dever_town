@@ -296,6 +296,11 @@ export class VoiceService {
       this.voiceHostId = hostId || null;
       if (this.onHostChanged) this.onHostChanged(this.voiceHostId);
     });
+
+    // Voice-specific error (thay cho quiz:error dùng nhầm trước đây)
+    this.socket.on('voice:error', ({ message }) => {
+      if (this.onError) this.onError(message);
+    });
   }
 
   /**
