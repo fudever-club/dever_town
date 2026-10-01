@@ -10748,3 +10748,18 @@ body {
 }
 
 
+
+/* ===== Phase 0: chặn iOS Safari auto-zoom khi focus input =====
+   iOS tự zoom bất kỳ input nào có font-size < 16px -> vỡ layout.
+   Đặt 16px cho input trên mobile (cascade sau nên thắng rule 13px ở trên). */
+@media (max-width: 1024px) {
+  .chat-input,
+  .modal-input,
+  .auth-input,
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  textarea {
+    font-size: 16px;
+  }
+}

@@ -12,6 +12,9 @@ const config = {
   pixelArt: true,
   roundPixels: true,
   backgroundColor: '#070a12',
+  // Phase 0: cap DPR ở 2 để tránh GPU quá tải trên điện thoại màn hình DPR=3
+  // (canvas 2400x1800 cho game logic 800x600). Desktop vẫn nét, mobile nhẹ hơn rõ rệt.
+  resolution: Math.min(window.devicePixelRatio || 1, 2),
   render: {
     antialias: false,
     roundPixels: true,

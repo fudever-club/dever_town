@@ -35,7 +35,7 @@ export const GAME_CONFIG = {
       // 4. Môi trường Vercel hoặc static host không có socket server chuyên biệt -> Standalone Campus Mode
       return null;
     })(),
-    TICK_RATE: 30, // 30 FPS network throttling
-    TICK_INTERVAL_MS: 1000 / 30
+    TICK_RATE: 20, // Phase 0: khớp server cap 20 gói/s — gửi 30/s chỉ làm server drop thừa ~1/3 gói
+    TICK_INTERVAL_MS: 1000 / 20
   }
 };

@@ -437,6 +437,12 @@ export class WorldScene extends Phaser.Scene {
     for (const remote of this.remotePlayers.values()) {
       remote.destroy();
     }
+    // Phase 0: đổi phòng phải dọn texture avatar động của remote (chặn leak GPU).
+    // Chỉ dọn key của remote (char_<socketId> + bản versioned), KHÔNG đụng
+    // texture preload (char_hoodie_dever...), NPC (char_npc_*) hay local player.
+    for (const socketId of this.remotePlayers.keys()) {
+      this._cleanupRemoteAvatarTexture(socketId);
+    }
     this.remotePlayers.clear();
 
     this.obstacleGroup = this.physics.add.staticGroup();
@@ -1300,6 +1306,36 @@ export class WorldScene extends Phaser.Scene {
     if (remote) {
       remote.destroy();
       this.remotePlayers.delete(socketId);
+    }
+    // Phase 0: chặn leak GPU — texture avatar riêng của remote không bao giờ
+    // được xóa trước đây, người ra/vào liên tục làm memory tăng vô hạn.
+    this._cleanupRemoteAvatarTexture(socketId);
+  }
+
+  /**
+   * Xóa texture avatar động của một remote player (logical key + bản versioned
+   * trong TextureGenerator._keyRegistry). An toàn: không đụng texture preload,
+   * NPC hay của local player.
+   */
+  _cleanupRemoteAvatarTexture(socketId) {
+    if (!socketId) return;
+    const logicalKey = `char_${socketId}`;
+    try {
+      const actualKey = (typeof TextureGenerator.getActualKey === 'function')
+        ? TextureGenerator.getActualKey(logicalKey)
+        : logicalKey;
+      if (actualKey && actualKey !== logicalKey && this.textures.exists(actualKey)) {
+        this.textures.remove(actualKey);
+      }
+      if (this.textures.exists(logicalKey)) {
+        this.textures.remove(logicalKey);
+      }
+      if (TextureGenerator._keyRegistry) {
+        delete TextureGenerator._keyRegistry[logicalKey];
+      }
+    } catch (e) {
+      // Dọn texture không được phép làm crash game — log nhẹ và bỏ qua.
+      console.warn('[WorldScene] Không dọn được avatar texture:', logicalKey, e?.message);
     }
   }
 

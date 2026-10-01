@@ -148,8 +148,15 @@ export class TouchControls {
         e.preventDefault();
         e.stopPropagation();
         btnChat.classList.add('active');
-        if (this.scene && this.scene.chatBox) {
-          this.scene.chatBox.toggleMobileChat();
+        if (this.scene && this.scene.chatBox && typeof this.scene.chatBox.openMobileChat === 'function') {
+          // Phase 0 fix: toggleMobileChat() không tồn tại — dùng open/close theo trạng thái mobile-open.
+          const wrapper = document.getElementById('chat-wrapper');
+          const isOpen = wrapper ? wrapper.classList.contains('mobile-open') : false;
+          if (isOpen) {
+            this.scene.chatBox.closeMobileChat();
+          } else {
+            this.scene.chatBox.openMobileChat();
+          }
         } else {
           const chatWrapper = document.getElementById('chat-wrapper');
           if (chatWrapper) {
