@@ -36,7 +36,9 @@ export const TRANSLATIONS = {
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Ký Túc Xá',
       classroom: 'Lớp Học',
-      pc_room: 'Phòng PC Cyber'
+      pc_room: 'Phòng PC Cyber',
+      meeting_room: 'Phòng Họp CLB',
+      code_lab: 'Lab Code'
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -52,7 +54,9 @@ export const TRANSLATIONS = {
       game_arcade: 'Sang Arcade & Robot',
       dorm_room: 'Sang Ký Túc Xá',
       classroom: 'Sang Lớp Học',
-      pc_room: 'Sang Phòng PC Cyber'
+      pc_room: 'Sang Phòng PC Cyber',
+      meeting_room: 'Sang Phòng Họp CLB',
+      code_lab: 'Sang Lab Code'
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -244,7 +248,9 @@ export const TRANSLATIONS = {
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Dormitory',
       classroom: 'Classroom',
-      pc_room: 'PC Cyber Room'
+      pc_room: 'PC Cyber Room',
+      meeting_room: 'Club Meeting Room',
+      code_lab: 'Code Lab'
     },
 
     // Portals (Ground portals)
@@ -260,7 +266,9 @@ export const TRANSLATIONS = {
       game_arcade: 'To Arcade & Robot',
       dorm_room: 'To Dormitory',
       classroom: 'To Classroom',
-      pc_room: 'To PC Cyber Room'
+      pc_room: 'To PC Cyber Room',
+      meeting_room: 'To Club Meeting Room',
+      code_lab: 'To Code Lab'
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)

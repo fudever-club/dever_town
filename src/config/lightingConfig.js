@@ -146,6 +146,22 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorAmbientColor: 0x101a33,
     allowWeather: false
   },
+  meeting_room: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.08,
+    indoorAmbientColor: 0x141821,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1e2433,
+    allowWeather: false
+  },
+  code_lab: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.18,
+    indoorAmbientColor: 0x0b1220,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x12203a,
+    allowWeather: false
+  },
   memory_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.25,

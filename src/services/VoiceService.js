@@ -1,7 +1,12 @@
+import { SPATIAL_VOICE_CONFIG, computeSpatialVolume } from '../config/audioZones.js';
+
 /**
  * DEVER TOWN - Voice & Video Service (Discord-Style WebRTC P2P Mesh)
  * Kết nối âm thanh & hình ảnh trực tiếp không độ trễ giữa người chơi trong phòng.
  * Không phụ thuộc dịch vụ bên thứ ba (Jitsi/Zoom/8x8), hoạt động 100% tự nhiên.
+ *
+ * Phase 1b: Spatial voice — âm lượng remote theo khoảng cách + private areas
+ * (xem src/config/audioZones.js).
  */
 
 const RTC_CONFIG = {
@@ -36,6 +41,20 @@ export class VoiceService {
     this.checkVolumeInterval = null;
     this.isLocalSpeaking = false;
 
+    // Phase 1b: Spatial voice — provider vị trí do WorldScene cung cấp
+    // provider(): { local: {x, y, roomId} | null, remotes: Map<socketId, {x, y}> }
+    this.positionProvider = null;
+    this.spatialInterval = null;
+
+    // Phase 1d: Raise-hand / spotlight / moderation
+    this.handRaised = false;
+    this.spotlightedId = null;
+    this.voiceHostId = null;
+    this.onHandChanged = null;
+    this.onSpotlightChanged = null;
+    this.onModeration = null;
+    this.onHostChanged = null;
+
     // Callbacks
     this.onPeersUpdated = null;
     this.onTrackReceived = null;
@@ -46,6 +65,14 @@ export class VoiceService {
     this.socketListenersAttached = false;
     this.setupAutoPermissionListener();
   }
+
+  /**
+   * Phase 1d: Mình có phải host phòng voice không.
+   */
+  isVoiceHost() {
+    return !!(this.socket && this.voiceHostId && this.socket.id === this.voiceHostId);
+  }
+
 
   /**
    * Tự động theo dõi khi người dùng bật quyền Micro/Camera trên thanh địa chỉ URL
@@ -110,6 +137,11 @@ export class VoiceService {
     this.onSpeakingChanged = callbacks.onSpeakingChanged;
     this.onStatusChanged = callbacks.onStatusChanged;
     this.onMediaUpgraded = callbacks.onMediaUpgraded;
+    // Phase 1d
+    this.onHandChanged = callbacks.onHandChanged;
+    this.onSpotlightChanged = callbacks.onSpotlightChanged;
+    this.onModeration = callbacks.onModeration;
+    this.onHostChanged = callbacks.onHostChanged;
 
     if (!this.socket) return;
 
@@ -123,7 +155,7 @@ export class VoiceService {
     if (!this.socket) return;
 
     // 1. Nhận danh sách các thành viên đang có trong phòng
-    this.socket.on('voice:room_users', async ({ meetingId, users }) => {
+    this.socket.on('voice:room_users', async ({ meetingId, users, spotlightedId, hostId }) => {
       if (meetingId !== this.meetingId) return;
       console.log(`🎙️ [VoiceService] Nhận danh sách ${users.length} thành viên trong phòng.`);
 
@@ -132,6 +164,14 @@ export class VoiceService {
         // Mình là người mới gia nhập -> Đóng vai trò Initiator kết nối tới các peer hiện hữu
         await this.createPeerConnection(user.socketId, true);
       }
+
+      // Phase 1d: đồng bộ spotlight hiện tại cho người mới vào
+      this.spotlightedId = spotlightedId || null;
+      if (this.onSpotlightChanged) this.onSpotlightChanged(this.spotlightedId);
+
+      // Phase 1d: đồng bộ host
+      this.voiceHostId = hostId || null;
+      if (this.onHostChanged) this.onHostChanged(this.voiceHostId);
 
       if (this.onPeersUpdated) this.onPeersUpdated(Array.from(this.peers.values()));
       if (this.onStatusChanged) this.onStatusChanged('connected', this.peers.size + 1);
@@ -212,6 +252,86 @@ export class VoiceService {
 
       if (this.onPeersUpdated) this.onPeersUpdated(Array.from(this.peers.values()));
       if (this.onStatusChanged) this.onStatusChanged('connected', this.peers.size + 1);
+    });
+
+    // 6. Phase 1d: Giơ tay / hạ tay
+    this.socket.on('voice:hand_changed', ({ meetingId, socketId, raised }) => {
+      if (meetingId !== this.meetingId) return;
+      if (socketId === this.socket.id) {
+        this.handRaised = raised;
+      } else {
+        const peer = this.peers.get(socketId);
+        if (peer) peer.handRaised = raised;
+      }
+      if (this.onPeersUpdated) this.onPeersUpdated(Array.from(this.peers.values()));
+      if (this.onHandChanged) this.onHandChanged(socketId, raised);
+    });
+
+    // 7. Phase 1d: Spotlight thay đổi
+    this.socket.on('voice:spotlight_changed', ({ meetingId, spotlightedId }) => {
+      if (meetingId !== this.meetingId) return;
+      this.spotlightedId = spotlightedId || null;
+      if (this.onSpotlightChanged) this.onSpotlightChanged(this.spotlightedId);
+    });
+
+    // 8. Phase 1d: Host tắt mic của mình
+    this.socket.on('voice:force_mute', ({ meetingId }) => {
+      if (meetingId !== this.meetingId) return;
+      if (!this.micMuted) {
+        this.toggleMic().catch(() => {});
+      }
+      if (this.onModeration) this.onModeration('muted_by_host');
+    });
+
+    // 9. Phase 1d: Bị host mời ra khỏi phòng voice
+    this.socket.on('voice:kicked', ({ meetingId, reason }) => {
+      if (meetingId !== this.meetingId) return;
+      this.leave();
+      if (this.onModeration) this.onModeration('kicked', reason);
+    });
+
+    // 10. Phase 1d: Host phòng thay đổi
+    this.socket.on('voice:host_changed', ({ meetingId, hostId }) => {
+      if (meetingId !== this.meetingId) return;
+      this.voiceHostId = hostId || null;
+      if (this.onHostChanged) this.onHostChanged(this.voiceHostId);
+    });
+  }
+
+  /**
+   * Phase 1d: Giơ tay / hạ tay xin phát biểu.
+   */
+  raiseHand(raised) {
+    if (!this.isJoined || !this.socket) return;
+    this.handRaised = Boolean(raised);
+    this.socket.emit('voice:raise_hand', {
+      meetingId: this.meetingId,
+      raised: this.handRaised,
+    });
+    if (this.onHandChanged) this.onHandChanged(this.socket.id, this.handRaised);
+  }
+
+  /**
+   * Phase 1d: Host spotlight một người (hoặc null để bỏ).
+   */
+  setSpotlight(targetSocketId) {
+    if (!this.isJoined || !this.socket) return;
+    this.socket.emit('voice:spotlight', {
+      meetingId: this.meetingId,
+      targetSocketId: targetSocketId || null,
+    });
+  }
+
+  /**
+   * Phase 1d: Host moderation — 'mute' hoặc 'kick'.
+   */
+  moderatePeer(targetSocketId, action) {
+    if (!this.isJoined || !this.socket) return;
+    if (!['mute', 'kick'].includes(action)) return;
+    this.socket.emit('voice:moderate', {
+      meetingId: this.meetingId,
+      targetSocketId,
+      action,
     });
   }
 
@@ -417,6 +537,9 @@ export class VoiceService {
 
     this.isJoined = true;
     if (this.onStatusChanged) this.onStatusChanged('connected', this.peers.size + 1);
+
+    // Phase 1b: bật spatial voice nếu đã có position provider
+    this.startSpatialAudio();
 
     return {
       success: true,
@@ -739,10 +862,70 @@ export class VoiceService {
   /**
    * Rời kênh & Giải phóng 100% tài nguyên phần cứng (Micro, Camera, WebRTC)
    */
+  /**
+   * Phase 1b: Đăng ký nguồn vị trí người chơi (do WorldScene cung cấp).
+   * provider là hàm trả về { local: {x, y, roomId} | null, remotes: Map<socketId, {x, y}> }
+   */
+  setPositionProvider(provider) {
+    this.positionProvider = provider;
+    if (provider && this.isJoined) this.startSpatialAudio();
+  }
+
+  /**
+   * Phase 1b: Bắt đầu vòng cập nhật âm lượng theo khoảng cách.
+   */
+  startSpatialAudio() {
+    this.stopSpatialAudio();
+    if (!SPATIAL_VOICE_CONFIG.enabled || !this.positionProvider) return;
+    this.spatialInterval = setInterval(() => this.updateSpatialVolumes(), SPATIAL_VOICE_CONFIG.updateIntervalMs);
+    // Cập nhật ngay lần đầu để không chờ 1 chu kỳ
+    this.updateSpatialVolumes();
+  }
+
+  stopSpatialAudio() {
+    if (this.spatialInterval) {
+      clearInterval(this.spatialInterval);
+      this.spatialInterval = null;
+    }
+  }
+
+  /**
+   * Phase 1b: Tính và áp âm lượng cho từng remote peer dựa trên vị trí.
+   * Dùng HTMLAudioElement.volume (0..1) — đơn giản, không đụng tới analyser
+   * (analyser đọc trực tiếp từ stream nên speaking detection không bị ảnh hưởng).
+   */
+  updateSpatialVolumes() {
+    if (!this.positionProvider || !this.isJoined) return;
+    let snapshot = null;
+    try {
+      snapshot = this.positionProvider();
+    } catch (e) {
+      return;
+    }
+    if (!snapshot || !snapshot.local) {
+      // Không có vị trí local: giữ nguyên âm lượng hiện tại
+      return;
+    }
+    const { local, remotes } = snapshot;
+    this.remoteAudioElements.forEach((audioEl, socketId) => {
+      const remotePos = remotes ? remotes.get(socketId) : null;
+      let volume = 1;
+      if (remotePos) {
+        volume = computeSpatialVolume(local, remotePos, local.roomId);
+      }
+      // Làm mượt: không nhảy volume đột ngột quá 0.35 mỗi chu kỳ
+      const cur = audioEl.volume;
+      const next = Math.max(0, Math.min(1, volume));
+      audioEl.volume = cur + Math.max(-0.35, Math.min(0.35, next - cur));
+    });
+  }
+
   leave() {
     if (!this.isJoined) return;
 
     console.log(`🔇 [VoiceService] Rời phòng ${this.meetingId} và dọn dẹp tài nguyên.`);
+
+    this.stopSpatialAudio();
 
     if (this.checkVolumeInterval) {
       clearInterval(this.checkVolumeInterval);
@@ -793,6 +976,10 @@ export class VoiceService {
     this.videoMuted = true;
     this.isScreenSharing = false;
     this.isLocalSpeaking = false;
+    // Phase 1d: reset trạng thái giơ tay/spotlight/host
+    this.handRaised = false;
+    this.spotlightedId = null;
+    this.voiceHostId = null;
 
     if (this.onStatusChanged) this.onStatusChanged('idle', 0);
     if (this.onPeersUpdated) this.onPeersUpdated([]);
