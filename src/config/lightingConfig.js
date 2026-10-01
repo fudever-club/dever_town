@@ -186,13 +186,13 @@ export const LAMP_GLOW_CONFIG = {
     beamKey: 'dever_glow_beam',     // gradient dọc: sáng ở đầu đèn, mờ dần xuống đất + mềm 2 biên ngang
     size: 256
   },
-  // Vũng sáng trên mặt đất dưới chân cột đèn
+  // Vũng sáng trên mặt đất dưới chân cột đèn.
+  // Kiểu Stardew Valley: HÌNH TRÒN mềm mại, chỉ "sáng lên" nhẹ nhàng chứ không bóp oval.
   groundPool: {
-    radiusScaleX: 1.18, // nhân với light.radius -> nửa chiều rộng
-    radiusScaleY: 0.68,  // nhân với light.radius -> nửa chiều cao (phối cảnh 2.5D)
-    baseAlpha: 0.5,      // alpha = min(maxAlpha, baseAlpha * intensity + floor)
-    maxAlpha: 0.72,
-    alphaFloor: 0.06
+    radiusScale: 1.05,  // nhân với light.radius -> bán kính hình tròn
+    baseAlpha: 0.42,     // alpha = min(maxAlpha, baseAlpha * intensity + floor)
+    maxAlpha: 0.6,
+    alphaFloor: 0.05
   },
   // Hào quang ngay tại bóng đèn (điểm phát sáng mà mắt người nhận ra "đây là cái đèn")
   headHalo: {

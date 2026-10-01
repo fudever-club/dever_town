@@ -251,10 +251,9 @@ export class LightingManager {
       const flick = 1 + Math.sin(this.flickerTimer * 3.2 + light.x * 0.63 + light.y * 0.41) * (light.flicker ?? 0.02);
       const intensity = Math.max(0, light.intensity * lampGlowAlpha * flick);
 
-      // 1. Vũng sáng mặt đất: lớn, mềm, ADD xuyên qua lớp tối -> chi tiết map vẫn thấy
-      const poolW = light.radius * 2 * cfg.groundPool.radiusScaleX * flick;
-      const poolH = light.radius * 2 * cfg.groundPool.radiusScaleY * flick;
-      pool.setDisplaySize(poolW, poolH);
+      // 1. Vũng sáng mặt đất: HÌNH TRÒN mềm kiểu Stardew, ADD xuyên qua lớp tối
+      const poolD = light.radius * 2 * cfg.groundPool.radiusScale * flick;
+      pool.setDisplaySize(poolD, poolD);
       pool.setAlpha(Math.min(cfg.groundPool.maxAlpha, cfg.groundPool.baseAlpha * intensity + cfg.groundPool.alphaFloor));
       pool.setTint(tint);
 
