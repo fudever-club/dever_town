@@ -195,7 +195,7 @@ export function setupVoiceHandler(io, socket) {
     if (!targetMeeting || !voiceRooms.has(targetMeeting)) return;
     const host = getVoiceHost(targetMeeting);
     if (!host || host.socketId !== socket.id) {
-      socket.emit('quiz:error', { message: 'Chỉ host mới spotlight được.' });
+      socket.emit('voice:error', { message: 'Chỉ host mới spotlight được.' });
       return;
     }
     const roomPeers = voiceRooms.get(targetMeeting);
