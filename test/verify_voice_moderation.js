@@ -51,6 +51,9 @@ for (const ev of ['voice:raise_hand', 'voice:spotlight', 'voice:moderate']) {
 for (const ev of ['voice:hand_changed', 'voice:spotlight_changed', 'voice:force_mute', 'voice:kicked', 'voice:host_changed']) {
   ok(srvSrc.includes(`'${ev}'`), `server emit ${ev}`);
 }
+// Spotlight dùng voice:error riêng, không dùng nhầm quiz:error
+ok(srvSrc.includes(`'voice:error'`), 'server dùng voice:error cho spotlight');
+ok(!srvSrc.includes(`'quiz:error'`), 'voiceHandler không dùng nhầm quiz:error');
 ok(srvSrc.includes('getVoiceHost'), 'server có hàm xác định host');
 ok(srvSrc.includes('host.socketId !== socket.id'), 'spotlight/moderate kiểm tra quyền host');
 ok(srvSrc.includes('handRaised: false'), 'peerInfo khởi tạo handRaised');
@@ -63,6 +66,7 @@ for (const m of ['raiseHand(', 'setSpotlight(', 'moderatePeer(', 'isVoiceHost(']
 for (const ev of ['voice:hand_changed', 'voice:spotlight_changed', 'voice:force_mute', 'voice:kicked', 'voice:host_changed']) {
   ok(cliSrc.includes(`'${ev}'`), `client lắng nghe ${ev}`);
 }
+ok(cliSrc.includes(`'voice:error'`), 'client lắng nghe voice:error');
 ok(cliSrc.includes('onHandChanged = callbacks.onHandChanged'), 'init nhận onHandChanged');
 ok(cliSrc.includes('onSpotlightChanged = callbacks.onSpotlightChanged'), 'init nhận onSpotlightChanged');
 ok(cliSrc.includes('onModeration = callbacks.onModeration'), 'init nhận onModeration');

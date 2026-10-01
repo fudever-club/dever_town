@@ -71,6 +71,19 @@ const srvSrc = readFileSync('server/socket/quizHandler.js', 'utf8');
 for (const ev of ['quiz:create', 'quiz:join', 'quiz:start', 'quiz:answer', 'quiz:leave']) {
   ok(srvSrc.includes(`'${ev}'`), `server xử lý ${ev}`);
 }
+// Server gửi quiz:joined kèm quizId cho guest
+ok(srvSrc.includes(`'quiz:joined'`), 'server gửi quiz:joined cho guest');
+// Client nhận quiz:joined -> set quizId
+const engine2 = new QuizEngine({ socket: fakeSocket });
+engine2.join('quiz_xyz');
+ok(emitted.some(e => e.ev === 'quiz:join' && e.data.quizId === 'quiz_xyz'), 'join emit quiz:join kèm quizId');
+ok(engine2.quizId === null, 'trước khi server xác nhận, quizId vẫn null');
+fakeSocket.handlers['quiz:joined']({ quizId: 'quiz_xyz' });
+ok(engine2.quizId === 'quiz_xyz', 'sau quiz:joined -> engine.quizId được gán');
+ok(engine2.state === 'lobby', 'sau quiz:joined -> LOBBY');
+// leave() khi đã có quizId thì emit quiz:leave
+engine2.leave();
+ok(emitted.some(e => e.ev === 'quiz:leave'), 'leave emit quiz:leave khi có quizId');
 const handlerSrc = readFileSync('server/socket/socketHandler.js', 'utf8');
 ok(handlerSrc.includes('setupQuizHandler'), 'socketHandler đăng ký setupQuizHandler');
 
