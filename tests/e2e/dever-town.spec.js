@@ -57,6 +57,12 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await page.locator('#gate-guest-name').fill('HotKeyTester');
     await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
+    // Đợi game khởi tạo xong (WorldScene tạo InventoryModal + đăng ký phím tắt)
+    await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 15000 });
+    await page.waitForFunction(
+      () => !!window.__DEVER_GAME__?.scene?.keys?.WorldScene?.inventoryModal,
+      null, { timeout: 15000 }
+    );
 
     // 1. Kiểm tra mở Túi đồ qua phím 'I'
     await page.keyboard.press('KeyI');

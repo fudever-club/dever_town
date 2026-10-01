@@ -2385,4 +2385,310 @@ export class TextureGenerator {
       drawArm(ctx, 24, 21);
     });
   }
+
+  /**
+   * Ve hang loat icon 16x16 tu drawers -> texture '<prefix>_<id>'.
+   */
+  static _paintIcons(scene, prefix, drawers) {
+    const R = (ctx, x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+    for (const [id, draw] of Object.entries(drawers)) {
+      const key = `${prefix}_${id}`;
+      if (scene.textures.exists(key)) scene.textures.remove(key);
+      const canvas = document.createElement('canvas');
+      canvas.width = 16; canvas.height = 16;
+      draw(canvas.getContext('2d'), R);
+      scene.textures.addCanvas(key, canvas);
+    }
+  }
+
+  static _iconURLCache = new Map();
+  /**
+   * Lay dataURL cua icon '<prefix>_<id>' cho DOM <img>. Null neu chua sinh.
+   */
+  static _getIconURL(scene, prefix, id) {
+    if (!scene || !id) return null;
+    const cacheKey = `${prefix}_${id}`;
+    const cached = TextureGenerator._iconURLCache.get(cacheKey);
+    if (cached) return cached;
+    if (!scene.textures.exists(cacheKey)) return null;
+    try {
+      const url = scene.textures.get(cacheKey).getSourceImage().toDataURL();
+      TextureGenerator._iconURLCache.set(cacheKey, url);
+      return url;
+    } catch (e) { return null; }
+  }
+
+  /**
+   * Sinh pixel icons 16x16 cho items (dung trong InventoryModal thay emoji tho).
+   * Key: 'itemicon_<itemId>'. Palette nhat quan voi in-hand equipment.
+   */
+  static generateItemIcons(scene) {
+    const R = (ctx, x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+
+    const drawers = {
+      // Laptop mo: man hinh phat sang + dong code
+      macbook_dev(ctx) {
+        R(ctx, 3, 2, 10, 8, '#1e293b');
+        R(ctx, 4, 3, 8, 2, '#7dd3fc');
+        R(ctx, 4, 5, 8, 2, '#38bdf8');
+        R(ctx, 4, 7, 8, 2, '#0284c7');
+        R(ctx, 5, 4, 3, 1, '#e0f2fe');
+        R(ctx, 6, 6, 4, 1, '#bae6fd');
+        R(ctx, 2, 10, 12, 1, '#e2e8f0');
+        R(ctx, 2, 11, 12, 1, '#94a3b8');
+      },
+      // Ban phim co tim
+      keychron_kb(ctx) {
+        R(ctx, 2, 5, 12, 6, '#1e293b');
+        for (let r = 0; r < 2; r++)
+          for (let c = 0; c < 4; c++)
+            R(ctx, 2 + c * 3, 6 + r * 2, 2, 2, r === 0 ? '#c084fc' : '#a855f7');
+        R(ctx, 5, 10, 6, 1, '#7c3aed');
+        R(ctx, 2, 11, 12, 1, '#4c1d95');
+      },
+      // Chuot gaming xanh
+      gaming_mouse(ctx) {
+        R(ctx, 5, 2, 6, 1, '#6ee7b7');
+        R(ctx, 4, 3, 8, 4, '#10b981');
+        R(ctx, 4, 7, 8, 4, '#0d9488');
+        R(ctx, 4, 11, 8, 1, '#047857');
+        R(ctx, 11, 3, 1, 8, '#065f46');
+        R(ctx, 7, 3, 2, 3, '#065f46');
+        R(ctx, 7, 2, 1, 1, '#047857');
+      },
+      // Coc vang kawaii
+      golden_frog_plush(ctx) {
+        R(ctx, 3, 4, 10, 8, '#eab308');
+        R(ctx, 3, 4, 10, 1, '#fde047');
+        R(ctx, 3, 11, 10, 1, '#a16207');
+        R(ctx, 3, 4, 1, 8, '#ca8a04');
+        R(ctx, 12, 4, 1, 8, '#a16207');
+        R(ctx, 4, 2, 3, 3, '#ffffff');
+        R(ctx, 9, 2, 3, 3, '#ffffff');
+        R(ctx, 5, 3, 1, 2, '#0f172a');
+        R(ctx, 10, 3, 1, 2, '#0f172a');
+        R(ctx, 3, 9, 10, 2, '#dc2626');
+        R(ctx, 3, 7, 1, 1, '#f9a8d4');
+        R(ctx, 12, 7, 1, 1, '#f9a8d4');
+      },
+      // Moc khoa the SV
+      fptu_keychain(ctx) {
+        R(ctx, 7, 1, 2, 5, '#f26f21');
+        R(ctx, 8, 1, 1, 5, '#c2410c');
+        R(ctx, 4, 6, 8, 9, '#f8fafc');
+        R(ctx, 4, 6, 8, 3, '#f26f21');
+        R(ctx, 5, 10, 3, 3, '#94a3b8');
+        R(ctx, 9, 10, 2, 1, '#cbd5e1');
+        R(ctx, 9, 12, 2, 1, '#e2e8f0');
+        R(ctx, 4, 14, 8, 1, '#7c2d12');
+        R(ctx, 11, 6, 1, 9, '#7c2d12');
+      },
+      // Thermos cam
+      thermos_coffee(ctx) {
+        R(ctx, 4, 1, 8, 3, '#1e293b');
+        R(ctx, 4, 1, 8, 1, '#475569');
+        R(ctx, 5, 4, 1, 10, '#fcd34d');
+        R(ctx, 6, 4, 4, 10, '#f59e0b');
+        R(ctx, 10, 4, 1, 10, '#b45309');
+        R(ctx, 5, 8, 6, 2, '#1e293b');
+        R(ctx, 5, 13, 6, 1, '#b45309');
+      },
+      // Ca phe muoi Da Nang
+      danang_salt_coffee(ctx) {
+        R(ctx, 10, 1, 2, 4, '#0284c7');
+        R(ctx, 10, 1, 1, 4, '#0369a1');
+        R(ctx, 3, 4, 10, 3, '#fff7ed');
+        R(ctx, 4, 3, 8, 1, '#ffffff');
+        R(ctx, 4, 7, 1, 7, '#a16207');
+        R(ctx, 5, 7, 6, 7, '#78350f');
+        R(ctx, 11, 7, 1, 7, '#451a03');
+        R(ctx, 6, 9, 2, 2, '#fcd34d');
+      },
+      // Banh mi cha canteen
+      fuda_banh_mi(ctx) {
+        R(ctx, 3, 6, 10, 4, '#fbbf24');
+        R(ctx, 3, 6, 10, 1, '#fde68a');
+        R(ctx, 3, 9, 10, 1, '#b45309');
+        R(ctx, 2, 7, 1, 2, '#f59e0b');
+        R(ctx, 13, 7, 1, 2, '#b45309');
+        R(ctx, 5, 7, 2, 1, '#16a34a');
+        R(ctx, 8, 7, 2, 1, '#dc2626');
+        R(ctx, 11, 7, 1, 1, '#f8fafc');
+      },
+      // Cup vo dich hackathon
+      hackathon_trophy(ctx) {
+        R(ctx, 5, 2, 6, 1, '#fde047');
+        R(ctx, 6, 3, 4, 4, '#eab308');
+        R(ctx, 6, 3, 1, 4, '#fde047');
+        R(ctx, 9, 3, 1, 4, '#a16207');
+        R(ctx, 4, 3, 2, 1, '#eab308');
+        R(ctx, 10, 3, 2, 1, '#eab308');
+        R(ctx, 4, 4, 1, 2, '#ca8a04');
+        R(ctx, 11, 4, 1, 2, '#ca8a04');
+        R(ctx, 7, 7, 2, 3, '#a16207');
+        R(ctx, 5, 10, 6, 1, '#ca8a04');
+        R(ctx, 4, 11, 8, 2, '#eab308');
+      },
+      // Bong da
+      football_ball(ctx) {
+        R(ctx, 4, 3, 8, 10, '#f8fafc');
+        R(ctx, 6, 2, 4, 1, '#e2e8f0');
+        R(ctx, 6, 13, 4, 1, '#cbd5e1');
+        R(ctx, 3, 4, 1, 8, '#e2e8f0');
+        R(ctx, 12, 4, 1, 8, '#cbd5e1');
+        R(ctx, 7, 6, 2, 2, '#1e293b');
+        R(ctx, 5, 9, 1, 1, '#1e293b');
+        R(ctx, 10, 9, 1, 1, '#1e293b');
+        R(ctx, 7, 11, 2, 1, '#1e293b');
+      },
+      // Bong ro
+      basketball_ball(ctx) {
+        R(ctx, 4, 3, 8, 10, '#f97316');
+        R(ctx, 6, 2, 4, 1, '#fdba74');
+        R(ctx, 6, 13, 4, 1, '#c2410c');
+        R(ctx, 3, 4, 1, 8, '#fdba74');
+        R(ctx, 12, 4, 1, 8, '#c2410c');
+        R(ctx, 7, 3, 1, 10, '#7c2d12');
+        R(ctx, 4, 7, 8, 1, '#7c2d12');
+        R(ctx, 5, 4, 3, 2, '#7c2d12');
+        R(ctx, 8, 10, 3, 2, '#7c2d12');
+      },
+      // Co hieu CLB
+      dever_flag(ctx) {
+        R(ctx, 3, 2, 1, 12, '#94a3b8');
+        R(ctx, 4, 3, 8, 5, '#1e40af');
+        R(ctx, 4, 3, 8, 1, '#3b82f6');
+        R(ctx, 4, 7, 8, 1, '#f26f21');
+        R(ctx, 6, 4, 2, 2, '#fbbf24');
+      }
+    };
+
+    TextureGenerator._paintIcons(scene, 'itemicon', drawers);
+  }
+
+  /**
+   * Lay dataURL cua item icon cho DOM <img>. Tra ve null neu texture chua sinh.
+   */
+  static getItemIconURL(scene, itemId) {
+    return TextureGenerator._getIconURL(scene, 'itemicon', itemId);
+  }
+
+  /**
+   * Lay dataURL cua badge icon cho DOM <img>. Tra ve null neu texture chua sinh.
+   */
+  static getBadgeIconURL(scene, achievementId) {
+    return TextureGenerator._getIconURL(scene, 'badge', achievementId);
+  }
+
+  /**
+   * Sinh pixel badge icons 16x16 cho achievements (dung trong banner/toast thay emoji).
+   * Key: 'badge_<achievementId>'.
+   */
+  static generateBadgeIcons(scene) {
+    const drawers = {
+      // Sao vang: buoc chan dau tien
+      first_arrival(ctx, R) {
+        R(ctx, 7, 1, 2, 2, '#fef08a');
+        R(ctx, 5, 3, 6, 2, '#facc15');
+        R(ctx, 3, 5, 10, 2, '#facc15');
+        R(ctx, 6, 7, 4, 2, '#eab308');
+        R(ctx, 5, 9, 2, 2, '#eab308');
+        R(ctx, 9, 9, 2, 2, '#eab308');
+        R(ctx, 5, 11, 2, 1, '#a16207');
+        R(ctx, 9, 11, 2, 1, '#a16207');
+      },
+      // Tia set: toc do code
+      speed_coder(ctx, R) {
+        R(ctx, 9, 1, 3, 4, '#fde047');
+        R(ctx, 7, 4, 5, 3, '#facc15');
+        R(ctx, 8, 7, 4, 3, '#facc15');
+        R(ctx, 6, 10, 3, 4, '#eab308');
+        R(ctx, 9, 1, 1, 4, '#fef9c3');
+        R(ctx, 7, 4, 1, 3, '#fef9c3');
+      },
+      // Ly ca phe muoi
+      coffee_salt(ctx, R) {
+        R(ctx, 4, 4, 8, 3, '#fff7ed');
+        R(ctx, 5, 3, 6, 1, '#ffffff');
+        R(ctx, 5, 7, 1, 6, '#a16207');
+        R(ctx, 6, 7, 4, 6, '#78350f');
+        R(ctx, 10, 7, 1, 6, '#451a03');
+        R(ctx, 7, 8, 2, 2, '#fcd34d');
+      },
+      // Coc vang may man
+      golden_frog(ctx, R) {
+        R(ctx, 3, 5, 10, 7, '#eab308');
+        R(ctx, 3, 5, 10, 1, '#fde047');
+        R(ctx, 3, 11, 10, 1, '#a16207');
+        R(ctx, 4, 3, 3, 3, '#ffffff');
+        R(ctx, 9, 3, 3, 3, '#ffffff');
+        R(ctx, 5, 4, 1, 2, '#0f172a');
+        R(ctx, 10, 4, 1, 2, '#0f172a');
+        R(ctx, 3, 9, 10, 2, '#dc2626');
+      },
+      // Bong da: vua pha luoi
+      striker(ctx, R) {
+        R(ctx, 4, 3, 8, 10, '#f8fafc');
+        R(ctx, 6, 2, 4, 1, '#e2e8f0');
+        R(ctx, 6, 13, 4, 1, '#cbd5e1');
+        R(ctx, 3, 4, 1, 8, '#e2e8f0');
+        R(ctx, 12, 4, 1, 8, '#cbd5e1');
+        R(ctx, 7, 7, 2, 2, '#1e293b');
+        R(ctx, 7, 4, 2, 1, '#1e293b');
+        R(ctx, 7, 11, 2, 1, '#1e293b');
+        R(ctx, 4, 7, 1, 2, '#1e293b');
+        R(ctx, 11, 7, 1, 2, '#1e293b');
+      },
+      // Ba lo cong nghe
+      tech_pro(ctx, R) {
+        R(ctx, 4, 2, 2, 5, '#7c2d12');
+        R(ctx, 10, 2, 2, 5, '#7c2d12');
+        R(ctx, 5, 4, 6, 8, '#f26f21');
+        R(ctx, 5, 4, 6, 1, '#fdba74');
+        R(ctx, 5, 11, 6, 1, '#7c2d12');
+        R(ctx, 6, 7, 4, 3, '#c2410c');
+        R(ctx, 6, 7, 4, 1, '#fdba74');
+      },
+      // Not nhac: vu cong san khau
+      stage_dancer(ctx, R) {
+        R(ctx, 3, 10, 4, 3, '#e2e8f0');
+        R(ctx, 3, 10, 4, 1, '#f8fafc');
+        R(ctx, 10, 2, 2, 9, '#e2e8f0');
+        R(ctx, 10, 2, 5, 2, '#f8fafc');
+        R(ctx, 10, 4, 5, 1, '#cbd5e1');
+        R(ctx, 12, 5, 2, 2, '#cbd5e1');
+      },
+      // Giang duong: hoc gia campus
+      campus_scholar(ctx, R) {
+        R(ctx, 3, 4, 10, 2, '#475569');
+        R(ctx, 2, 6, 12, 1, '#64748b');
+        R(ctx, 4, 7, 8, 6, '#94a3b8');
+        R(ctx, 5, 8, 1, 3, '#475569');
+        R(ctx, 7, 8, 2, 5, '#1e293b');
+        R(ctx, 10, 8, 1, 3, '#475569');
+        R(ctx, 4, 13, 8, 1, '#475569');
+      },
+      // Ngon lua: chuoi bestie
+      bestie_streak_3(ctx, R) {
+        R(ctx, 7, 2, 2, 4, '#f97316');
+        R(ctx, 5, 6, 6, 7, '#f97316');
+        R(ctx, 5, 6, 2, 7, '#fdba74');
+        R(ctx, 9, 6, 2, 7, '#c2410c');
+        R(ctx, 6, 8, 4, 4, '#fbbf24');
+        R(ctx, 7, 10, 2, 2, '#fef3c7');
+      },
+      // Hai nguoi ban metaverse
+      metaverse_friends_3(ctx, R) {
+        R(ctx, 3, 2, 4, 4, '#fcd34d');
+        R(ctx, 9, 2, 4, 4, '#fca5a5');
+        R(ctx, 2, 7, 6, 6, '#38bdf8');
+        R(ctx, 8, 7, 6, 6, '#f472b6');
+        R(ctx, 2, 7, 6, 1, '#7dd3fc');
+        R(ctx, 8, 7, 6, 1, '#f9a8d4');
+        R(ctx, 2, 12, 6, 1, '#0369a1');
+        R(ctx, 8, 12, 6, 1, '#be185d');
+      }
+    };
+    TextureGenerator._paintIcons(scene, 'badge', drawers);
+  }
 }

@@ -1,16 +1,30 @@
 import { ITEMS_DATABASE } from '../../config/items.js';
+import { TextureGenerator } from '../../utils/TextureGenerator.js';
 
 export class InventoryModal {
   /**
    * @param {Object} options
    * @param {Object} options.inventoryManager
+   * @param {Object} options.scene - Phaser scene (để lấy pixel item icons)
    */
-  constructor({ inventoryManager } = {}) {
+  constructor({ inventoryManager, scene } = {}) {
     this.inventoryManager = inventoryManager;
+    this.scene = scene || null;
     this.modalEl = document.getElementById('inventory-modal');
     this.selectedItemId = null;
 
     this.initEvents();
+  }
+
+  /** Icon hiển thị: pixel icon 16x16 nếu có, fallback emoji. */
+  getItemIconHTML(item) {
+    const url = this.scene
+      ? TextureGenerator.getItemIconURL(this.scene, item.id)
+      : null;
+    if (url) {
+      return `<img class="item-icon-img" src="${url}" alt="${item.name}" width="40" height="40" style="image-rendering: pixelated;" />`;
+    }
+    return `<span class="item-icon">${item.icon}</span>`;
   }
 
   initEvents() {
@@ -116,7 +130,7 @@ export class InventoryModal {
 
       card.innerHTML = `
         <div class="item-icon-wrapper" style="background: ${count > 0 ? 'rgba(15, 23, 42, 0.8)' : 'rgba(0, 0, 0, 0.4)'}">
-          <span class="item-icon">${item.icon}</span>
+          <span class="item-icon-img-wrapper">${this.getItemIconHTML(item)}</span>
           ${count > 1 ? `<span class="item-count">${count}</span>` : ''}
           ${isEquipped ? `<span class="equipped-badge">Đang Cầm</span>` : ''}
         </div>
@@ -159,7 +173,7 @@ export class InventoryModal {
     }
     if (descEl) descEl.textContent = item.desc;
     if (countEl) countEl.textContent = `Số lượng sở hữu: ${count}`;
-    if (iconBigEl) iconBigEl.textContent = item.icon;
+    if (iconBigEl) iconBigEl.innerHTML = this.getItemIconHTML(item);
 
     if (equipBtn) {
       if (count === 0) {

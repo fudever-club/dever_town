@@ -70,6 +70,8 @@ export class BootScene extends Phaser.Scene {
   create() {
     // Overlay cánh tay cho emote body-animation (wave / power / dance)
     TextureGenerator.generateEmoteOverlays(this);
+    TextureGenerator.generateItemIcons(this);
+    TextureGenerator.generateBadgeIcons(this);
 
     // Đăng ký chuỗi hoạt ảnh (animations) cho toàn bộ spritesheet Gather.town mới
     const newAvatars = [

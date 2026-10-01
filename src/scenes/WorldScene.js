@@ -769,7 +769,8 @@ export class WorldScene extends Phaser.Scene {
 
     // 3. Inventory Modal
     this.inventoryModal = new InventoryModal({
-      inventoryManager: this.inventoryManager
+      inventoryManager: this.inventoryManager,
+      scene: this
     });
 
     // 4. Wardrobe Modal

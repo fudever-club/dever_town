@@ -2289,6 +2289,12 @@ body {
   font-size: 24px;
 }
 
+.item-icon-img {
+  image-rendering: pixelated;
+  width: 36px;
+  height: 36px;
+}
+
 .item-count {
   position: absolute;
   bottom: -4px;
@@ -2357,6 +2363,11 @@ body {
 .item-icon-huge {
   font-size: 48px;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+#inv-detail-icon-big .item-icon-img {
+  width: 72px;
+  height: 72px;
 }
 
 .item-detail-body {
@@ -6711,6 +6722,23 @@ body {
   gap: 10px;
 }
 
+/* Mobile: 8 emotes xuống 2 hàng, căn giữa màn hình */
+@media (max-width: 640px) {
+  .emote-bar-container {
+    left: 50%;
+    bottom: 110px;
+    max-width: 94vw;
+  }
+  .emote-list {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 300px;
+  }
+  .emote-item-btn {
+    padding: 6px 8px;
+  }
+}
+
 .emote-item-btn {
   display: flex;
   flex-direction: column;
@@ -8150,6 +8178,10 @@ body {
   border: 1px solid rgba(251, 191, 36, 0.35);
   border-radius: 12px;
   flex-shrink: 0;
+}
+
+.achievement-toast-icon img {
+  image-rendering: pixelated;
 }
 
 .achievement-toast-content {

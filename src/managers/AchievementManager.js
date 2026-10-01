@@ -1,5 +1,6 @@
 import { audioManager } from '../utils/AudioManager.js';
 import { questManager } from './QuestManager.js';
+import { TextureGenerator } from '../utils/TextureGenerator.js';
 
 export const ACHIEVEMENTS_DEFINITIONS = {
   first_arrival: {
@@ -162,7 +163,7 @@ export class AchievementManager {
     this.awardPoints(ach.rewardPoints);
 
     // Hiển thị Golden Banner Toast
-    this.showBanner(ach);
+    this.showBanner(achievementId, ach);
 
     return true;
   }
@@ -174,13 +175,17 @@ export class AchievementManager {
     }
   }
 
-  showBanner(ach) {
+  showBanner(achievementId, ach) {
     if (!this.container) return;
 
     const banner = document.createElement('div');
     banner.className = 'achievement-toast-banner';
+    const badgeURL = TextureGenerator.getBadgeIconURL(this.scene, achievementId);
+    const iconHTML = badgeURL
+      ? `<img src="${badgeURL}" alt="${ach.title}" width="40" height="40" style="image-rendering: pixelated;" />`
+      : ach.icon;
     banner.innerHTML = `
-      <div class="achievement-toast-icon">${ach.icon}</div>
+      <div class="achievement-toast-icon">${iconHTML}</div>
       <div class="achievement-toast-content">
         <span class="achievement-toast-tag">DANH HIỆU MỚI MỞ KHÓA</span>
         <h4 class="achievement-toast-title">${ach.title}</h4>
