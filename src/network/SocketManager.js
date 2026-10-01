@@ -385,7 +385,6 @@ export class SocketManager {
     const optLib = document.getElementById('opt-library_lounge');
     const optMem = document.getElementById('opt-memory_room');
     const optWeb = document.getElementById('opt-web_room');
-    const optMedia = document.getElementById('opt-media_hub');
     const optSports = document.getElementById('opt-sports_complex');
     const optCafe = document.getElementById('opt-canteen_cafe');
 
@@ -394,7 +393,6 @@ export class SocketManager {
     if (optLib) optLib.textContent = `Thư Viện FUDA (${counts.library_lounge || 0})`;
     if (optMem) optMem.textContent = `Phòng Kỷ Niệm (${counts.memory_room || 0})`;
     if (optWeb) optWeb.textContent = `Không Gian Web (${counts.web_room || 0})`;
-    if (optMedia) optMedia.textContent = `Media & MXH (${counts.media_hub || 0})`;
     if (optSports) optSports.textContent = `Khu Thể Thao (${counts.sports_complex || 0})`;
     if (optCafe) optCafe.textContent = `Căn Tin & Cafe (${counts.canteen_cafe || 0})`;
   }

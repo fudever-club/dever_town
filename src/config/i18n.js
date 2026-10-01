@@ -29,14 +29,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Tech Lab',
       library_lounge: 'Thư Viện FUDA',
       memory_room: 'Phòng Kỷ Niệm',
-      web_room: 'Không Gian Web',
-      media_hub: 'Media & MXH',
+      web_room: 'Web & Media Hub',
       sports_complex: 'Khu Thể Thao',
       canteen_cafe: 'Căn Tin & Cafe',
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Ký Túc Xá',
-      classroom: 'Lớp Học',
-      meeting_room: 'Phòng Họp CLB',
+      meeting_room: 'Phòng Họp & Lớp Học',
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -45,14 +43,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Sang Tech Lab',
       library_lounge: 'Sang Thư Viện',
       memory_room: 'Sang Phòng Kỷ Niệm',
-      web_room: 'Sang Không Gian Web',
-      media_hub: 'Sang Media Hub',
+      web_room: 'Sang Web & Media Hub',
       sports_complex: 'Sang Khu Thể Thao',
       canteen_cafe: 'Sang Căn Tin & Cafe',
       game_arcade: 'Sang Arcade & Robot',
       dorm_room: 'Sang Ký Túc Xá',
-      classroom: 'Sang Lớp Học',
-      meeting_room: 'Sang Phòng Họp CLB',
+      meeting_room: 'Sang Phòng Họp & Lớp Học',
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -237,14 +233,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Tech Lab',
       library_lounge: 'FUDA Library',
       memory_room: 'Memory Gallery',
-      web_room: 'Web Showroom',
-      media_hub: 'Media & Social',
+      web_room: 'Web & Media Hub',
       sports_complex: 'Sports Complex',
       canteen_cafe: 'Canteen & Cafe',
       game_arcade: 'Arcade & Robot',
       dorm_room: 'Dormitory',
-      classroom: 'Classroom',
-      meeting_room: 'Club Meeting Room',
+      meeting_room: 'Club Meeting & Class Room',
     },
 
     // Portals (Ground portals)
@@ -253,14 +247,12 @@ export const TRANSLATIONS = {
       dever_lab: 'To Tech Lab',
       library_lounge: 'To Library',
       memory_room: 'To Memory Gallery',
-      web_room: 'To Web Showroom',
-      media_hub: 'To Media Hub',
+      web_room: 'To Web & Media Hub',
       sports_complex: 'To Sports Complex',
       canteen_cafe: 'To Canteen & Cafe',
       game_arcade: 'To Arcade & Robot',
       dorm_room: 'To Dormitory',
-      classroom: 'To Classroom',
-      meeting_room: 'To Club Meeting Room',
+      meeting_room: 'To Club Meeting & Class Room',
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)
@@ -491,7 +483,6 @@ class I18nManager {
     if (roomSelect) {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
-        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade',
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);

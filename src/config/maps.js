@@ -42,13 +42,11 @@ export const MAPS_CONFIG = {
       { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
       { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
       { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
-      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
       { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
       { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
       { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
       { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-      { tileX: 18, tileY: 0, targetRoomId: 'classroom', targetSpawn: { x: 384, y: 400 }, label: 'Lớp Học' },
       { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
     ],
     zones: [
@@ -90,13 +88,11 @@ export const MAPS_CONFIG = {
           { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
           { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
           { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
-          { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
           { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
           { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
           { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
           { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-          { tileX: 18, tileY: 0, targetRoomId: 'classroom', targetSpawn: { x: 384, y: 400 }, label: 'Lớp Học' },
           { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
         ],
         zones: [
@@ -406,8 +402,8 @@ export const MAPS_CONFIG = {
 
   web_room: {
     id: 'web_room',
-    name: 'Không Gian Web & IT Helpdesk FPTU',
-    description: 'Không gian số nhúng Cổng thông tin, Landing Page chính thức và Bàn hỗ trợ IT Helpdesk trường.',
+    name: 'Web & Media Hub FU-DEVER',
+    description: 'Trung tâm số của CLB: cổng học vụ FPTU, IT helpdesk, landing page, mạng xã hội và kho dự án FU-DEVER.',
     spawnPoint: { x: 380, y: 280 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
@@ -479,6 +475,42 @@ export const MAPS_CONFIG = {
         }
       },
       {
+        id: 'zone_web_facebook',
+        type: 'club_website',
+        tileX: 11,
+        tileY: 3,
+        name: 'Trạm Fanpage Facebook FU-DEVER',
+        label: 'Xem Fanpage',
+        metadata: {
+          url: 'https://www.facebook.com/FPTUDever',
+          title: 'FANPAGE CHÍNH THỨC FU-DEVER'
+        }
+      },
+      {
+        id: 'zone_web_tiktok',
+        type: 'club_website',
+        tileX: 15,
+        tileY: 3,
+        name: 'Trạm TikTok & Media FUDA',
+        label: 'Kênh TikTok',
+        metadata: {
+          url: 'https://www.tiktok.com/@daihocfptdanang',
+          title: 'KÊNH TIKTOK FUDA'
+        }
+      },
+      {
+        id: 'zone_web_github',
+        type: 'club_website',
+        tileX: 22,
+        tileY: 3,
+        name: 'Trạm GitHub Organization FU-DEVER',
+        label: 'Kho GitHub',
+        metadata: {
+          url: 'https://github.com/fudever-club',
+          title: 'GITHUB ORGANIZATION FU-DEVER'
+        }
+      },
+      {
         id: 'zone_web_recruitment',
         type: 'club_website',
         tileX: 11,
@@ -488,95 +520,6 @@ export const MAPS_CONFIG = {
         metadata: {
           url: 'https://forms.gle/2us1yB5Qp2HYejj28',
           title: 'ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER'
-        }
-      }
-    ]
-  },
-
-  media_hub: {
-    id: 'media_hub',
-    name: 'Cổng Thông Tin Học Vụ & Media Hub',
-    description: 'Không gian tích hợp toàn bộ các cổng thông tin FAP, FLM, LMS, phần mềm thi và mạng xã hội CLB.',
-    spawnPoint: { x: 260, y: 220 },
-    layout: [
-      [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 19, 19, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 13, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 23, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
-    ],
-    portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 100, y: 420 }, label: 'Về Sảnh Chính' }
-    ],
-    zones: [
-      {
-        id: 'zone_media_portal',
-        type: 'fptu_student_portal',
-        tileX: 11,
-        tileY: 2,
-        name: 'Cổng Tiện Ích Học Vụ & Phần Mềm Thi',
-        label: 'Cổng FPTU & Thi'
-      },
-      {
-        id: 'zone_media_facebook',
-        type: 'club_website',
-        tileX: 3,
-        tileY: 2,
-        name: 'Trạm Fanpage Facebook FU-DEVER',
-        label: 'Xem Fanpage',
-        metadata: {
-          url: 'https://www.facebook.com/FPTUDever',
-          title: 'FANPAGE CHÍNH THỨC FU-DEVER'
-        }
-      },
-      {
-        id: 'zone_media_tiktok',
-        type: 'club_website',
-        tileX: 7,
-        tileY: 2,
-        name: 'Trạm TikTok & Media FUDA',
-        label: 'Kênh TikTok',
-        metadata: {
-          url: 'https://www.tiktok.com/@daihocfptdanang',
-          title: 'KÊNH TIKTOK FUDA'
-        }
-      },
-      {
-        id: 'zone_media_github',
-        type: 'club_website',
-        tileX: 15,
-        tileY: 2,
-        name: 'Trạm GitHub Organization FU-DEVER',
-        label: 'Kho GitHub',
-        metadata: {
-          url: 'https://github.com/fudever-club',
-          title: 'GITHUB ORGANIZATION FU-DEVER'
-        }
-      },
-      {
-        id: 'zone_media_recruitment',
-        type: 'club_website',
-        tileX: 19,
-        tileY: 2,
-        name: 'Trạm Tuyển Quân Thành Viên FU-DEVER',
-        label: 'Đăng Ký Gia Nhập',
-        metadata: {
-          url: 'https://forms.gle/2us1yB5Qp2HYejj28',
-          title: 'ĐƠN TUYỂN QUÂN FU-DEVER'
         }
       }
     ]
@@ -855,46 +798,10 @@ export const MAPS_CONFIG = {
     ]
   },
 
-  classroom: {
-    id: 'classroom',
-    name: 'Lớp Học FUDA - Giảng Đường Alpha',
-    description: 'Giảng đường chuẩn FPTU: bảng đen, dãy bàn học sinh và bục giảng cho buổi workshop CLB.',
-    spawnPoint: { x: 400, y: 336 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1, 34, 34, 34,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
-    portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 592, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 592, y: 80 }, label: 'Về Sảnh Chính' }
-    ],
-    zones: [
-      { id: 'zone_class_board', type: 'whiteboard_slides', tileX: 12, tileY: 2, name: 'Bảng Đen Giảng Đường', label: 'Slide Bài Giảng' },
-      { id: 'zone_class_workshop', type: 'meeting_stage', tileX: 6, tileY: 4, name: 'Bục Giảng Workshop CLB', label: 'Workshop' }
-    ]
-  },
-
   meeting_room: {
     id: 'meeting_room',
-    name: 'Phòng Họp CLB FU-DEVER - Meeting Suite',
-    description: 'Phòng họp kiểu Gather.town: bàn hội nghị chữ U, màn chiếu projector, góc sofa cho buổi họp CLB trực tuyến.',
+    name: 'Phòng Họp & Lớp Học CLB FU-DEVER',
+    description: 'Không gian họp và dạy học kiểu Gather.town: bàn hội nghị chữ U, màn chiếu projector, bảng trắng cho buổi họp và lớp học CLB.',
     spawnPoint: { x: 400, y: 336 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],

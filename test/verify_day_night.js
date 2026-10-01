@@ -160,7 +160,7 @@ assert(STATIC_LIGHT_SOURCES.sports_complex.length >= 4, 'sports_complex có 4 đ
 assert(STATIC_LIGHT_SOURCES.canteen_cafe.length >= 5, 'canteen_cafe có đầy đủ quầy barista và đèn trần Edison');
 assert(STATIC_LIGHT_SOURCES.dever_lab.some(l => l.type === 'ceiling_light'), 'dever_lab có đèn trần huỳnh quang công nghệ');
 assert(STATIC_LIGHT_SOURCES.web_room && STATIC_LIGHT_SOURCES.web_room.length >= 3, 'web_room có cấu hình nguồn sáng tĩnh');
-assert(STATIC_LIGHT_SOURCES.media_hub && STATIC_LIGHT_SOURCES.media_hub.length >= 3, 'media_hub có cấu hình nguồn sáng tĩnh');
+assert(!STATIC_LIGHT_SOURCES.media_hub, 'media_hub đã gộp vào web_room, không còn nguồn sáng riêng');
 assert(STATIC_LIGHT_SOURCES.academic_hub && STATIC_LIGHT_SOURCES.academic_hub.length >= 3, 'academic_hub có cấu hình nguồn sáng tĩnh');
 assert(STATIC_LIGHT_SOURCES.hall_of_fame && STATIC_LIGHT_SOURCES.hall_of_fame.length >= 3, 'hall_of_fame có cấu hình nguồn sáng tĩnh');
 assert(STATIC_LIGHT_SOURCES.memory_room && STATIC_LIGHT_SOURCES.memory_room.length >= 3, 'memory_room có cấu hình nguồn sáng tĩnh');

@@ -130,14 +130,6 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorAmbientColor: 0x241a12,
     allowWeather: false
   },
-  classroom: {
-    isOutdoor: false,
-    indoorBaseDarkness: 0.10,
-    indoorAmbientColor: 0x0f172a,
-    nightIndoorLightsOn: true,
-    nightIndoorAmbientColor: 0x1e1b2e,
-    allowWeather: false
-  },
   meeting_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.08,
@@ -168,14 +160,6 @@ export const ROOM_LIGHT_PROPERTIES = {
     indoorAmbientColor: 0x0a101f,
     nightIndoorLightsOn: true,
     nightIndoorAmbientColor: 0x0e1b33,
-    allowWeather: false
-  },
-  media_hub: {
-    isOutdoor: false,
-    indoorBaseDarkness: 0.22,
-    indoorAmbientColor: 0x0c0e1a,
-    nightIndoorLightsOn: true,
-    nightIndoorAmbientColor: 0x13162b,
     allowWeather: false
   },
   academic_hub: {
@@ -243,7 +227,7 @@ export const LAMP_GLOW_CONFIG = {
     night:    { color: 0xffd9a0, blendToAmbient: 0.12 }, // đêm: hổ phách ấm dịu
     midnight: { color: 0xffd2a0, blendToAmbient: 0.15 }
   },
-  spriteDepth: 999991 // nằm trên lớp bóng tối (999990), dưới lớp bloom (999992)
+  spriteDepth: 999991 // nằm trên lightmap bóng tối (999990)
 };
 
 /**
@@ -342,13 +326,6 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 220, y: 280, radius: 95, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
     { x: 580, y: 280, radius: 95, color: 0x60a5fa, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
     { x: 400, y: 440, radius: 110, color: 0x93c5fd, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
-  ],
-  media_hub: [
-    // Media & Design Studio
-    { x: 400, y: 150, radius: 125, color: 0xa855f7, intensity: 0.95, type: 'neon', flicker: 0.04 },
-    { x: 240, y: 280, radius: 100, color: 0xc084fc, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 560, y: 280, radius: 100, color: 0xf472b6, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 400, y: 440, radius: 110, color: 0xe879f9, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ],
   academic_hub: [
     // Hub Học thuật & Đội tuyển ICPC

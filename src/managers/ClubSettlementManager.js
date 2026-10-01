@@ -71,7 +71,7 @@ export const TALENT_ROSTER_DEF = [
     role: 'Creative Artist',
     title: 'UI/UX & Pixel Concept Artist',
     avatarKey: 'char_aodai_pro',
-    affinities: ['fudever', 'itsc', 'media_hub'],
+    affinities: ['fudever', 'itsc', 'web_room'],
     desc: 'Nhà thiết kế giao diện tinh tế, thổi hồn vào các sản phẩm số.',
     baseYieldPerMin: 0.6
   },

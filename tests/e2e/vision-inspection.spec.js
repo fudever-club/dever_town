@@ -21,7 +21,7 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
       opts.map(o => ({ id: o.id, value: o.value, text: o.textContent.trim() }))
     );
 
-    expect(options.length).toBe(12);
+    expect(options.length).toBe(10); // 11 phòng - server_dungeon ẩn khỏi dropdown
     for (const opt of options) {
       // Nhãn ngắn gọn <= 28 ký tự, không bao giờ bị cắt dấu ba chấm
       expect(opt.text.length).toBeLessThanOrEqual(28);
@@ -34,7 +34,7 @@ test.describe('DEVER TOWN - Vision & Map Inspection Invariants Suite', () => {
     expect(arcadeOpt.text).toContain('Arcade & Robot');
 
     // 3 phòng mới từ commit 653e69a (Gather.town-style rooms)
-    for (const roomId of ['dorm_room', 'classroom']) {
+    for (const roomId of ['dorm_room']) {
       const opt = options.find(o => o.value === roomId);
       expect(opt).toBeDefined();
       expect(opt.text.length).toBeLessThanOrEqual(28);

@@ -37,8 +37,15 @@ export class LightingManager {
     // 24 / 720 = 1 / 30 giờ game mỗi giây thực
     this.fastCycleHoursPerSecond = 24 / 720;
 
-    // Graphics cho lớp bóng tối và quầng sáng
-    this.lightGraphics = null;
+    // Lightmap kiểu Stardew: 1 canvas duy nhất phủ màn hình.
+    // Mỗi frame: tô lớp tối -> destination-out "khoét lỗ" quanh đèn -> phủ tint ấm nhẹ.
+    this.lightmapKey = 'dever_lightmap';
+    this.lightmapW = 480;
+    this.lightmapH = 270;
+    this.lightmapTex = null;
+    this.lightmapCtx = null;
+    this.lightmapImg = null;
+    this.lightmapReady = false;
     this.flickerTimer = 0;
 
     // Cờ trạng thái
@@ -63,30 +70,65 @@ export class LightingManager {
   init() {
     if (!this.scene || !this.scene.add) return;
 
-    this.lightGraphics = this.scene.add.graphics();
-    this.lightGraphics.setDepth(999990); // Nằm trên bản đồ & nhân vật, dưới HUD UI
-
-    // Lớp Bloom / Phát quang thứ cấp (Additive Luminous Layer) tạo hiệu ứng hào quang thực
-    if (this.scene.add.graphics) {
-      try {
-        this.bloomGraphics = this.scene.add.graphics();
-        this.bloomGraphics.setDepth(999992);
-        if (this.bloomGraphics.setBlendMode) {
-          this.bloomGraphics.setBlendMode('ADD');
-        }
-      } catch (e) {}
-    }
+    // Lightmap kiểu Stardew: 1 canvas duy nhất, vẽ lớp tối rồi "khoét lỗ"
+    // bằng destination-out quanh các nguồn sáng. Không còn vẽ ellipse additive
+    // chồng lên màn đêm (cách cũ tạo vệt màu loang).
+    // Giữ field lightGraphics = null để tương thích với test/dọn dẹp cũ.
+    this.lightGraphics = null;
+    this.bloomGraphics = null;
 
     this.scene.scale?.on?.('resize', this.handleResize, this);
   }
 
   handleResize() {
-    if (this.lightGraphics) {
-      this.lightGraphics.clear();
+    // Lightmap là Image phủ toàn màn hình (scrollFactor 0) nên tự co giãn;
+    // cập nhật kích thước hiển thị cho chắc chắn khi canvas đổi size.
+    const sw = this.scene?.scale?.width;
+    const sh = this.scene?.scale?.height;
+    if (this.lightmapImg && sw && sh) {
+      this.lightmapImg.setDisplaySize(sw, sh);
     }
-    if (this.bloomGraphics) {
-      this.bloomGraphics.clear();
+  }
+
+  /**
+   * Tạo (lười - lazy) lightmap canvas + Image phủ màn hình.
+   * Trả về false khi scene không hỗ trợ textures (ví dụ mock trong unit test).
+   * @returns {boolean}
+   */
+  ensureLightmap() {
+    if (this.lightmapReady) return true;
+    const texMgr = this.scene?.textures;
+    if (!texMgr || typeof texMgr.createCanvas !== 'function') return false;
+
+    const sw = this.scene.scale?.width || 1280;
+    const sh = this.scene.scale?.height || 720;
+    this.lightmapW = 480;
+    this.lightmapH = Math.max(2, Math.round(480 * sh / sw));
+
+    if (!texMgr.exists(this.lightmapKey)) {
+      texMgr.createCanvas(this.lightmapKey, this.lightmapW, this.lightmapH);
     }
+    const tex = texMgr.get(this.lightmapKey);
+    if (!tex || !tex.context || !tex.canvas) return false;
+    this.lightmapTex = tex;
+    this.lightmapCtx = tex.context;
+
+    this.lightmapImg = this.scene.add.image(0, 0, this.lightmapKey);
+    this.lightmapImg.setOrigin(0, 0);
+    this.lightmapImg.setScrollFactor(0);
+    this.lightmapImg.setDepth(999990); // trên map & nhân vật, dưới sprite glow đèn (999991)
+    this.lightmapImg.setDisplaySize(sw, sh);
+    this.lightmapImg.setVisible(false);
+
+    this.lightmapReady = true;
+    return true;
+  }
+
+  /**
+   * Đổi hex number (0x0b1026) sang chuỗi CSS '#0b1026'.
+   */
+  cssColor(hex) {
+    return '#' + (hex >>> 0).toString(16).padStart(6, '0');
   }
 
   /**
@@ -191,7 +233,7 @@ export class LightingManager {
         }
         this.lampGlowEntries.push({ light, pool, halo, beam });
       } catch (e) {
-        // Đèn lỗi thì bỏ qua sprite, renderLighting sẽ fallback sang graphics
+        // Đèn lỗi thì bỏ qua sprite, lightmap vẫn khoét lỗ sáng cho đèn đó
       }
     }
   }
@@ -474,331 +516,138 @@ export class LightingManager {
   }
 
   renderLighting(delta) {
-    if (!this.lightGraphics || !this.currentAtmosphere) return;
+    if (!this.currentAtmosphere) return;
 
     const { darknessAlpha, ambientColor, lampGlowAlpha, isOutdoor, streetLightsOn } = this.currentAtmosphere;
-
-    // Nếu trời sáng ban ngày và không có bóng tối trong nhà, ẩn graphics để tối ưu hiệu năng
-    if (darknessAlpha <= 0.01) {
-      if (this.lightGraphics.visible) {
-        this.lightGraphics.clear();
-        this.lightGraphics.setVisible(false);
-      }
-      if (this.bloomGraphics && this.bloomGraphics.visible) {
-        this.bloomGraphics.clear();
-        this.bloomGraphics.setVisible(false);
-      }
-      this.setLampSpritesVisible(false);
-      return;
-    }
 
     // Lazy-build pool sprite đèn đường khi scene đã sẵn sàng (bỏ qua trong unit test mock)
     if (this.lampSpritesBuiltForRoom !== this.currentRoom) {
       this.rebuildLampSprites();
     }
 
-    if (!this.lightGraphics.visible) {
-      this.lightGraphics.setVisible(true);
+    // Hiệu ứng bập bùng hữu cơ (Flicker nhịp thở)
+    this.flickerTimer += (delta || 16.6) * 0.003;
+
+    // Trời sáng / không bóng tối: ẩn lightmap + sprite đèn để tối ưu
+    if (darknessAlpha <= 0.01) {
+      if (this.lightmapImg && this.lightmapImg.visible) {
+        this.lightmapImg.setVisible(false);
+      }
+      this.setLampSpritesVisible(false);
+      return;
     }
-    if (this.bloomGraphics && !this.bloomGraphics.visible) {
-      this.bloomGraphics.setVisible(true);
+
+    // Lightmap kiểu Stardew: 1 canvas duy nhất
+    //  1. Tô lớp tối toàn màn hình
+    //  2. destination-out: "khoét lỗ" radial gradient quanh mỗi nguồn sáng
+    //     -> vũng sáng tròn mềm, KHÔNG còn vệt ellipse màu loang như cách cũ
+    //  3. Phủ tint màu đèn rất nhẹ quanh lỗ sáng cho cảm giác "ánh đèn"
+    if (!this.ensureLightmap()) {
+      // Môi trường không hỗ trợ canvas texture (unit test mock):
+      // vẫn cập nhật sprite đèn nếu pool đã dựng được.
+      const useLampSprites = this.lampGlowEntries.length > 0 && this.lampSpritesBuiltForRoom === this.currentRoom;
+      if (useLampSprites) {
+        this.updateLampGlowSprites({ streetLightsOn, isOutdoor, lampGlowAlpha, darknessAlpha });
+      }
+      return;
     }
 
     const cam = this.scene.cameras?.main;
-    const player = this.scene?.player;
     if (!cam) return;
+    const zoom = cam.zoom || 1;
+    const sw = this.scene.scale?.width || 1280;
+    const sh = this.scene.scale?.height || 720;
+    const camX = cam.x || 0;
+    const camY = cam.y || 0;
 
-    // Hiệu ứng bập bùng hữu cơ (Flicker nhịp thở)
-    this.flickerTimer += (delta || 16.6) * 0.003;
-    const generalFlicker = Math.sin(this.flickerTimer * 3.5) * 0.03;
+    const ctx = this.lightmapCtx;
+    const W = this.lightmapW;
+    const H = this.lightmapH;
 
-    this.lightGraphics.clear();
-    if (this.bloomGraphics) {
-      this.bloomGraphics.clear();
-    }
+    // 1. Lớp tối
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = this.cssColor(ambientColor);
+    ctx.globalAlpha = darknessAlpha;
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
 
-    // 1. Phủ màn đêm / bóng tối toàn màn hình theo viewport camera
-    const viewLeft = cam.scrollX - 60;
-    const viewTop = cam.scrollY - 60;
-    const viewWidth = (cam.width / (cam.zoom || 1)) + 120;
-    const viewHeight = (cam.height / (cam.zoom || 1)) + 120;
-
-    this.lightGraphics.fillStyle(ambientColor, darknessAlpha);
-    this.lightGraphics.fillRect(viewLeft, viewTop, viewWidth, viewHeight);
-
-    // 2. Vẽ các nguồn sáng tĩnh (Static Light Sources) của phòng hiện tại
-    // Đèn đường dùng sprite soft-glow khi pool sẵn sàng, các loại khác giữ nguyên graphics.
-    const useLampSprites = this.lampGlowEntries.length > 0 && this.lampSpritesBuiltForRoom === this.currentRoom;
+    // 2. Khoét lỗ sáng
     const staticLights = STATIC_LIGHT_SOURCES[this.currentRoom] || [];
-    staticLights.forEach(light => {
+    const holes = [];
+    ctx.globalCompositeOperation = 'destination-out';
+    for (const light of staticLights) {
       // Chỉ bật đèn đường khi trời tối hoặc trong phòng tối
-      if (light.type === 'street_lamp' && !streetLightsOn && isOutdoor) return;
-      if (light.type === 'street_lamp' && useLampSprites) return; // sprite lo phần này
+      if (light.type === 'street_lamp' && !streetLightsOn && isOutdoor) continue;
+
+      const sx = ((light.x - cam.scrollX) * zoom + camX) / sw * W;
+      const sy = ((light.y - cam.scrollY) * zoom + camY) / sh * H;
+      const sr = (light.radius * zoom) / sw * W;
+      if (sr <= 0 || sx < -sr || sx > W + sr || sy < -sr || sy > H + sr) continue;
 
       const lightFlicker = Math.sin(this.flickerTimer * 4 + light.x) * (light.flicker || 0.02);
-      const rad = light.radius * (1 + lightFlicker);
-      
+      const r = Math.max(1, sr * (1 + lightFlicker));
+
       let intensityFactor = 1.0;
       if (light.type === 'street_lamp') {
         intensityFactor = lampGlowAlpha;
       } else if (light.type === 'ceiling_light') {
         intensityFactor = this.isNight ? 1.0 : 0.75;
       }
-      const intensity = light.intensity * intensityFactor;
+      const eraseA = Math.min(1, Math.max(0, light.intensity * intensityFactor));
+      if (eraseA <= 0.01) continue;
 
-      switch (light.type) {
-        case 'street_lamp':
-          this.renderStreetLamp(light, rad, intensity);
-          break;
-        case 'neon':
-          this.renderNeonLight(light, rad, intensity);
-          break;
-        case 'statue':
-          this.renderStatueLight(light, rad, intensity);
-          break;
-        case 'desk_lamp':
-          this.renderDeskLamp(light, rad, intensity);
-          break;
-        case 'ceiling_light':
-          this.renderCeilingLight(light, rad, intensity);
-          break;
-        default:
-          this.drawSoftLightCone(light.x, light.y, rad, light.color, intensity);
-          break;
-      }
-    });
+      const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, r);
+      g.addColorStop(0, 'rgba(0,0,0,' + eraseA.toFixed(3) + ')');
+      g.addColorStop(0.55, 'rgba(0,0,0,' + (eraseA * 0.55).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, Math.PI * 2);
+      ctx.fill();
+      holes.push({ sx, sy, r, color: light.color, a: eraseA });
+    }
 
-    // 2b. Cập nhật sprite quầng sáng đèn đường (mượt + hòa môi trường), nếu pool sẵn sàng
+    // 3. Tint màu đèn rất nhẹ (giữ cảm giác ấm/lạnh của từng loại đèn)
+    ctx.globalCompositeOperation = 'source-over';
+    for (const h of holes) {
+      const tintA = Math.min(0.22, 0.14 * h.a);
+      if (tintA <= 0.005) continue;
+      const g = ctx.createRadialGradient(h.sx, h.sy, 0, h.sx, h.sy, h.r);
+      g.addColorStop(0, this.hexToRgba(h.color, tintA));
+      g.addColorStop(1, this.hexToRgba(h.color, 0));
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(h.sx, h.sy, h.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    this.lightmapTex.refresh();
+    if (!this.lightmapImg.visible) {
+      this.lightmapImg.setVisible(true);
+    }
+
+    // 4. Sprite glow đèn đường (ADD, depth 999991) nằm trên lightmap, tạo lõi sáng rực
+    const useLampSprites = this.lampGlowEntries.length > 0 && this.lampSpritesBuiltForRoom === this.currentRoom;
     if (useLampSprites) {
       this.updateLampGlowSprites({ streetLightsOn, isOutdoor, lampGlowAlpha, darknessAlpha });
-    }
-
-    // 3. Quầng sáng theo chân nhân vật (Foot Aura) - Mặc định TẮT theo phản hồi người dùng
-    // Chỉ kích hoạt nếu enableFootAura được bật rõ ràng (ví dụ người chơi nhặt được đèn bão/đuốc)
-    if (this.enableFootAura) {
-      if (player && player.active) {
-        const px = player.x;
-        const py = player.y + 16;
-        const playerRadius = 90 * (1 + generalFlicker);
-        const playerLightColor = (player.role === 'admin' || player.role === 'leader') ? 0xfef08a : 0xffedd5;
-        this.drawSoftLightCone(px, py, playerRadius, playerLightColor, 0.85);
-      }
-
-      if (this.scene.npcGroup && player) {
-        this.scene.npcGroup.forEach(npc => {
-          if (npc.active && npc.visible) {
-            const dist = Math.hypot(player.x - npc.x, player.y - npc.y);
-            if (dist < 380) {
-              this.drawSoftLightCone(npc.x, npc.y + 16, 68, 0xfef08a, 0.65);
-            }
-          }
-        });
-      }
-
-      if (this.scene.remotePlayers && player) {
-        for (const remote of this.scene.remotePlayers.values()) {
-          if (remote.active && remote.visible) {
-            const dist = Math.hypot(player.x - remote.x, player.y - remote.y);
-            if (dist < 380) {
-              this.drawSoftLightCone(remote.x, remote.y + 16, 65, 0x67e8f9, 0.6);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Helper tương thích chéo: Vẽ Elip nếu có, fallback vẽ Circle nếu chạy trong unit test mock
-   */
-  drawEllipseOrCircleOn(targetGraphics, cx, cy, rx, ry) {
-    if (!targetGraphics) return;
-    if (targetGraphics.fillEllipse) {
-      targetGraphics.fillEllipse(cx, cy, rx * 2, ry * 2);
     } else {
-      targetGraphics.fillCircle(cx, cy, rx);
+      this.setLampSpritesVisible(false);
     }
   }
 
   /**
-   * Vẽ quầng sáng Elip mềm mại đa tầng (28 micro-steps) với đường cong Hermite mượt mà,
-   * triệt tiêu hoàn toàn viền gãy (Zero Banding), tạo cảm giác ánh sáng khói sương tự nhiên như Sea of Stars & Delverium.
+   * Đổi hex number + alpha sang chuỗi CSS rgba().
    */
-  drawSoftLightEllipse(cx, cy, radiusX, radiusY, colorHex, intensity = 1.0) {
-    const steps = 28;
-    for (let i = steps; i >= 1; i--) {
-      const t = i / steps;
-      const rx = radiusX * t;
-      const ry = radiusY * t;
-
-      // Hermite Falloff: f(t) = (1 - t^2)^2 (mượt mà, triệt tiêu viền cứng ở mép)
-      const factor = Math.max(0, 1 - t * t);
-      const smoothFactor = factor * factor;
-      const stepAlpha = (0.016 * smoothFactor) * intensity;
-
-      this.lightGraphics.fillStyle(colorHex, stepAlpha);
-      this.drawEllipseOrCircleOn(this.lightGraphics, cx, cy, rx, ry);
-    }
-
-    // Core Hotspot (lõi sáng ấm áp ở tâm)
-    const coreAlpha = Math.min(0.35, 0.14 * intensity);
-    this.lightGraphics.fillStyle(0xffffff, coreAlpha);
-    this.drawEllipseOrCircleOn(this.lightGraphics, cx, cy, radiusX * 0.22, radiusY * 0.22);
+  hexToRgba(hex, alpha) {
+    const r = (hex >> 16) & 255;
+    const g = (hex >> 8) & 255;
+    const b = hex & 255;
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + Math.max(0, Math.min(1, alpha)).toFixed(3) + ')';
   }
 
-  /**
-   * Tương thích ngược: Vẽ quầng sáng mềm mại với góc nhìn 2.5D nghiêng (Aspect 1.5 : 1)
-   */
-  drawSoftLightCone(cx, cy, maxRadius, colorHex, intensity = 1.0) {
-    const aspectY = 0.65;
-    this.drawSoftLightEllipse(cx, cy, maxRadius, maxRadius * aspectY, colorHex, intensity);
-  }
 
-  /**
-   * Đèn đường / Cột đèn (Streetlamp):
-   * 1. Chùm sáng hình nón (Volumetric Light Beam) từ bóng đèn đỉnh cột rọi xuống.
-   * 2. Vũng sáng Elip 2.5D trên mặt đất dưới chân cột (Ground Light Pool).
-   * 3. Vầng hào quang phát sáng (Corona & Hotspot) ngay tại bóng đèn trên đỉnh cột.
-   */
-  renderStreetLamp(light, rad, intensity) {
-    const fixtureY = light.y - 22; // Vị trí bóng đèn trên đỉnh cột
-    const groundY = light.y + 26;  // Vị trí vũng sáng rọi xuống mặt đất
-    const color = light.color || 0xfef08a;
-
-    // 1. Chùm sáng hình nón từ đèn xuống đất (Volumetric Downward Light Beam)
-    if (this.lightGraphics.fillPoints) {
-      const beamSteps = 6;
-      for (let b = 1; b <= beamSteps; b++) {
-        const spread = b / beamSteps;
-        const topW = 4 + 4 * spread;
-        const botW = (rad * 0.72) * spread;
-        const beamAlpha = (0.015 * (1 - spread * 0.55)) * intensity;
-
-        this.lightGraphics.fillStyle(color, beamAlpha);
-        this.lightGraphics.fillPoints([
-          { x: light.x - topW, y: fixtureY },
-          { x: light.x + topW, y: fixtureY },
-          { x: light.x + botW, y: groundY },
-          { x: light.x - botW, y: groundY }
-        ]);
-      }
-    }
-
-    // 2. Vũng sáng Elip 2.5D trên mặt đất (Ground Light Pool)
-    const groundRadiusX = rad * 1.05;
-    const groundRadiusY = rad * 0.62;
-    this.drawSoftLightEllipse(light.x, groundY, groundRadiusX, groundRadiusY, color, intensity);
-
-    // 3. Vầng hào quang (Corona & Hotspot) ngay tại bóng đèn trên đỉnh cột
-    const coronaAlpha = Math.min(0.45, 0.22 * intensity);
-    this.lightGraphics.fillStyle(color, coronaAlpha);
-    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, fixtureY, 18, 14);
-
-    this.lightGraphics.fillStyle(0xfffbeb, Math.min(0.75, 0.45 * intensity));
-    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, fixtureY, 7, 5);
-
-    // 4. Lớp Bloom phát quang (Additive)
-    if (this.bloomGraphics) {
-      this.bloomGraphics.fillStyle(color, 0.22 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, fixtureY, 20, 16);
-      this.bloomGraphics.fillStyle(0xfffbeb, 0.4 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, fixtureY, 8, 6);
-    }
-  }
-
-  /**
-   * Biển hiệu Neon (DEVER Club Neon, Server Rack, Máy Arcade):
-   * Tỏa ánh sáng dạng thanh ngang / capsule với độ rực Cyber rực rỡ và tia phát quang.
-   */
-  renderNeonLight(light, rad, intensity) {
-    const color = light.color || 0x38bdf8;
-    const spanW = rad * 1.3;
-    const spanH = rad * 0.65;
-
-    // Vầng sáng ngang đa tầng
-    this.drawSoftLightEllipse(light.x, light.y, spanW, spanH, color, intensity);
-
-    // Lõi đèn Neon ống phát quang rực rỡ
-    const coreW = Math.min(spanW * 0.7, 70);
-    const coreH = Math.min(spanH * 0.4, 18);
-    const coreAlpha = Math.min(0.55, 0.28 * intensity);
-
-    if (this.lightGraphics.fillRoundedRect) {
-      this.lightGraphics.fillStyle(0xe0f2fe, coreAlpha);
-      this.lightGraphics.fillRoundedRect(light.x - coreW / 2, light.y - coreH / 2, coreW, coreH, 8);
-    } else {
-      this.lightGraphics.fillStyle(0xe0f2fe, coreAlpha);
-      this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y, coreW / 2, coreH / 2);
-    }
-
-    if (this.bloomGraphics) {
-      this.bloomGraphics.fillStyle(color, 0.28 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, spanW * 0.8, spanH * 0.8);
-      this.bloomGraphics.fillStyle(0xe0f2fe, 0.45 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, coreW * 0.4, coreH * 0.5);
-    }
-  }
-
-  /**
-   * Tượng linh vật Cóc Vàng FUDA:
-   * Vầng hào quang vàng kim linh thiêng, lan tỏa ánh sáng quý phái trên quảng trường.
-   */
-  renderStatueLight(light, rad, intensity) {
-    const goldColor = light.color || 0xfbbf24;
-    const poolRx = rad * 1.15;
-    const poolRy = rad * 0.75;
-
-    // Vũng sáng vàng kim trên nền gạch
-    this.drawSoftLightEllipse(light.x, light.y + 12, poolRx, poolRy, goldColor, intensity * 0.95);
-
-    // Hào quang tâm tượng
-    this.lightGraphics.fillStyle(0xfef08a, Math.min(0.5, 0.25 * intensity));
-    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y - 6, 24, 18);
-
-    if (this.bloomGraphics) {
-      this.bloomGraphics.fillStyle(0xfbbf24, 0.25 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, poolRx * 0.6, poolRy * 0.6);
-      this.bloomGraphics.fillStyle(0xfef08a, 0.38 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y - 6, 16, 12);
-    }
-  }
-
-  /**
-   * Đèn bàn / Quầy Barista Căn tin & Quầy Bánh:
-   * Ánh sáng vàng mật ong ấm cúng, trải đều trên mặt quầy gỗ.
-   */
-  renderDeskLamp(light, rad, intensity) {
-    const warmColor = light.color || 0xfde68a;
-    const poolRx = rad * 1.1;
-    const poolRy = rad * 0.7;
-
-    this.drawSoftLightEllipse(light.x, light.y + 8, poolRx, poolRy, warmColor, intensity);
-
-    this.lightGraphics.fillStyle(0xfffbeb, Math.min(0.4, 0.18 * intensity));
-    this.drawEllipseOrCircleOn(this.lightGraphics, light.x, light.y, 16, 10);
-
-    if (this.bloomGraphics) {
-      this.bloomGraphics.fillStyle(warmColor, 0.2 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y + 8, poolRx * 0.5, poolRy * 0.5);
-    }
-  }
-
-  /**
-   * Đèn trần phòng học / Phòng Lab:
-   * Ánh sáng phủ rộng, dịu mắt, xua tan bóng tối phòng trong nhà.
-   */
-  renderCeilingLight(light, rad, intensity) {
-    const techColor = light.color || 0xf1f5f9;
-    const poolRx = rad * 1.12;
-    const poolRy = rad * 0.8;
-
-    this.drawSoftLightEllipse(light.x, light.y, poolRx, poolRy, techColor, intensity * 0.85);
-
-    if (this.bloomGraphics) {
-      this.bloomGraphics.fillStyle(techColor, 0.12 * intensity);
-      this.drawEllipseOrCircleOn(this.bloomGraphics, light.x, light.y, poolRx * 0.45, poolRy * 0.45);
-    }
-  }
 
   /**
    * Lấy trạng thái thời gian hiện tại cho UI / HUD
@@ -854,14 +703,18 @@ export class LightingManager {
     }
     this.lampGlowEntries = [];
     this.lampSpritesBuiltForRoom = null;
-    if (this.lightGraphics) {
-      this.lightGraphics.destroy();
-      this.lightGraphics = null;
+    this.lightGraphics = null;
+    this.bloomGraphics = null;
+    if (this.lightmapImg) {
+      try { this.lightmapImg.destroy(); } catch (_) {}
+      this.lightmapImg = null;
     }
-    if (this.bloomGraphics) {
-      this.bloomGraphics.destroy();
-      this.bloomGraphics = null;
+    if (this.lightmapTex && this.scene?.textures?.exists(this.lightmapKey)) {
+      try { this.scene.textures.remove(this.lightmapKey); } catch (_) {}
     }
+    this.lightmapTex = null;
+    this.lightmapCtx = null;
+    this.lightmapReady = false;
     this.timeListeners.clear();
   }
 }

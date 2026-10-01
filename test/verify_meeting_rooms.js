@@ -55,10 +55,10 @@ ok(dormCount >= 2, `portal dorm_room đồng bộ base + floors[0] (thấy ${dor
 
 // 6. i18n VI+EN đủ tên phòng còn lại, không còn phòng đã xoá
 const i18nSrc = readFileSync('src/config/i18n.js', 'utf8');
-ok(/meeting_room: 'Phòng Họp CLB'/.test(i18nSrc), 'i18n VI có meeting_room');
+ok(/meeting_room: 'Phòng Họp & Lớp Học'/.test(i18nSrc), 'i18n VI có meeting_room');
 ok(!/pc_room/.test(i18nSrc), 'i18n không còn pc_room');
 ok(!/code_lab/.test(i18nSrc), 'i18n không còn code_lab');
-ok(/meeting_room: 'Club Meeting Room'/.test(i18nSrc), 'i18n EN có meeting_room');
+ok(/meeting_room: 'Club Meeting & Class Room'/.test(i18nSrc), 'i18n EN có meeting_room');
 
 // 7. Lighting config cho meeting_room, không còn phòng đã xoá
 const lightSrc = readFileSync('src/config/lightingConfig.js', 'utf8');
