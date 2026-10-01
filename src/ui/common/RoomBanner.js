@@ -48,7 +48,10 @@ export class RoomBanner {
       web_room: '🌐',
       media_hub: '📰',
       sports_complex: '⚽',
-      canteen_cafe: '☕'
+      canteen_cafe: '☕',
+      dorm_room: '🛏️',
+      classroom: '🏫',
+      pc_room: '🖥️'
     };
     return icons[roomId] || '📍';
   }

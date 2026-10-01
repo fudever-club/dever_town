@@ -33,7 +33,10 @@ export const TRANSLATIONS = {
       media_hub: 'Media & MXH',
       sports_complex: 'Khu Thể Thao',
       canteen_cafe: 'Căn Tin & Cafe',
-      game_arcade: 'Arcade & Robot'
+      game_arcade: 'Arcade & Robot',
+      dorm_room: 'Ký Túc Xá',
+      classroom: 'Lớp Học',
+      pc_room: 'Phòng PC Cyber'
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -46,7 +49,10 @@ export const TRANSLATIONS = {
       media_hub: 'Sang Media Hub',
       sports_complex: 'Sang Khu Thể Thao',
       canteen_cafe: 'Sang Căn Tin & Cafe',
-      game_arcade: 'Sang Arcade & Robot'
+      game_arcade: 'Sang Arcade & Robot',
+      dorm_room: 'Sang Ký Túc Xá',
+      classroom: 'Sang Lớp Học',
+      pc_room: 'Sang Phòng PC Cyber'
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -114,6 +120,16 @@ export const TRANSLATIONS = {
       zone_arcade_geometrydash: 'Máy Game: Dever Dash 3.0',
       zone_arcade_match3: 'Máy Game: Cyber Candy Match',
       zone_arcade_pacman: 'Máy Game: Cyber Pac-Man',
+
+      // Phòng mới kiểu Gather.town
+      zone_dorm_rest: 'Giường Nghỉ Ngơi KTX',
+      zone_dorm_study: 'Bàn Học Cá Nhân KTX',
+      zone_dorm_lounge: 'Góc Sofa Thư Giãn KTX',
+      zone_class_board: 'Bảng Đen Giảng Đường',
+      zone_class_workshop: 'Bục Giảng Workshop CLB',
+      zone_pc_code1: 'Trạm PC Dev 01',
+      zone_pc_code2: 'Trạm PC Dev 02',
+      zone_pc_server: 'Tủ Server DEVER',
       zone_arcade_robot_hub: 'Trạm Tải Game Robot',
       zone_arcade_meeting: 'Bàn Game & Livestream',
 
@@ -225,7 +241,10 @@ export const TRANSLATIONS = {
       media_hub: 'Media & Social',
       sports_complex: 'Sports Complex',
       canteen_cafe: 'Canteen & Cafe',
-      game_arcade: 'Arcade & Robot'
+      game_arcade: 'Arcade & Robot',
+      dorm_room: 'Dormitory',
+      classroom: 'Classroom',
+      pc_room: 'PC Cyber Room'
     },
 
     // Portals (Ground portals)
@@ -238,7 +257,10 @@ export const TRANSLATIONS = {
       media_hub: 'To Media Hub',
       sports_complex: 'To Sports Complex',
       canteen_cafe: 'To Canteen & Cafe',
-      game_arcade: 'To Arcade & Robot'
+      game_arcade: 'To Arcade & Robot',
+      dorm_room: 'To Dormitory',
+      classroom: 'To Classroom',
+      pc_room: 'To PC Cyber Room'
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)
@@ -308,6 +330,16 @@ export const TRANSLATIONS = {
       zone_arcade_pacman: 'Arcade: Cyber Pac-Man',
       zone_arcade_robot_hub: 'Club Robot Games Download',
       zone_arcade_meeting: 'Game Match & Livestream Desk',
+
+      // New Gather.town-style rooms
+      zone_dorm_rest: 'KTX Rest Bed',
+      zone_dorm_study: 'KTX Personal Study Desk',
+      zone_dorm_lounge: 'KTX Sofa Lounge',
+      zone_class_board: 'Lecture Hall Chalkboard',
+      zone_class_workshop: 'Club Workshop Podium',
+      zone_pc_code1: 'PC Dev Station 01',
+      zone_pc_code2: 'PC Dev Station 02',
+      zone_pc_server: 'DEVER Server Rack',
 
       // Fallback Generic Zones
       zone_whiteboard: 'Slide Presentation',
@@ -459,7 +491,8 @@ class I18nManager {
     if (roomSelect) {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
-        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade'
+        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade',
+        'dorm_room', 'classroom', 'pc_room'
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);

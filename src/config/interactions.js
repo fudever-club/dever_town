@@ -557,6 +557,17 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       { name: '4. Software Architecture & Design Patterns', desc: 'Layered Architecture, MVC Pattern, Factory & Singleton Pattern.' },
       { name: '5. Software Testing & QA Strategy', desc: 'Unit Test, Integration Test, Black-box & White-box Test Case Matrix.' }
     ]
+  },
+
+  // 10. GIƯỜNG NGHỈ NGƠI KTX — Gather.town style rest spot
+  rest_bed: {
+    title: 'Giường Nghỉ Ngơi KTX FUDA',
+    description: 'Góc nghỉ ngơi ấm cúng của sinh viên FUDA. Nằm xuống thư giãn, hồi phục năng lượng sau giờ code.',
+    tips: [
+      'Nhấn nút "Nằm Nghỉ" để nhân vật nằm xuống giường thư giãn',
+      'Mỗi lần nghỉ ngơi hồi phục năng lượng và tinh thần',
+      'KTX FUDA: nơi nạp lại năng lượng cho dev sau deadline'
+    ]
   }
 };
 

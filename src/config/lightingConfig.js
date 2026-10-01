@@ -122,6 +122,30 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorLightsOn: false,
     allowWeather: false
   },
+  dorm_room: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.12,
+    indoorAmbientColor: 0x1a1410,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x241a12,
+    allowWeather: false
+  },
+  classroom: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.10,
+    indoorAmbientColor: 0x0f172a,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1e1b2e,
+    allowWeather: false
+  },
+  pc_room: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.22,
+    indoorAmbientColor: 0x0a0f1e,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x101a33,
+    allowWeather: false
+  },
   memory_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.25,

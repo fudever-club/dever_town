@@ -1,5 +1,5 @@
 /**
- * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (30 ô) và Spritesheets Nhân vật trên HTML Canvas.
+ * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (38 ô) và Spritesheets Nhân vật trên HTML Canvas.
  * Tích hợp nhận diện thương hiệu FPT University Đà Nẵng, CLB FU-DEVER, Khu Thể Thao & Tùy chỉnh Tủ Đồ.
  */
 export class TextureGenerator {
@@ -8,7 +8,7 @@ export class TextureGenerator {
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 32;
+    const numTiles = 38;
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
@@ -53,6 +53,14 @@ export class TextureGenerator {
     // 30-31: Căn Tin & Quán Cà Phê FUDA
     this.drawCanteenCounter(ctx, 30 * tileSize, 0, tileSize); // 30: Quầy Cơm Sinh Viên & Bánh Mì FUDA
     this.drawCafeDiningTable(ctx, 31 * tileSize, 0, tileSize); // 31: Bàn Cà Phê Gỗ & Khăn Trải Bàn Chill
+
+    // 32-37: Nội thất Gather.town — Ký túc xá, Lớp học, Phòng PC
+    this.drawBed(ctx, 32 * tileSize, 0, tileSize); // 32: Giường Ngủ KTX (Obstacle)
+    this.drawDesktopPC(ctx, 33 * tileSize, 0, tileSize); // 33: PC Để Bàn Gaming/Dev (Obstacle)
+    this.drawClassroomDesk(ctx, 34 * tileSize, 0, tileSize); // 34: Bàn Ghế Học Sinh (Obstacle)
+    this.drawChalkboard(ctx, 35 * tileSize, 0, tileSize); // 35: Bảng Đen Lớp Học (Obstacle)
+    this.drawSofa(ctx, 36 * tileSize, 0, tileSize); // 36: Sofa Phòng Sinh Hoạt (Obstacle)
+    this.drawWardrobe(ctx, 37 * tileSize, 0, tileSize); // 37: Tủ Quần Áo KTX (Obstacle)
 
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
@@ -808,6 +816,207 @@ export class TextureGenerator {
     // Lọ hoa nhỏ trên bàn
     ctx.fillStyle = '#ec4899';
     ctx.fillRect(x + 14, y + 16, 4, 4);
+  }
+
+  // 32: Giường Ngủ KTX FUDA (Obstacle) — nhìn từ trên xuống
+  static drawBed(ctx, x, y, size) {
+    // Sàn gỗ phòng ngủ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Khung giường gỗ
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 3, y + 2, size - 6, size - 4);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 4, y + 3, size - 8, size - 6);
+
+    // Nệm trắng kem
+    ctx.fillStyle = '#fefce8';
+    ctx.fillRect(x + 5, y + 8, size - 10, size - 14);
+
+    // Gối đầu giường
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 6, y + 4, size - 12, 6);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 6, y + 4, size - 12, 6);
+
+    // Chăn đắp màu cam FPT
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 5, y + 16, size - 10, size - 22);
+    ctx.fillStyle = '#fb923c';
+    ctx.fillRect(x + 5, y + 16, size - 10, 2);
+    // Họa tiết chăn
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillRect(x + 9, y + 20, 4, 4);
+    ctx.fillRect(x + 19, y + 20, 4, 4);
+  }
+
+  // 33: PC Để Bàn Dev/Gaming (Obstacle) — bàn + màn hình + case
+  static drawDesktopPC(ctx, x, y, size) {
+    // Mặt bàn gỗ tối
+    ctx.fillStyle = '#44403c';
+    ctx.fillRect(x + 1, y + 14, size - 2, size - 15);
+    ctx.fillStyle = '#57534e';
+    ctx.fillRect(x + 1, y + 14, size - 2, 2);
+
+    // Case PC đứng bên phải (đèn RGB)
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 24, y + 4, 6, 12);
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillRect(x + 25, y + 5, 4, 2);
+    ctx.fillStyle = '#ec4899';
+    ctx.fillRect(x + 25, y + 8, 4, 2);
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillRect(x + 25, y + 11, 4, 2);
+
+    // Chân đế màn hình
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(x + 11, y + 12, 6, 3);
+
+    // Màn hình (viền đen + nền code xanh)
+    ctx.fillStyle = '#0c0a09';
+    ctx.fillRect(x + 6, y + 2, 16, 11);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 7, y + 3, 14, 9);
+    // Dòng code phát sáng
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 8, y + 4, 8, 1);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 8, y + 6, 10, 1);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 8, y + 8, 6, 1);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 8, y + 10, 9, 1);
+
+    // Bàn phím
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 7, y + 17, 14, 4);
+    ctx.fillStyle = '#44403c';
+    for (let i = 0; i < 4; i++) ctx.fillRect(x + 8 + i * 3, y + 18, 2, 2);
+
+    // Chuột
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 23, y + 17, 4, 5);
+  }
+
+  // 34: Bàn Ghế Học Sinh (Obstacle)
+  static drawClassroomDesk(ctx, x, y, size) {
+    // Sàn lớp học
+    ctx.fillStyle = '#e7e5e4';
+    ctx.fillRect(x, y, size, size);
+
+    // Ghế (phía dưới)
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 10, y + 24, 12, 6);
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(x + 10, y + 24, 12, 2);
+
+    // Mặt bàn gỗ sáng
+    ctx.fillStyle = '#d6a05c';
+    ctx.fillRect(x + 4, y + 10, size - 8, 10);
+    ctx.fillStyle = '#e8b96f';
+    ctx.fillRect(x + 4, y + 10, size - 8, 2);
+    ctx.strokeStyle = '#92400e';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 4, y + 10, size - 8, 10);
+
+    // Sách vở trên bàn
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 7, y + 12, 6, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 7, y + 12, 6, 1);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 16, y + 13, 5, 3);
+
+    // Bút chì
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 18, y + 17, 6, 1);
+  }
+
+  // 35: Bảng Đen Lớp Học (Obstacle)
+  static drawChalkboard(ctx, x, y, size) {
+    // Tường phía sau
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(x, y, size, size);
+
+    // Khung gỗ bảng
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 2, y + 6, size - 4, 18);
+    // Mặt bảng xanh đen
+    ctx.fillStyle = '#1e3a2f';
+    ctx.fillRect(x + 4, y + 8, size - 8, 14);
+
+    // Chữ phấn trắng (công thức/code)
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillRect(x + 7, y + 10, 10, 1);
+    ctx.fillRect(x + 7, y + 12, 14, 1);
+    ctx.fillRect(x + 7, y + 14, 8, 1);
+    ctx.fillStyle = 'rgba(252,211,77,0.9)';
+    ctx.fillRect(x + 18, y + 16, 7, 1);
+    ctx.fillRect(x + 7, y + 18, 12, 1);
+
+    // Khay đựng phấn & khăn lau
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 4, y + 24, size - 8, 3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 8, y + 23, 4, 2);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 20, y + 23, 5, 2);
+  }
+
+  // 36: Sofa Phòng Sinh Hoạt (Obstacle)
+  static drawSofa(ctx, x, y, size) {
+    // Sàn
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Thân sofa xanh navy
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(x + 3, y + 10, size - 6, 14);
+    // Tựa lưng
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(x + 3, y + 6, size - 6, 8);
+    // Tay vịn 2 bên
+    ctx.fillStyle = '#172554';
+    ctx.fillRect(x + 3, y + 10, 5, 14);
+    ctx.fillRect(x + size - 8, y + 10, 5, 14);
+
+    // Đệm ngồi
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 9, y + 14, 7, 8);
+    ctx.fillRect(x + 16, y + 14, 7, 8);
+    // Gối tựa màu cam FPT
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 10, y + 8, 5, 5);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(x + 18, y + 8, 5, 5);
+  }
+
+  // 37: Tủ Quần Áo KTX (Obstacle)
+  static drawWardrobe(ctx, x, y, size) {
+    // Sàn gỗ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Thân tủ gỗ nâu
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 4, y + 2, size - 8, size - 4);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 5, y + 3, size - 10, size - 6);
+
+    // 2 cánh tủ
+    ctx.strokeStyle = '#451a03';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 6, y + 5, 9, size - 12);
+    ctx.strokeRect(x + 17, y + 5, 9, size - 12);
+
+    // Tay nắm cửa kim loại
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 13, y + 14, 2, 4);
+    ctx.fillRect(x + 17, y + 14, 2, 4);
+
+    // Họa tiết vân gỗ
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(x + 8, y + 8, 5, 1);
+    ctx.fillRect(x + 19, y + 20, 5, 1);
   }
 
   /**

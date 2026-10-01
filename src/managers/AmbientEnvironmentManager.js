@@ -340,6 +340,9 @@ export class AmbientEnvironmentManager {
       sports_complex: { ambientTint: 0xd1fae5, alpha: 0.04 }, // Thể thao ngoài trời tươi mát
       tea_garden: { ambientTint: 0xecfdf5, alpha: 0.04 },     // Vườn trà dịu mát
       game_arcade: { ambientTint: 0x3b0764, alpha: 0.08 },    // Arcade tím neon
+      dorm_room: { ambientTint: 0xfef3c7, alpha: 0.05 },      // KTX đèn vàng ấm cúng
+      classroom: { ambientTint: 0xffffff, alpha: 0 },         // Lớp học sáng rõ
+      pc_room: { ambientTint: 0x0f172a, alpha: 0.07 },        // Phòng PC xanh cyber
       academic_hub: { ambientTint: 0xffffff, alpha: 0 }
     };
 
