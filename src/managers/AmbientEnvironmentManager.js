@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { WEATHER_CONFIG } from '../config/weatherConfig.js';
 
 /**
  * AmbientEnvironmentManager: Hệ thống Hạt Khí Quyển & Môi Trường Động Học cho DEVER TOWN
@@ -14,6 +15,13 @@ export class AmbientEnvironmentManager {
     this.currentRoomId = null;
     this.activeEmitters = [];
     this.footstepEmitter = null;
+
+    // --- Weather (mưa + mây trôi cho phòng ngoài trời) ---
+    this.weather = 'clear';
+    this.cloudSprites = [];
+    this.rainEmitter = null;
+    this.rainTint = null;
+    this.weatherTimer = null;
 
     this.initTextures();
   }
@@ -110,6 +118,47 @@ export class AmbientEnvironmentManager {
       ctx.fillRect(0, 0, 6, 6);
       this.scene.textures.addCanvas('particle_firefly', canvas);
     }
+
+    // 8. Hạt mưa (Rain Streak) — vệt xiên mảnh, xanh nhạt trong suốt
+    if (!this.scene.textures.exists('particle_rain')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 3;
+      canvas.height = 18;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 18);
+      grad.addColorStop(0, 'rgba(186, 230, 253, 0)');
+      grad.addColorStop(0.45, 'rgba(186, 230, 253, 0.9)');
+      grad.addColorStop(1, 'rgba(186, 230, 253, 0)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(2.4, 0);
+      ctx.lineTo(0.6, 18);
+      ctx.stroke();
+      this.scene.textures.addCanvas('particle_rain', canvas);
+    }
+
+    // 9. Mây pixel (Cloud) — cụm ellipse trắng mềm, vẽ procedural
+    if (!this.scene.textures.exists('particle_cloud')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 96;
+      canvas.height = 40;
+      const ctx = canvas.getContext('2d');
+      const blobs = [
+        [30, 26, 22], [52, 20, 26], [74, 27, 20], [16, 30, 12], [86, 32, 10]
+      ];
+      for (const [cx, cy, r] of blobs) {
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+        grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.45)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      this.scene.textures.addCanvas('particle_cloud', canvas);
+    }
   }
 
   /**
@@ -149,6 +198,7 @@ export class AmbientEnvironmentManager {
    */
   setRoom(roomId) {
     this.clearEmitters();
+    this.clearWeather();
     this.currentRoomId = roomId;
     this.applyAmbientLight(roomId);
 
@@ -267,6 +317,9 @@ export class AmbientEnvironmentManager {
         });
         break;
     }
+
+    // Thời tiết động cho phòng ngoài trời (mây trôi + mưa ngẫu nhiên)
+    this.setupWeather(roomId);
   }
 
   /**
@@ -310,6 +363,175 @@ export class AmbientEnvironmentManager {
         if (dust && dust.destroy) dust.destroy();
       });
     } catch (e) {}
+  }
+
+  /* ================= HỆ THỐNG THỜI TIẾT (Phase 2) =================
+   * Mây trôi + mưa ngẫu nhiên cho phòng ngoài trời.
+   * Mưa: hạt streak xiên, tint lạnh rất nhẹ, tiếng mưa procedural.
+   * Mây: sprite procedural trôi ngang phía trên, depth thấp (sau nhân vật).
+   */
+
+  setupWeather(roomId) {
+    if (!WEATHER_CONFIG.outdoorRooms.includes(roomId)) return;
+    if (!this.scene || !this.scene.add) return;
+    this.spawnClouds();
+    this.scheduleWeatherCheck();
+  }
+
+  spawnClouds() {
+    const mapW = 800;
+    for (let i = 0; i < WEATHER_CONFIG.cloudCount; i++) {
+      const cloud = this.scene.add.image(
+        Phaser.Math.Between(-120, mapW + 120),
+        Phaser.Math.Between(16, 130),
+        'particle_cloud'
+      );
+      cloud.setDepth(5);
+      cloud.setAlpha(WEATHER_CONFIG.cloudAlpha * Phaser.Math.FloatBetween(0.7, 1));
+      const scale = Phaser.Math.FloatBetween(0.9, 1.8);
+      cloud.setScale(scale);
+      this.cloudSprites.push(cloud);
+      this.driftCloud(cloud, mapW);
+    }
+  }
+
+  driftCloud(cloud, mapW) {
+    if (!cloud || !cloud.active) return;
+    const speed = Phaser.Math.FloatBetween(WEATHER_CONFIG.cloudSpeedMin, WEATHER_CONFIG.cloudSpeedMax);
+    const distance = mapW + 240 - cloud.x;
+    const duration = (distance / speed) * 1000;
+    this.scene.tweens.add({
+      targets: cloud,
+      x: mapW + 120,
+      duration,
+      ease: 'Linear',
+      onComplete: () => {
+        if (!cloud.active) return;
+        cloud.x = -120;
+        cloud.y = Phaser.Math.Between(16, 130);
+        this.driftCloud(cloud, mapW);
+      }
+    });
+  }
+
+  /**
+   * Bắt đầu mưa. intensity 0..1.
+   */
+  startRain(intensity) {
+    if (this.weather === 'rain' || !this.scene || !this.scene.add) return;
+    this.weather = 'rain';
+    const level = intensity ?? Phaser.Math.FloatBetween(
+      WEATHER_CONFIG.rainIntensityMin, WEATHER_CONFIG.rainIntensityMax
+    );
+
+    const mapW = 800;
+    const mapH = 608;
+    try {
+      this.rainEmitter = this.scene.add.particles(0, 0, 'particle_rain', {
+        x: { min: -40, max: mapW + 40 },
+        y: -30,
+        lifespan: 1400,
+        speedY: { min: 480, max: 680 },
+        speedX: { min: -90, max: -50 },
+        scale: { min: 0.9, max: 1.4 },
+        alpha: { start: 0.7, end: 0.3 },
+        quantity: Math.round(3 + level * 5),
+        frequency: 35
+      });
+      this.rainEmitter.setDepth(2000); // Mưa ở tiền cảnh, trước nhân vật
+    } catch (e) {
+      console.warn('Lỗi khởi tạo mưa:', e);
+    }
+
+    // Tint lạnh rất nhẹ gợi cảm giác mưa (vẫn sáng như gather.town)
+    if (!this.rainTint) {
+      this.rainTint = this.scene.add.rectangle(
+        400, 304, mapW, mapH,
+        WEATHER_CONFIG.rainTintColor, 0
+      ).setDepth(999990).setScrollFactor(0);
+    }
+    this.scene.tweens.add({
+      targets: this.rainTint,
+      alpha: WEATHER_CONFIG.rainTintAlpha,
+      duration: 2000,
+      ease: 'Sine.easeInOut'
+    });
+
+    // Tiếng mưa procedural (Web Audio noise qua lowpass)
+    if (this.scene.audioManager && this.scene.audioManager.startRainSound) {
+      this.scene.audioManager.startRainSound(level);
+    }
+  }
+
+  stopRain() {
+    if (this.weather !== 'rain') return;
+    this.weather = 'clear';
+    if (this.rainEmitter) {
+      try { this.rainEmitter.destroy(); } catch (e) {}
+      this.rainEmitter = null;
+    }
+    if (this.rainTint) {
+      this.scene.tweens.add({
+        targets: this.rainTint,
+        alpha: 0,
+        duration: 2000,
+        ease: 'Sine.easeInOut'
+      });
+    }
+    if (this.scene.audioManager && this.scene.audioManager.stopRainSound) {
+      this.scene.audioManager.stopRainSound();
+    }
+  }
+
+  /**
+   * Lên lịch kiểm tra thời tiết: mỗi chu kỳ có xác suất đổ mưa.
+   */
+  scheduleWeatherCheck() {
+    if (this.weatherTimer) {
+      this.weatherTimer.remove();
+      this.weatherTimer = null;
+    }
+    if (!this.scene || !this.scene.time) return;
+    this.weatherTimer = this.scene.time.delayedCall(WEATHER_CONFIG.autoCheckMs, () => {
+      this.weatherTimer = null;
+      if (this.weather === 'clear' && Math.random() < WEATHER_CONFIG.rainChance) {
+        const duration = Phaser.Math.Between(
+          WEATHER_CONFIG.rainDurationMin, WEATHER_CONFIG.rainDurationMax
+        );
+        this.startRain();
+        this.scene.time.delayedCall(duration, () => this.stopRain());
+      }
+      // Lên lịch vòng tiếp theo (chỉ khi vẫn ở phòng ngoài trời)
+      if (WEATHER_CONFIG.outdoorRooms.includes(this.currentRoomId)) {
+        this.scheduleWeatherCheck();
+      }
+    });
+  }
+
+  clearWeather() {
+    this.stopRainSoundOnly();
+    if (this.weatherTimer) {
+      try { this.weatherTimer.remove(); } catch (e) {}
+      this.weatherTimer = null;
+    }
+    if (this.rainEmitter) {
+      try { this.rainEmitter.destroy(); } catch (e) {}
+      this.rainEmitter = null;
+    }
+    if (this.rainTint) {
+      try { this.rainTint.destroy(); } catch (e) {}
+      this.rainTint = null;
+    }
+    this.cloudSprites.forEach(c => { try { if (c && c.destroy) c.destroy(); } catch (e) {} });
+    this.cloudSprites = [];
+    this.weather = 'clear';
+  }
+
+  stopRainSoundOnly() {
+    // Dừng tiếng mưa ngay lập tức khi đổi phòng (không fade dài)
+    if (this.scene?.audioManager?.stopRainSound) {
+      this.scene.audioManager.stopRainSound();
+    }
   }
 
   /**
@@ -364,6 +586,7 @@ export class AmbientEnvironmentManager {
 
   destroy() {
     this.clearEmitters();
+    this.clearWeather();
     if (this.lightOverlay) {
       this.lightOverlay.destroy();
       this.lightOverlay = null;

@@ -63,28 +63,34 @@ export class FloorManager {
       this.scene.audioManager.playFootstep('wood');
     }
 
-    // 2. Pokemon GBA flash + fade out
-    this.scene.cameras.main.flash(70, 255, 255, 255, false);
-    await new Promise(r => setTimeout(r, 70));
-    this.scene.cameras.main.fadeOut(180, 11, 15, 25);
-    await new Promise(r => setTimeout(r, 180));
+    // 2. Transition pixel-dissolve kiểu Pokémon (dùng chung SceneTransitionManager)
+    const targetFloorData = roomConfig.floors[targetFloor];
+    const swapFloor = async () => {
+      // 3. Thiết lập tầng đích
+      this.currentFloor = targetFloor;
 
-    // 3. Thiết lập tầng đích
-    this.currentFloor = targetFloor;
-    const floorData = roomConfig.floors[targetFloor];
+      const spawnX = stairInfo.spawnX !== undefined ? stairInfo.spawnX : (targetFloorData.spawnPoint?.x || 400);
+      const spawnY = stairInfo.spawnY !== undefined ? stairInfo.spawnY : (targetFloorData.spawnPoint?.y || 350);
 
-    const spawnX = stairInfo.spawnX !== undefined ? stairInfo.spawnX : (floorData.spawnPoint?.x || 400);
-    const spawnY = stairInfo.spawnY !== undefined ? stairInfo.spawnY : (floorData.spawnPoint?.y || 350);
+      // 4. Tái nạp lại phòng theo dữ liệu của tầng mới
+      this.scene.loadRoom(currentRoomId, spawnX, spawnY, false);
+    };
 
-    // 4. Tái nạp lại phòng theo dữ liệu của tầng mới
-    this.scene.loadRoom(currentRoomId, spawnX, spawnY, false);
-
-    // 5. Fade in màn hình
-    this.scene.cameras.main.fadeIn(250, 11, 15, 25);
-    await new Promise(r => setTimeout(r, 250));
+    if (this.scene.transitionManager) {
+      await this.scene.transitionManager.transition(swapFloor);
+    } else {
+      // Fallback: flash + fade cũ
+      this.scene.cameras.main.flash(70, 255, 255, 255, false);
+      await new Promise(r => setTimeout(r, 70));
+      this.scene.cameras.main.fadeOut(180, 11, 15, 25);
+      await new Promise(r => setTimeout(r, 180));
+      await swapFloor();
+      this.scene.cameras.main.fadeIn(250, 11, 15, 25);
+      await new Promise(r => setTimeout(r, 250));
+    }
 
     // 6. Hiển thị thông báo tầng (Floor Badge)
-    this.showFloorBadge(floorData.name || `Tòa Alpha — Tầng ${targetFloor + 1}`);
+    this.showFloorBadge(targetFloorData.name || `Tòa Alpha — Tầng ${targetFloor + 1}`);
 
     this.isTransitioning = false;
   }

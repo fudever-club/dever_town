@@ -85,11 +85,14 @@ class AudioManager {
   setMuted(muted) {
     this.isMuted = muted;
     this.saveSettings();
+    // Cập nhật tiếng mưa nếu đang phát
+    if (this._rainNodes) this.setRainIntensity(this._rainNodes.intensity ?? 0.5);
   }
 
   setMasterVolume(vol) {
     this.masterVolume = Math.max(0, Math.min(1, vol));
     this.saveSettings();
+    if (this._rainNodes) this.setRainIntensity(this._rainNodes.intensity ?? 0.5);
   }
 
   setFootstepsEnabled(enabled) {
@@ -1004,6 +1007,77 @@ class AudioManager {
       gain.connect(ctx.destination);
       osc.start(now);
       osc.stop(now + 0.08);
+    } catch (e) {}
+  }
+
+  /**
+   * Tiếng mưa procedural: noise trắng qua lowpass + gain envelope.
+   * Gọi startRainSound() khi trời mưa, stopRainSound() khi tạnh.
+   */
+  startRainSound(intensity = 0.5) {
+    if (this._rainNodes) {
+      this.setRainIntensity(intensity);
+      return;
+    }
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      // Buffer noise 2 giây, lặp lại
+      const len = ctx.sampleRate * 2;
+      const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      noise.loop = true;
+
+      // Lowpass để ra tiếng mưa rào rào thay vì xì xì
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 1400;
+      filter.Q.value = 0.4;
+
+      const gain = ctx.createGain();
+      gain.gain.value = 0;
+      const targetVol = this.isMuted || !this.sfxEnabled ? 0 : this.masterVolume * 0.12 * intensity;
+      gain.gain.linearRampToValueAtTime(targetVol, ctx.currentTime + 2.5);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start();
+
+      this._rainNodes = { noise, filter, gain, intensity };
+    } catch (e) {}
+  }
+
+  setRainIntensity(intensity = 0.5) {
+    if (!this._rainNodes) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      this._rainNodes.intensity = intensity;
+      const targetVol = this.isMuted || !this.sfxEnabled ? 0 : this.masterVolume * 0.12 * intensity;
+      this._rainNodes.gain.gain.cancelScheduledValues(ctx.currentTime);
+      this._rainNodes.gain.gain.linearRampToValueAtTime(targetVol, ctx.currentTime + 1.0);
+    } catch (e) {}
+  }
+
+  stopRainSound() {
+    if (!this._rainNodes) return;
+    const ctx = this.getAudioContext();
+    const nodes = this._rainNodes;
+    this._rainNodes = null;
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      nodes.gain.gain.cancelScheduledValues(now);
+      nodes.gain.gain.linearRampToValueAtTime(0, now + 1.5);
+      setTimeout(() => {
+        try { nodes.noise.stop(); } catch (e) {}
+        try { nodes.noise.disconnect(); nodes.filter.disconnect(); nodes.gain.disconnect(); } catch (e) {}
+      }, 1700);
     } catch (e) {}
   }
 }
