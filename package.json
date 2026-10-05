@@ -50,10 +50,14 @@
     "security:audit": "npm audit --omit=dev"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^4.21.2",
+    "fs-extra": "^11.4.1",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^9.1.1",
     "pg": "^8.23.0",
@@ -67,6 +71,7 @@
     "concurrently": "^9.1.2",
     "jpeg-js": "^0.4.4",
     "pngjs": "^7.0.0",
+    "typescript": "^5.9.3",
     "vite": "^6.2.0"
   }
 }

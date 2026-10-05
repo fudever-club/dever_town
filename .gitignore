@@ -25,3 +25,11 @@ __pycache__/
 *.py[cod]
 playtest_60s_results/
 audit_gameplay/
+
+# Capacitor Android generated assets (copied from dist on `npx cap sync`)
+android/app/src/main/assets/public
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/app/.cxx
