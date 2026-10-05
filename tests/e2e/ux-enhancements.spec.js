@@ -165,15 +165,30 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
   test('06. Interactive [E] in Game Arcade opens arcade games and robot studio', async ({ page }) => {
     // Chuyển sang phòng game_arcade
     await page.locator('#room-selector').selectOption('game_arcade');
-    await page.waitForTimeout(1000);
+    // Đợi WorldScene thực sự chuyển sang game_arcade và đăng ký xong interaction
+    // zones (thay waitForTimeout cố định): nối tiếp pattern __WORLD_SCENE__ ở
+    // beforeEach — trên mobile chậm, selectOption có thể resolve trước khi change
+    // handler chạy xong, khiến E bấm nhầm phòng và modal không mở.
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene && scene.currentRoomId === 'game_arcade'
+        && (scene.interactionManager?.zones?.length ?? 0) > 0;
+    }), { timeout: 15000 }).toBe(true);
 
     // Di chuyển tới máy Cyber Snake tại tile (4, 4)
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      if (!scene) return;
+      if (scene.interactionManager) scene.interactionManager.lastCheckTime = 0;
       scene.player.setPosition(4 * 32 + 16, 5 * 32 + 16);
-      scene.interactionManager.update(scene.player);
+      scene.player.body?.reset(4 * 32 + 16, 5 * 32 + 16);
+      scene.interactionManager?.update(scene.player);
     });
-    await page.waitForTimeout(200);
+    // Đợi InteractionManager nhận diện zone trước khi bấm E (thay sleep 200ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene?.interactionManager?.currentActiveZone;
+    }), { timeout: 5000 }).toBe(true);
 
     // Bấm phím E
     await page.keyboard.press('KeyE');
