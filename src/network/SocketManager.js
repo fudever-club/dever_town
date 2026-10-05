@@ -35,6 +35,8 @@ export class SocketManager {
     if (!GAME_CONFIG.NETWORK.SERVER_URL) {
       this.isStandalone = true;
       this.isConnected = false;
+      // Van dam bao phien co deviceId ke ca o standalone mode (khong doi socket connect).
+      authService.getDeviceId();
       console.log('🎮 [Network] Chế độ Khám Phá Campus (Standalone Mode) kích hoạt — Tối ưu hóa mượt mà cho Vercel.');
       this.updateConnectionStatus(true, 'standalone');
       if (this.scene.networkStatusOverlay) {
