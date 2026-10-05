@@ -209,7 +209,15 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
 
     // Chuyển sang phòng sports_complex
     await page.locator('#room-selector').selectOption('sports_complex');
-    await page.waitForTimeout(1200);
+    // Đợi WorldScene thực sự chuyển sang sports_complex và đăng ký xong interaction
+    // zones (thay waitForTimeout cố định): nối tiếp pattern __WORLD_SCENE__ ở
+    // beforeEach — trên mobile chậm, selectOption có thể resolve trước khi change
+    // handler chạy xong, khiến E bấm nhầm phòng và modal không mở.
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene && scene.currentRoomId === 'sports_complex'
+        && (scene.interactionManager?.zones?.length ?? 0) > 0;
+    }), { timeout: 15000 }).toBe(true);
 
     // Di chuyển tới Sân bóng đá tại tile (5, 4)
     await page.evaluate(() => {
@@ -220,7 +228,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       scene.player.body?.reset(5 * 32 + 16, 4 * 32 + 16);
       scene.interactionManager?.update(scene.player);
     });
-    await page.waitForTimeout(300);
+    // Đợi InteractionManager nhận diện zone trước khi bấm E (thay sleep 300ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene?.interactionManager?.currentActiveZone;
+    }), { timeout: 5000 }).toBe(true);
 
     // Bấm phím E
     await page.keyboard.press('KeyE');
