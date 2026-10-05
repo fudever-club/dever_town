@@ -3,6 +3,11 @@ import { test, expect } from '@playwright/test';
 test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () => {
 
   test.beforeEach(async ({ page }) => {
+    // Tắt onboarding guide (overlay toàn màn hình, z-index rất cao) để nó không che
+    // các nút tương tác trong test khi game khởi tạo chậm.
+    await page.addInitScript(() => {
+      localStorage.setItem('dever_onboarding_seen', 'true');
+    });
     await page.goto('/');
 
     // Nhập tên và đăng nhập với tư cách khách
@@ -13,6 +18,10 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     // Chờ màn hình đón tiếp ẩn đi và canvas hiển thị
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
     await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 10000 });
+    // Chờ WorldScene.create() chạy xong (đăng ký xong listener đổi phòng của #room-selector).
+    // Trên mobile game khởi tạo chậm hơn test: nếu selectOption bắn sự kiện change trước khi
+    // listener được đăng ký, yêu cầu đổi phòng bị rơi mất và test rớt oan.
+    await expect.poll(async () => page.evaluate(() => !!window.__WORLD_SCENE__), { timeout: 15000 }).toBe(true);
   });
 
   test('01. Minimap / Radar HUD is present, renders canvas and toggles via [M] and button', async ({ page }) => {
