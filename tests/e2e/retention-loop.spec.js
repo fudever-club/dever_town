@@ -164,20 +164,24 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
 
     const syncCountBeforeFailure = syncPayloads.length;
     failSync = true;
+    // Đăng ký waiter TRƯỚC khi unlock để bắt đúng request của batch đồng bộ đầu tiên.
+    const firstBatchInFlight = page.waitForRequest('**/api/auth/sync-profile');
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       scene?.achievementManager?.unlock('golden_frog');
     });
     await expect(page.locator('#daily-goal-sync-status')).toContainText('Đang đồng bộ');
-    // Queue a newer total while the first failed batch is still in flight.
-    // Retry must keep 195, not restore the older 170-point payload.
-    await page.waitForTimeout(450);
+    // Batch đầu tiên đã rời đi và đang bay: route mock giữ nó 650ms rồi mới trả 503,
+    // nên unlock thứ hai ngay lúc này CHẮC CHẮN được queue trong khi batch đầu chưa
+    // hoàn tất (thay sleep 450ms đoán mò). Retry phải giữ 195, không khôi phục payload 170 cũ.
+    await firstBatchInFlight;
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       scene?.achievementManager?.unlock('stage_dancer');
     });
     await expect.poll(() => syncPayloads.length).toBeGreaterThanOrEqual(syncCountBeforeFailure + 2);
-    await page.waitForTimeout(700);
+    // Bỏ sleep 700ms: chính assertion toBeVisible (timeout 5000) đã là wait theo tín
+    // hiệu cho nút retry xuất hiện sau khi các batch thất bại được xử lý xong.
     await expect(page.locator('#daily-goal-retry')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#daily-goal-sync-status')).toContainText('tiến trình vẫn an toàn');
 

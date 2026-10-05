@@ -245,17 +245,34 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const actionBtn = page.locator('#sports-action-btn');
     await expect(actionBtn).toBeVisible();
     await actionBtn.click();
-    await page.waitForTimeout(100);
+    // GHI CHÚ: #sports-action-btn hiện có 2 click listener cùng gọi onActionTrigger
+    // (InteractiveModal.js:194 không có guard + :1719 có guard) nên mỗi click bắn
+    // 2 lần: aiming -> power_charging -> runup ngay lập tức. Đây là bug product-code
+    // (ngoài phạm vi task A2 — không sửa src/), test chỉ assert hành vi quan sát được.
+    // Đợi cú sút rời trạng thái aiming (thay sleep 100ms).
+    const footballState = () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return scene?.interactiveModal?.sportsArcade?.football?.state;
+    });
+    await expect.poll(footballState, { timeout: 5000 }).not.toBe('aiming');
 
-    // Thử phím Space để sút bóng
+    // Đợi cú sút hoàn tất: runup/flight -> trạng thái kết thúc (thay sleep 200ms).
+    await expect.poll(footballState, { timeout: 10000 })
+      .toMatch(/^(celebrating|saved|hit_wall|missed)$/);
+
+    // Thử phím Space ở trạng thái kết thúc -> đổi vai thủ môn (resetGoalkeeper).
     await page.keyboard.press('Space');
-    await page.waitForTimeout(200);
+    await expect.poll(footballState, { timeout: 5000 }).toBe('gk_wait');
 
     // Chuyển tab sang Basketball
     const basketballTab = page.locator('.sports-nav-tab[data-sport="basketball"]');
     if (await basketballTab.isVisible()) {
       await basketballTab.click();
-      await page.waitForTimeout(100);
+      // Đợi tab switch thực sự landing (thay sleep 100ms)
+      await expect.poll(async () => page.evaluate(() => {
+        const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+        return scene?.interactiveModal?.sportsArcade?.currentGame;
+      }), { timeout: 5000 }).toBe('basketball');
       await actionBtn.click();
     }
 
@@ -263,7 +280,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const volleyballTab = page.locator('.sports-nav-tab[data-sport="volleyball"]');
     if (await volleyballTab.isVisible()) {
       await volleyballTab.click();
-      await page.waitForTimeout(100);
+      // Đợi tab switch thực sự landing (thay sleep 100ms)
+      await expect.poll(async () => page.evaluate(() => {
+        const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+        return scene?.interactiveModal?.sportsArcade?.currentGame;
+      }), { timeout: 5000 }).toBe('volleyball');
       await actionBtn.click();
     }
 
@@ -294,7 +315,13 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
 
     // Chuyển sang canteen_cafe để kiểm tra quầy Barista
     await page.locator('#room-selector').selectOption('canteen_cafe');
-    await page.waitForTimeout(1200);
+    // Đợi WorldScene thực sự chuyển sang canteen_cafe và đăng ký xong interaction
+    // zones — cùng pattern __WORLD_SCENE__ đã dùng ở test 06/07 (thay sleep 1200ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene && scene.currentRoomId === 'canteen_cafe'
+        && (scene.interactionManager?.zones?.length ?? 0) > 0;
+    }), { timeout: 15000 }).toBe(true);
 
     // Di chuyển tới Quầy Barista tại tile (19, 3) sát quầy (tile 19, 2)
     await page.evaluate(() => {
@@ -305,7 +332,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       scene.player.body?.reset(19 * 32 + 16, 3 * 32 + 16);
       scene.interactionManager?.update(scene.player);
     });
-    await page.waitForTimeout(300);
+    // Đợi InteractionManager nhận diện zone trước khi bấm E (thay sleep 300ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene?.interactionManager?.currentActiveZone;
+    }), { timeout: 5000 }).toBe(true);
 
     // Bấm phím E mở Barista
     await page.keyboard.press('KeyE');
@@ -317,7 +348,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const actionBtn = page.locator('#sports-action-btn');
     await expect(actionBtn).toBeVisible();
     await actionBtn.click();
-    await page.waitForTimeout(100);
+    // Đợi barista engine nhận order: station order -> tamping/layering (thay sleep 100ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return scene?.interactiveModal?.sportsArcade?.baristaEngine?.station;
+    }), { timeout: 5000 }).toMatch(/^(tamping|layering)$/);
 
     // Đóng modal
     await page.keyboard.press('Escape');
@@ -325,7 +360,13 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
 
     // Chuyển sang sports_complex kiểm tra sân bóng đá khi logged in
     await page.locator('#room-selector').selectOption('sports_complex');
-    await page.waitForTimeout(1200);
+    // Đợi WorldScene thực sự chuyển sang sports_complex và đăng ký xong interaction
+    // zones — cùng pattern __WORLD_SCENE__ đã dùng ở test 06/07 (thay sleep 1200ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene && scene.currentRoomId === 'sports_complex'
+        && (scene.interactionManager?.zones?.length ?? 0) > 0;
+    }), { timeout: 15000 }).toBe(true);
 
     // Di chuyển vào sân bóng đá tại tile (5, 4)
     await page.evaluate(() => {
@@ -336,7 +377,11 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       scene.player.body?.reset(5 * 32 + 16, 4 * 32 + 16);
       scene.interactionManager?.update(scene.player);
     });
-    await page.waitForTimeout(300);
+    // Đợi InteractionManager nhận diện zone trước khi bấm E (thay sleep 300ms).
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return !!scene?.interactionManager?.currentActiveZone;
+    }), { timeout: 5000 }).toBe(true);
 
     // Bấm phím E mở Sút bóng
     await page.keyboard.press('KeyE');

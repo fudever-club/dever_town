@@ -9,7 +9,9 @@ test.describe('Phase 2 - Transition & Weather visual check', () => {
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/, { timeout: 10000 });
     await expect(page.locator('#game-loading-screen')).toHaveClass(/hidden/, { timeout: 15000 });
     await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 10000 });
-    await page.waitForTimeout(2500);
+    // Chờ WorldScene.create() chạy xong (ambient/transition manager đã khởi tạo)
+    // thay cho sleep 2500ms cố định — cùng pattern __WORLD_SCENE__ ở ux-enhancements.
+    await expect.poll(async () => page.evaluate(() => !!window.__WORLD_SCENE__), { timeout: 15000 }).toBe(true);
   });
 
   test('portal transition shows pixel-dissolve mid-way', async ({ page }) => {

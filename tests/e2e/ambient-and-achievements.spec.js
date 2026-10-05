@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('DEVER TOWN - Dynamic Ambient Particles, Juice & Achievement Mastery Suite', () => {
   test.beforeEach(async ({ page }) => {
+    // Tắt onboarding guide (overlay toàn màn hình) ngay từ init script để nó không
+    // che tương tác trong test — cùng pattern đã dùng ở retention-loop / ux-enhancements.
+    await page.addInitScript(() => {
+      localStorage.setItem('dever_onboarding_seen', 'true');
+    });
     await page.goto('/');
 
     const nameInput = page.locator('#gate-guest-name');
@@ -11,13 +16,6 @@ test.describe('DEVER TOWN - Dynamic Ambient Particles, Juice & Achievement Maste
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/, { timeout: 10000 });
     await expect(page.locator('#game-loading-screen')).toHaveClass(/hidden/, { timeout: 15000 });
     await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 10000 });
-
-    // Đóng hướng dẫn tân thủ nếu xuất hiện
-    const closeBtn = page.locator('#onboarding-close-btn');
-    if (await closeBtn.isVisible()) {
-      await closeBtn.click();
-      await page.waitForTimeout(300);
-    }
   });
 
   test('01. Ambient Environment Manager initializes room-specific particle emitters', async ({ page }) => {
@@ -73,7 +71,12 @@ test.describe('DEVER TOWN - Dynamic Ambient Particles, Juice & Achievement Maste
     });
 
     expect(juiceResult).toBe(true);
-    await page.waitForTimeout(400);
+    // Đợi camera shake hoàn tất (thay sleep 400ms đoán mò): shakeEffect.isRunning
+    // là tín hiệu thật từ Phaser — false khi hiệu ứng 100ms kết thúc.
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+      return scene?.cameras?.main?.shakeEffect?.isRunning === false;
+    }), { timeout: 5000 }).toBe(true);
   });
 
   test('03. Achievement Manager unlocks achievements and shows Golden Toast Banner', async ({ page }) => {
