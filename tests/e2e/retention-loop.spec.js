@@ -4,6 +4,9 @@ async function enterFreshGuest(page, name = 'Retention Tester') {
   await page.addInitScript(() => {
     if (!sessionStorage.getItem('retention-test-initialized')) {
       localStorage.clear();
+      // Onboarding guide là overlay toàn màn hình (z-index rất cao): tắt hẳn trong test
+      // để không che nút "Thử lại" khi game khởi tạo chậm (tránh flake do dismiss hụt).
+      localStorage.setItem('dever_onboarding_seen', 'true');
       sessionStorage.setItem('retention-test-initialized', 'true');
     }
   });
@@ -109,6 +112,9 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
       localStorage.clear();
       localStorage.setItem('dever_points', '5');
       localStorage.setItem('dever_quest_date', new Date().toDateString());
+      // Tắt onboarding guide (overlay toàn màn hình) để nó không che nút #daily-goal-retry
+      // khi game khởi tạo chậm hơn nhịp dismiss best-effort ở dưới.
+      localStorage.setItem('dever_onboarding_seen', 'true');
     });
     await page.route('**/api/auth/login', route => route.fulfill({
       status: 200,
