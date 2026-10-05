@@ -1,0 +1,5 @@
+/* Quiz contrast fixes — tách khỏi main.css (220KB, vượt giới hạn API push).
+   Load SAU main.css để override. Fix white-on-white trong quiz modal. */
+.quiz-code code { color: #3730a3; font-weight: 700; }
+.quiz-option { color: #1e293b; }
+.quiz-mini-board { color: #1e293b; }
