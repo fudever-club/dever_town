@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { PERF_CONFIG } from '../config/perfConfig.js';
 import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
@@ -40,6 +41,12 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
 
     this.speechBubble = null;
     this.speechTimer = null;
+
+    // Phase 0 perf: client-side culling of render work when off-camera.
+    // Only rendering visibility is ever touched here — network, interpolation
+    // and state updates keep running untouched. Local player is a different
+    // class (Player) so it can never be culled by this code.
+    this._renderCulled = false;
 
     this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
@@ -290,6 +297,67 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     }
   }
 
+  /**
+   * Client-side render culling: hide all visuals of this RemotePlayer when it
+   * is outside the camera world view (plus a margin so edge players don't pop),
+   * and restore them when it comes back into view.
+   * Pure rendering visibility — position, animation, interpolation, network
+   * state all keep updating in update() regardless of culling.
+   */
+  updateCulling() {
+    if (!PERF_CONFIG.REMOTE_PLAYER_CULL_ENABLED) {
+      if (this._renderCulled) this._applyRenderVisibility(true);
+      return;
+    }
+    const cam = this.scene?.cameras?.main;
+    if (!cam) return;
+    const view = cam.worldView;
+    const m = PERF_CONFIG.REMOTE_PLAYER_CULL_MARGIN;
+    const inView =
+      this.x > view.x - m && this.x < view.right + m &&
+      this.y > view.y - m && this.y < view.bottom + m;
+
+    if (inView !== !this._renderCulled) {
+      // Visibility state must change: inView -> visible, off-view -> hidden.
+      this._applyRenderVisibility(inView);
+    } else if (this._renderCulled) {
+      // Stay culled: transient objects (speech bubbles, emote icons, body-emote
+      // overlays) may have been created while hidden — keep them hidden so the
+      // player can't pop partially visible while off-camera.
+      this._hideTransientRenderObjects();
+    }
+  }
+
+  _applyRenderVisibility(visible) {
+    this._renderCulled = !visible;
+    this.setVisible(visible);
+    if (this.shadowEllipse) this.shadowEllipse.setVisible(visible);
+    if (this.nameTagContainer) this.nameTagContainer.setVisible(visible);
+    this._setTransientRenderObjectsVisible(visible);
+    // No pointer events on a culled (invisible) player; restore on un-cull.
+    if (this.input) this.input.enabled = visible;
+    if (this.nameTagContainer && this.nameTagContainer.list) {
+      for (const child of this.nameTagContainer.list) {
+        if (child && child.input) child.input.enabled = visible;
+      }
+    }
+  }
+
+  _hideTransientRenderObjects() {
+    this._setTransientRenderObjectsVisible(false);
+  }
+
+  _setTransientRenderObjectsVisible(visible) {
+    if (this.speechBubble) this.speechBubble.setVisible(visible);
+    if (this.equippedContainer) this.equippedContainer.setVisible(visible);
+    if (this.emoteContainer) this.emoteContainer.setVisible(visible);
+    if (this._emoteOverlays) {
+      for (const o of this._emoteOverlays) {
+        if (o && o.obj) o.obj.setVisible(visible);
+      }
+    }
+  }
+
   update(time, delta = 16.67) {
     syncEmoteOverlays(this);
     const prevX = this.x;
@@ -382,6 +450,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
         this.equippedContainer.setPosition(this.x + 14, this.y - 8);
       }
     }
+
+    // Render culling is evaluated last, every frame. All movement/animation/
+    // network state above runs regardless of visibility.
+    this.updateCulling();
   }
 
   destroy(fromScene) {
