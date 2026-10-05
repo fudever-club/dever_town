@@ -1,7 +1,27 @@
 const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 let mainWindow = null;
+
+// Icon: sau `npm run build`, vite copy public/* -> dist/, nên dist/favicon.ico
+// là icon dùng cho app đã đóng gói. Fallback public/favicon.ico khi chạy dev
+// trực tiếp từ source (chưa build).
+function resolveIcon() {
+  const candidates = [
+    path.join(__dirname, '../dist/favicon.ico'),
+    path.join(__dirname, '../public/favicon.ico'),
+  ];
+  for (const p of candidates) {
+    try {
+      fs.accessSync(p, fs.constants.R_OK);
+      return p;
+    } catch {
+      /* thử candidate tiếp theo */
+    }
+  }
+  return undefined;
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -11,7 +31,7 @@ function createWindow() {
     minHeight: 640,
     title: 'DEVER TOWN - FU-DEVER (FUDA)',
     backgroundColor: '#070a12',
-    icon: path.join(__dirname, '../public/favicon.ico'),
+    icon: resolveIcon(),
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
