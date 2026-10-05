@@ -859,6 +859,7 @@ export class WorldScene extends Phaser.Scene {
 
     // 12. Emote Bar (Biểu cảm nhanh & Nhảy múa)
     this.emoteBar = new EmoteBar({
+      scene: this,
       onSelectEmote: (emoteId) => this.handleLocalEmote(emoteId)
     });
 

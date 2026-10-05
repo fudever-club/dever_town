@@ -4,29 +4,43 @@
  * Nhảy múa (dance step), Gật đầu, Power pose và Thắc mắc.
  */
 import { audioManager } from '../../utils/AudioManager.js';
+import { getEmoteIconURL } from '../../utils/emoteIcons.js';
 
 export const EMOTE_DEFINITIONS = [
-  { id: 'wave', label: 'Vẫy Chào', icon: '👋', hotkey: '1' },
-  { id: 'heart', label: 'Thả Tim', icon: '❤️', hotkey: '2' },
-  { id: 'fire', label: 'Cháy Quá', icon: '🔥', hotkey: '3' },
-  { id: 'clap', label: 'Vỗ Tay', icon: '👏', hotkey: '4' },
-  { id: 'dance', label: 'Nhảy Múa', icon: '🕺', hotkey: '5' },
-  { id: 'question', label: 'Thắc Mắc', icon: '❓', hotkey: '6' },
-  { id: 'nod', label: 'Gật Đầu', icon: '👍', hotkey: '7' },
-  { id: 'power', label: 'Power Pose', icon: '💪', hotkey: '8' }
+  { id: 'wave', label: 'Vẫy Chào', hotkey: '1' },
+  { id: 'heart', label: 'Thả Tim', hotkey: '2' },
+  { id: 'fire', label: 'Cháy Quá', hotkey: '3' },
+  { id: 'clap', label: 'Vỗ Tay', hotkey: '4' },
+  { id: 'dance', label: 'Nhảy Múa', hotkey: '5' },
+  { id: 'question', label: 'Thắc Mắc', hotkey: '6' },
+  { id: 'nod', label: 'Gật Đầu', hotkey: '7' },
+  { id: 'power', label: 'Power Pose', hotkey: '8' }
 ];
 
 export class EmoteBar {
   /**
    * @param {Object} options
+   * @param {Object} options.scene - Phaser scene (để lấy pixel emote icons)
    * @param {Function} options.onSelectEmote
    */
-  constructor({ onSelectEmote } = {}) {
+  constructor({ scene, onSelectEmote } = {}) {
+    this.scene = scene || null;
     this.onSelectEmote = onSelectEmote;
     this.isOpen = false;
 
     this.initDOM();
     this.bindEvents();
+  }
+
+  /** Icon hiển thị: pixel icon 16x16, fallback ô trống (không dùng emoji). */
+  getEmoteIconHTML(item) {
+    const url = this.scene
+      ? getEmoteIconURL(this.scene, item.id)
+      : null;
+    if (url) {
+      return `<img class="emote-icon-img" src="${url}" alt="${item.label}" width="32" height="32" style="image-rendering: pixelated;" />`;
+    }
+    return `<span class="emote-icon-fallback" aria-hidden="true"></span>`;
   }
 
   initDOM() {
@@ -36,7 +50,7 @@ export class EmoteBar {
 
     const itemsHtml = EMOTE_DEFINITIONS.map(item => `
       <button type="button" class="emote-item-btn" data-emote="${item.id}" title="${item.label} [${item.hotkey}]">
-        <span class="emote-icon">${item.icon}</span>
+        ${this.getEmoteIconHTML(item)}
         <span class="emote-label">${item.label}</span>
       </button>
     `).join('');

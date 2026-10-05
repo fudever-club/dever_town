@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { generateEmoteIcons } from '../utils/emoteIcons.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -72,6 +73,7 @@ export class BootScene extends Phaser.Scene {
     TextureGenerator.generateEmoteOverlays(this);
     TextureGenerator.generateItemIcons(this);
     TextureGenerator.generateBadgeIcons(this);
+    generateEmoteIcons(this);
 
     // Đăng ký chuỗi hoạt ảnh (animations) cho toàn bộ spritesheet Gather.town mới
     const newAvatars = [
