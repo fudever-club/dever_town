@@ -187,13 +187,6 @@ export class InteractiveModal {
       }
     });
 
-    // 7. Sports Game Action
-    const sportActionBtn = document.getElementById('sports-action-btn');
-    if (sportActionBtn) {
-      sportActionBtn.addEventListener('click', () => {
-        if (this.sportsArcade) this.sportsArcade.onActionTrigger();
-      });
-    }
   }
 
   isOpen() {
