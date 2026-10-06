@@ -43,6 +43,8 @@ export class TilePool {
     img.setDepth(depth);
     img.setVisible(true);
     img.setActive(true);
+    // Zoom x-ray: tile tái sử dụng phải về alpha 1, tránh tile mờ từ phòng trước rò rỉ sang
+    img.setAlpha(1);
 
     this.active.push(img);
     return img;
@@ -57,6 +59,7 @@ export class TilePool {
       img.setVisible(false);
       img.setActive(false);
       img.setPosition(-9999, -9999);
+      img.setAlpha(1); // reset x-ray fade khi thu hồi
       this.pool.push(img);
     }
     this.active.length = 0;

@@ -1,0 +1,78 @@
+/**
+ * zoom-controls.css — Style cho cụm nút zoom camera (+/−, pill %).
+ * File riêng (KHÔNG sửa src/styles/main.css trực tiếp) — load SAU main.css trong index.html.
+ */
+
+/* Cho phép cụm zoom định vị tuyệt đối trong khung game */
+#game-container {
+  position: relative;
+}
+
+/* Pinch-zoom cần touch-action:none trên canvas (ghi đè main.css) */
+#game-container canvas {
+  touch-action: none;
+}
+
+/* Cụm điều khiển: góc PHẢI-TRÊN (góc phải-dưới đã bị #daily-goal-hud chiếm),
+   không chặn tương tác canvas trừ chính các nút */
+.dever-zoom-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 60;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dever-zoom-controls .dzc-btn {
+  pointer-events: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(13, 23, 46, 0.85);
+  color: #bae6fd;
+  font-family: 'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  backdrop-filter: blur(4px);
+}
+
+.dever-zoom-controls .dzc-btn:hover {
+  background: rgba(30, 58, 95, 0.92);
+  border-color: rgba(56, 189, 248, 0.6);
+}
+
+.dever-zoom-controls .dzc-btn:active {
+  transform: scale(0.94);
+}
+
+.dever-zoom-controls .dzc-pill {
+  pointer-events: none;
+  min-width: 52px;
+  text-align: center;
+  padding: 7px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(13, 23, 46, 0.85);
+  color: #e0f2fe;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+/* Mobile (<=1024px): header + daily-goal-hud chiếm phải-trên, thanh touch chiếm
+   đáy → dời cụm zoom xuống giữa-phải (dưới daily hud, trên thanh touch) */
+@media (max-width: 1024px) {
+  .dever-zoom-controls {
+    top: 210px;
+  }
+}
