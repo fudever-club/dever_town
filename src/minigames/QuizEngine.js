@@ -56,6 +56,21 @@ export class QuizEngine {
     if (this.onEvent) this.onEvent(event, data);
   }
 
+  /**
+   * Kiểm tra socket có kết nối trước khi gửi sự kiện.
+   * Nếu mất kết nối: hiện toast lỗi qua kênh 'error' (modal đã xử lý)
+   * và trả về false để caller return sớm, tránh emit bị socket.io buffer ngầm.
+   */
+  _socketUsable(action) {
+    if (this.socket && this.socket.connected) return true;
+    this._emit('error', {
+      message: action === 'create'
+        ? 'Chưa kết nối máy chủ, không thể tạo phòng. Vui lòng thử lại sau.'
+        : 'Chưa kết nối máy chủ, không thể tham gia phòng. Vui lòng thử lại sau.',
+    });
+    return false;
+  }
+
   _bindSocket() {
     if (this._bound || !this.socket) return;
     this._bound = true;
@@ -118,12 +133,14 @@ export class QuizEngine {
   // ---- Actions (client -> server) ----
 
   create({ roomId, questionCount = 10, category = 'mixed' } = {}) {
+    if (!this._socketUsable('create')) return;
     this._bindSocket();
     this.reset();
     this.socket.emit('quiz:create', { roomId, questionCount, category });
   }
 
   join(quizId) {
+    if (!this._socketUsable('join')) return;
     this._bindSocket();
     this.reset();
     this.socket.emit('quiz:join', { quizId });

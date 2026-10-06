@@ -22,6 +22,7 @@ ok(comboMax === Math.round(200 * 3), 'combo cap x3');
 const emitted = [];
 const fakeSocket = {
   id: 'sock1',
+  connected: true,
   handlers: {},
   on(ev, fn) { this.handlers[ev] = fn; },
   emit(ev, data) { emitted.push({ ev, data }); },
@@ -90,6 +91,40 @@ ok(handlerSrc.includes('setupQuizHandler'), 'socketHandler đăng ký setupQuizH
 // 5. Server import được question bank (ESM)
 const q = await import('../src/config/quizQuestions.js');
 ok(Array.isArray(q.QUIZ_QUESTIONS) && q.QUIZ_QUESTIONS.length > 0, 'QUIZ_QUESTIONS load được');
+
+// 6. Guard khi socket disconnected / null
+const deadEmitted = [];
+const deadSocket = {
+  id: 'sockX',
+  connected: false,
+  handlers: {},
+  on(ev, fn) { this.handlers[ev] = fn; },
+  emit(ev, data) { deadEmitted.push({ ev, data }); },
+};
+const errEngine = new QuizEngine({ socket: deadSocket });
+const errMsgs = [];
+errEngine.onEvent = (ev, data) => { if (ev === 'error') errMsgs.push(data.message); };
+
+errEngine.create({ roomId: 'main_hall' });
+ok(deadEmitted.length === 0, 'create khi socket disconnected -> không emit');
+ok(errMsgs.length === 1 && errMsgs[0].includes('không thể tạo phòng'), 'create khi socket disconnected -> toast lỗi tiếng Việt');
+ok(errEngine.state === QUIZ_CONFIG.states.IDLE, 'create bị chặn -> state giữ IDLE');
+
+errEngine.join('quiz_x');
+ok(!deadEmitted.some(e => e.ev === 'quiz:join'), 'join khi socket disconnected -> không emit');
+ok(errMsgs.length === 2 && errMsgs[1].includes('không thể tham gia phòng'), 'join khi socket disconnected -> toast lỗi tiếng Việt');
+
+const noEmoji = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/u;
+ok(!noEmoji.test(errMsgs.join(' ')), 'toast lỗi không chứa emoji (AGENTS.md)');
+
+// Socket null hoàn toàn cũng không throw
+const nullEngine = new QuizEngine({ socket: null });
+const nullErrs = [];
+nullEngine.onEvent = (ev, data) => { if (ev === 'error') nullErrs.push(data.message); };
+let threw = false;
+try { nullEngine.create({ roomId: 'main_hall' }); nullEngine.join('quiz_x'); }
+catch { threw = true; }
+ok(!threw && nullErrs.length === 2, 'socket null -> không throw, có toast lỗi');
 
 console.log(`\nverify_quiz_engine: ${pass} passed, ${fail} failed`);
 process.exit(fail > 0 ? 1 : 0);
