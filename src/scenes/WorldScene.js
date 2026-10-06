@@ -48,6 +48,22 @@ import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
 import { TilePool } from '../utils/TilePool.js';
+import { ZoomControls } from '../ui/hud/ZoomControls.js';
+import {
+  CAMERA_VIEW_W,
+  CAMERA_VIEW_H,
+  CAMERA_ZOOM,
+  XRAY,
+  computeMinZoom,
+  clampZoom,
+  snapZoom,
+  parseStoredZoom,
+  computeDefaultMobileZoom,
+  isOccluderTileType,
+  shouldXrayFade,
+  worldPointAt,
+  zoomToPointScroll
+} from '../config/cameraConfig.js';
 import { telemetry } from '../utils/Telemetry.js';
 import { FloorManager } from '../managers/FloorManager.js';
 import { SceneTransitionManager } from '../managers/SceneTransitionManager.js';
@@ -64,6 +80,15 @@ export class WorldScene extends Phaser.Scene {
     this.tileSprites = [];
     this.portalLabels = [];
     this.obstacleShadows = [];
+    // Camera zoom (x-ray): tile che khuất, zoom người dùng, tween/pinch state
+    this.occluderTiles = [];
+    this.zoomControls = null;
+    this._userZoom = null;
+    this._zoomTween = null;
+    this._xrayTimer = 0;
+    this._wheelHandler = null;
+    this._pinchPointers = new Map();
+    this._pinchStart = null;
     this.npcGroup = [];
     this.npcDialogueModal = null;
     this.audioManager = audioManager;
@@ -207,6 +232,10 @@ export class WorldScene extends Phaser.Scene {
 
     // 6. HUD & Network
     this.createHUD();
+    // Camera zoom do người chơi điều khiển: wheel/pinch trên canvas + nút +/−
+    this.setupZoomControls();
+    this.zoomControls = new ZoomControls({ scene: this });
+    this._refreshZoomUI();
     this.socketManager = new SocketManager(this);
 
     // 7. UI Modals & Network Monitor
@@ -353,25 +382,302 @@ export class WorldScene extends Phaser.Scene {
     }, 3200);
   }
 
+  // ---------------------------------------------------------------------------
+  // Camera zoom do người chơi điều khiển (wheel / pinch / nút +/−)
+  // ---------------------------------------------------------------------------
+
+  /** Khoảng zoom cho phép: [fit-room tính động, 2.5]. */
+  getZoomRange() {
+    const mapData = this.mapData || MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    let roomW = GAME_CONFIG.MAP_WIDTH;
+    let roomH = GAME_CONFIG.MAP_HEIGHT;
+    if (mapData && Array.isArray(mapData.layout) && mapData.layout.length > 0) {
+      roomW = mapData.layout[0].length * GAME_CONFIG.TILE_SIZE;
+      roomH = mapData.layout.length * GAME_CONFIG.TILE_SIZE;
+    }
+    return { min: computeMinZoom(roomW, roomH), max: CAMERA_ZOOM.MAX };
+  }
+
+  /** Zoom mặc định: desktop 1.0 (thấy toàn phòng), mobile giữ công thức adaptive cũ. */
+  computeDefaultZoom() {
+    const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isMobile) {
+      // Màn hình dọc: tối ưu nhân vật và map to rõ, vừa tầm mắt
+      // Màn hình ngang: tầm nhìn rộng rãi bao quát căn phòng
+      return computeDefaultMobileZoom(window.innerWidth, window.innerHeight);
+    }
+    return CAMERA_ZOOM.DEFAULT_DESKTOP;
+  }
+
+  /** Zoom mà người chơi đang dùng (target, không phải giá trị tween giữa chừng). */
+  getCurrentZoom() {
+    if (this._userZoom != null) return this._userZoom;
+    const camera = this.cameras && this.cameras.main;
+    return camera ? camera.zoom : 1;
+  }
+
+  _loadStoredZoom() {
+    try {
+      const raw = localStorage.getItem(CAMERA_ZOOM.STORAGE_KEY);
+      if (raw == null) return null;
+      const range = this.getZoomRange();
+      return parseStoredZoom(raw, range.min, range.max);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  _persistZoom(zoom) {
+    try {
+      localStorage.setItem(CAMERA_ZOOM.STORAGE_KEY, String(zoom));
+    } catch (e) {}
+  }
+
+  /**
+   * Áp zoom + sửa lỗi follow lệch tâm.
+   * Phaser follow: scroll → follow − offset − w/2, nên điểm follow render tại
+   * (offset + w/2) * zoom. Muốn về tâm (w/2): offset = −(w − w/zoom)/2.
+   * (Dấu ÂM — đã kiểm chứng với Camera.js preRender: fx = follow.x − followOffset.x.)
+   * Gọi trên MỌI lần đổi zoom.
+   */
+  _applyFollowOffset(zoom) {
+    const camera = this.cameras && this.cameras.main;
+    if (!camera) return;
+    const w = camera.width;
+    const h = camera.height;
+    camera.setFollowOffset(-(w - w / zoom) / 2, -(h - h / zoom) / 2);
+  }
+
+  _refreshZoomUI() {
+    if (this.zoomControls) {
+      this.zoomControls.refresh(this.getCurrentZoom());
+    }
+  }
+
+  /**
+   * Áp zoom ngay lập tức về một điểm màn hình (dùng cho pinch, resize).
+   * screenPt: tọa độ game-px tính từ góc trái-trên canvas.
+   */
+  applyZoomImmediate(newZoom, screenPt) {
+    const camera = this.cameras && this.cameras.main;
+    if (!camera) return;
+    const range = this.getZoomRange();
+    newZoom = snapZoom(clampZoom(newZoom, range.min, range.max));
+    this._userZoom = newZoom;
+    this._persistZoom(newZoom);
+    if (screenPt) {
+      const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom);
+      const sc = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom);
+      camera.setZoom(newZoom);
+      camera.scrollX = sc.scrollX;
+      camera.scrollY = sc.scrollY;
+    } else {
+      camera.setZoom(newZoom);
+    }
+    this._applyFollowOffset(newZoom);
+    this._refreshZoomUI();
+  }
+
+  /**
+   * Zoom tới một điểm màn hình, mượt ~150ms (kiểu Google Maps).
+   * Giữ nguyên điểm thế giới đang nằm dưới con trỏ.
+   */
+  setZoomAt(screenPt, newZoom, smooth = true) {
+    const camera = this.cameras && this.cameras.main;
+    if (!camera) return;
+    const range = this.getZoomRange();
+    newZoom = snapZoom(clampZoom(newZoom, range.min, range.max));
+    this._userZoom = newZoom;
+    this._persistZoom(newZoom);
+
+    const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom);
+    const target = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom);
+
+    if (this._zoomTween) {
+      this._zoomTween.stop();
+      this._zoomTween = null;
+    }
+
+    if (!smooth || Math.abs(newZoom - camera.zoom) < 0.005) {
+      this.applyZoomImmediate(newZoom, screenPt);
+      return;
+    }
+
+    const from = { zoom: camera.zoom, sx: camera.scrollX, sy: camera.scrollY };
+    this._zoomTween = this.tweens.add({
+      targets: from,
+      zoom: newZoom,
+      sx: target.scrollX,
+      sy: target.scrollY,
+      duration: CAMERA_ZOOM.SMOOTH_MS,
+      ease: 'Sine.easeOut',
+      onUpdate: () => {
+        camera.setZoom(from.zoom);
+        camera.scrollX = from.sx;
+        camera.scrollY = from.sy;
+        this._applyFollowOffset(from.zoom);
+      },
+      onComplete: () => {
+        this._zoomTween = null;
+        this._applyFollowOffset(newZoom);
+        this._refreshZoomUI();
+      }
+    });
+    this._refreshZoomUI();
+  }
+
+  /** Zoom theo hệ số quanh tâm màn hình (dùng cho nút +/−). */
+  zoomByStep(factor) {
+    const center = { x: CAMERA_VIEW_W / 2, y: CAMERA_VIEW_H / 2 };
+    this.setZoomAt(center, this.getCurrentZoom() * factor, true);
+  }
+
   updateCameraZoom() {
     if (!this.cameras || !this.cameras.main) return;
     const camera = this.cameras.main;
-    const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const range = this.getZoomRange();
 
-    if (isMobile) {
-      const isPortrait = window.innerHeight > window.innerWidth;
-      if (isPortrait) {
-        // Màn hình dọc: Tối ưu nhân vật và map to rõ, vừa tầm mắt
-        const zoom = Math.max(1.15, Math.min(1.35, window.innerWidth / 340));
-        camera.setZoom(zoom);
-      } else {
-        // Màn hình ngang (Landscape): Tầm nhìn rộng rãi bao quát căn phòng
-        const zoom = Math.max(1.1, Math.min(1.3, window.innerHeight / 360));
-        camera.setZoom(zoom);
+    // Giữ zoom người dùng đã chọn (kể cả khi resize/xoay màn hình): chỉ re-clamp.
+    let zoom = this._userZoom;
+    if (zoom == null) zoom = this._loadStoredZoom();
+    if (zoom == null) zoom = this.computeDefaultZoom();
+    zoom = snapZoom(clampZoom(zoom, range.min, range.max));
+    this._userZoom = zoom;
+
+    camera.setZoom(zoom);
+    this._applyFollowOffset(zoom);
+    this._refreshZoomUI();
+  }
+
+  /** Wheel trên canvas → zoom tới con trỏ. CHỈ preventDefault trên canvas, trang vẫn cuộn được. */
+  _screenPointFromClient(canvas, clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (clientX - rect.left) * (CAMERA_VIEW_W / rect.width),
+      y: (clientY - rect.top) * (CAMERA_VIEW_H / rect.height)
+    };
+  }
+
+  setupZoomControls() {
+    const canvas = this.game && this.game.canvas;
+    if (!canvas || this._wheelHandler) return;
+
+    this._wheelHandler = (e) => {
+      e.preventDefault();
+      const delta = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;
+      const factor = delta > 0 ? 1 / CAMERA_ZOOM.WHEEL_STEP : CAMERA_ZOOM.WHEEL_STEP;
+      this.setZoomAt(this._screenPointFromClient(canvas, e.clientX, e.clientY), this.getCurrentZoom() * factor, true);
+      this._showZoomHintOnce();
+    };
+    canvas.addEventListener('wheel', this._wheelHandler, { passive: false });
+
+    // Pinch 2 ngón trên canvas (touch-action:none đã set trong zoom-controls.css)
+    this._pinchPointers = new Map();
+    this._pinchStart = null;
+
+    this._pointerDownHandler = (e) => {
+      if (e.pointerType !== 'touch') return;
+      this._pinchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this._pinchPointers.size === 2) {
+        const pts = [...this._pinchPointers.values()];
+        this._pinchStart = {
+          dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+          zoom: this.getCurrentZoom()
+        };
       }
-    } else {
-      // Desktop: Zoom 1.0x hiển thị toàn bộ phòng 25x19 (Gather-style, không cắt)
-      camera.setZoom(1.0);
+    };
+    this._pointerMoveHandler = (e) => {
+      if (e.pointerType !== 'touch' || !this._pinchPointers.has(e.pointerId)) return;
+      this._pinchPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this._pinchPointers.size === 2 && this._pinchStart && this._pinchStart.dist > 0) {
+        const pts = [...this._pinchPointers.values()];
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const midClient = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+        // Direct manipulation: áp ngay, không tween (tránh trễ)
+        this.applyZoomImmediate(
+          this._pinchStart.zoom * (dist / this._pinchStart.dist),
+          this._screenPointFromClient(canvas, midClient.x, midClient.y)
+        );
+        this._showZoomHintOnce();
+      }
+    };
+    const endPinch = (e) => {
+      this._pinchPointers.delete(e.pointerId);
+      if (this._pinchPointers.size < 2) this._pinchStart = null;
+    };
+    this._pointerUpHandler = endPinch;
+    this._pointerCancelHandler = endPinch;
+
+    canvas.addEventListener('pointerdown', this._pointerDownHandler);
+    canvas.addEventListener('pointermove', this._pointerMoveHandler);
+    canvas.addEventListener('pointerup', this._pointerUpHandler);
+    canvas.addEventListener('pointercancel', this._pointerCancelHandler);
+  }
+
+  _removeZoomControls() {
+    const canvas = this.game && this.game.canvas;
+    if (canvas) {
+      if (this._wheelHandler) canvas.removeEventListener('wheel', this._wheelHandler);
+      if (this._pointerDownHandler) canvas.removeEventListener('pointerdown', this._pointerDownHandler);
+      if (this._pointerMoveHandler) canvas.removeEventListener('pointermove', this._pointerMoveHandler);
+      if (this._pointerUpHandler) canvas.removeEventListener('pointerup', this._pointerUpHandler);
+      if (this._pointerCancelHandler) canvas.removeEventListener('pointercancel', this._pointerCancelHandler);
+    }
+    this._wheelHandler = null;
+    this._pointerDownHandler = null;
+    this._pointerMoveHandler = null;
+    this._pointerUpHandler = null;
+    this._pointerCancelHandler = null;
+    if (this._zoomTween) {
+      this._zoomTween.stop();
+      this._zoomTween = null;
+    }
+    if (this.zoomControls) {
+      this.zoomControls.destroy();
+      this.zoomControls = null;
+    }
+  }
+
+  /** Toast gợi ý zoom, text thuần túy, chỉ hiện 1 lần duy nhất. */
+  _showZoomHintOnce() {
+    try {
+      if (localStorage.getItem(CAMERA_ZOOM.HINT_STORAGE_KEY)) return;
+      localStorage.setItem(CAMERA_ZOOM.HINT_STORAGE_KEY, '1');
+    } catch (e) {
+      return;
+    }
+    this.showToast('Cuộn chuột / pinch để zoom');
+  }
+
+  // ---------------------------------------------------------------------------
+  // X-ray ("xuyên thấu"): tile che khuất mờ khi player đứng sau
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Trigger A (luôn bật) + Trigger B dollhouse (cờ XRAY.DOLLHOUSE_ENABLED).
+   * Rẻ: AABB với player, throttle 100ms, tween 150ms, state-tracked chống churn.
+   */
+  _updateXray() {
+    if (!this.occluderTiles || this.occluderTiles.length === 0 || !this.player) return;
+    const camera = this.cameras && this.cameras.main;
+    const zoom = camera ? camera.zoom : 1;
+    const px = this.player.x;
+    const py = this.player.y;
+    const tileSize = GAME_CONFIG.TILE_SIZE;
+
+    for (const o of this.occluderTiles) {
+      const behindA = shouldXrayFade(px, py, o.x, o.y, tileSize);
+      const dollhouse = XRAY.DOLLHOUSE_ENABLED && zoom < 1.0 && o.row <= XRAY.DOLLHOUSE_MAX_ROW;
+      const targetAlpha = behindA ? XRAY.FADE_ALPHA : (dollhouse ? XRAY.DOLLHOUSE_ALPHA : 1.0);
+      if (o.targetAlpha === targetAlpha) continue;
+      o.targetAlpha = targetAlpha;
+      if (o.fadeTween) o.fadeTween.stop();
+      o.fadeTween = this.tweens.add({
+        targets: o.sprite,
+        alpha: targetAlpha,
+        duration: XRAY.FADE_MS,
+        ease: 'Linear'
+      });
     }
   }
 
@@ -454,6 +760,9 @@ export class WorldScene extends Phaser.Scene {
     this.obstacleGroup = this.physics.add.staticGroup();
     this.portalGroup = this.physics.add.staticGroup();
 
+    // X-ray: reset danh sách tile che khuất của phòng cũ
+    this.occluderTiles = [];
+
     const cols = GAME_CONFIG.MAP_WIDTH_TILES;
     const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
@@ -471,12 +780,27 @@ export class WorldScene extends Phaser.Scene {
         // S2.D: Y-sort depth system (Floor = 0; Obstacles = posY + 15)
         const tileDepth = isSolid ? (posY + (tileSize / 2) - 1) : 0;
 
+        let tileSprite = null;
         if (this.tilePool) {
-          this.tilePool.acquire(posX, posY, tileType, tileDepth);
+          tileSprite = this.tilePool.acquire(posX, posY, tileType, tileDepth);
         } else {
-          const tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
+          tileSprite = this.add.image(posX, posY, 'town_tileset', tileType);
           tileSprite.setDepth(tileDepth);
           this.tileSprites.push(tileSprite);
+        }
+
+        // X-ray Trigger A/B: tile "cao" che khuất (tường, nội thất) được track riêng
+        if (tileSprite && isOccluderTileType(tileType)) {
+          this.occluderTiles.push({
+            sprite: tileSprite,
+            type: tileType,
+            x: posX,
+            y: posY,
+            row: r,
+            col: c,
+            targetAlpha: 1.0,
+            fadeTween: null
+          });
         }
 
         if (isSolid) {
@@ -543,7 +867,7 @@ export class WorldScene extends Phaser.Scene {
         const clampedY = Phaser.Math.Clamp(targetY, 18, rows * tileSize - 18);
 
         const label = this.add.text(avgX, clampedY, portalText, {
-          fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+          fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '11px',
           fontWeight: '700',
           color: '#e9d5ff',
@@ -721,7 +1045,7 @@ export class WorldScene extends Phaser.Scene {
     const roomName = this.i18n ? (this.i18n.get(`rooms.${this.currentRoomId}`) || mapData.name) : mapData.name;
 
     this.hudText = this.add.text(14, 14, `DEVER TOWN | ${roomName}`, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '700',
       color: '#38bdf8',
@@ -1452,9 +1776,19 @@ export class WorldScene extends Phaser.Scene {
     if (this.lightingManager) {
       this.lightingManager.update(time, delta);
     }
+
+    // X-ray "xuyên thấu": kiểm tra throttle 100ms, AABB rẻ với player
+    this._xrayTimer += delta;
+    if (this._xrayTimer >= CAMERA_ZOOM.XRAY_CHECK_MS) {
+      this._xrayTimer = 0;
+      this._updateXray();
+    }
   }
 
   shutdown() {
+    // Dọn zoom controls (wheel/pinch listeners + DOM + tween) trước các manager
+    this._removeZoomControls();
+
     if (this.campusTimeHUD) {
       this.campusTimeHUD.destroy();
       this.campusTimeHUD = null;
