@@ -298,6 +298,33 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
   }
 
   /**
+   * Đặt trạng thái hoạt động (ví dụ: 'dreaming').
+   * Hiển thị text trạng thái trên đầu nhân vật.
+   */
+  setActivity(activity) {
+    this.activity = activity;
+
+    if (this.activityText) {
+      this.activityText.destroy();
+      this.activityText = null;
+    }
+
+    if (activity === 'dreaming') {
+      this.activityText = this.scene.add.text(0, -52, 'đang mơ  Z', {
+        fontFamily: "'Be Vietnam Pro', sans-serif",
+        fontSize: '11px',
+        color: '#a78bfa',
+        backgroundColor: 'rgba(30, 27, 75, 0.85)',
+        padding: { x: 6, y: 3 },
+      }).setOrigin(0.5, 0.5);
+      if (this.nameTagContainer) {
+        this.nameTagContainer.add(this.activityText);
+        this.activityText.setPosition(0, -24);
+      }
+    }
+  }
+
+  /**
    * Client-side render culling: hide all visuals of this RemotePlayer when it
    * is outside the camera world view (plus a margin so edge players don't pop),
    * and restore them when it comes back into view.

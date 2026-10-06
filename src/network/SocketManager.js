@@ -162,6 +162,11 @@ export class SocketManager {
       this.scene.handleRemoteEmote(data);
     });
 
+    // 7b2. Đồng bộ trạng thái hoạt động (dreaming...)
+    this.socket.on('playerActivity', (data) => {
+      this.scene.handleRemoteActivity?.(data);
+    });
+
     // 8. Cập nhật số lượng người chơi theo từng phòng
     this.socket.on('roomCounts', (counts) => {
       this.updateRoomCountsUI(counts);
