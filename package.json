@@ -9,6 +9,7 @@
     "url": "https://github.com/huanight19RaH"
   },
   "license": "MIT",
+  "main": "electron/main.cjs",
   "homepage": "https://github.com/huanight19RaH/DEVER_TOWN#readme",
   "repository": {
     "type": "git",
@@ -46,6 +47,9 @@
     "test:play": "node scripts/test_live_play_60s.js",
     "deploy:vercel": "vercel --prod",
     "app:desktop": "electron electron/main.cjs",
+    "app:desktop:build": "npm run build && npm run app:desktop",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
     "security:scan": "node scripts/security-scan.js",
     "security:audit": "npm audit --omit=dev"
   },
@@ -69,9 +73,43 @@
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "concurrently": "^9.1.2",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
     "jpeg-js": "^0.4.4",
     "pngjs": "^7.0.0",
     "typescript": "^5.9.3",
     "vite": "^6.2.0"
+  },
+  "build": {
+    "appId": "com.fudever.devertown",
+    "productName": "DEVER TOWN",
+    "copyright": "Copyright © 2026 FU-DEVER · FPT University Da Nang",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DEVER TOWN"
+    }
   }
 }
