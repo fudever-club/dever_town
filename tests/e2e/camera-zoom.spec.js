@@ -160,29 +160,34 @@ test.describe('Camera zoom + x-ray', () => {
     expect(errors).toEqual([]);
   });
 
-  test('follow giữ player ở tâm ở zoom 1.0 / 1.32 / 2.0', async ({ page }) => {
+  test('follow giữ player ở tâm ở zoom 1.0 / 1.32 / 2.0 / 2.5', async ({ page }) => {
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
 
-    for (const z of [1.0, 1.32, 2.0]) {
+    for (const z of [1.0, 1.32, 2.0, 2.5]) {
       await page.evaluate((zoom) => {
         window.__WORLD_SCENE__.applyZoomImmediate(zoom);
       }, z);
+      // Chiếu ĐÚNG ma trận camera Phaser 3.90 (kiểm chứng qua camera.matrix):
+      // screenX = zoom*(worldX − scrollX) + cam.x + (w/2)*(1 − zoom).
+      // Mô hình cũ thiếu số hạng (w/2)*(1−zoom) nên tính sai vị trí render, dẫn tới
+      // follow-offset "hiệu chỉnh" sai lầm làm view lệch khỏi player (200–600px).
+      // Phaser đã tự giữ follow ở tâm với mọi zoom (followOffset = 0).
       // Headless SwiftShader chỉ ~11fps → lerp 0.08/frame hội tụ chậm: poll tới khi tâm.
-      // Lưu ý engine: camera.setRoundPixels(true) + lerp 0.08 tạo điểm dừng tự nhiên
-      // (floor mỗi frame) cách target tới 12.5 scroll-px ≈ 25 screen-px ở zoom 2 —
-      // hành vi có sẵn, không phải do fix này. Fix này xóa bias hệ thống 128px
-      // (player từng render ở 528 thay vì 400 ở zoom 1.32).
+      // _snapFollowSettle() chốt nốt phần dư stall (floor của roundPixels).
       await expect.poll(async () => {
         const pos = await page.evaluate(() => {
           const scene = window.__WORLD_SCENE__;
           const cam = scene.cameras.main;
+          const ox = cam.width / 2, oy = cam.height / 2;
+          const sx = (scene.player.x - cam.scrollX) * cam.zoom + cam.x + ox * (1 - cam.zoom);
+          const sy = (scene.player.y - cam.scrollY) * cam.zoom + cam.y + oy * (1 - cam.zoom);
           return {
-            dx: Math.abs((scene.player.x - cam.scrollX) * cam.zoom - 400),
-            dy: Math.abs((scene.player.y - cam.scrollY) * cam.zoom - 300),
+            dx: Math.abs(sx - (cam.x + ox)),
+            dy: Math.abs(sy - (cam.y + oy)),
           };
         });
-        return pos.dx < 30 && pos.dy < 30;
+        return pos.dx < 10 && pos.dy < 10;
       }, { timeout: 25000 }).toBe(true);
     }
     expect(errors).toEqual([]);

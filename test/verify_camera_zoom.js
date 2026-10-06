@@ -77,14 +77,15 @@ assert(approx(computeDefaultMobileZoom(340, 700), 1.15), 'Mobile dọc: 340px �
 const mobLandscape = computeDefaultMobileZoom(844, 390);
 assert(mobLandscape >= 1.1 && mobLandscape <= 1.3, `Mobile ngang 844x390: ${mobLandscape.toFixed(3)} trong [1.1, 1.3]`);
 
-/* ---------- 5. Zoom-to-point ---------- */
+/* ---------- 5. Zoom-to-point (đúng ma trận camera Phaser 3.90) ---------- */
 // Camera 800x600 tại (0,0), scroll (100,50), zoom 1. Con trỏ tại (400,300)
-// → world point = (500, 350). Zoom 2x giữ điểm đó dưới con trỏ:
-// scroll mới = (500,350) − (400,300)/2 = (300, 200).
+// → world point = (500, 350) (zoom 1: số hạng origin triệt tiêu).
 const wp = worldPointAt(400, 300, 0, 0, 100, 50, 1);
 assert(approx(wp.x, 500) && approx(wp.y, 350), `worldPointAt: (${wp.x}, ${wp.y}) = (500, 350)`);
+// Zoom 2x giữ điểm (500,350) dưới con trỏ (400,300), origin (400,300):
+// scroll mới = (500,350) − ((400,300) − (400,300)*(1−2))/2 = (100, 50).
 const sc = zoomToPointScroll(500, 350, 400, 300, 0, 0, 2);
-assert(approx(sc.scrollX, 300) && approx(sc.scrollY, 200), `zoomToPointScroll: (${sc.scrollX}, ${sc.scrollY}) = (300, 200)`);
+assert(approx(sc.scrollX, 100) && approx(sc.scrollY, 50), `zoomToPointScroll: (${sc.scrollX}, ${sc.scrollY}) = (100, 50)`);
 // Với camera offset (cam.x=59.98): điểm thế giới dưới con trỏ không đổi sau zoom
 const wp2 = worldPointAt(459.98, 375.2, 59.98, 75.2, 100, 50, 1);
 const sc2 = zoomToPointScroll(wp2.x, wp2.y, 459.98, 375.2, 59.98, 75.2, 1.5);
@@ -111,7 +112,8 @@ assert(!shouldXrayFade(430, 320, 400, 300, 32), 'Trigger A: xa trục X (>0.75 t
 /* ---------- 8. Static wiring check ---------- */
 const worldSrc = readFileSync(new URL('../src/scenes/WorldScene.js', import.meta.url), 'utf8');
 assert(worldSrc.includes('STORAGE_KEY'), 'WorldScene: đọc/ghi localStorage dever_camera_zoom (qua CAMERA_ZOOM.STORAGE_KEY)');
-assert(worldSrc.includes('setFollowOffset(-(w - w / zoom) / 2, -(h - h / zoom) / 2)'), 'WorldScene: follow-offset centering fix (dấu âm, theo Camera.preRender) trên mọi lần đổi zoom');
+assert(worldSrc.includes('_snapFollowSettle'), 'WorldScene: snap scroll về tâm follow khi lerp kẹt (stall band 1/lerp)');
+assert(!worldSrc.includes('setFollowOffset(-(w - w / zoom)'), 'WorldScene: KHÔNG còn follow-offset "hiệu chỉnh" sai (Phaser tự giữ tâm đúng ở mọi zoom, offset phải = 0)');
 assert(worldSrc.includes("addEventListener('wheel'") && worldSrc.includes('passive: false'), 'WorldScene: wheel listener passive:false trên canvas');
 assert(worldSrc.includes('preventDefault()'), 'WorldScene: wheel preventDefault (chỉ trên canvas)');
 assert(worldSrc.includes('pointerdown') && worldSrc.includes('pointermove'), 'WorldScene: pinch 2-pointer tracking');
