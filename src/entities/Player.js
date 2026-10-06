@@ -78,6 +78,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
+    // Trạng thái hoạt động (null = bình thường, 'dreaming' = đang mơ)
+    // Đồng bộ qua multiplayer để người khác thấy ZZZ
+    this.activity = null;
+    this.activityText = null;
+
     // Bộ đếm animation mượt — khởi tạo 0 để tránh NaN scale ở frame đầu
     this._turnT = 0;      // tiến trình squash khi đổi hướng
     this._settleT = 0;    // tiến trình settle khi vừa dừng
@@ -116,6 +121,44 @@ export class Player extends Phaser.GameObjects.Sprite {
     }).setOrigin(0.5, 0.5);
 
     this.nameTagContainer.add(tagText);
+  }
+
+  /**
+   * Đặt trạng thái hoạt động (ví dụ: 'dreaming' khi đang mơ đếm cừu).
+   * Hiển thị chữ trạng thái trên đầu và đồng bộ qua multiplayer.
+   * @param {string|null} activity - 'dreaming' hoặc null để xóa
+   */
+  setActivity(activity) {
+    this.activity = activity;
+
+    // Xóa text cũ
+    if (this.activityText) {
+      this.activityText.destroy();
+      this.activityText = null;
+    }
+
+    if (activity === 'dreaming') {
+      // Hiển thị "đang mơ" + ZZZ trên đầu
+      this.activityText = this.scene.add.text(0, -52, 'đang mơ  Z', {
+        fontFamily: "'Be Vietnam Pro', sans-serif",
+        fontSize: '11px',
+        color: '#a78bfa',
+        backgroundColor: 'rgba(30, 27, 75, 0.85)',
+        padding: { x: 6, y: 3 },
+      }).setOrigin(0.5, 0.5);
+      if (this.nameTagContainer) {
+        this.nameTagContainer.add(this.activityText);
+        this.activityText.setPosition(0, -24);
+      }
+    }
+
+    // Gửi qua socket để người khác thấy
+    try {
+      const sm = this.scene?.socketManager || window.__DEVER_SOCKET__;
+      if (sm && sm.socket && sm.socket.connected) {
+        sm.socket.emit('playerActivity', { activity });
+      }
+    } catch (e) {}
   }
 
   createEquippedItemDisplay() {

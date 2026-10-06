@@ -1735,6 +1735,19 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * Xử lý trạng thái hoạt động từ người chơi khác (ví dụ: đang mơ).
+   */
+  handleRemoteActivity({ id, activity }) {
+    const isSelf = this.socketManager?.socket?.id === id;
+    if (isSelf) return;
+
+    const remote = this.remotePlayers.get(id);
+    if (remote && remote.setActivity) {
+      remote.setActivity(activity);
+    }
+  }
+
   update(time, delta) {
     if (this.player && this.inputController && !this.isTeleporting) {
       const inputData = this.inputController.getMovementVector();

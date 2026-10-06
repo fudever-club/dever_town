@@ -533,6 +533,23 @@ export function setupSocketHandler(io) {
     });
 
     /**
+     * 7b2. Đồng bộ trạng thái hoạt động (ví dụ: 'dreaming' khi đếm cừu trong mơ).
+     * Client gửi khi vào/ra giấc mơ, server broadcast cho cả phòng.
+     */
+    socket.on('playerActivity', ({ activity }) => {
+      const player = playerManager.getPlayer(socket.id);
+      if (!player) return;
+      // Chỉ cho phép các giá trị hợp lệ
+      const validActivities = new Set(['dreaming', null, undefined]);
+      if (!validActivities.has(activity)) return;
+
+      io.to(player.roomId).emit('playerActivity', {
+        id: socket.id,
+        activity: activity || null
+      });
+    });
+
+    /**
      * 7c. Gửi Lời Mời Kết Bạn Realtime (auth required + rate limit: 5/phút)
      */
     socket.on('sendFriendRequest', ({ targetSocketId, targetName }) => {
