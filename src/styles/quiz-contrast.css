@@ -3,3 +3,77 @@
 .quiz-code code { color: #3730a3; font-weight: 700; }
 .quiz-option { color: #1e293b; }
 .quiz-mini-board { color: #1e293b; }
+
+/* ===== Task C: text overlap / Vietnamese diacritic collision sweep (2026-10-06)
+   Nguyên nhân chung: global reset `* { margin: 0 }` trong main.css + nhiều class
+   dùng trong index.html/JS (.modal-header, .modal-title-row, .modal-sub) CHƯA TỪNG
+   có CSS nên title/sub dính sát nhau; dấu tiếng Việt (ấ, ồ, ộ, ớ, đ) vươn cao khỏi
+   cap-height gây chồng chữ lên element phía trên. Fix: line-height, margin, flex
+   gap. CSS only — không đổi DOM ID, không đổi index.html/main.css. */
+
+/* 1. Generic modal header — dùng chung ở: auth, inventory, wardrobe, interactive,
+      settings, quests, device-confirm (index.html) + avatar, friends (JS DOM).
+      Trước: không có rule nào -> h2.modal-title và p.modal-sub chồng lên nhau. */
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-right: 32px; /* chừa chỗ cho .modal-close-btn (position: absolute) */
+}
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.modal-title-row > svg.header-icon,
+.modal-title-row > .modal-title-icon,
+.modal-title-row > .auth-modal-header-icon {
+  flex-shrink: 0;
+  margin-top: 3px; /* căn icon với dòng đầu của title */
+}
+.modal-title-row > div { min-width: 0; }
+.modal-title {
+  /* giữ nguyên font-size/weight/color từ main.css; chỉ thêm khoảng thở cho dấu */
+  line-height: 1.5;
+  margin: 0 0 4px;
+}
+.modal-sub {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 2. Quiz modal — badge "QUIZ CLB" chồng lên dấu ấ của "Đấu Trí Đồng Đội". */
+.quiz-title {
+  margin: 10px 0 0; /* was 6px — chưa đủ cho diacritic stack của Be Vietnam Pro */
+  line-height: 1.4;
+}
+.quiz-badge { line-height: 1.5; }
+.quiz-pane h3 { line-height: 1.5; }
+.quiz-question { line-height: 1.6 !important; } /* was 1.45 */
+.quiz-hint {
+  margin-top: 10px;
+  line-height: 1.55;
+}
+.quiz-option { line-height: 1.5; }
+.quiz-mini-board li { line-height: 1.55; }
+
+/* 3. Achievement toast — tag/title/desc dính sát, dấu va nhau. */
+.achievement-toast-tag { line-height: 1.6; margin-bottom: 6px; } /* was 2px */
+.achievement-toast-title { line-height: 1.45; margin: 0 0 6px; } /* was 0 0 2px */
+.achievement-toast-desc { line-height: 1.6; } /* was 1.35 */
+
+/* 4. Generic toasts — 1 dòng nhưng weight 700 + dấu cao, cho line-height an toàn. */
+.dever-toast { line-height: 1.5; }
+.quest-toast-banner { line-height: 1.5; }
+
+/* 5. Quests modal — milestone card & quest items (dấu ấ/ộ/ớ ở 12-14px). */
+.milestone-title-row h4 { line-height: 1.5; }
+.milestone-badge { line-height: 1.6; white-space: nowrap; }
+.milestone-info p { line-height: 1.6; margin-top: 6px; }
+.quest-item-title { line-height: 1.5; }
+.quest-item-desc { line-height: 1.6; }
