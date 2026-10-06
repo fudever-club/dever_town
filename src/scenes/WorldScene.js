@@ -370,8 +370,8 @@ export class WorldScene extends Phaser.Scene {
         camera.setZoom(zoom);
       }
     } else {
-      // Desktop: Zoom 1.32x bám sát điện ảnh, nhân vật rõ nét, phòng ấm cúng
-      camera.setZoom(1.32);
+      // Desktop: Zoom 1.0x hiển thị toàn bộ phòng 25x19 (Gather-style, không cắt)
+      camera.setZoom(1.0);
     }
   }
 
