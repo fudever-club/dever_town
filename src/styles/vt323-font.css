@@ -1,0 +1,32 @@
+/* VT323 Vietnamese pixel font — tách khỏi main.css (220KB, vượt giới hạn API push).
+   Load SAU main.css để override. Hung chọn VT323 (Google Fonts, true pixel font,
+   weight 400 duy nhất, 104/104 Vietnamese-complete). Font cũ 'Outfit' thiếu 92/104
+   glyph tiếng Việt nên mọi text VI trước đây đều render qua silent fallback.
+   File này chỉ đổi font-family, không đổi layout/font-size. */
+:root {
+  --font-vt323: 'VT323', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Mọi selector trong main.css đang dùng 'Outfit' + form elements (button/input/
+   select/textarea không inherit font từ body theo UA stylesheet). !important để
+   thắng cả rule .auth-error dùng !important trong main.css. */
+body,
+button, input, select, textarea, optgroup, option,
+.fptu-tag,
+#main-footer, .cyber-footer,
+.tab-btn, .btn-google-sso, .profile-action-btn,
+.auth-error-box, #gate-error-msg, .auth-error,
+.notes-box,
+.btn-equip,
+.lofi-preset-dropdown, .lofi-genre-pill,
+.sports-badge, .sports-nav-tab, .sports-touch-btn, .sports-btn-action,
+.onboarding-btn, .gate-tab-btn, .gate-submit-btn,
+.daily-goal-action, .daily-goal-retry, .milestone-btn, .quest-claim-btn,
+.arcade-tab, .arcade-touch-btn,
+.frog-shrine-title, .oracle-title, .club-hero-name, .club-section-title,
+.achievement-toast-title, .avatar-initials,
+.btn-profile-action, .friend-request-card, .btn-friend-accept, .btn-friend-decline,
+.chat-tab-btn, .friends-add-input, .btn-friend-action, .btn-rotate, .btn-select-avatar,
+.radial-wheel-center .center-label {
+  font-family: var(--font-vt323) !important;
+}
