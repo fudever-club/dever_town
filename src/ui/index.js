@@ -10,6 +10,7 @@ export { DeviceApprovalModal } from './auth/DeviceApprovalModal.js';
 
 // 2. Gameplay & Modals
 export { InteractiveModal } from './gameplay/InteractiveModal.js';
+import './gameplay/InteractiveModal.dream.js'; // Dream mini-game patch (separate file, API push limit)
 export { InventoryModal } from './gameplay/InventoryModal.js';
 export { QuestModal } from './gameplay/QuestModal.js';
 export { WardrobeModal } from './gameplay/WardrobeModal.js';
