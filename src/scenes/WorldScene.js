@@ -879,7 +879,7 @@ export class WorldScene extends Phaser.Scene {
         const clampedY = Phaser.Math.Clamp(targetY, 18, rows * tileSize - 18);
 
         const label = this.add.text(avgX, clampedY, portalText, {
-          fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+          fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '11px',
           fontWeight: '700',
           color: '#e9d5ff',
@@ -1057,7 +1057,7 @@ export class WorldScene extends Phaser.Scene {
     const roomName = this.i18n ? (this.i18n.get(`rooms.${this.currentRoomId}`) || mapData.name) : mapData.name;
 
     this.hudText = this.add.text(14, 14, `DEVER TOWN | ${roomName}`, {
-      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'Tilt Neon', 'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '700',
       color: '#38bdf8',
