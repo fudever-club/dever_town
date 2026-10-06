@@ -1,0 +1,63 @@
+/* Tilt Neon (titles) + Be Vietnam Pro (body) — thay thế VT323.
+   Tách khỏi main.css (220KB, vượt giới hạn API push). Load SAU main.css để override.
+   Hung chọn Tilt Neon cho tiêu đề + Be Vietnam Pro cho nội dung (Google Fonts,
+   cả 2 đều 146/146 Vietnamese-complete theo kiểm tra cmap fontTools).
+   File này chỉ đổi font-family (+ white-space nowrap cho .brand-title để giữ
+   header 1 dòng), không đổi layout/font-size. Không dùng emoji. */
+:root {
+  --font-title: 'Tilt Neon', 'Be Vietnam Pro', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-body: 'Be Vietnam Pro', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* BODY/UI — mọi selector trong main.css đang dùng 'Outfit' + form elements
+   (button/input/select/textarea không inherit font từ body theo UA stylesheet).
+   !important để thắng cả rule .auth-error dùng !important trong main.css. */
+body,
+button, input, select, textarea, optgroup, option,
+.fptu-tag,
+#main-footer, .cyber-footer,
+.tab-btn, .btn-google-sso, .profile-action-btn,
+.auth-error-box, #gate-error-msg, .auth-error,
+.notes-box,
+.btn-equip,
+.lofi-preset-dropdown, .lofi-genre-pill,
+.sports-nav-tab, .sports-touch-btn, .sports-btn-action,
+.onboarding-btn, .gate-tab-btn, .gate-submit-btn,
+.daily-goal-action, .daily-goal-retry, .milestone-btn, .quest-claim-btn,
+.arcade-tab, .arcade-touch-btn,
+.avatar-initials,
+.btn-profile-action, .friend-request-card, .btn-friend-accept, .btn-friend-decline,
+.chat-tab-btn, .friends-add-input, .btn-friend-action, .btn-rotate, .btn-select-avatar,
+.header-points-text, .header-user-name,
+.quiz-option, .quiz-question, .quiz-body, .quiz-score, .quiz-timer {
+  font-family: var(--font-body) !important;
+}
+
+/* TITLES / HEADINGS / BADGES / MODAL TITLES — Tilt Neon.
+   Đặt SAU rule body để thắng trong thứ tự cascade (cùng độ !important). */
+/* Giữ brand header 1 dòng — Tilt Neon rộng hơn VT323 nên cần nowrap + inline-flex
+   để logo / tên / badge không rớt dòng làm vỡ header. */
+.brand-container {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+}
+.brand-title {
+  white-space: nowrap !important;
+}
+.brand-badge {
+  white-space: nowrap !important;
+}
+.modal-title, .quiz-title, .quiz-title-lg,
+.frog-shrine-title, .oracle-title,
+.club-hero-name, .club-section-title,
+.achievement-toast-title, .achievement-toast-heading,
+.brand-title, .brand-badge, .gate-main-title, .gate-brand-name, .gate-hero-title,
+.welcome-title, .onboarding-title,
+.gate-card h2, .modal h2, .panel h2,
+.sports-badge, .room-banner-title,
+.radial-wheel-center .center-label {
+  font-family: var(--font-title) !important;
+  font-weight: 400 !important;
+}
