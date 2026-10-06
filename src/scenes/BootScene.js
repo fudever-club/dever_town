@@ -12,7 +12,7 @@ export class BootScene extends Phaser.Scene {
     const height = this.cameras.main.height;
 
     this.add.text(width / 2, height / 2, 'Đang tải Dever Town...', {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '16px',
       color: '#60a5fa'
     }).setOrigin(0.5, 0.5);

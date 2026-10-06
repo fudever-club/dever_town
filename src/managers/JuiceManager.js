@@ -49,7 +49,7 @@ export class JuiceManager {
     const strokeThickness = options.strokeThickness ?? 3;
 
     const floatingText = this.scene.add.text(x, y - 10, text, {
-      fontFamily: "'Outfit', 'JetBrains Mono', sans-serif",
+      fontFamily: "'VT323', 'JetBrains Mono', sans-serif",
       fontSize,
       fontWeight,
       color,

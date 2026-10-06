@@ -96,7 +96,7 @@ export class NPC extends Phaser.GameObjects.Sprite {
     const dots = this.scene.add.text(0, 0, '···', {
       fontSize: '11px',
       color: '#475569',
-      fontFamily: "'Outfit', sans-serif",
+      fontFamily: "'VT323', sans-serif",
       fontWeight: '700'
     }).setOrigin(0.5, 0.5);
     
