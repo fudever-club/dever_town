@@ -35,7 +35,7 @@ export class InteractionManager {
     // Text Tooltip
     const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2;
     this.tooltipText = this.scene.add.text(0, 0, '[E] Tương tác', {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '700',
       color: '#ffffff',
@@ -217,7 +217,7 @@ export class InteractionManager {
       const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
       const badgeText = this.scene.add.text(0, 0, zoneName, {
-        fontFamily: "'Outfit', sans-serif",
+        fontFamily: "'VT323', sans-serif",
         fontSize: '9.5px',
         fontWeight: '700',
         color: '#ffffff',

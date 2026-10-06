@@ -107,7 +107,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     const displayName = `${rolePrefix}${this.name}`;
 
     const tagText = this.scene.add.text(0, 0, displayName, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '600',
       color: '#ffffff',
@@ -233,7 +233,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     bubbleContainer.setDepth(1000002);
 
     const textObj = this.scene.add.text(0, 0, safeText, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'VT323', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       color: '#0f172a',
       align: 'center',
