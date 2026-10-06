@@ -44,7 +44,7 @@ export class BestiePetFollower extends Phaser.GameObjects.Container {
 
     // 3. Name Tag nhỏ xinh xắn
     const tagText = this.scene.add.text(0, -18, `Pet ${this.petInfo.name ? this.petInfo.name.split(' ')[0] : 'Buggy'}`, {
-      fontFamily: "'VT323', sans-serif",
+      fontFamily: "'Be Vietnam Pro', sans-serif",
       fontSize: '9.5px',
       fontWeight: '700',
       color: '#ffffff',
