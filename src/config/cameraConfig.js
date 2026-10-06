@@ -107,21 +107,27 @@ export function shouldXrayFade(playerX, playerY, tileX, tileY, tileSize) {
   return playerY > tileBottomY - 8 && Math.abs(playerX - tileX) < tileSize * 0.75;
 }
 
-/** Đổi tọa độ màn hình (game px, gốc tại camera) → tọa độ thế giới. */
-export function worldPointAt(screenX, screenY, camX, camY, scrollX, scrollY, zoom) {
+/**
+ * Đổi tọa độ màn hình (game px, gốc tại camera) → tọa độ thế giới.
+ * ĐÚNG ma trận camera Phaser 3.90 (đã kiểm chứng qua camera.matrix):
+ *   screenX = zoom*(worldX − scrollX) + camX + originX*(1 − zoom).
+ * (Mô hình cũ thiếu số hạng originX*(1−zoom) nên zoom-to-cursor và
+ * follow-offset đều sai ở zoom ≠ 1.)
+ */
+export function worldPointAt(screenX, screenY, camX, camY, scrollX, scrollY, zoom, originX = CAMERA_VIEW_W / 2, originY = CAMERA_VIEW_H / 2) {
   return {
-    x: (screenX - camX) / zoom + scrollX,
-    y: (screenY - camY) / zoom + scrollY,
+    x: (screenX - camX - originX * (1 - zoom)) / zoom + scrollX,
+    y: (screenY - camY - originY * (1 - zoom)) / zoom + scrollY,
   };
 }
 
 /**
  * Zoom-to-point: giữ nguyên điểm thế giới đang nằm dưới con trỏ.
- * Trả về scroll mới cho newZoom.
+ * Trả về scroll mới cho newZoom (đúng ma trận camera như worldPointAt).
  */
-export function zoomToPointScroll(worldX, worldY, screenX, screenY, camX, camY, newZoom) {
+export function zoomToPointScroll(worldX, worldY, screenX, screenY, camX, camY, newZoom, originX = CAMERA_VIEW_W / 2, originY = CAMERA_VIEW_H / 2) {
   return {
-    scrollX: worldX - (screenX - camX) / newZoom,
-    scrollY: worldY - (screenY - camY) / newZoom,
+    scrollX: worldX - (screenX - camX - originX * (1 - newZoom)) / newZoom,
+    scrollY: worldY - (screenY - camY - originY * (1 - newZoom)) / newZoom,
   };
 }

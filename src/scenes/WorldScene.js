@@ -434,18 +434,32 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * Áp zoom + sửa lỗi follow lệch tâm.
-   * Phaser follow: scroll → follow − offset − w/2, nên điểm follow render tại
-   * (offset + w/2) * zoom. Muốn về tâm (w/2): offset = −(w − w/zoom)/2.
-   * (Dấu ÂM — đã kiểm chứng với Camera.js preRender: fx = follow.x − followOffset.x.)
-   * Gọi trên MỌI lần đổi zoom.
+   * Chốt scroll về đúng tâm follow khi lerp bị kẹt (stall).
+   * Phaser Camera.preRender với roundPixels: scroll = floor(lerp(scroll, target, 0.08)).
+   * Khi |target − scroll| < 1/0.08 = 12.5 thì floor nuốt trọn bước lerp → scroll kẹt
+   * vĩnh viễn, player lệch khỏi tâm tới 12.5 scroll-px (≈31 screen-px ở zoom 2.5).
+   * Chỉ snap khi player đứng yên (giữ nguyên cảm giác camera "trailing" mượt khi di
+   * chuyển), trong dải kẹt (không phá smoothing của lerp ở xa), và bỏ qua khi đang
+   * tween zoom (giữ zoom-to-cursor) hoặc pan effect chạy.
+   * Tâm scroll đúng theo Camera.preRender: scroll → follow − followOffset − w/2
+   * (followOffset = 0: Phaser tự giữ tâm đúng ở mọi zoom, không cần hiệu chỉnh).
    */
-  _applyFollowOffset(zoom) {
+  _snapFollowSettle() {
     const camera = this.cameras && this.cameras.main;
-    if (!camera) return;
-    const w = camera.width;
-    const h = camera.height;
-    camera.setFollowOffset(-(w - w / zoom) / 2, -(h - h / zoom) / 2);
+    if (!camera || !this.player || !this.player.body) return;
+    if (camera._follow !== this.player) return;
+    if (this._zoomTween) return;
+    if (camera.panEffect && camera.panEffect.isRunning) return;
+    const vel = this.player.body.velocity;
+    if (Math.hypot(vel.x, vel.y) >= 1) return; // đang di chuyển: giữ lerp smoothing
+    const lerpX = camera.lerp.x;
+    const lerpY = camera.lerp.y;
+    if (!(lerpX > 0) || !(lerpY > 0)) return;
+    // Tâm scroll đúng theo Camera.preRender: scroll → follow − followOffset − w/2.
+    const targetX = this.player.x - camera.followOffset.x - camera.width / 2;
+    const targetY = this.player.y - camera.followOffset.y - camera.height / 2;
+    if (Math.abs(targetX - camera.scrollX) <= 1 / lerpX) camera.scrollX = targetX;
+    if (Math.abs(targetY - camera.scrollY) <= 1 / lerpY) camera.scrollY = targetY;
   }
 
   _refreshZoomUI() {
@@ -466,15 +480,15 @@ export class WorldScene extends Phaser.Scene {
     this._userZoom = newZoom;
     this._persistZoom(newZoom);
     if (screenPt) {
-      const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom);
-      const sc = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom);
+      const ox = camera.width / 2, oy = camera.height / 2;
+      const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom, ox, oy);
+      const sc = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom, ox, oy);
       camera.setZoom(newZoom);
       camera.scrollX = sc.scrollX;
       camera.scrollY = sc.scrollY;
     } else {
       camera.setZoom(newZoom);
     }
-    this._applyFollowOffset(newZoom);
     this._refreshZoomUI();
   }
 
@@ -490,8 +504,9 @@ export class WorldScene extends Phaser.Scene {
     this._userZoom = newZoom;
     this._persistZoom(newZoom);
 
-    const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom);
-    const target = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom);
+    const ox = camera.width / 2, oy = camera.height / 2;
+    const wp = worldPointAt(screenPt.x, screenPt.y, camera.x, camera.y, camera.scrollX, camera.scrollY, camera.zoom, ox, oy);
+    const target = zoomToPointScroll(wp.x, wp.y, screenPt.x, screenPt.y, camera.x, camera.y, newZoom, ox, oy);
 
     if (this._zoomTween) {
       this._zoomTween.stop();
@@ -515,11 +530,9 @@ export class WorldScene extends Phaser.Scene {
         camera.setZoom(from.zoom);
         camera.scrollX = from.sx;
         camera.scrollY = from.sy;
-        this._applyFollowOffset(from.zoom);
       },
       onComplete: () => {
         this._zoomTween = null;
-        this._applyFollowOffset(newZoom);
         this._refreshZoomUI();
       }
     });
@@ -545,7 +558,6 @@ export class WorldScene extends Phaser.Scene {
     this._userZoom = zoom;
 
     camera.setZoom(zoom);
-    this._applyFollowOffset(zoom);
     this._refreshZoomUI();
   }
 
@@ -1783,6 +1795,9 @@ export class WorldScene extends Phaser.Scene {
       this._xrayTimer = 0;
       this._updateXray();
     }
+
+    // Chốt tâm follow sau zoom: sửa stall lerp+roundPixels làm view lệch khỏi player
+    this._snapFollowSettle();
   }
 
   shutdown() {
