@@ -1,0 +1,518 @@
+/* --- friends.css: lobby card, room workspace, bottom controls, friend panels (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   PLAYER PROFILE & FRIENDSHIP MODAL STYLES
+   ========================================================================== */
+.player-profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-rgba-3-7-18-0-82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: var(--z-10000030) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-20px-14px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.player-profile-modal-overlay.hidden {
+  display: none !important;
+}
+
+.player-profile-card {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  max-height: 92vh;
+  overflow-y: auto;
+  margin: var(--space-auto);
+  background: linear-gradient(150deg, var(--color-0d1a30) 0%, var(--color-081020) 100%);
+  border: 1px solid var(--color-rgba-0-178-255-0-35);
+  border-radius: var(--radius-18px);
+  padding: var(--space-24px);
+  box-shadow: 0 20px 50px var(--color-rgba-0-0-0-0-75), 0 0 30px var(--color-rgba-0-178-255-0-15);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  animation: cardSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.player-profile-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.player-profile-card::-webkit-scrollbar-track {
+  background: var(--color-rgba-15-23-42-0-5);
+  border-radius: var(--radius-6px);
+}
+
+.player-profile-card::-webkit-scrollbar-thumb {
+  background: var(--color-rgba-56-189-248-0-3);
+  border-radius: var(--radius-6px);
+}
+
+.player-profile-card::-webkit-scrollbar-thumb:hover {
+  background: var(--color-rgba-56-189-248-0-6);
+}
+
+/* 2-Column Responsive Layout Grid */
+.profile-layout-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-20px);
+  align-items: start;
+}
+
+.profile-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12px);
+}
+
+.profile-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10px);
+  min-width: 0;
+}
+
+.profile-friendship-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10px);
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.player-profile-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-rgba-255-255-255-0-08);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-94a3b8);
+  font-size: var(--text-20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.player-profile-close:hover {
+  background: var(--color-rgba-239-68-68-0-25);
+  border-color: var(--color-ef4444);
+  color: var(--color-ffffff);
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16px);
+}
+
+.profile-card-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-card-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-16px);
+  background: linear-gradient(135deg, var(--color-rgba-0-178-255-0-2), var(--color-rgba-168-85-247-0-2));
+  border: 2px solid var(--color-00b2ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-30px);
+  box-shadow: 0 0 16px var(--color-rgba-0-178-255-0-3);
+}
+
+.profile-card-online-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--color-10b981);
+  border: 2px solid var(--color-081020);
+  box-shadow: var(--shadow-1);
+}
+
+.profile-card-titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4px);
+  min-width: 0;
+}
+
+.profile-name-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  flex-wrap: wrap;
+}
+
+.profile-player-name {
+  margin: var(--space-0);
+  font-size: var(--text-1-25rem);
+  font-weight: 800;
+  color: var(--color-f8fafc);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-role-badge {
+  font-size: var(--text-10-5px);
+  font-weight: 700;
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-12px);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-role-badge.admin {
+  background: var(--color-rgba-245-158-11-0-2);
+  color: var(--color-fbbf24);
+  border: 1px solid var(--color-rgba-245-158-11-0-4);
+}
+
+.profile-role-badge.leader {
+  background: var(--color-rgba-192-132-252-0-2);
+  color: var(--color-c084fc);
+  border: 1px solid var(--color-rgba-192-132-252-0-4);
+}
+
+.profile-role-badge.dev {
+  background: var(--color-rgba-0-178-255-0-2);
+  color: var(--color-38bdf8);
+  border: 1px solid var(--color-rgba-0-178-255-0-4);
+}
+
+.profile-role-badge.guest {
+  background: var(--color-rgba-148-163-184-0-2);
+  color: var(--color-94a3b8);
+  border: 1px solid var(--color-rgba-148-163-184-0-4);
+}
+
+.profile-player-status {
+  margin: var(--space-0);
+  font-size: var(--text-12px);
+  color: var(--color-94a3b8);
+}
+
+/* Not Friend Box */
+.profile-not-friend-box {
+  background: var(--color-rgba-255-255-255-0-03);
+  border: 1px dashed var(--color-rgba-255-255-255-0-15);
+  border-radius: var(--radius-12px);
+  padding: var(--space-16px);
+  text-align: center;
+}
+
+.not-friend-icon {
+  font-size: var(--text-32px);
+  margin-bottom: var(--space-6px);
+}
+
+.not-friend-title {
+  margin: var(--space-0-0-6px);
+  font-size: var(--text-15px);
+  color: var(--color-e2e8f0);
+}
+
+.not-friend-desc {
+  margin: var(--space-0);
+  font-size: var(--text-12px);
+  color: var(--color-94a3b8);
+  line-height: 1.5;
+}
+
+/* Friend Stats Card */
+.profile-friend-stats-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12px);
+}
+
+.friend-duration-row {
+  display: flex;
+  justify-content: center;
+}
+
+.duration-badge {
+  background: var(--color-rgba-0-178-255-0-1);
+  border: 1px solid var(--color-rgba-0-178-255-0-3);
+  color: var(--color-38bdf8);
+  font-size: var(--text-12px);
+  font-weight: 700;
+  padding: var(--space-5px-14px);
+  border-radius: var(--radius-20px);
+}
+
+/* Bestie Streak Box */
+.bestie-streak-box {
+  background: linear-gradient(135deg, var(--color-rgba-245-158-11-0-14) 0%, var(--color-rgba-239-68-68-0-07) 100%);
+  border: 1px solid var(--color-rgba-245-158-11-0-35);
+  border-radius: var(--radius-14px);
+  padding: var(--space-14px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6px);
+}
+
+.streak-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.streak-count-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6px);
+}
+
+.streak-fire-icon {
+  font-size: var(--text-26px);
+  filter: drop-shadow(0 0 8px var(--color-rgba-245-158-11-0-6));
+  animation: fireGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes fireGlow {
+  from { transform: scale(1); filter: drop-shadow(0 0 6px var(--color-rgba-245-158-11-0-5)); }
+  to { transform: scale(1.1); filter: drop-shadow(0 0 12px var(--color-rgba-239-68-68-0-8)); }
+}
+
+.streak-number {
+  font-size: var(--text-26px);
+  font-weight: 900;
+  color: var(--color-fbbf24);
+  letter-spacing: 0.5px;
+}
+
+.streak-text-label {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-fde68a);
+}
+
+.streak-status-tag {
+  font-size: var(--text-11px);
+  font-weight: 700;
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-6px);
+  background: var(--color-rgba-0-0-0-0-35);
+  color: var(--color-a7f3d0);
+  border: 1px solid var(--color-rgba-16-185-129-0-3);
+}
+
+.streak-hint {
+  margin: var(--space-0);
+  font-size: var(--text-11px);
+  color: var(--color-cbd5e1);
+  line-height: 1.4;
+}
+
+/* Pet Companion Box */
+.pet-companion-box {
+  background: var(--color-rgba-255-255-255-0-03);
+  border: 1px solid var(--color-rgba-16-185-129-0-25);
+  border-radius: var(--radius-14px);
+  padding: var(--space-14px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10px);
+}
+
+.pet-visual-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12px);
+}
+
+.pet-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-12px);
+  background: var(--color-rgba-16-185-129-0-15);
+  border: 1px solid var(--color-10b981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-24px);
+  flex-shrink: 0;
+  box-shadow: 0 0 10px var(--color-rgba-16-185-129-0-3);
+}
+
+.pet-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2px);
+  min-width: 0;
+}
+
+.pet-name-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  flex-wrap: wrap;
+}
+
+.pet-name {
+  color: var(--color-e2e8f0);
+  font-size: var(--text-13-5px);
+}
+
+.pet-badge {
+  font-size: var(--text-10px);
+  font-weight: 700;
+  color: var(--color-34d399);
+  background: var(--color-rgba-16-185-129-0-15);
+  padding: var(--space-2px-6px);
+  border-radius: var(--radius-8px);
+}
+
+.pet-desc {
+  margin: var(--space-0);
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+  line-height: 1.35;
+}
+
+.pet-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4px);
+}
+
+.pet-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--color-rgba-255-255-255-0-08);
+  border-radius: var(--radius-4px);
+  overflow: hidden;
+}
+
+.pet-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-10b981), var(--color-00b2ff));
+  border-radius: var(--radius-4px);
+  transition: width 0.4s ease;
+}
+
+.pet-progress-label {
+  font-size: var(--text-10-5px);
+  color: var(--color-64748b);
+  text-align: right;
+}
+
+/* Actions Row in Left Column */
+.profile-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8px);
+  margin-top: var(--space-4px);
+}
+
+.btn-profile-action {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 90px;
+  padding: var(--space-9px-10px);
+  border-radius: var(--radius-8px);
+  font-size: var(--text-11-5px);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6px);
+  transition: all 0.2s ease;
+  font-family: var(--font-sans-outfit);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.btn-profile-action.add-friend {
+  flex: 1 1 100%;
+  background: linear-gradient(135deg, var(--color-00b2ff), var(--color-0080ff));
+  color: var(--color-ffffff);
+  box-shadow: 0 4px 14px var(--color-rgba-0-178-255-0-35);
+}
+
+.btn-profile-action.add-friend:hover {
+  background: linear-gradient(135deg, var(--color-38c8ff), var(--color-0090ff));
+  transform: translateY(-1px);
+}
+
+.btn-profile-action.whisper {
+  background: var(--color-rgba-16-185-129-0-2);
+  border: 1px solid var(--color-10b981);
+  color: var(--color-10b981);
+}
+
+.btn-profile-action.whisper:hover {
+  background: var(--color-10b981);
+  color: var(--color-ffffff);
+}
+
+.btn-profile-action.teleport {
+  background: var(--color-rgba-192-132-252-0-2);
+  border: 1px solid var(--color-c084fc);
+  color: var(--color-c084fc);
+}
+
+.btn-profile-action.teleport:hover {
+  background: var(--color-c084fc);
+  color: var(--color-ffffff);
+}
+
+.btn-profile-action.unfriend {
+  flex: 1 1 100%;
+  background: var(--color-rgba-239-68-68-0-15);
+  border: 1px solid var(--color-rgba-239-68-68-0-3);
+  color: var(--color-f87171);
+  font-size: var(--text-11px);
+  padding: var(--space-6px-10px);
+}
+
+.btn-profile-action.unfriend:hover {
+  background: var(--color-ef4444);
+  color: var(--color-ffffff);
+}
+
+/* Clickable author name in chat */
+.chat-author-clickable {
+  cursor: pointer !important;
+  transition: color 0.15s, text-decoration 0.15s;
+}
+
+.chat-author-clickable:hover {
+  color: var(--color-38bdf8) !important;
+  text-decoration: underline !important;
+}
+
+
+
+
+
+

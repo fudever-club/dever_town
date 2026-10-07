@@ -1,0 +1,175 @@
+/* --- time-hud.css: campus time & day-night HUD (split from main.css 2026-10-07) --- */
+/* ==========================================================
+   CAMPUS TIME & DAY-NIGHT HUD (CYBER GLASSMORPHISM)
+   ========================================================== */
+.campus-time-hud {
+  position: fixed;
+  top: 14px;
+  right: 175px;
+  z-index: var(--z-999992);
+  font-family: var(--font-sans-roboto);
+  user-select: none;
+}
+
+.campus-time-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  background: var(--color-rgba-15-23-42-0-82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-rgba-255-255-255-0-14);
+  border-radius: var(--radius-24px);
+  padding: var(--space-5px-12px-5px-8px);
+  cursor: pointer;
+  box-shadow: 0 4px 16px var(--color-rgba-0-0-0-0-35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.campus-time-pill:hover {
+  background: var(--color-rgba-30-41-59-0-92);
+  border-color: var(--color-rgba-56-189-248-0-5);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--color-rgba-0-0-0-0-45);
+}
+
+.campus-time-celestial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-rgba-2-6-23-0-6);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+}
+
+.campus-time-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.campus-time-clock {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--color-f8fafc);
+}
+
+.campus-time-period {
+  font-size: var(--text-10px);
+  font-weight: 500;
+  color: var(--color-94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.campus-time-menu {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 220px;
+  background: var(--color-rgba-15-23-42-0-95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--color-rgba-255-255-255-0-16);
+  border-radius: var(--radius-12px);
+  padding: var(--space-12px);
+  box-shadow: 0 12px 32px var(--color-rgba-0-0-0-0-6);
+  animation: fadeInDown 0.18s ease-out;
+}
+
+.time-menu-header {
+  font-size: var(--text-10px);
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--color-38bdf8);
+  margin-bottom: var(--space-8px);
+  text-transform: uppercase;
+}
+
+.time-menu-section {
+  margin-bottom: var(--space-10px);
+}
+
+.time-menu-section:last-child {
+  margin-bottom: var(--space-0);
+}
+
+.time-menu-title {
+  font-size: var(--text-11px);
+  font-weight: 600;
+  color: var(--color-94a3b8);
+  margin-bottom: var(--space-6px);
+}
+
+.time-menu-btn-group {
+  display: flex;
+  gap: var(--space-6px);
+}
+
+.time-mode-btn {
+  flex: 1;
+  padding: var(--space-6px-8px);
+  background: var(--color-rgba-30-41-59-0-8);
+  border: 1px solid var(--color-rgba-255-255-255-0-12);
+  border-radius: var(--radius-6px);
+  font-size: var(--text-11px);
+  font-weight: 600;
+  color: var(--color-cbd5e1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.time-mode-btn:hover {
+  background: var(--color-rgba-51-65-85-0-9);
+  color: var(--color-ffffff);
+}
+
+.time-mode-btn.active {
+  background: var(--color-0284c7);
+  border-color: var(--color-38bdf8);
+  color: var(--color-ffffff);
+  box-shadow: 0 0 10px var(--color-rgba-56-189-248-0-4);
+}
+
+.time-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6px);
+}
+
+.time-preset-btn {
+  padding: var(--space-6px-8px);
+  background: var(--color-rgba-30-41-59-0-8);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-6px);
+  font-size: var(--text-11px);
+  font-weight: 500;
+  color: var(--color-e2e8f0);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.time-preset-btn:hover {
+  background: var(--color-ea580c);
+  border-color: var(--color-fb923c);
+  color: var(--color-ffffff);
+  box-shadow: 0 0 8px var(--color-rgba-249-115-22-0-4);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
