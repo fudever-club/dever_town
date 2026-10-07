@@ -1,4 +1,5 @@
 import { playerManager } from './playerManager.js';
+import { POSE } from '../../src/config/poseConfig.js';
 import { verifySocketToken } from '../middleware/authMiddleware.js';
 import { mailService } from '../services/mailService.js';
 import { setupVoiceHandler } from './voiceHandler.js';
@@ -536,16 +537,19 @@ export function setupSocketHandler(io) {
      * 7b2. Đồng bộ trạng thái hoạt động (ví dụ: 'dreaming' khi đếm cừu trong mơ).
      * Client gửi khi vào/ra giấc mơ, server broadcast cho cả phòng.
      */
-    socket.on('playerActivity', ({ activity }) => {
+    socket.on('playerActivity', ({ activity, pose }) => {
       const player = playerManager.getPlayer(socket.id);
       if (!player) return;
       // Chỉ cho phép các giá trị hợp lệ
       const validActivities = new Set(['dreaming', null, undefined]);
       if (!validActivities.has(activity)) return;
+      const validPoses = new Set([...Object.values(POSE), null, undefined]);
+      if (!validPoses.has(pose)) return;
 
       io.to(player.roomId).emit('playerActivity', {
         id: socket.id,
-        activity: activity || null
+        activity: activity || null,
+        pose: pose || POSE.STAND
       });
     });
 
