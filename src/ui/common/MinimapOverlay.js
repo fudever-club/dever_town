@@ -1,8 +1,19 @@
 /**
  * MinimapOverlay: Radar HUD thu nhỏ ở góc màn hình
  * Hiển thị toàn cảnh phòng 25x19 tiles, vị trí người chơi, bạn bè và cổng dịch chuyển.
+ *
+ * Perf: lớp tĩnh (nền + lưới tile + cổng) được vẽ MỘT LẦN vào offscreen canvas
+ * mỗi khi đổi phòng (xem invalidate()). render() mỗi frame chỉ blit drawImage
+ * + vẽ các chấm động (người chơi, bạn bè, pulse). Tránh 475 fillRect + arc
+ * và tránh cấp phát Set mỗi frame.
  */
 import { MAPS_CONFIG } from '../../config/maps.js';
+
+// Hoist lên module scope: không cấp phát lại mỗi frame (perf fix)
+const SOLID_TILES = new Set([
+  2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22,
+  25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37
+]);
 
 export class MinimapOverlay {
   /**
@@ -20,6 +31,9 @@ export class MinimapOverlay {
     this.rows = 19;
     this.tileW = this.width / this.cols; // 6px
     this.tileH = this.height / this.rows; // 6px
+
+    // Offscreen cache cho lớp tĩnh (nền + tile + cổng). Vẽ lại khi đổi phòng.
+    this.staticCanvas = null;
 
     this.initDOM();
     this.bindEvents();
@@ -110,32 +124,56 @@ export class MinimapOverlay {
 
   setRoom(roomId) {
     this.currentRoomId = roomId;
+    this.refresh();
+  }
+
+  /**
+   * Vẽ lại lớp tĩnh (nền + lưới tile + cổng) vào offscreen canvas.
+   * Gọi khi đổi phòng, hoặc khi layout/size thay đổi (resize hook cho
+   * sibling worker responsive canvas: gọi minimap.invalidate() sau khi
+   * đổi kích thước minimap).
+   */
+  invalidate() {
+    this._renderStaticLayer();
+  }
+
+  /**
+   * Vẽ lại lớp tĩnh rồi vẽ đầy đủ một frame mới.
+   */
+  refresh() {
+    this.invalidate();
     this.render();
   }
 
-  render() {
-    if (!this.ctx || this.isCollapsed) return;
-
+  /**
+   * Vẽ lớp tĩnh (background, tile grid, portals) vào offscreen canvas.
+   * Kết quả pixel-identical với cách vẽ trực tiếp trước đây vì per-frame
+   * render() chỉ blit drawImage rồi vẽ các chấm động lên trên.
+   */
+  _renderStaticLayer() {
     const mapData = MAPS_CONFIG[this.currentRoomId];
     if (!mapData || !mapData.layout) return;
 
-    const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.width, this.height);
+    if (!this.staticCanvas) {
+      this.staticCanvas = document.createElement('canvas');
+      this.staticCanvas.width = this.width;
+      this.staticCanvas.height = this.height;
+    }
+    const ctx = this.staticCanvas.getContext('2d');
+    if (!ctx) return;
 
     // 1. Vẽ nền tối
     ctx.fillStyle = '#070a12';
     ctx.fillRect(0, 0, this.width, this.height);
 
     // 2. Vẽ Layout Map
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37]);
-
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.cols; c++) {
         const tile = mapData.layout[r]?.[c] ?? 0;
         const x = c * this.tileW;
         const y = r * this.tileH;
 
-        if (solidTiles.has(tile)) {
+        if (SOLID_TILES.has(tile)) {
           ctx.fillStyle = '#334155'; // Tường / Vật cản
           ctx.fillRect(x, y, this.tileW, this.tileH);
         } else if (tile === 10) {
@@ -164,6 +202,28 @@ export class MinimapOverlay {
         ctx.stroke();
       });
     }
+  }
+
+  /**
+   * Vẽ một frame: blit lớp tĩnh đã cache + chỉ vẽ các yếu tố động
+   * (chấm người chơi khác, chấm người chơi chính, radar pulse).
+   * Gọi mỗi frame từ WorldScene.update() — rẻ, không cấp phát.
+   */
+  render() {
+    if (!this.ctx || this.isCollapsed) return;
+
+    const mapData = MAPS_CONFIG[this.currentRoomId];
+    if (!mapData || !mapData.layout) return;
+
+    // Lazy build cache (ví dụ frame đầu tiên hoặc khi expand)
+    if (!this.staticCanvas) {
+      this._renderStaticLayer();
+      if (!this.staticCanvas) return;
+    }
+
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.width, this.height);
+    ctx.drawImage(this.staticCanvas, 0, 0);
 
     // 4. Vẽ Người chơi khác (RemotePlayers)
     if (this.scene && this.scene.remotePlayers) {
@@ -210,5 +270,6 @@ export class MinimapOverlay {
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }
+    this.staticCanvas = null;
   }
 }
