@@ -1,0 +1,584 @@
+/* --- quests.css: daily quests & dever points (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   DAILY QUESTS & DEVER POINTS (Hệ Thống Nhiệm Vụ & Tích Điểm)
+   ========================================================================== */
+.daily-goal-hud {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: var(--z-1001);
+  width: min(320px, calc(100% - 32px));
+  padding: var(--space-14px);
+  color: var(--color-f8fafc);
+  background: var(--color-rgba-8-15-32-0-94);
+  border: 1px solid var(--color-rgba-56-189-248-0-38);
+  border-radius: var(--radius-14px);
+  box-shadow: 0 14px 32px var(--color-rgba-2-6-23-0-62), 0 0 0 1px var(--color-rgba-0-102-204-0-08);
+  backdrop-filter: blur(12px);
+  transition: width 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.daily-goal-hud.goal-ready {
+  border-color: var(--color-rgba-245-158-11-0-7);
+}
+
+.daily-goal-hud.goal-complete {
+  border-color: var(--color-rgba-34-197-94-0-58);
+}
+
+.daily-goal-heading,
+.daily-goal-footer,
+.daily-goal-progress-row,
+.daily-goal-actions {
+  display: flex;
+  align-items: center;
+}
+
+.daily-goal-heading,
+.daily-goal-footer {
+  justify-content: space-between;
+  gap: var(--space-12px);
+}
+
+.daily-goal-kicker {
+  display: block;
+  margin-bottom: var(--space-3px);
+  color: var(--color-38bdf8);
+  font-size: var(--text-9px);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.daily-goal-title {
+  margin: var(--space-0);
+  color: var(--color-f8fafc);
+  font-size: var(--text-15px);
+  line-height: 1.2;
+}
+
+.daily-goal-collapse {
+  width: 30px;
+  height: 30px;
+  padding: var(--space-6px);
+  flex: 0 0 auto;
+  color: var(--color-94a3b8);
+  background: var(--color-rgba-148-163-184-0-1);
+  border: 1px solid var(--color-rgba-148-163-184-0-18);
+  border-radius: var(--radius-8px);
+  cursor: pointer;
+}
+
+.daily-goal-collapse svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform 0.2s ease;
+}
+
+.daily-goal-details {
+  margin-top: var(--space-10px);
+}
+
+.daily-goal-description {
+  margin: var(--space-0-0-10px);
+  color: var(--color-cbd5e1);
+  font-size: var(--text-12px);
+  line-height: 1.45;
+}
+
+.daily-goal-progress-row {
+  gap: var(--space-9px);
+  margin-bottom: var(--space-11px);
+}
+
+.daily-goal-progress-track {
+  height: 6px;
+  flex: 1;
+  overflow: hidden;
+  background: var(--color-rgba-2-6-23-0-85);
+  border: 1px solid var(--color-rgba-148-163-184-0-16);
+  border-radius: var(--radius-pill);
+}
+
+.daily-goal-progress-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-0080ff), var(--color-22c55e));
+  border-radius: var(--radius-inherit);
+  transition: width 0.3s ease;
+}
+
+.daily-goal-progress-text,
+.daily-goal-sync-status {
+  color: var(--color-94a3b8);
+  font-size: var(--text-10px);
+  line-height: 1.3;
+}
+
+.daily-goal-progress-text {
+  white-space: nowrap;
+}
+
+.daily-goal-sync-status {
+  max-width: 145px;
+}
+
+.daily-goal-hud[data-sync-state="pending"] .daily-goal-sync-status {
+  color: var(--color-7dd3fc);
+}
+
+.daily-goal-hud[data-sync-state="error"] .daily-goal-sync-status {
+  color: var(--color-fbbf24);
+}
+
+/* Recovery remains actionable even if the network warning arrives late. */
+.daily-goal-hud[data-sync-state="error"] {
+  z-index: var(--z-100001);
+}
+
+.daily-goal-actions {
+  justify-content: flex-end;
+  gap: var(--space-6px);
+}
+
+.daily-goal-action,
+.daily-goal-retry {
+  min-height: 32px;
+  padding: var(--space-7px-10px);
+  border-radius: var(--radius-8px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-11px);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.daily-goal-action {
+  color: var(--color-ffffff);
+  background: var(--color-0066cc);
+  border: 1px solid var(--color-0080ff);
+}
+
+.daily-goal-retry {
+  color: var(--color-fde68a);
+  background: var(--color-rgba-245-158-11-0-12);
+  border: 1px solid var(--color-rgba-245-158-11-0-45);
+}
+
+.daily-goal-action:hover,
+.daily-goal-retry:hover {
+  transform: translateY(-1px);
+}
+
+.daily-goal-action:focus-visible,
+.daily-goal-retry:focus-visible,
+.daily-goal-collapse:focus-visible {
+  outline: 3px solid var(--color-7dd3fc);
+  outline-offset: 2px;
+}
+
+.daily-goal-retry:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.daily-goal-hud.collapsed {
+  width: min(238px, calc(100% - 32px));
+  padding: var(--space-10px-12px);
+}
+
+.daily-goal-hud.collapsed .daily-goal-details {
+  display: none;
+}
+
+.daily-goal-hud.collapsed .daily-goal-collapse svg {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 1024px) {
+  .daily-goal-hud {
+    top: 52px;
+    bottom: auto;
+    right: 8px;
+    z-index: var(--z-998);
+    width: min(286px, calc(100% - 16px));
+    padding: var(--space-11px-12px);
+  }
+
+  .daily-goal-title {
+    font-size: var(--text-13px);
+  }
+
+  .daily-goal-description {
+    font-size: var(--text-11px);
+  }
+
+  .daily-goal-footer {
+    align-items: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daily-goal-hud,
+  .daily-goal-progress-fill,
+  .daily-goal-collapse svg,
+  .daily-goal-action,
+  .daily-goal-retry {
+    transition: none;
+  }
+}
+
+.btn-quests {
+  background: linear-gradient(135deg, var(--color-f59e0b), var(--color-d97706));
+  border: 1px solid var(--color-fde68a);
+  color: var(--color-ffffff);
+  box-shadow: 0 0 12px var(--color-rgba-245-158-11-0-4);
+}
+
+.btn-quests:hover {
+  box-shadow: 0 0 18px var(--color-rgba-245-158-11-0-7);
+  transform: translateY(-1px);
+}
+
+.quest-coin-icon {
+  font-size: var(--text-14px);
+}
+
+.header-points-text {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--color-fef08a);
+  background: var(--color-rgba-0-0-0-0-25);
+  padding: var(--space-1px-6px);
+  border-radius: var(--radius-4px);
+}
+
+.quest-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16px);
+  max-height: 72vh;
+  overflow-y: auto;
+  padding-right: var(--space-4px);
+}
+
+.quest-stats-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-14px);
+  padding: var(--space-14px-18px);
+}
+
+.quest-stat-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4px);
+}
+
+.quest-stat-col.points-highlight {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.stat-label {
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-94a3b8);
+  text-transform: uppercase;
+}
+
+.stat-rank-val {
+  font-size: var(--text-15px);
+  font-weight: 800;
+  color: var(--color-4ade80);
+}
+
+.stat-points-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-17px);
+  font-weight: 800;
+  color: var(--color-fbbf24);
+  text-shadow: 0 0 10px var(--color-rgba-245-158-11-0-5);
+}
+
+/* Daily Milestone Chest */
+.quest-milestone-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16px);
+  background: linear-gradient(135deg, var(--color-rgba-245-158-11-0-15), var(--color-rgba-217-119-6-0-05));
+  border: 1.5px solid var(--color-rgba-245-158-11-0-35);
+  border-radius: var(--radius-14px);
+  padding: var(--space-16px-20px);
+}
+
+.milestone-icon-box {
+  font-size: var(--text-36px);
+  line-height: 1;
+  filter: drop-shadow(0 0 12px var(--color-rgba-245-158-11-0-6));
+}
+
+.milestone-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6px);
+}
+
+.milestone-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.milestone-title-row h4 {
+  font-size: var(--text-14px);
+  font-weight: 800;
+  color: var(--color-fde68a);
+  margin: var(--space-0);
+}
+
+.milestone-badge {
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  background: var(--color-rgba-56-189-248-0-15);
+  padding: var(--space-2px-8px);
+  border-radius: var(--radius-6px);
+}
+
+.milestone-info p {
+  font-size: var(--text-12px);
+  color: var(--color-cbd5e1);
+  margin: var(--space-0);
+}
+
+.milestone-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-rgba-15-23-42-0-8);
+  border-radius: var(--radius-4px);
+  overflow: hidden;
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+}
+
+.milestone-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-f59e0b), var(--color-22c55e));
+  transition: width 0.4s ease;
+}
+
+.milestone-btn {
+  padding: var(--space-10px-16px);
+  border-radius: var(--radius-10px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-12px);
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.milestone-btn.ready {
+  background: linear-gradient(135deg, var(--color-22c55e), var(--color-16a34a));
+  color: white;
+  box-shadow: 0 0 16px var(--color-rgba-34-197-94-0-6);
+}
+
+.milestone-btn.locked {
+  background: var(--color-rgba-51-65-85-0-5);
+  color: var(--color-94a3b8);
+  cursor: not-allowed;
+  border: 1px solid var(--color-rgba-255-255-255-0-08);
+}
+
+.milestone-btn.claimed {
+  background: var(--color-rgba-34-197-94-0-15);
+  color: var(--color-4ade80);
+  border: 1px solid var(--color-rgba-34-197-94-0-3);
+  cursor: default;
+}
+
+/* Quests Grid */
+.quest-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10px);
+}
+
+.quest-section-title {
+  font-size: var(--text-13px);
+  font-weight: 800;
+  color: var(--color-94a3b8);
+  text-transform: uppercase;
+  margin: var(--space-0);
+}
+
+.quest-items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10px);
+}
+
+.quest-item-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14px);
+  background: var(--color-rgba-30-41-59-0-7);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-12px);
+  padding: var(--space-12px-16px);
+  transition: all 0.2s ease;
+}
+
+.quest-item-card.completed {
+  border-color: var(--color-rgba-34-197-94-0-4);
+  background: var(--color-rgba-34-197-94-0-06);
+}
+
+.quest-item-card.claimed {
+  opacity: 0.6;
+  border-color: var(--color-rgba-255-255-255-0-06);
+}
+
+.quest-icon-badge {
+  font-size: var(--text-26px);
+  line-height: 1;
+}
+
+.quest-info-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4px);
+}
+
+.quest-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quest-item-title {
+  font-size: var(--text-14px);
+  font-weight: 700;
+  color: var(--color-f1f5f9);
+}
+
+.quest-reward-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-12px);
+  font-weight: 800;
+  color: var(--color-fbbf24);
+  background: var(--color-rgba-245-158-11-0-15);
+  padding: var(--space-2px-8px);
+  border-radius: var(--radius-6px);
+}
+
+.quest-item-desc {
+  font-size: var(--text-12px);
+  color: var(--color-94a3b8);
+  margin: var(--space-0);
+}
+
+.quest-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10px);
+  margin-top: var(--space-4px);
+}
+
+.quest-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--color-020617);
+  border-radius: var(--radius-3px);
+  overflow: hidden;
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-38bdf8), var(--color-22c55e));
+  transition: width 0.3s;
+}
+
+.quest-progress-count {
+  font-size: var(--text-11px);
+  font-family: var(--font-mono);
+  color: var(--color-cbd5e1);
+  min-width: 40px;
+  text-align: right;
+}
+
+.quest-claim-btn {
+  padding: var(--space-8px-14px);
+  border-radius: var(--radius-8px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-12px);
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.quest-claim-btn.ready {
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  color: white;
+  box-shadow: 0 0 14px var(--color-rgba-242-111-33-0-5);
+}
+
+.quest-claim-btn.in-prog {
+  background: var(--color-rgba-51-65-85-0-6);
+  color: var(--color-94a3b8);
+  cursor: not-allowed;
+}
+
+.quest-claim-btn.done {
+  background: var(--color-rgba-34-197-94-0-15);
+  color: var(--color-4ade80);
+  border: 1px solid var(--color-rgba-34-197-94-0-3);
+  cursor: default;
+}
+
+/* Toast Banner (Steam/Console Achievement Style) */
+.quest-toast-banner {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  background: var(--color-rgba-15-23-42-0-96);
+  border: 1px solid var(--color-rgba-242-111-33-0-7);
+  color: var(--color-ffffff);
+  padding: var(--space-8px-16px);
+  border-radius: var(--radius-24px);
+  font-weight: 600;
+  font-size: var(--text-12-5px);
+  box-shadow: 0 10px 30px var(--color-rgba-0-0-0-0-8), 0 0 16px var(--color-rgba-242-111-33-0-3);
+  z-index: var(--z-1000000);
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+  animation: slideInRightToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
+}
+
+.quest-toast-banner.fade-out {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.3s ease;
+}
+
+@keyframes slideInRightToast {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+

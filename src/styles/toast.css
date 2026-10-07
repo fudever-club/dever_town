@@ -1,0 +1,29 @@
+/* --- toast.css: toast notifications (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.dever-toast {
+  position: fixed;
+  top: 70px;
+  right: 24px;
+  background: var(--color-rgba-15-23-42-0-95);
+  border: 1px solid var(--color-f26f21);
+  box-shadow: 0 8px 24px var(--color-rgba-242-111-33-0-3);
+  color: var(--color-ffffff);
+  padding: var(--space-10px-18px);
+  border-radius: var(--radius-10px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-13px);
+  font-weight: 700;
+  z-index: var(--z-9999999);
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: all 0.3s ease-out;
+}
+
+.dever-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+

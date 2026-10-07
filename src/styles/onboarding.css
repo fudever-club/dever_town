@@ -1,0 +1,112 @@
+/* --- onboarding.css: onboarding guide overlay (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   ONBOARDING GUIDE OVERLAY (Mục 1.4 Plan Add-on v3)
+   ========================================================================== */
+.onboarding-guide-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-rgba-6-9-19-0-85);
+  backdrop-filter: blur(10px);
+  z-index: var(--z-100002);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16px);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.onboarding-card {
+  background: var(--color-0f172a);
+  border: 1px solid var(--color-f26f21);
+  border-radius: var(--radius-18px);
+  padding: var(--space-24px-28px);
+  max-width: 600px;
+  max-height: 92vh;
+  overflow-y: auto;
+  width: 100%;
+  box-shadow: 0 20px 60px var(--color-rgba-0-0-0-0-9), 0 0 30px var(--color-rgba-242-111-33-0-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16px);
+}
+
+.onboarding-header {
+  text-align: center;
+}
+
+.onboarding-badge {
+  font-size: var(--text-11px);
+  font-weight: 800;
+  background: var(--color-rgba-242-111-33-0-2);
+  color: var(--color-f26f21);
+  padding: var(--space-4px-12px);
+  border-radius: var(--radius-20px);
+  border: 1px solid var(--color-rgba-242-111-33-0-4);
+  text-transform: uppercase;
+}
+
+.onboarding-title {
+  font-size: var(--text-20px);
+  font-weight: 800;
+  color: var(--color-ffffff);
+  margin-top: var(--space-8px);
+}
+
+.onboarding-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-14px);
+}
+
+.onboarding-item {
+  background: var(--color-rgba-30-41-59-0-7);
+  border: 1px solid var(--color-rgba-255-255-255-0-08);
+  border-radius: var(--radius-12px);
+  padding: var(--space-12px-14px);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12px);
+}
+
+.onboarding-icon {
+  font-size: var(--text-24px);
+  line-height: 1;
+}
+
+.onboarding-item h4 {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  margin: var(--space-0-0-4px-0);
+}
+
+.onboarding-item p {
+  font-size: var(--text-12px);
+  color: var(--color-cbd5e1);
+  margin: var(--space-0);
+  line-height: 1.4;
+}
+
+.onboarding-btn {
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  color: white;
+  border: none;
+  padding: var(--space-14px);
+  border-radius: var(--radius-12px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-14px);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-10);
+  transition: all 0.2s;
+}
+
+.onboarding-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-11);
+}
+
+.hidden {
+  display: none !important;
+}
+
