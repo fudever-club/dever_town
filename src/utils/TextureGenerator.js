@@ -1028,51 +1028,114 @@ export class TextureGenerator {
   }
 
   // 40: Ghế gỗ ngồi học (Walkable) — nhìn từ trên, dùng cho sit zones
+  // Thiết kế lại: silhouette mạnh + shadow + chi tiết để đọc rõ là "ghế"
   static drawSitChair(ctx, x, y, size) {
     // Sàn gỗ
     this.drawWoodFloor(ctx, x, y, size);
 
-    // Mặt ghế gỗ tròn
+    // Bóng đổ (offset xuống-phải, mờ)
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(x + 10, y + 9, 17, 19);
+
+    // 4 chân ghế (ô vuông tối ở 4 góc, ló ra ngoài mặt ghế)
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(x + 6, y + 11, 3, 3);
+    ctx.fillRect(x + 23, y + 11, 3, 3);
+    ctx.fillRect(x + 6, y + 22, 3, 3);
+    ctx.fillRect(x + 23, y + 22, 3, 3);
+
+    // Mặt ghế: hình thang rộng dần về phía trước (phối cảnh)
     ctx.fillStyle = '#92400e';
-    ctx.fillRect(x + 8, y + 12, 16, 12);
+    ctx.fillRect(x + 8, y + 12, 16, 10);   // thân ghế
+    ctx.fillRect(x + 7, y + 20, 18, 3);    // mép trước rộng hơn
+    // Highlight mép trước
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x + 7, y + 22, 18, 1);
+    // Highlight mặt ghế (trên)
     ctx.fillStyle = '#b45309';
-    ctx.fillRect(x + 9, y + 13, 14, 10);
+    ctx.fillRect(x + 9, y + 13, 14, 1);
     // Vân gỗ
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.fillRect(x + 11, y + 15, 10, 1);
-    ctx.fillRect(x + 11, y + 18, 10, 1);
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(x + 10, y + 15, 12, 1);
+    ctx.fillRect(x + 10, y + 17, 12, 1);
+    ctx.fillRect(x + 10, y + 20, 12, 1);
 
-    // Tựa lưng (phía trên = hướng bắc, quay về bàn học)
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 8, y + 6, 16, 6);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(x + 9, y + 7, 14, 4);
-
-    // 4 chân ghế
+    // Tựa lưng (phía bắc, hướng về bàn học): thanh ngang + 4 nan dọc
+    // Nền tối giữa các nan
     ctx.fillStyle = '#451a03';
-    ctx.fillRect(x + 9, y + 24, 2, 4);
-    ctx.fillRect(x + 21, y + 24, 2, 4);
+    ctx.fillRect(x + 8, y + 5, 16, 7);
+    // Thanh ngang trên
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 8, y + 5, 16, 3);
+    ctx.fillStyle = '#b45309';  // highlight thanh ngang
+    ctx.fillRect(x + 8, y + 5, 16, 1);
+    // 4 nan dọc (mỗi nan 2px, cách nhau 2px)
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 9, y + 8, 2, 4);
+    ctx.fillRect(x + 13, y + 8, 2, 4);
+    ctx.fillRect(x + 17, y + 8, 2, 4);
+    ctx.fillRect(x + 21, y + 8, 2, 4);
+    // Bóng nan (cạnh trái tối)
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(x + 9, y + 8, 1, 4);
+    ctx.fillRect(x + 13, y + 8, 1, 4);
+    ctx.fillRect(x + 17, y + 8, 1, 4);
+    ctx.fillRect(x + 21, y + 8, 1, 4);
   }
 
   // 41: Nệm sofa ngồi thư giãn (Walkable) — dùng cho sit zones
+  // Thiết kế lại: đệm dày + piping + nút bấm + tay vịn + gối rõ ràng
   static drawSitSofa(ctx, x, y, size) {
     // Sàn
     this.drawWoodFloor(ctx, x, y, size);
 
-    // Nệm sofa xanh navy (giống tile 36 nhưng là nệm ngồi)
+    // Bóng đổ
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(x + 6, y + 12, 24, 17);
+
+    // Đế nệm xanh navy dày
     ctx.fillStyle = '#1e3a8a';
-    ctx.fillRect(x + 4, y + 12, size - 8, 12);
-    // Viền đệm
-    ctx.fillStyle = '#172554';
-    ctx.fillRect(x + 4, y + 12, size - 8, 2);
-    ctx.fillRect(x + 4, y + 22, size - 8, 2);
-    // Đệm ngồi sáng
+    ctx.fillRect(x + 4, y + 10, 24, 16);
+    // Piping (viền sáng quanh mép đệm)
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x + 4, y + 10, 24, 1);
+    ctx.fillRect(x + 4, y + 25, 24, 1);
+    ctx.fillRect(x + 4, y + 10, 1, 16);
+    ctx.fillRect(x + 27, y + 10, 1, 16);
+
+    // Tay vịn 2 bên (nhô cao)
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(x + 4, y + 10, 5, 16);
+    ctx.fillRect(x + 23, y + 10, 5, 16);
+    // Highlight tay vịn
     ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(x + 7, y + 15, 9, 6);
-    ctx.fillRect(x + 16, y + 15, 9, 6);
-    // Gối tựa cam
+    ctx.fillRect(x + 5, y + 11, 1, 14);
+    ctx.fillRect(x + 25, y + 11, 1, 14);
+
+    // Mặt đệm ngồi
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 9, y + 13, 14, 10);
+    // Bóng dưới đệm
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.fillRect(x + 9, y + 20, 14, 3);
+
+    // Nút bấm đệm (4 nút lưới 2x2)
+    ctx.fillStyle = '#172554';
+    ctx.fillRect(x + 12, y + 15, 2, 2);
+    ctx.fillRect(x + 18, y + 15, 2, 2);
+    ctx.fillRect(x + 12, y + 19, 2, 2);
+    ctx.fillRect(x + 18, y + 19, 2, 2);
+
+    // Gối cam ở tựa lưng (rõ là gối: nếp gấp + highlight)
     ctx.fillStyle = '#f26f21';
-    ctx.fillRect(x + 8, y + 8, 6, 5);
+    ctx.fillRect(x + 11, y + 5, 10, 6);
+    // Nếp gấp gối
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(x + 11, y + 9, 10, 2);
+    ctx.fillRect(x + 15, y + 5, 1, 6);
+    // Highlight gối
+    ctx.fillStyle = '#fdba74';
+    ctx.fillRect(x + 12, y + 6, 8, 1);
   }
 
   // 38: Bàn Họp Hội Nghị (Obstacle) — nhìn từ trên xuống, bàn gỗ dài + ghế
