@@ -259,9 +259,12 @@ export class SheepDreamEngine {
 
       // Nhảy qua hàng rào
       const distToFence = s.x - fenceX;
+      // Crouch (lấy đà) khi sắp tới rào
+      s.crouch = !s.jumping && distToFence < 110 && distToFence >= 60;
       if (!s.jumping && distToFence < 60 && distToFence > -10) {
         s.jumping = true;
         s.jumpT = 0;
+        s.crouch = false;
       }
       if (s.jumping) {
         s.jumpT += dt;
@@ -272,8 +275,11 @@ export class SheepDreamEngine {
         if (t >= 1) {
           s.jumping = false;
           s.jumpY = 0;
+          s.landT = 0.18; // Squash khi tiếp đất
         }
       }
+      // Giảm land squash
+      if (s.landT > 0) s.landT -= dt;
 
       // Chân chạy
       s.legPhase += dt * 12;
@@ -425,34 +431,108 @@ export class SheepDreamEngine {
     const c = this.cfg.colors;
     const f = this.cfg.fence;
     const topY = f.y - f.height;
+    const postW = 14;
+    const postH = f.height;
+    const postL = f.x - 30;   // Cột trái
+    const postR = f.x + 30;   // Cột phải
 
-    // Cột
-    ctx.fillStyle = c.fenceDark;
-    ctx.fillRect(f.x - f.width / 2, topY, f.width, f.height);
-    ctx.fillStyle = c.fence;
-    ctx.fillRect(f.x - f.width / 2, topY, f.width - 3, f.height);
+    // Vẽ 1 cột gỗ (có vân, highlight, đầu nhọn)
+    const drawPost = (px) => {
+      const x0 = px - postW / 2;
+      // Thân cột
+      ctx.fillStyle = c.fence;
+      ctx.fillRect(x0, topY, postW, postH);
+      // Highlight bên trái
+      ctx.fillStyle = c.fenceLight;
+      ctx.fillRect(x0, topY, 3, postH);
+      // Bóng bên phải
+      ctx.fillStyle = c.fenceDark;
+      ctx.fillRect(x0 + postW - 3, topY, 3, postH);
+      // Vân gỗ dọc
+      ctx.fillStyle = c.fenceDark;
+      ctx.fillRect(x0 + 6, topY + 8, 2, postH - 16);
+      ctx.fillRect(x0 + 10, topY + 20, 1, postH - 40);
+      // Đầu nhọn
+      ctx.fillStyle = c.fence;
+      ctx.beginPath();
+      ctx.moveTo(x0, topY);
+      ctx.lineTo(x0 + postW / 2, topY - 8);
+      ctx.lineTo(x0 + postW, topY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = c.fenceLight;
+      ctx.fillRect(x0 + 2, topY - 5, 3, 5);
+      // Mắt gỗ
+      ctx.fillStyle = c.fenceDark;
+      ctx.beginPath();
+      ctx.ellipse(x0 + postW / 2 + 1, topY + postH * 0.55, 2.5, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    drawPost(postL);
+    drawPost(postR);
 
-    // Thanh ngang
-    ctx.fillStyle = c.fenceDark;
-    ctx.fillRect(f.x - 50, topY + 18, 100, 8);
-    ctx.fillRect(f.x - 50, topY + 45, 100, 8);
-    ctx.fillStyle = c.fence;
-    ctx.fillRect(f.x - 50, topY + 18, 100, 5);
-    ctx.fillRect(f.x - 50, topY + 45, 100, 5);
-
-    // Đầu cột
-    ctx.fillStyle = c.fence;
-    ctx.fillRect(f.x - f.width / 2 - 2, topY - 6, f.width + 4, 8);
+    // 3 thanh ngang
+    const railY = [topY + 14, topY + 40, topY + 66];
+    const railX0 = postL - 14;
+    const railX1 = postR + 14;
+    const railW = railX1 - railX0;
+    railY.forEach((ry, idx) => {
+      // Bóng dưới
+      ctx.fillStyle = c.fenceDark;
+      ctx.fillRect(railX0, ry, railW, 9);
+      // Thân
+      ctx.fillStyle = c.fence;
+      ctx.fillRect(railX0, ry, railW, 7);
+      // Highlight trên
+      ctx.fillStyle = c.fenceLight;
+      ctx.fillRect(railX0, ry, railW, 2);
+      // Vân gỗ ngang
+      ctx.fillStyle = c.fenceDark;
+      ctx.fillRect(railX0 + 8 + idx * 13, ry + 4, 18, 1);
+      ctx.fillRect(railX0 + railW - 30 - idx * 7, ry + 5, 12, 1);
+      // Đinh tán
+      ctx.fillStyle = '#5b3413';
+      ctx.fillRect(postL - 2, ry + 2, 4, 4);
+      ctx.fillRect(postR - 2, ry + 2, 4, 4);
+      ctx.fillStyle = c.fenceLight;
+      ctx.fillRect(postL - 2, ry + 2, 4, 1);
+      ctx.fillRect(postR - 2, ry + 2, 4, 1);
+    });
   }
 
   drawSheep(ctx, s) {
     const c = this.cfg.colors;
-    const x = s.x;
-    const y = s.y + (s.jumpY || 0);
     const w = this.cfg.sheep.width;
     const h = this.cfg.sheep.height;
 
+    // Squash & stretch theo trạng thái
+    let scaleX = 1, scaleY = 1;
+    let tucked = false; // Chân co khi đang bay
+    if (s.jumping) {
+      const jumpDur = this.cfg.sheep.jumpDurationMs / 1000;
+      const t = Math.min(s.jumpT / jumpDur, 1);
+      if (t < 0.22) {
+        // Bật lên: kéo dài người
+        scaleY = 1.14; scaleX = 0.9;
+      } else if (t > 0.78) {
+        // Sắp tiếp đất: hơi co lại
+        scaleY = 0.94; scaleX = 1.05;
+      }
+      if (t > 0.15 && t < 0.85) tucked = true; // Co chân giữa cú nhảy
+    } else if (s.landT > 0) {
+      // Squash khi tiếp đất
+      const k = Math.max(s.landT / 0.18, 0);
+      scaleY = 1 - 0.2 * k;
+      scaleX = 1 + 0.2 * k;
+    } else if (s.crouch) {
+      // Lấy đà trước khi nhảy
+      scaleY = 0.9; scaleX = 1.08;
+    }
+
     ctx.save();
+    // Dịch tới vị trí cừu, flip ngang để mặt hướng theo chiều di chuyển (sang trái)
+    ctx.translate(s.x, s.y + (s.jumpY || 0));
+    ctx.scale(-scaleX, scaleY);
 
     // Flash trắng khi được đếm
     if (s.countFlash > 0) {
@@ -460,60 +540,74 @@ export class SheepDreamEngine {
       ctx.shadowBlur = 15;
     }
 
-    // Thân (bông)
+    // Thân (bông) — vẽ quanh gốc (0,0)
     ctx.fillStyle = c.sheepWool;
-    // Vẽ bông bằng các hình tròn
     const woolCircles = [
       [-14, -6, 9], [-6, -10, 10], [2, -10, 10], [10, -8, 9], [16, -2, 8],
       [-14, 4, 8], [-6, 2, 9], [2, 2, 9], [10, 4, 8],
     ];
     for (const [ox, oy, r] of woolCircles) {
       ctx.beginPath();
-      ctx.arc(x + ox, y + oy, r, 0, Math.PI * 2);
+      ctx.arc(ox, oy, r, 0, Math.PI * 2);
       ctx.fill();
     }
+    // Bóng dưới bông cho chiều sâu
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.beginPath();
+    ctx.arc(0, 6, 14, 0, Math.PI);
+    ctx.fill();
 
-    // Đầu (bên phải, hướng đi)
-    const headX = x + 20;
-    const headY = y - 2;
+    // Đầu (bên +x, sau flip sẽ hướng sang trái = hướng di chuyển)
+    const headX = 20;
+    const headY = -2;
     ctx.fillStyle = c.sheepFace;
     ctx.fillRect(headX - 6, headY - 8, 14, 16); // mặt
     // Tai
     ctx.fillRect(headX - 10, headY - 6, 5, 8);
     ctx.fillRect(headX + 7, headY - 6, 5, 8);
-    // Mắt
+    // Mắt (trợn tròn khi nhảy!)
+    const eyeH = s.jumping ? 6 : 5;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(headX - 2, headY - 4, 4, 5);
-    ctx.fillRect(headX + 4, headY - 4, 4, 5);
+    ctx.fillRect(headX - 2, headY - 4, 4, eyeH);
+    ctx.fillRect(headX + 4, headY - 4, 4, eyeH);
     ctx.fillStyle = '#000000';
-    ctx.fillRect(headX - 1, headY - 3, 2, 3);
-    ctx.fillRect(headX + 5, headY - 3, 2, 3);
+    const pupilY = s.jumping ? headY - 2 : headY - 3; // Mắt nhìn lên khi bay
+    ctx.fillRect(headX - 1, pupilY, 2, 3);
+    ctx.fillRect(headX + 5, pupilY, 2, 3);
     // Bông trên đầu
     ctx.fillStyle = c.sheepWool;
     ctx.beginPath();
     ctx.arc(headX + 1, headY - 10, 7, 0, Math.PI * 2);
     ctx.fill();
 
-    // Chân (4 chân, chạy)
+    // Chân
     ctx.fillStyle = c.sheepFace;
-    const legSwing = Math.sin(s.legPhase) * 5;
-    const legSwing2 = Math.sin(s.legPhase + Math.PI) * 5;
-    // Chân trước
-    ctx.fillRect(x + 8 + legSwing, y + 8, 4, 12 - Math.abs(legSwing) * 0.5);
-    ctx.fillRect(x + 14 + legSwing2, y + 8, 4, 12 - Math.abs(legSwing2) * 0.5);
-    // Chân sau
-    ctx.fillRect(x - 14 + legSwing2, y + 8, 4, 12 - Math.abs(legSwing2) * 0.5);
-    ctx.fillRect(x - 8 + legSwing, y + 8, 4, 12 - Math.abs(legSwing) * 0.5);
+    if (tucked) {
+      // Co chân lên khi đang bay qua rào
+      ctx.fillRect(-12, 4, 5, 7);
+      ctx.fillRect(-4, 4, 5, 7);
+      ctx.fillRect(6, 4, 5, 7);
+      ctx.fillRect(14, 4, 5, 7);
+    } else {
+      // Chạy: 2 cặp chân đung đưa ngược pha
+      const legSwing = Math.sin(s.legPhase) * 5;
+      const legSwing2 = Math.sin(s.legPhase + Math.PI) * 5;
+      ctx.fillRect(-14 + legSwing2, 8, 4, 12 - Math.abs(legSwing2) * 0.5);
+      ctx.fillRect(-8 + legSwing, 8, 4, 12 - Math.abs(legSwing) * 0.5);
+      ctx.fillRect(8 + legSwing, 8, 4, 12 - Math.abs(legSwing) * 0.5);
+      ctx.fillRect(14 + legSwing2, 8, 4, 12 - Math.abs(legSwing2) * 0.5);
+    }
 
     ctx.restore();
 
-    // Dấu tick khi đã đếm
+    // Dấu tick khi đã đếm (vẽ ở tọa độ thế giới, không flip)
+    const wy = s.y + (s.jumpY || 0);
     if (s.counted) {
       ctx.save();
       ctx.fillStyle = '#4ade80';
       ctx.font = 'bold 16px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('✓', x, y - 22);
+      ctx.fillText('✓', s.x, wy - 22);
       ctx.restore();
     }
 
@@ -523,9 +617,9 @@ export class SheepDreamEngine {
       ctx.fillStyle = '#fde047';
       ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
-      const popY = y - 30 - (0.8 - s.scorePop.timer) * 30;
+      const popY = wy - 30 - (0.8 - s.scorePop.timer) * 30;
       ctx.globalAlpha = Math.min(1, s.scorePop.timer * 2);
-      ctx.fillText(s.scorePop.text, x, popY);
+      ctx.fillText(s.scorePop.text, s.x, popY);
       ctx.restore();
     }
   }

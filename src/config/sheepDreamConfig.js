@@ -35,7 +35,7 @@ export const SHEEP_DREAM_CONFIG = {
     spawnIntervalMs: 2200,      // Lúc đầu 2.2s/con
     minSpawnIntervalMs: 900,    // Tối thiểu 0.9s/con
     spawnIntervalDecay: 0.94,   // Mỗi con giảm 6%
-    jumpHeight: 70,             // Độ cao nhảy qua rào
+    jumpHeight: 80,             // Độ cao nhảy qua rào (đủ để chân qua thanh trên)
     jumpDurationMs: 900,
   },
 
@@ -66,6 +66,7 @@ export const SHEEP_DREAM_CONFIG = {
     grassDark: '#0f3d22',
     fence: '#92400e',
     fenceDark: '#78350f',
+    fenceLight: '#b45309',     // Gỗ sáng (highlight)
     sheepBody: '#f8fafc',
     sheepFace: '#1e293b',
     sheepWool: '#e2e8f0',
