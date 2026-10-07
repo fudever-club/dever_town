@@ -67,6 +67,8 @@ import {
   zoomToPointScroll
 } from '../config/cameraConfig.js';
 import { telemetry } from '../utils/Telemetry.js';
+import { PERF_CONFIG } from '../config/perfConfig.js';
+import { isInCulledView } from '../utils/culling.js';
 import { FloorManager } from '../managers/FloorManager.js';
 import { SceneTransitionManager } from '../managers/SceneTransitionManager.js';
 
@@ -88,6 +90,7 @@ export class WorldScene extends Phaser.Scene {
     this._userZoom = null;
     this._zoomTween = null;
     this._xrayTimer = 0;
+    this._tileCullTimer = 0;
     this._wheelHandler = null;
     this._pinchPointers = new Map();
     this._pinchStart = null;
@@ -762,6 +765,57 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * Camera frustum culling cho map tiles (perf fix #4, 2026-10-06 investigation).
+   *
+   * Mỗi tile là một Image riêng lẻ nên Phaser không tự cull (chỉ TilemapLayer
+   * được cull). Đo được ở zoom 2.5: 81.2% object nằm ngoài màn hình vẫn bị
+   * submit vào WebGL batch mỗi frame.
+   *
+   * Dùng camera.worldView (RESIZE-aware: phản ánh đúng viewport thực tế, không
+   * hardcode 800x600) mở rộng TILE_CULL_MARGIN px, AABB-test từng tile sprite
+   * trong TilePool.active và bật/tắt `visible`. Shadow ellipse của obstacle
+   * cull cùng tile của nó qua shadow._tileSprite.
+   *
+   * CHỈ toggle `visible` — không destroy/reposition → không xung đột TilePool
+   * (acquire() luôn reset visible=true, releaseAll() reset về pool).
+   */
+  _cullTiles() {
+    const camera = this.cameras && this.cameras.main;
+    if (!camera) return;
+    const tiles = this.tilePool ? this.tilePool.active : (this.tileSprites || []);
+    const shadows = this.obstacleShadows || [];
+
+    if (!PERF_CONFIG.TILE_CULL_ENABLED) {
+      // Master switch tắt: khôi phục tất cả về visible
+      for (let i = 0; i < tiles.length; i++) {
+        if (!tiles[i].visible) tiles[i].setVisible(true);
+      }
+      for (let i = 0; i < shadows.length; i++) {
+        if (!shadows[i].visible) shadows[i].setVisible(true);
+      }
+      return;
+    }
+
+    const view = camera.worldView;
+    const margin = PERF_CONFIG.TILE_CULL_MARGIN;
+    const half = GAME_CONFIG.TILE_SIZE / 2;
+
+    for (let i = 0; i < tiles.length; i++) {
+      const t = tiles[i];
+      const inView = isInCulledView(t.x, t.y, half, half, view, margin);
+      if (t.visible !== inView) t.setVisible(inView);
+    }
+
+    // Shadow đi cùng tile của nó: tile ẩn → shadow ẩn, tile hiện → shadow hiện
+    for (let i = 0; i < shadows.length; i++) {
+      const s = shadows[i];
+      const tile = s._tileSprite;
+      const v = tile ? tile.visible : true;
+      if (s.visible !== v) s.setVisible(v);
+    }
+  }
+
   refreshSceneLanguage() {
     const mapData = MAPS_CONFIG[this.currentRoomId];
     if (!mapData) return;
@@ -906,6 +960,8 @@ export class WorldScene extends Phaser.Scene {
               0.22
             );
             shadow.setDepth(1); // Trên mặt sàn (0), dưới chân người chơi và obstacle
+            // Tile culling: shadow đi cùng tile của nó (cull theo cặp qua visible)
+            shadow._tileSprite = tileSprite;
             this.obstacleShadows.push(shadow);
           }
         }
@@ -1083,6 +1139,9 @@ export class WorldScene extends Phaser.Scene {
     if (this.roomBanner) {
       this.roomBanner.show(roomId, this.remotePlayers.size + 1);
     }
+
+    // Culling lần đầu ngay sau khi load phòng (trước khi timer 200ms chạy)
+    this._cullTiles();
   }
 
   // Vẽ lại pill nền cho nhãn portal theo đúng bề rộng text hiện tại
@@ -1907,6 +1966,13 @@ export class WorldScene extends Phaser.Scene {
     if (this._xrayTimer >= CAMERA_ZOOM.XRAY_CHECK_MS) {
       this._xrayTimer = 0;
       this._updateXray();
+    }
+
+    // Tile frustum culling: throttle 200ms, AABB từng tile vs camera.worldView
+    this._tileCullTimer += delta;
+    if (this._tileCullTimer >= PERF_CONFIG.TILE_CULL_INTERVAL_MS) {
+      this._tileCullTimer = 0;
+      this._cullTiles();
     }
 
     // Chốt tâm follow sau zoom: sửa stall lerp+roundPixels làm view lệch khỏi player
