@@ -259,16 +259,21 @@ export class SheepDreamEngine {
 
       // Nhảy qua hàng rào
       const distToFence = s.x - fenceX;
-      // Crouch (lấy đà) khi sắp tới rào
-      s.crouch = !s.jumping && distToFence < 110 && distToFence >= 60;
-      if (!s.jumping && distToFence < 60 && distToFence > -10) {
+      // Crouch (lấy đà) khi sắp tới rào — tỉ lệ với triggerDist
+      const jumpDur2 = this.cfg.sheep.jumpDurationMs / 1000;
+      const trigD = Math.max(50, s.speed * (jumpDur2 / 2));
+      s.crouch = !s.jumping && distToFence < trigD + 50 && distToFence >= trigD;
+      // Nhảy qua hàng rào — trigger theo thời gian tới rào (tốc độ cao nhảy sớm hơn)
+      // Đỉnh parabol ở t=0.5 (0.45s); muốn đỉnh rơi đúng giữa rào → nhảy sớm speed*0.45 px
+      const jumpDur = this.cfg.sheep.jumpDurationMs / 1000;
+      const triggerDist = Math.max(50, s.speed * (jumpDur / 2));
+      if (!s.jumping && distToFence < triggerDist && distToFence > -10) {
         s.jumping = true;
         s.jumpT = 0;
         s.crouch = false;
       }
       if (s.jumping) {
         s.jumpT += dt;
-        const jumpDur = this.cfg.sheep.jumpDurationMs / 1000;
         const t = Math.min(s.jumpT / jumpDur, 1);
         // Parabol: lên rồi xuống
         s.jumpY = -Math.sin(t * Math.PI) * this.cfg.sheep.jumpHeight;
@@ -326,7 +331,8 @@ export class SheepDreamEngine {
   spawnSheep(speed) {
     this.sheep.push({
       x: this.w + 40,
-      y: this.cfg.fence.y - this.cfg.sheep.height / 2,
+      // Chân cừu chạm mặt đất: chân ở center+20 → center = fence.y - 20
+      y: this.cfg.fence.y - 20,
       speed,
       jumping: false,
       jumpT: 0,
@@ -376,14 +382,15 @@ export class SheepDreamEngine {
       ctx.fillRect(st.x, st.y, st.r, st.r);
     }
 
-    // Đồi cỏ
+    // Đồi cỏ — làm phẳng để cừu không bị lơ lửng ở rìa
+    // (mặt cỏ ~370 trên toàn bộ chiều rộng, khớp fence.y)
     ctx.fillStyle = c.grassDark;
     ctx.beginPath();
-    ctx.ellipse(this.w / 2, this.h + 60, this.w * 0.7, 140, 0, 0, Math.PI * 2);
+    ctx.ellipse(this.w / 2, this.h + 100, this.w * 1.2, 140, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = c.grass;
     ctx.beginPath();
-    ctx.ellipse(this.w / 2, this.h + 80, this.w * 0.6, 110, 0, 0, Math.PI * 2);
+    ctx.ellipse(this.w / 2, this.h + 110, this.w * 1.2, 120, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Hàng rào
@@ -483,10 +490,11 @@ export class SheepDreamEngine {
       ctx.fill();
     });
 
-    // 3 thanh ngang
-    const railY = [topY + 14, topY + 40, topY + 66];
-    const railX0 = postL - 14;
-    const railX1 = postR + 14;
+    // 2 thanh ngang (rào thấp kiểu farm) — đỉnh rào chỉ cao hơn lưng cừu ~20px
+    // Rails gọn trong cột (không thò ra ngoài) để cừu chậm cũng nhảy qua được
+    const railY = [topY + 10, topY + 32];
+    const railX0 = postL - 2;
+    const railX1 = postR + 2;
     const railW = railX1 - railX0;
     railY.forEach((ry, idx) => {
       // Bóng dưới
@@ -500,8 +508,8 @@ export class SheepDreamEngine {
       ctx.fillRect(railX0, ry, railW, 2);
       // Vân gỗ ngang
       ctx.fillStyle = c.fenceDark;
-      ctx.fillRect(railX0 + 8 + idx * 13, ry + 4, 18, 1);
-      ctx.fillRect(railX0 + railW - 30 - idx * 7, ry + 5, 12, 1);
+      ctx.fillRect(railX0 + 10 + idx * 15, ry + 4, 20, 1);
+      ctx.fillRect(railX0 + railW - 32 - idx * 8, ry + 5, 14, 1);
       // Đinh tán
       ctx.fillStyle = '#5b3413';
       ctx.fillRect(postL - 2, ry + 2, 4, 4);
