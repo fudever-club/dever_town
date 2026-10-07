@@ -393,16 +393,30 @@ export class AmbientEnvironmentManager {
     this.scheduleWeatherCheck();
   }
 
+  /**
+   * Phát hiện thiết bị di động - cùng công thức với WorldScene.computeDefaultZoom()
+   * để hành vi mobile nhất quán trong toàn game (màn nhỏ hoặc có touch).
+   */
+  _isMobileDevice() {
+    if (typeof window === 'undefined' || !window) return false;
+    return window.innerWidth <= 1024 ||
+      ('ontouchstart' in window) ||
+      (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0);
+  }
+
   spawnClouds() {
     const mapW = 800;
-    for (let i = 0; i < WEATHER_CONFIG.cloudCount; i++) {
+    const isMobile = this._isMobileDevice();
+    const cloudCount = isMobile ? WEATHER_CONFIG.mobileCloudCount : WEATHER_CONFIG.cloudCount;
+    const cloudAlpha = isMobile ? WEATHER_CONFIG.mobileCloudAlpha : WEATHER_CONFIG.cloudAlpha;
+    for (let i = 0; i < cloudCount; i++) {
       const cloud = this.scene.add.image(
         Phaser.Math.Between(-120, mapW + 120),
         Phaser.Math.Between(16, 130),
         'particle_cloud'
       );
       cloud.setDepth(5);
-      cloud.setAlpha(WEATHER_CONFIG.cloudAlpha * Phaser.Math.FloatBetween(0.7, 1));
+      cloud.setAlpha(cloudAlpha * Phaser.Math.FloatBetween(0.7, 1));
       const scale = Phaser.Math.FloatBetween(0.9, 1.8);
       cloud.setScale(scale);
       this.cloudSprites.push(cloud);
@@ -441,6 +455,15 @@ export class AmbientEnvironmentManager {
 
     const mapW = 800;
     const mapH = 608;
+    // Mobile: chia đôi quantity + tăng gấp đôi interval để giảm fullscreen
+    // overdraw alpha-blend (~75% ít streak đồng thời), mưa vẫn đọc được.
+    const isMobile = this._isMobileDevice();
+    const rainQuantity = isMobile
+      ? Math.max(2, Math.round((3 + level * 5) / WEATHER_CONFIG.mobileRainQuantityDivisor))
+      : Math.round(3 + level * 5);
+    const rainFrequency = isMobile
+      ? WEATHER_CONFIG.mobileRainFrequencyMs
+      : WEATHER_CONFIG.rainFrequencyMs;
     try {
       this.rainEmitter = this.scene.add.particles(0, 0, 'particle_rain', {
         x: { min: -40, max: mapW + 40 },
@@ -450,8 +473,8 @@ export class AmbientEnvironmentManager {
         speedX: { min: -90, max: -50 },
         scale: { min: 0.9, max: 1.4 },
         alpha: { start: 0.7, end: 0.3 },
-        quantity: Math.round(3 + level * 5),
-        frequency: 35
+        quantity: rainQuantity,
+        frequency: rainFrequency
       });
       this.rainEmitter.setDepth(2000); // Mưa ở tiền cảnh, trước nhân vật
     } catch (e) {

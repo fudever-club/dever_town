@@ -19,6 +19,16 @@ export const WEATHER_CONFIG = {
   rainIntensityMin: 0.45,
   rainIntensityMax: 0.9,
 
+  // Tần suất phát hạt mưa desktop (ms) - tương ứng quantity ~5..8/emission
+  rainFrequencyMs: 35,
+
+  // Mobile scaling (perf): giảm mật độ hạt + mây để đỡ fullscreen overdraw trên GPU yếu.
+  // Desktop giữ nguyên; mobile chia quantity và nhân đôi interval (mưa vẫn đọc được nhưng ~75% ít hạt).
+  mobileRainQuantityDivisor: 2,
+  mobileRainFrequencyMs: 70,
+  mobileCloudCount: 2,
+  mobileCloudAlpha: 0.28,
+
   // Mây: số lượng, tốc độ trôi (px/s), độ trong suốt
   cloudCount: 4,
   cloudSpeedMin: 8,

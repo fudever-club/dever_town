@@ -144,6 +144,11 @@ assert(WEATHER_CONFIG.rainChance > 0 && WEATHER_CONFIG.rainChance < 1, 'Weather:
 assert(WEATHER_CONFIG.rainDurationMin < WEATHER_CONFIG.rainDurationMax, 'Weather: khoảng thời lượng mưa hợp lệ');
 assert(WEATHER_CONFIG.rainTintAlpha <= 0.15, 'Weather: tint mưa rất nhẹ (<= 0.15), giữ sáng như gather.town');
 assert(WEATHER_CONFIG.cloudCount > 0, 'Weather: có mây trôi');
+assert(WEATHER_CONFIG.rainFrequencyMs === 35, 'Weather: desktop rainFrequencyMs = 35 (giữ nguyên)');
+assert(WEATHER_CONFIG.mobileRainQuantityDivisor >= 2, 'Weather: mobileRainQuantityDivisor >= 2 (chia đôi quantity trên mobile)');
+assert(WEATHER_CONFIG.mobileRainFrequencyMs > WEATHER_CONFIG.rainFrequencyMs, 'Weather: mobileRainFrequencyMs > desktop (thưa hạt hơn)');
+assert(WEATHER_CONFIG.mobileCloudCount < WEATHER_CONFIG.cloudCount, 'Weather: mobileCloudCount < desktop cloudCount');
+assert(WEATHER_CONFIG.mobileCloudAlpha <= WEATHER_CONFIG.cloudAlpha, 'Weather: mobileCloudAlpha <= desktop cloudAlpha');
 
 /* ---------- 4. AmbientEnvironmentManager weather (mock) ---------- */
 const ambientSrc = readFileSync(new URL('../src/managers/AmbientEnvironmentManager.js', import.meta.url), 'utf8');
@@ -157,6 +162,11 @@ assert(ambientSrc.includes('stopRainSound'), 'Ambient: stopRain/clearWeather d�
 assert(ambientSrc.includes("outdoorRooms.includes(roomId)"), 'Ambient: chỉ bật weather cho phòng ngoài trời');
 assert(ambientSrc.includes('setDepth(2000)'), 'Ambient: mưa ở tiền cảnh (depth 2000)');
 assert(ambientSrc.includes('setDepth(5)'), 'Ambient: mây ở depth thấp (sau nhân vật)');
+assert(ambientSrc.includes('_isMobileDevice()'), 'Ambient: có helper _isMobileDevice cho scaling mobile');
+assert(ambientSrc.includes('ontouchstart') && ambientSrc.includes('maxTouchPoints'), 'Ambient: _isMobileDevice dùng cùng công thức WorldScene (touch/maxTouchPoints)');
+assert(ambientSrc.includes('mobileRainFrequencyMs'), 'Ambient: startRain dùng mobileRainFrequencyMs trên mobile');
+assert(ambientSrc.includes('mobileRainQuantityDivisor'), 'Ambient: startRain chia quantity qua mobileRainQuantityDivisor');
+assert(ambientSrc.includes('mobileCloudCount'), 'Ambient: spawnClouds dùng mobileCloudCount trên mobile');
 
 /* ---------- 5. AudioManager rain sound ---------- */
 const audioSrc = readFileSync(new URL('../src/utils/AudioManager.js', import.meta.url), 'utf8');
