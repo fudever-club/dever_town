@@ -1,0 +1,182 @@
+/* --- bug-dungeon.css: bug dungeon workspace (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   8. BUG DUNGEON / SERVER FAULTS WORKSPACE (HẦM NGỤC SỰ CỐ & SĂN D-COIN)
+   ========================================================================== */
+.bug-dungeon-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16px);
+  padding: var(--space-14px-18px);
+  background: var(--color-080c16);
+  border-radius: var(--radius-12px);
+  border: 1px solid var(--color-rgba-239-68-68-0-25);
+  box-shadow: 0 0 24px var(--color-rgba-239-68-68-0-1);
+}
+
+.bug-dungeon-header {
+  border-bottom: 1px solid var(--color-rgba-255-255-255-0-08);
+  padding-bottom: var(--space-12px);
+}
+
+.bug-dungeon-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8px);
+}
+
+.bug-severity-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-11px);
+  font-weight: 800;
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-4px);
+  background: var(--color-rgba-239-68-68-0-2);
+  color: var(--color-f87171);
+  border: 1px solid var(--color-rgba-239-68-68-0-4);
+  letter-spacing: 0.5px;
+}
+
+.bug-location-tag {
+  font-size: var(--text-11px);
+  font-weight: 600;
+  color: var(--color-94a3b8);
+  background: var(--color-rgba-30-41-59-0-7);
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-4px);
+  border: 1px solid var(--color-rgba-255-255-255-0-08);
+}
+
+.bug-reward-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-facc15);
+  background: var(--color-rgba-245-158-11-0-15);
+  border: 1px solid var(--color-rgba-245-158-11-0-4);
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-4px);
+}
+
+.bug-dungeon-title {
+  font-size: var(--text-18px);
+  font-weight: 700;
+  color: var(--color-f8fafc);
+  margin: var(--space-0-0-4px-0);
+}
+
+.bug-dungeon-desc {
+  font-size: var(--text-13px);
+  color: var(--color-cbd5e1);
+  margin: var(--space-0);
+  line-height: 1.5;
+}
+
+.bug-code-terminal {
+  background: var(--color-040711);
+  border: 1px solid var(--color-1e293b);
+  border-radius: var(--radius-8px);
+  overflow: hidden;
+}
+
+.bug-code-terminal .terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6px);
+  background: var(--color-0f172a);
+  padding: var(--space-8px-12px);
+  border-bottom: 1px solid var(--color-1e293b);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+.terminal-dot.red { background: var(--color-ef4444); }
+.terminal-dot.yellow { background: var(--color-eab308); }
+.terminal-dot.green { background: var(--color-22c55e); }
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: var(--text-11px);
+  color: var(--color-64748b);
+  margin-left: var(--space-6px);
+}
+
+.terminal-code-block {
+  font-family: var(--font-mono);
+  font-size: var(--text-12px);
+  line-height: 1.6;
+  color: var(--color-38bdf8);
+  padding: var(--space-14px);
+  margin: var(--space-0);
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.bug-action-feedback {
+  padding: var(--space-10px-14px);
+  border-radius: var(--radius-8px);
+  font-size: var(--text-13px);
+  font-weight: 600;
+}
+.bug-action-feedback.success {
+  background: var(--color-rgba-34-197-94-0-15);
+  border: 1px solid var(--color-rgba-34-197-94-0-4);
+  color: var(--color-4ade80);
+}
+.bug-action-feedback.error {
+  background: var(--color-rgba-239-68-68-0-15);
+  border: 1px solid var(--color-rgba-239-68-68-0-4);
+  color: var(--color-f87171);
+}
+
+.bug-dungeon-footer {
+  display: flex;
+  gap: var(--space-10px);
+  justify-content: flex-end;
+  margin-top: var(--space-4px);
+}
+
+/* Club Recruitment Box in Club Booth */
+.club-recruit-box {
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px dashed var(--color-rgba-56-189-248-0-35);
+  border-radius: var(--radius-10px);
+  padding: var(--space-14px-18px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12px);
+  flex-wrap: wrap;
+  margin-top: var(--space-10px);
+}
+
+.club-recruit-info h5 {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  margin: var(--space-0-0-3px-0);
+}
+
+.club-recruit-info p {
+  font-size: var(--text-12px);
+  color: var(--color-94a3b8);
+  margin: var(--space-0);
+}
+
+.club-recruit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6px);
+  padding: var(--space-6px-14px);
+  background: var(--color-rgba-34-197-94-0-15);
+  border: 1px solid var(--color-rgba-34-197-94-0-4);
+  color: var(--color-4ade80);
+  font-size: var(--text-12px);
+  font-weight: 700;
+  border-radius: var(--radius-6px);
+}
+
