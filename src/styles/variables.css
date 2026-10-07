@@ -1,0 +1,617 @@
+/* ==========================================================================
+   DEVER TOWN - design tokens
+   Auto-extracted from main.css during the CSS modular refactor (2026-10-07).
+   Pure refactor: every value below is identical to the literal it replaced.
+   Naming is mechanical (value-derived) so the mapping stays 1:1 auditable.
+   ========================================================================== */
+:root {
+  /* ---------- palette: hex colors (usage count) ---------- */
+  --color-38bdf8: #38bdf8; /* x107 */
+  --color-ffffff: #ffffff; /* x97 */
+  --color-94a3b8: #94a3b8; /* x93 */
+  --color-f26f21: #f26f21; /* x82 */
+  --color-cbd5e1: #cbd5e1; /* x42 */
+  --color-0f172a: #0f172a; /* x28 */
+  --color-f8fafc: #f8fafc; /* x28 */
+  --color-10b981: #10b981; /* x23 */
+  --color-ea580c: #ea580c; /* x21 */
+  --color-f59e0b: #f59e0b; /* x21 */
+  --color-fbbf24: #fbbf24; /* x20 */
+  --color-e2e8f0: #e2e8f0; /* x19 */
+  --color-64748b: #64748b; /* x19 */
+  --color-0284c7: #0284c7; /* x17 */
+  --color-f1f5f9: #f1f5f9; /* x16 */
+  --color-ef4444: #ef4444; /* x14 */
+  --color-34d399: #34d399; /* x12 */
+  --color-1e293b: #1e293b; /* x12 */
+  --color-f87171: #f87171; /* x11 */
+  --color-22c55e: #22c55e; /* x11 */
+  --color-4ade80: #4ade80; /* x11 */
+  --color-c084fc: #c084fc; /* x9 */
+  --color-4f46e5: #4f46e5; /* x9 */
+  --color-334155: #334155; /* x8 */
+  --color-090d16: #090d16; /* x8 */
+  --color-0066cc: #0066cc; /* x8 */
+  --color-facc15: #facc15; /* x7 */
+  --color-fde68a: #fde68a; /* x7 */
+  --color-0369a1: #0369a1; /* x7 */
+  --color-7dd3fc: #7dd3fc; /* x6 */
+  --color-020617: #020617; /* x6 */
+  --color-fca5a5: #fca5a5; /* x5 */
+  --color-000000: #000000; /* x5 */
+  --color-070a12: #070a12; /* x4 */
+  --color-a7f3d0: #a7f3d0; /* x4 */
+  --color-059669: #059669; /* x4 */
+  --color-d97706: #d97706; /* x4 */
+  --color-a855f7: #a855f7; /* x4 */
+  --color-16a34a: #16a34a; /* x4 */
+  --color-e0e7ff: #e0e7ff; /* x4 */
+  --color-fb923c: #fb923c; /* x3 */
+  --color-475569: #475569; /* x3 */
+  --color-93c5fd: #93c5fd; /* x3 */
+  --color-0080ff: #0080ff; /* x3 */
+  --color-0ea5e9: #0ea5e9; /* x3 */
+  --color-7c3aed: #7c3aed; /* x3 */
+  --color-fef3c7: #fef3c7; /* x3 */
+  --color-00b2ff: #00b2ff; /* x3 */
+  --color-eef2ff: #eef2ff; /* x3 */
+  --color-60a5fa: #60a5fa; /* x2 */
+  --color-06b6d4: #06b6d4; /* x2 */
+  --color-ffedd5: #ffedd5; /* x2 */
+  --color-040711: #040711; /* x2 */
+  --color-fef08a: #fef08a; /* x2 */
+  --color-bae6fd: #bae6fd; /* x2 */
+  --color-eab308: #eab308; /* x2 */
+  --color-dc2626: #dc2626; /* x2 */
+  --color-b91c1c: #b91c1c; /* x2 */
+  --color-081020: #081020; /* x2 */
+  --color-3730a3: #3730a3; /* x2 */
+  --color-f0fdf4: #f0fdf4; /* x2 */
+  --color-92400e: #92400e; /* x2 */
+  --color-fed7aa: #fed7aa; /* x1 */
+  --color-0d1527: #0d1527; /* x1 */
+  --color-0098ff: #0098ff; /* x1 */
+  --color-7e22ce: #7e22ce; /* x1 */
+  --color-f472b6: #f472b6; /* x1 */
+  --color-0f1c3f: #0f1c3f; /* x1 */
+  --color-060913: #060913; /* x1 */
+  --color-0a1128: #0a1128; /* x1 */
+  --color-ff9800: #ff9800; /* x1 */
+  --color-8b5cf6: #8b5cf6; /* x1 */
+  --color-6366f1: #6366f1; /* x1 */
+  --color-c4b5fd: #c4b5fd; /* x1 */
+  --color-fdba74: #fdba74; /* x1 */
+  --color-050811: #050811; /* x1 */
+  --color-080c16: #080c16; /* x1 */
+  --color-fb7185: #fb7185; /* x1 */
+  --color-090e1a: #090e1a; /* x1 */
+  --color-131d33: #131d33; /* x1 */
+  --color-1e1b4b: #1e1b4b; /* x1 */
+  --color-0d1a30: #0d1a30; /* x1 */
+  --color-38c8ff: #38c8ff; /* x1 */
+  --color-0090ff: #0090ff; /* x1 */
+  --color-f43f5e: #f43f5e; /* x1 */
+  --color-3b82f6: #3b82f6; /* x1 */
+  --color-c7d2fe: #c7d2fe; /* x1 */
+  --color-4338ca: #4338ca; /* x1 */
+  --color-166534: #166534; /* x1 */
+  --color-fef2f2: #fef2f2; /* x1 */
+  --color-dcfce7: #dcfce7; /* x1 */
+  --color-78350f: #78350f; /* x1 */
+  /* ---------- palette: rgb()/rgba() colors (usage count) ---------- */
+  --color-rgba-255-255-255-0-08: rgba(255,255,255,0.08); /* x58 */
+  --color-rgba-255-255-255-0-1: rgba(255,255,255,0.1); /* x36 */
+  --color-rgba-242-111-33-0-4: rgba(242,111,33,0.4); /* x23 */
+  --color-rgba-255-255-255-0-12: rgba(255,255,255,0.12); /* x23 */
+  --color-rgba-255-255-255-0-15: rgba(255,255,255,0.15); /* x19 */
+  --color-rgba-56-189-248-0-15: rgba(56,189,248,0.15); /* x17 */
+  --color-rgba-242-111-33-0-3: rgba(242,111,33,0.3); /* x16 */
+  --color-rgba-15-23-42-0-6: rgba(15,23,42,0.6); /* x15 */
+  --color-rgba-56-189-248-0-2: rgba(56,189,248,0.2); /* x14 */
+  --color-rgba-30-41-59-0-8: rgba(30,41,59,0.8); /* x14 */
+  --color-rgba-15-23-42-0-85: rgba(15,23,42,0.85); /* x13 */
+  --color-rgba-56-189-248-0-25: rgba(56,189,248,0.25); /* x13 */
+  --color-rgba-56-189-248-0-35: rgba(56,189,248,0.35); /* x13 */
+  --color-rgba-0-0-0-0-4: rgba(0,0,0,0.4); /* x12 */
+  --color-rgba-56-189-248-0-3: rgba(56,189,248,0.3); /* x12 */
+  --color-rgba-242-111-33-0-25: rgba(242,111,33,0.25); /* x11 */
+  --color-rgba-242-111-33-0-15: rgba(242,111,33,0.15); /* x11 */
+  --color-rgba-56-189-248-0-4: rgba(56,189,248,0.4); /* x11 */
+  --color-rgba-242-111-33-0-35: rgba(242,111,33,0.35); /* x11 */
+  --color-rgba-242-111-33-0-2: rgba(242,111,33,0.2); /* x11 */
+  --color-rgba-245-158-11-0-15: rgba(245,158,11,0.15); /* x10 */
+  --color-rgba-239-68-68-0-4: rgba(239,68,68,0.4); /* x10 */
+  --color-rgba-30-41-59-0-7: rgba(30,41,59,0.7); /* x10 */
+  --color-rgba-255-255-255-0-06: rgba(255,255,255,0.06); /* x9 */
+  --color-rgba-255-255-255-0-05: rgba(255,255,255,0.05); /* x9 */
+  --color-rgba-34-197-94-0-15: rgba(34,197,94,0.15); /* x9 */
+  --color-rgba-0-0-0-0-6: rgba(0,0,0,0.6); /* x8 */
+  --color-rgba-16-185-129-0-15: rgba(16,185,129,0.15); /* x8 */
+  --color-rgba-15-23-42-0-95: rgba(15,23,42,0.95); /* x8 */
+  --color-rgba-34-197-94-0-3: rgba(34,197,94,0.3); /* x8 */
+  --color-rgba-15-23-42-0-7: rgba(15,23,42,0.7); /* x8 */
+  --color-rgba-245-158-11-0-4: rgba(245,158,11,0.4); /* x8 */
+  --color-rgba-16-185-129-0-3: rgba(16,185,129,0.3); /* x7 */
+  --color-rgba-30-41-59-0-9: rgba(30,41,59,0.9); /* x7 */
+  --color-rgba-242-111-33-0-6: rgba(242,111,33,0.6); /* x7 */
+  --color-rgba-56-189-248-0-12: rgba(56,189,248,0.12); /* x7 */
+  --color-rgba-0-0-0-0-5: rgba(0,0,0,0.5); /* x7 */
+  --color-rgba-56-189-248-0-5: rgba(56,189,248,0.5); /* x7 */
+  --color-rgba-15-23-42-0-9: rgba(15,23,42,0.9); /* x7 */
+  --color-rgba-0-0-0-0-3: rgba(0,0,0,0.3); /* x6 */
+  --color-rgba-0-0-0-0-8: rgba(0,0,0,0.8); /* x6 */
+  --color-rgba-15-23-42-0-8: rgba(15,23,42,0.8); /* x6 */
+  --color-rgba-255-255-255-0-2: rgba(255,255,255,0.2); /* x6 */
+  --color-rgba-0-0-0-0-7: rgba(0,0,0,0.7); /* x6 */
+  --color-rgba-30-41-59-0-6: rgba(30,41,59,0.6); /* x5 */
+  --color-rgba-239-68-68-0-2: rgba(239,68,68,0.2); /* x5 */
+  --color-rgba-56-189-248-0-08: rgba(56,189,248,0.08); /* x5 */
+  --color-rgba-239-68-68-0-15: rgba(239,68,68,0.15); /* x5 */
+  --color-rgba-242-111-33-0-12: rgba(242,111,33,0.12); /* x4 */
+  --color-rgba-192-132-252-0-2: rgba(192,132,252,0.2); /* x4 */
+  --color-rgba-245-158-11-0-35: rgba(245,158,11,0.35); /* x4 */
+  --color-rgba-30-41-59-0-85: rgba(30,41,59,0.85); /* x4 */
+  --color-rgba-239-68-68-0-25: rgba(239,68,68,0.25); /* x4 */
+  --color-rgba-16-185-129-0-5: rgba(16,185,129,0.5); /* x4 */
+  --color-rgba-245-158-11-0-7: rgba(245,158,11,0.7); /* x4 */
+  --color-rgba-242-111-33-0-45: rgba(242,111,33,0.45); /* x4 */
+  --color-rgba-16-185-129-0-25: rgba(16,185,129,0.25); /* x4 */
+  --color-rgba-30-41-59-0-5: rgba(30,41,59,0.5); /* x4 */
+  --color-rgba-15-23-42-0-92: rgba(15,23,42,0.92); /* x3 */
+  --color-rgba-242-111-33-0-1: rgba(242,111,33,0.1); /* x3 */
+  --color-rgba-16-185-129-0-35: rgba(16,185,129,0.35); /* x3 */
+  --color-rgba-0-0-0-0-85: rgba(0,0,0,0.85); /* x3 */
+  --color-rgba-16-185-129-0-2: rgba(16,185,129,0.2); /* x3 */
+  --color-rgba-16-185-129-0-4: rgba(16,185,129,0.4); /* x3 */
+  --color-rgba-245-158-11-0-3: rgba(245,158,11,0.3); /* x3 */
+  --color-rgba-255-255-255-0-18: rgba(255,255,255,0.18); /* x3 */
+  --color-rgba-148-163-184-0-2: rgba(148,163,184,0.2); /* x3 */
+  --color-rgba-245-158-11-0-25: rgba(245,158,11,0.25); /* x3 */
+  --color-rgba-15-23-42-0-65: rgba(15,23,42,0.65); /* x3 */
+  --color-rgba-245-158-11-0-12: rgba(245,158,11,0.12); /* x3 */
+  --color-rgba-245-158-11-0-5: rgba(245,158,11,0.5); /* x3 */
+  --color-rgba-245-158-11-0-6: rgba(245,158,11,0.6); /* x3 */
+  --color-rgba-34-197-94-0-4: rgba(34,197,94,0.4); /* x3 */
+  --color-rgba-242-111-33-0-7: rgba(242,111,33,0.7); /* x3 */
+  --color-rgba-15-23-42-0-4: rgba(15,23,42,0.4); /* x3 */
+  --color-rgba-56-189-248-0-6: rgba(56,189,248,0.6); /* x3 */
+  --color-rgba-14-165-233-0-4: rgba(14,165,233,0.4); /* x3 */
+  --color-rgba-15-23-42-0-75: rgba(15,23,42,0.75); /* x3 */
+  --color-rgba-15-23-42-0-94: rgba(15,23,42,0.94); /* x3 */
+  --color-rgba-245-158-11-0-2: rgba(245,158,11,0.2); /* x3 */
+  --color-rgba-2-6-23-0-7: rgba(2,6,23,0.7); /* x2 */
+  --color-rgba-192-132-252-0-4: rgba(192,132,252,0.4); /* x2 */
+  --color-rgba-148-163-184-0-25: rgba(148,163,184,0.25); /* x2 */
+  --color-rgba-56-189-248-0-28: rgba(56,189,248,0.28); /* x2 */
+  --color-rgba-0-0-0-0-9: rgba(0,0,0,0.9); /* x2 */
+  --color-rgba-239-68-68-0-3: rgba(239,68,68,0.3); /* x2 */
+  --color-rgba-239-68-68-0-6: rgba(239,68,68,0.6); /* x2 */
+  --color-rgba-239-68-68-0-18: rgba(239,68,68,0.18); /* x2 */
+  --color-rgba-0-152-255-0-4: rgba(0,152,255,0.4); /* x2 */
+  --color-rgba-0-0-0-0-45: rgba(0,0,0,0.45); /* x2 */
+  --color-rgba-30-41-59-0-95: rgba(30,41,59,0.95); /* x2 */
+  --color-rgba-0-102-204-0-6: rgba(0,102,204,0.6); /* x2 */
+  --color-rgba-0-0-0-0-25: rgba(0,0,0,0.25); /* x2 */
+  --color-rgba-51-65-85-0-5: rgba(51,65,85,0.5); /* x2 */
+  --color-rgba-15-23-42-0-96: rgba(15,23,42,0.96); /* x2 */
+  --color-rgba-15-23-42-0: rgba(15,23,42,0); /* x2 */
+  --color-rgba-15-23-42-0-82: rgba(15,23,42,0.82); /* x2 */
+  --color-rgba-242-111-33-0-9: rgba(242,111,33,0.9); /* x2 */
+  --color-rgba-242-111-33-0-8: rgba(242,111,33,0.8); /* x2 */
+  --color-rgba-255-255-255-0-25: rgba(255,255,255,0.25); /* x2 */
+  --color-rgba-192-132-252-0-5: rgba(192,132,252,0.5); /* x2 */
+  --color-rgba-168-85-247-0-4: rgba(168,85,247,0.4); /* x2 */
+  --color-rgba-15-23-42-0-45: rgba(15,23,42,0.45); /* x2 */
+  --color-rgba-56-189-248-0-45: rgba(56,189,248,0.45); /* x2 */
+  --color-rgba-51-65-85-0-9: rgba(51,65,85,0.9); /* x2 */
+  --color-rgba-15-23-42-0-5: rgba(15,23,42,0.5); /* x2 */
+  --color-rgba-14-165-233-0-2: rgba(14,165,233,0.2); /* x2 */
+  --color-rgba-15-23-42-0-88: rgba(15,23,42,0.88); /* x2 */
+  --color-rgba-168-85-247-0-2: rgba(168,85,247,0.2); /* x2 */
+  --color-rgba-30-41-59-0-75: rgba(30,41,59,0.75); /* x2 */
+  --color-rgba-56-189-248-0-18: rgba(56,189,248,0.18); /* x2 */
+  --color-rgba-234-179-8-0-3: rgba(234,179,8,0.3); /* x2 */
+  --color-rgba-0-178-255-0-35: rgba(0,178,255,0.35); /* x2 */
+  --color-rgba-0-0-0-0-75: rgba(0,0,0,0.75); /* x2 */
+  --color-rgba-0-178-255-0-2: rgba(0,178,255,0.2); /* x2 */
+  --color-rgba-0-178-255-0-3: rgba(0,178,255,0.3); /* x2 */
+  --color-rgba-255-255-255-0-03: rgba(255,255,255,0.03); /* x2 */
+  --color-rgba-0-0-0-0-35: rgba(0,0,0,0.35); /* x2 */
+  --color-rgba-245-158-11-0-1: rgba(245,158,11,0.1); /* x2 */
+  --color-rgba-0-33-71-0-25: rgba(0,33,71,0.25); /* x1 */
+  --color-rgba-7-10-18-0-98: rgba(7,10,18,0.98); /* x1 */
+  --color-rgba-251-191-36-0-2: rgba(251,191,36,0.2); /* x1 */
+  --color-rgba-251-191-36-0-4: rgba(251,191,36,0.4); /* x1 */
+  --color-rgba-96-165-250-0-2: rgba(96,165,250,0.2); /* x1 */
+  --color-rgba-96-165-250-0-4: rgba(96,165,250,0.4); /* x1 */
+  --color-rgba-148-163-184-0-15: rgba(148,163,184,0.15); /* x1 */
+  --color-rgba-239-68-68-0-45: rgba(239,68,68,0.45); /* x1 */
+  --color-rgba-100-116-139-0-2: rgba(100,116,139,0.2); /* x1 */
+  --color-rgba-100-116-139-0-4: rgba(100,116,139,0.4); /* x1 */
+  --color-rgba-255-255-255-0-02: rgba(255,255,255,0.02); /* x1 */
+  --color-rgba-30-41-59-1: rgba(30,41,59,1); /* x1 */
+  --color-rgba-11-19-41-0-88: rgba(11,19,41,0.88); /* x1 */
+  --color-rgba-56-189-248-0-22: rgba(56,189,248,0.22); /* x1 */
+  --color-rgba-148-163-184-0-35: rgba(148,163,184,0.35); /* x1 */
+  --color-rgba-148-163-184-0-6: rgba(148,163,184,0.6); /* x1 */
+  --color-rgba-0-0-0-0-84: rgba(0,0,0,0.84); /* x1 */
+  --color-rgba-51-65-85-0-95: rgba(51,65,85,0.95); /* x1 */
+  --color-rgba-66-133-244-0-5: rgba(66,133,244,0.5); /* x1 */
+  --color-rgba-66-133-244-0-25: rgba(66,133,244,0.25); /* x1 */
+  --color-rgba-2-6-23-0-75: rgba(2,6,23,0.75); /* x1 */
+  --color-rgba-0-33-71-0-6: rgba(0,33,71,0.6); /* x1 */
+  --color-rgba-251-191-36-0-15: rgba(251,191,36,0.15); /* x1 */
+  --color-rgba-251-191-36-0-3: rgba(251,191,36,0.3); /* x1 */
+  --color-rgba-148-163-184-0-12: rgba(148,163,184,0.12); /* x1 */
+  --color-rgba-66-133-244-0-15: rgba(66,133,244,0.15); /* x1 */
+  --color-rgba-66-133-244-0-3: rgba(66,133,244,0.3); /* x1 */
+  --color-rgba-2-132-199-0-35: rgba(2,132,199,0.35); /* x1 */
+  --color-rgba-239-68-68-0-12: rgba(239,68,68,0.12); /* x1 */
+  --color-rgba-239-68-68-0-5: rgba(239,68,68,0.5); /* x1 */
+  --color-rgba-34-197-94-0-08: rgba(34,197,94,0.08); /* x1 */
+  --color-rgba-239-68-68-0-16: rgba(239,68,68,0.16); /* x1 */
+  --color-rgba-0-0-0-0-92: rgba(0,0,0,0.92); /* x1 */
+  --color-rgba-0-102-204-0-15: rgba(0,102,204,0.15); /* x1 */
+  --color-rgba-0-102-204-0-35: rgba(0,102,204,0.35); /* x1 */
+  --color-rgba-234-88-12-0-3: rgba(234,88,12,0.3); /* x1 */
+  --color-rgba-34-197-94-0-2: rgba(34,197,94,0.2); /* x1 */
+  --color-rgba-236-72-153-0-25: rgba(236,72,153,0.25); /* x1 */
+  --color-rgba-217-119-6-0-25: rgba(217,119,6,0.25); /* x1 */
+  --color-rgba-37-99-235-0-25: rgba(37,99,235,0.25); /* x1 */
+  --color-rgba-37-99-235-0-2: rgba(37,99,235,0.2); /* x1 */
+  --color-rgba-2-6-23-0-8: rgba(2,6,23,0.8); /* x1 */
+  --color-rgba-255-255-255-0-4: rgba(255,255,255,0.4); /* x1 */
+  --color-rgba-6-9-19-0-85: rgba(6,9,19,0.85); /* x1 */
+  --color-rgba-11-17-33-0-92: rgba(11,17,33,0.92); /* x1 */
+  --color-rgba-0-102-204-0-2: rgba(0,102,204,0.2); /* x1 */
+  --color-rgba-0-33-71-0-45: rgba(0,33,71,0.45); /* x1 */
+  --color-rgba-0-102-204-0-12: rgba(0,102,204,0.12); /* x1 */
+  --color-rgba-0-102-204-0-3: rgba(0,102,204,0.3); /* x1 */
+  --color-rgba-0-102-204-0-4: rgba(0,102,204,0.4); /* x1 */
+  --color-rgba-255-255-255-0-8: rgba(255,255,255,0.8); /* x1 */
+  --color-rgba-0-102-204-0-8: rgba(0,102,204,0.8); /* x1 */
+  --color-rgba-0-152-255-0-5: rgba(0,152,255,0.5); /* x1 */
+  --color-rgba-56-189-248-0-8: rgba(56,189,248,0.8); /* x1 */
+  --color-rgba-8-15-32-0-94: rgba(8,15,32,0.94); /* x1 */
+  --color-rgba-56-189-248-0-38: rgba(56,189,248,0.38); /* x1 */
+  --color-rgba-2-6-23-0-62: rgba(2,6,23,0.62); /* x1 */
+  --color-rgba-0-102-204-0-08: rgba(0,102,204,0.08); /* x1 */
+  --color-rgba-34-197-94-0-58: rgba(34,197,94,0.58); /* x1 */
+  --color-rgba-148-163-184-0-1: rgba(148,163,184,0.1); /* x1 */
+  --color-rgba-148-163-184-0-18: rgba(148,163,184,0.18); /* x1 */
+  --color-rgba-2-6-23-0-85: rgba(2,6,23,0.85); /* x1 */
+  --color-rgba-148-163-184-0-16: rgba(148,163,184,0.16); /* x1 */
+  --color-rgba-245-158-11-0-45: rgba(245,158,11,0.45); /* x1 */
+  --color-rgba-217-119-6-0-05: rgba(217,119,6,0.05); /* x1 */
+  --color-rgba-34-197-94-0-6: rgba(34,197,94,0.6); /* x1 */
+  --color-rgba-34-197-94-0-06: rgba(34,197,94,0.06); /* x1 */
+  --color-rgba-242-111-33-0-5: rgba(242,111,33,0.5); /* x1 */
+  --color-rgba-51-65-85-0-6: rgba(51,65,85,0.6); /* x1 */
+  --color-rgba-255-255-255-0-22: rgba(255,255,255,0.22); /* x1 */
+  --color-rgba-0-0-0-0-55: rgba(0,0,0,0.55); /* x1 */
+  --color-rgba-255-255-255-0-3: rgba(255,255,255,0.3); /* x1 */
+  --color-rgba-0-0-0-0-65: rgba(0,0,0,0.65); /* x1 */
+  --color-rgba-255-255-255-0-5: rgba(255,255,255,0.5); /* x1 */
+  --color-rgba-15-23-42-0-3: rgba(15,23,42,0.3); /* x1 */
+  --color-rgba-242-111-33-0-85: rgba(242,111,33,0.85); /* x1 */
+  --color-rgba-234-88-12-0-85: rgba(234,88,12,0.85); /* x1 */
+  --color-rgba-255-255-255-0-45: rgba(255,255,255,0.45); /* x1 */
+  --color-rgba-2-132-199-0-55: rgba(2,132,199,0.55); /* x1 */
+  --color-rgba-30-41-59-0-55: rgba(30,41,59,0.55); /* x1 */
+  --color-rgba-14-165-233-0-75: rgba(14,165,233,0.75); /* x1 */
+  --color-rgba-2-132-199-0-75: rgba(2,132,199,0.75); /* x1 */
+  --color-rgba-168-85-247-0-75: rgba(168,85,247,0.75); /* x1 */
+  --color-rgba-124-58-237-0-75: rgba(124,58,237,0.75); /* x1 */
+  --color-rgba-15-23-42-0-98: rgba(15,23,42,0.98); /* x1 */
+  --color-rgba-0-0-0-0-95: rgba(0,0,0,0.95); /* x1 */
+  --color-rgba-14-165-233-0-25: rgba(14,165,233,0.25); /* x1 */
+  --color-rgba-14-165-233-0-45: rgba(14,165,233,0.45); /* x1 */
+  --color-rgba-56-189-248-0-65: rgba(56,189,248,0.65); /* x1 */
+  --color-rgba-242-111-33-0-08: rgba(242,111,33,0.08); /* x1 */
+  --color-rgba-2-132-199-0-4: rgba(2,132,199,0.4); /* x1 */
+  --color-rgba-139-92-246-0-35: rgba(139,92,246,0.35); /* x1 */
+  --color-rgba-139-92-246-0-6: rgba(139,92,246,0.6); /* x1 */
+  --color-rgba-14-165-233-0-7: rgba(14,165,233,0.7); /* x1 */
+  --color-rgba-16-185-129-0-7: rgba(16,185,129,0.7); /* x1 */
+  --color-rgba-192-132-252-0-6: rgba(192,132,252,0.6); /* x1 */
+  --color-rgba-192-132-252-0-35: rgba(192,132,252,0.35); /* x1 */
+  --color-rgba-168-85-247-0-25: rgba(168,85,247,0.25); /* x1 */
+  --color-rgba-245-158-11-0-8: rgba(245,158,11,0.8); /* x1 */
+  --color-rgba-245-158-11-0-08: rgba(245,158,11,0.08); /* x1 */
+  --color-rgba-16-185-129-0-12: rgba(16,185,129,0.12); /* x1 */
+  --color-rgba-15-23-42-0-55: rgba(15,23,42,0.55); /* x1 */
+  --color-rgba-3-7-18-0-88: rgba(3,7,18,0.88); /* x1 */
+  --color-rgba-239-68-68-0-1: rgba(239,68,68,0.1); /* x1 */
+  --color-rgba-34-197-94-0-12: rgba(34,197,94,0.12); /* x1 */
+  --color-rgba-244-63-94-0-4: rgba(244,63,94,0.4); /* x1 */
+  --color-rgba-244-63-94-0-2: rgba(244,63,94,0.2); /* x1 */
+  --color-rgba-234-179-8-0-12: rgba(234,179,8,0.12); /* x1 */
+  --color-rgba-234-179-8-0-4: rgba(234,179,8,0.4); /* x1 */
+  --color-rgba-251-191-36-0-45: rgba(251,191,36,0.45); /* x1 */
+  --color-rgba-245-158-11-0-22: rgba(245,158,11,0.22); /* x1 */
+  --color-rgba-217-119-6-0-08: rgba(217,119,6,0.08); /* x1 */
+  --color-rgba-251-191-36-0-35: rgba(251,191,36,0.35); /* x1 */
+  --color-rgba-100-116-139-0-15: rgba(100,116,139,0.15); /* x1 */
+  --color-rgba-100-116-139-0-3: rgba(100,116,139,0.3); /* x1 */
+  --color-rgba-234-179-8-0-15: rgba(234,179,8,0.15); /* x1 */
+  --color-rgba-56-189-248-0-1: rgba(56,189,248,0.1); /* x1 */
+  --color-rgba-34-197-94-0-55: rgba(34,197,94,0.55); /* x1 */
+  --color-rgba-3-7-18-0-82: rgba(3,7,18,0.82); /* x1 */
+  --color-rgba-0-178-255-0-15: rgba(0,178,255,0.15); /* x1 */
+  --color-rgba-0-178-255-0-4: rgba(0,178,255,0.4); /* x1 */
+  --color-rgba-148-163-184-0-4: rgba(148,163,184,0.4); /* x1 */
+  --color-rgba-0-178-255-0-1: rgba(0,178,255,0.1); /* x1 */
+  --color-rgba-245-158-11-0-14: rgba(245,158,11,0.14); /* x1 */
+  --color-rgba-239-68-68-0-07: rgba(239,68,68,0.07); /* x1 */
+  --color-rgba-239-68-68-0-8: rgba(239,68,68,0.8); /* x1 */
+  --color-rgba-16-185-129-0-6: rgba(16,185,129,0.6); /* x1 */
+  --color-rgba-52-211-153-0-35: rgba(52,211,153,0.35); /* x1 */
+  --color-rgba-52-211-153-0-5: rgba(52,211,153,0.5); /* x1 */
+  --color-rgba-16-185-129-0-55: rgba(16,185,129,0.55); /* x1 */
+  --color-rgba-14-165-233-0-08: rgba(14,165,233,0.08); /* x1 */
+  --color-rgba-14-165-233-0-18: rgba(14,165,233,0.18); /* x1 */
+  --color-rgba-14-165-233-0-35: rgba(14,165,233,0.35); /* x1 */
+  --color-rgba-56-189-248-0-06: rgba(56,189,248,0.06); /* x1 */
+  --color-rgba-2-132-199-0-25: rgba(2,132,199,0.25); /* x1 */
+  --color-rgba-234-179-8-0-2: rgba(234,179,8,0.2); /* x1 */
+  --color-rgba-15-23-42-0-35: rgba(15,23,42,0.35); /* x1 */
+  --color-rgba-255-255-255-0-04: rgba(255,255,255,0.04); /* x1 */
+  --color-rgba-2-6-23-0-48: rgba(2,6,23,0.48); /* x1 */
+  --color-rgba-30-41-59-0-88: rgba(30,41,59,0.88); /* x1 */
+  --color-rgba-242-111-33-0-95: rgba(242,111,33,0.95); /* x1 */
+  --color-rgba-234-88-12-0-95: rgba(234,88,12,0.95); /* x1 */
+  --color-rgba-242-111-33-0-65: rgba(242,111,33,0.65); /* x1 */
+  --color-rgba-255-255-255-0-14: rgba(255,255,255,0.14); /* x1 */
+  --color-rgba-30-41-59-0-92: rgba(30,41,59,0.92); /* x1 */
+  --color-rgba-2-6-23-0-6: rgba(2,6,23,0.6); /* x1 */
+  --color-rgba-255-255-255-0-16: rgba(255,255,255,0.16); /* x1 */
+  --color-rgba-249-115-22-0-4: rgba(249,115,22,0.4); /* x1 */
+  --color-rgba-255-255-255-0-95: rgba(255,255,255,0.95); /* x1 */
+  /* ---------- font families ---------- */
+  --font-mono: 'JetBrains Mono', monospace; /* x39 */
+  --font-sans-outfit: 'Outfit', sans-serif; /* x38 */
+  --font-mono-consolas: 'JetBrains Mono', Consolas, monospace; /* x4 */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* x1 */
+  --font-pixel: 'Press Start 2P', monospace; /* x1 */
+  --font-mono-system: 'JetBrains Mono', -apple-system, sans-serif; /* x1 */
+  --font-sans-outfit-alt: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif; /* x1 */
+  --font-mono-ui: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* x1 */
+  --font-mono-fira-code: 'JetBrains Mono', 'Fira Code', monospace; /* x1 */
+  --font-sans-roboto: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* x1 */
+  /* ---------- type scale ---------- */
+  --text-11px: 11px; /* x103 */
+  --text-12px: 12px; /* x76 */
+  --text-13px: 13px; /* x62 */
+  --text-10px: 10px; /* x38 */
+  --text-14px: 14px; /* x28 */
+  --text-16px: 16px; /* x15 */
+  --text-11-5px: 11.5px; /* x14 */
+  --text-9px: 9px; /* x11 */
+  --text-20px: 20px; /* x11 */
+  --text-15px: 15px; /* x10 */
+  --text-13-5px: 13.5px; /* x8 */
+  --text-22px: 22px; /* x7 */
+  --text-12-5px: 12.5px; /* x7 */
+  --text-18px: 18px; /* x7 */
+  --text-10-5px: 10.5px; /* x7 */
+  --text-26px: 26px; /* x6 */
+  --text-24px: 24px; /* x6 */
+  --text-28px: 28px; /* x4 */
+  --text-17px: 17px; /* x3 */
+  --text-19px: 19px; /* x3 */
+  --text-9-5px: 9.5px; /* x3 */
+  --text-8-5px: 8.5px; /* x3 */
+  --text-8px: 8px; /* x2 */
+  --text-48px: 48px; /* x2 */
+  --text-52px: 52px; /* x2 */
+  --text-32px: 32px; /* x2 */
+  --text-30px: 30px; /* x2 */
+  --text-54px: 54px; /* x1 */
+  --text-38px: 38px; /* x1 */
+  --text-36px: 36px; /* x1 */
+  --text-44px: 44px; /* x1 */
+  --text-1-25rem: 1.25rem; /* x1 */
+  --text-64px: 64px; /* x1 */
+  /* ---------- spacing (margin / padding / gap) ---------- */
+  --space-8px: 8px; /* x101 */
+  --space-6px: 6px; /* x76 */
+  --space-10px: 10px; /* x70 */
+  --space-0: 0; /* x68 */
+  --space-12px: 12px; /* x60 */
+  --space-4px: 4px; /* x52 */
+  --space-14px: 14px; /* x42 */
+  --space-16px: 16px; /* x34 */
+  --space-2px: 2px; /* x20 */
+  --space-2px-8px: 2px 8px; /* x14 */
+  --space-20px: 20px; /* x14 */
+  --space-6px-12px: 6px 12px; /* x12 */
+  --space-4px-10px: 4px 10px; /* x12 */
+  --space-3px-8px: 3px 8px; /* x12 */
+  --space-3px: 3px; /* x11 */
+  --space-8px-12px: 8px 12px; /* x10 */
+  --space-10px-14px: 10px 14px; /* x9 */
+  --space-6px-10px: 6px 10px; /* x9 */
+  --space-6px-14px: 6px 14px; /* x8 */
+  --space-2px-6px: 2px 6px; /* x8 */
+  --space-12px-16px: 12px 16px; /* x7 */
+  --space-8px-10px: 8px 10px; /* x7 */
+  --space-10px-12px: 10px 12px; /* x7 */
+  --space-4px-8px: 4px 8px; /* x6 */
+  --space-auto: auto; /* x6 */
+  --space-5px: 5px; /* x6 */
+  --space-12px-14px: 12px 14px; /* x6 */
+  --space-24px: 24px; /* x6 */
+  --space-10px-16px: 10px 16px; /* x5 */
+  --space-10px-18px: 10px 18px; /* x5 */
+  --space-1px-5px: 1px 5px; /* x5 */
+  --space-6px-8px: 6px 8px; /* x5 */
+  --space-14px-16px: 14px 16px; /* x5 */
+  --space-18px: 18px; /* x4 */
+  --space-5px-10px: 5px 10px; /* x4 */
+  --space-8px-16px: 8px 16px; /* x4 */
+  --space-8px-14px: 8px 14px; /* x4 */
+  --space-14px-18px: 14px 18px; /* x4 */
+  --space-5px-12px: 5px 12px; /* x3 */
+  --space-2px-10px: 2px 10px; /* x3 */
+  --space-4px-0: 4px 0; /* x3 */
+  --space-4px-12px: 4px 12px; /* x3 */
+  --space-0-0-4px-0: 0 0 4px 0; /* x3 */
+  --space-7px-10px: 7px 10px; /* x3 */
+  --space-1px-6px: 1px 6px; /* x3 */
+  --space-4px-6px: 4px 6px; /* x3 */
+  --space-10px-0: 10px 0; /* x3 */
+  --space-0-0-6px: 0 0 6px; /* x3 */
+  --space-1px: 1px; /* x2 */
+  --space-8px-18px: 8px 18px; /* x2 */
+  --space-3px-9px: 3px 9px; /* x2 */
+  --space-20px-24px: 20px 24px; /* x2 */
+  --space-10px-20px: 10px 20px; /* x2 */
+  --space-3px-10px: 3px 10px; /* x2 */
+  --space-11px: 11px; /* x2 */
+  --space-0-0-16px-0: 0 0 16px 0; /* x2 */
+  --space-36px-32px: 36px 32px; /* x2 */
+  --space-0-4px: 0 4px; /* x2 */
+  --space-3px-6px: 3px 6px; /* x2 */
+  --space-16px-14px: 16px 14px; /* x2 */
+  --space-0-0-6px-0: 0 0 6px 0; /* x2 */
+  --space-18px-20px: 18px 20px; /* x2 */
+  --space-12px-20px: 12px 20px; /* x2 */
+  --space-5px-14px: 5px 14px; /* x2 */
+  --space-12px-18px: 12px 18px; /* x2 */
+  --space-0-0-3px-0: 0 0 3px 0; /* x2 */
+  --space-11px-16px: 11px 16px; /* x2 */
+  --space-30px-16px: 30px 16px; /* x2 */
+  --space-0px: 0px; /* x2 */
+  --space-0-0-12px: 0 0 12px; /* x2 */
+  --space-8px-0: 8px 0; /* x2 */
+  --space-0-auto-8px: 0 auto 8px; /* x1 */
+  --space-2px-7px: 2px 7px; /* x1 */
+  --space-4px-9px: 4px 9px; /* x1 */
+  --space-5px-9px: 5px 9px; /* x1 */
+  --space-7px-11px: 7px 11px; /* x1 */
+  --space-7px: 7px; /* x1 */
+  --space-0-5px: 0 5px; /* x1 */
+  --space-9px-12px: 9px 12px; /* x1 */
+  --space-0-10px: 0 10px; /* x1 */
+  --space-44px: 44px; /* x1 */
+  --space-6px-16px: 6px 16px; /* x1 */
+  --space-7px-4px: 7px 4px; /* x1 */
+  --space-8px-4px: 8px 4px; /* x1 */
+  --space-8px-6px: 8px 6px; /* x1 */
+  --space-0-0-10px-0: 0 0 10px 0; /* x1 */
+  --space-0-0-20px-0: 0 0 20px 0; /* x1 */
+  --space-24px-20px: 24px 20px; /* x1 */
+  --space-11px-24px: 11px 24px; /* x1 */
+  --space-24px-28px: 24px 28px; /* x1 */
+  --space-13px: 13px; /* x1 */
+  --space-28px: 28px; /* x1 */
+  --space-16px-20px-24px: 16px 20px 24px; /* x1 */
+  --space-0-0-10px: 0 0 10px; /* x1 */
+  --space-9px: 9px; /* x1 */
+  --space-11px-12px: 11px 12px; /* x1 */
+  --space-16px-20px: 16px 20px; /* x1 */
+  --space-0-calc-16px-env-safe-area-inset-right-0px-calc-16px-env-safe-area-inset-bottom-0px-calc-16px-env-safe-area-inset-left-0px: 0 calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px)); /* x1 */
+  --space-0-6px: 0 6px; /* x1 */
+  --space-0-calc-14px-env-safe-area-inset-right-0px-calc-14px-env-safe-area-inset-bottom-0px-calc-14px-env-safe-area-inset-left-0px: 0 calc(14px + env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) calc(14px + env(safe-area-inset-left, 0px)); /* x1 */
+  --space-10px-14px-calc-10px-env-safe-area-inset-bottom-0px: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); /* x1 */
+  --space-auto-0: auto 0; /* x1 */
+  --space-18px-12px: 18px 12px; /* x1 */
+  --space-0-1px: 0 1px; /* x1 */
+  --space-2px-2px: 2px 2px; /* x1 */
+  --space-2px-3px: 2px 3px; /* x1 */
+  --space-0-3px: 0 3px; /* x1 */
+  --space-8px-12px-28px-2px: 8px 12px 28px 2px; /* x1 */
+  --space-12px-0-8px-0: 12px 0 8px 0; /* x1 */
+  --space-8px-10px-10px-10px: 8px 10px 10px 10px; /* x1 */
+  --space-5px-6px: 5px 6px; /* x1 */
+  --space-7px-16px: 7px 16px; /* x1 */
+  --space-12px-24px: 12px 24px; /* x1 */
+  --space-16px-0: 16px 0; /* x1 */
+  --space-0-0-18px-0: 0 0 18px 0; /* x1 */
+  --space-22px: 22px; /* x1 */
+  --space-16px-12px: 16px 12px; /* x1 */
+  --space-12px-28px: 12px 28px; /* x1 */
+  --space-2px-0-0-0: 2px 0 0 0; /* x1 */
+  --space-8px-0-0-0: 8px 0 0 0; /* x1 */
+  --space-0-0-2px-0: 0 0 2px 0; /* x1 */
+  --space-3px-10px-3px-4px: 3px 10px 3px 4px; /* x1 */
+  --space-32px-24px: 32px 24px; /* x1 */
+  --space-0-0-20px: 0 0 20px; /* x1 */
+  --space-10px-24px: 10px 24px; /* x1 */
+  --space-20px-14px: 20px 14px; /* x1 */
+  --space-9px-10px: 9px 10px; /* x1 */
+  --space-3px-0-0-0: 3px 0 0 0; /* x1 */
+  --space-1px-4px: 1px 4px; /* x1 */
+  --space-9px-12px-9px-36px: 9px 12px 9px 36px; /* x1 */
+  --space-9px-16px: 9px 16px; /* x1 */
+  --space-6px-4px: 6px 4px; /* x1 */
+  --space-5px-12px-5px-8px: 5px 12px 5px 8px; /* x1 */
+  --space-6px-0-0: 6px 0 0; /* x1 */
+  --space-16px-20px-20px: 16px 20px 20px; /* x1 */
+  --space-12px-0: 12px 0; /* x1 */
+  /* ---------- border radius ---------- */
+  --radius-6px: 6px; /* x67 */
+  --radius-8px: 8px; /* x61 */
+  --radius-10px: 10px; /* x49 */
+  --radius-12px: 12px; /* x46 */
+  --radius-full: 50%; /* x34 */
+  --radius-14px: 14px; /* x26 */
+  --radius-4px: 4px; /* x24 */
+  --radius-20px: 20px; /* x14 */
+  --radius-pill: 999px; /* x7 */
+  --radius-16px: 16px; /* x7 */
+  --radius-18px: 18px; /* x5 */
+  --radius-2px: 2px; /* x4 */
+  --radius-3px: 3px; /* x4 */
+  --radius-5px: 5px; /* x3 */
+  --radius-0: 0; /* x3 */
+  --radius-24px: 24px; /* x2 */
+  --radius-7px: 7px; /* x1 */
+  --radius-9999px: 9999px; /* x1 */
+  --radius-0-0-4px-4px: 0 0 4px 4px; /* x1 */
+  --radius-1px: 1px; /* x1 */
+  --radius-inherit: inherit; /* x1 */
+  --radius-20px-20px-0-0: 20px 20px 0 0; /* x1 */
+  --radius-0-6px-6px-0: 0 6px 6px 0; /* x1 */
+  /* ---------- shadows (used 2+ times) ---------- */
+  --shadow-1: 0 0 8px var(--color-10b981); /* box-shadow x3 */
+  --shadow-2: 0 0 8px var(--color-ef4444); /* box-shadow x2 */
+  --shadow-3: 0 2px 8px var(--color-rgba-242-111-33-0-4); /* box-shadow x3 */
+  --shadow-4: 0 4px 14px var(--color-rgba-242-111-33-0-4); /* box-shadow x2 */
+  --shadow-5: 0 2px 8px var(--color-rgba-0-0-0-0-3); /* box-shadow x2 */
+  --shadow-6: 0 0 10px var(--color-rgba-242-111-33-0-3); /* box-shadow x4 */
+  --shadow-7: 0 2px 8px var(--color-rgba-16-185-129-0-3); /* box-shadow x2 */
+  --shadow-8: 0 0 12px var(--color-rgba-242-111-33-0-35); /* box-shadow x2 */
+  --shadow-9: 0 0 8px var(--color-rgba-242-111-33-0-4); /* box-shadow x2 */
+  --shadow-10: 0 4px 16px var(--color-rgba-242-111-33-0-4); /* box-shadow x2 */
+  --shadow-11: 0 8px 24px var(--color-rgba-242-111-33-0-6); /* box-shadow x2 */
+  --shadow-12: 0 0 24px var(--color-rgba-242-111-33-0-7); /* box-shadow x2 */
+  --shadow-13: 0 8px 24px var(--color-rgba-0-0-0-0-5); /* box-shadow x2 */
+  /* ---------- z-index scale ---------- */
+  --z-2: 2; /* x3 */
+  --z-100000: 100000; /* x3 */
+  --z-50: 50; /* x2 */
+  --z-10000005: 10000005; /* x2 */
+  --z-1000000: 1000000; /* x2 */
+  --z-1: 1; /* x2 */
+  --z-100: 100; /* x2 */
+  --z-10000030: 10000030; /* x2 */
+  --z-3: 3; /* x2 */
+  --z-10000010: 10000010; /* x1 */
+  --z-9999999: 9999999; /* x1 */
+  --z-100002: 100002; /* x1 */
+  --z-10000000: 10000000; /* x1 */
+  --z-10000001: 10000001; /* x1 */
+  --z-1001: 1001; /* x1 */
+  --z-100001: 100001; /* x1 */
+  --z-998: 998; /* x1 */
+  --z-1000: 1000; /* x1 */
+  --z-1005: 1005; /* x1 */
+  --z-10000004: 10000004; /* x1 */
+  --z-99998: 99998; /* x1 */
+  --z-99995: 99995; /* x1 */
+  --z-10000040: 10000040; /* x1 */
+  --z-100005: 100005; /* x1 */
+  --z-10: 10; /* x1 */
+  --z-999992: 999992; /* x1 */
+}
