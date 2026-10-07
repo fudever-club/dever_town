@@ -52,6 +52,8 @@ import { ZoomControls } from '../ui/hud/ZoomControls.js';
 import {
   CAMERA_VIEW_W,
   CAMERA_VIEW_H,
+  CAMERA_BOUNDS_PAD_X,
+  CAMERA_BOUNDS_PAD_Y,
   CAMERA_ZOOM,
   XRAY,
   computeMinZoom,
@@ -229,14 +231,15 @@ export class WorldScene extends Phaser.Scene {
     this.loadRoom(this.currentRoomId, spawnX, spawnY, false);
 
     // 5. Camera Follow với vùng đệm rộng rãi (Headroom Padding)
-    // Giúp khi đi lên phía Bắc (North) camera có không gian mở rộng thoáng đãng, không bị gò bó hoặc che khuất tên phòng
+    // Giúp khi đi lên phía Bắc (North) camera có không gian mở rộng thoáng đãng, không bị gò bó hoặc che khuất tên phòng.
+    // Chế độ RESIZE: updateCameraBounds() mở rộng bounds theo viewport thực tế
+    // để player luôn ở giữa màn hình và vùng thế giới hiển thị tăng theo kích
+    // thước màn hình (không chỉ phóng to điểm ảnh).
     const camera = this.cameras.main;
-    const PADDING_X = 64;
-    const PADDING_Y = 96;
-    camera.setBounds(-PADDING_X, -PADDING_Y, GAME_CONFIG.MAP_WIDTH + PADDING_X * 2, GAME_CONFIG.MAP_HEIGHT + PADDING_Y * 2);
     camera.startFollow(this.player, true, 0.08, 0.08);
     camera.setRoundPixels(true);
 
+    this.updateCameraBounds();
     this.updateCameraZoom();
 
     // Dùng named reference để có thể removeEventListener trong shutdown()
@@ -244,6 +247,12 @@ export class WorldScene extends Phaser.Scene {
     this._orientationHandler = () => setTimeout(() => this.updateCameraZoom(), 150);
     window.addEventListener('resize', this._resizeHandler);
     window.addEventListener('orientationchange', this._orientationHandler);
+    // Phaser.Scale.RESIZE: ScaleManager xử lý window 'resize' qua dirty flag ở
+    // frame kế tiếp (listener của window chạy trước, this.scale.width còn cũ) —
+    // lắng nghe sự kiện 'resize' của ScaleManager để cập nhật bounds theo đúng
+    // kích thước game mới nhất.
+    this._scaleResizeHandler = () => this.updateCameraBounds();
+    this.scale.on('resize', this._scaleResizeHandler);
 
     // 6. HUD & Network
     this.createHUD();
@@ -504,6 +513,7 @@ export class WorldScene extends Phaser.Scene {
     } else {
       camera.setZoom(newZoom);
     }
+    this.updateCameraBounds(newZoom);
     this._refreshZoomUI();
   }
 
@@ -534,6 +544,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const from = { zoom: camera.zoom, sx: camera.scrollX, sy: camera.scrollY };
+    const scene = this;
     this._zoomTween = this.tweens.add({
       targets: from,
       zoom: newZoom,
@@ -548,16 +559,52 @@ export class WorldScene extends Phaser.Scene {
       },
       onComplete: () => {
         this._zoomTween = null;
+        scene.updateCameraBounds(newZoom);
         this._refreshZoomUI();
       }
     });
+    // Cập nhật bounds theo zoom đích ngay để follow không bị kẹt clamp giữa tween.
+    this.updateCameraBounds(newZoom);
     this._refreshZoomUI();
   }
 
   /** Zoom theo hệ số quanh tâm màn hình (dùng cho nút +/−). */
   zoomByStep(factor) {
-    const center = { x: CAMERA_VIEW_W / 2, y: CAMERA_VIEW_H / 2 };
+    // RESIZE: tâm = kích thước camera thực tế, không còn cố định 800x600.
+    const camera = this.cameras && this.cameras.main;
+    const center = camera
+      ? { x: camera.width / 2, y: camera.height / 2 }
+      : { x: CAMERA_VIEW_W / 2, y: CAMERA_VIEW_H / 2 };
     this.setZoomAt(center, this.getCurrentZoom() * factor, true);
+  }
+
+  /**
+   * Cập nhật camera bounds theo viewport hiện tại (dành cho Phaser.Scale.RESIZE).
+   *
+   * Bounds = max(phòng + headroom padding, vùng nhìn thấy ở zoom hiện tại),
+   * căn giữa theo phòng:
+   * - Viewport nhỏ (mobile/800x600): giữ nguyên bounds cũ (phòng + padding),
+   *   hành vi không đổi so với trước đây.
+   * - Viewport lớn: mở rộng bounds đúng bằng vùng camera nhìn thấy → player
+   *   luôn ở giữa màn hình (startFollow không bị kẹt clamp), vùng thế giới
+   *   hiển thị tăng theo kích thước màn hình thay vì chỉ phóng to điểm ảnh.
+   *   Phần ngoài phòng là nền #070a12 (trùng màu nền trang).
+   *
+   * @param {number} [zoomOverride] - dùng zoom mục tiêu khi đang tween zoom.
+   */
+  updateCameraBounds(zoomOverride) {
+    const camera = this.cameras && this.cameras.main;
+    if (!camera) return;
+    const zoom = (zoomOverride > 0 ? zoomOverride : camera.zoom) || 1;
+    // this.scale.width/height = kích thước game thực tế ở chế độ RESIZE
+    // (= kích thước CSS px của #game-container).
+    const viewW = this.scale.width / zoom;
+    const viewH = this.scale.height / zoom;
+    const roomW = GAME_CONFIG.MAP_WIDTH;
+    const roomH = GAME_CONFIG.MAP_HEIGHT;
+    const w = Math.max(roomW + CAMERA_BOUNDS_PAD_X * 2, viewW);
+    const h = Math.max(roomH + CAMERA_BOUNDS_PAD_Y * 2, viewH);
+    camera.setBounds((roomW - w) / 2, (roomH - h) / 2, w, h);
   }
 
   updateCameraZoom() {
@@ -566,6 +613,7 @@ export class WorldScene extends Phaser.Scene {
     const range = this.getZoomRange();
 
     // Giữ zoom người dùng đã chọn (kể cả khi resize/xoay màn hình): chỉ re-clamp.
+    // range.min vẫn tính theo mốc tham chiếu 800x600 (0.99–2.5 được giữ nguyên).
     let zoom = this._userZoom;
     if (zoom == null) zoom = this._loadStoredZoom();
     if (zoom == null) zoom = this.computeDefaultZoom();
@@ -573,15 +621,21 @@ export class WorldScene extends Phaser.Scene {
     this._userZoom = zoom;
 
     camera.setZoom(zoom);
+    // Bounds phụ thuộc zoom (view = viewport/zoom): cập nhật để giữ tâm follow.
+    this.updateCameraBounds(zoom);
     this._refreshZoomUI();
   }
 
   /** Wheel trên canvas → zoom tới con trỏ. CHỈ preventDefault trên canvas, trang vẫn cuộn được. */
   _screenPointFromClient(canvas, clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
+    // RESIZE: game-px = CSS-px (canvas lấp đầy container); giữ tỉ lệ scale để
+    // vẫn đúng nếu CSS scale canvas khác kích thước game (VD mobile cũ).
+    const sx = this.scale.width / (rect.width || 1);
+    const sy = this.scale.height / (rect.height || 1);
     return {
-      x: (clientX - rect.left) * (CAMERA_VIEW_W / rect.width),
-      y: (clientY - rect.top) * (CAMERA_VIEW_H / rect.height)
+      x: (clientX - rect.left) * sx,
+      y: (clientY - rect.top) * sy
     };
   }
 
@@ -1885,6 +1939,10 @@ export class WorldScene extends Phaser.Scene {
     if (this._orientationHandler) {
       window.removeEventListener('orientationchange', this._orientationHandler);
       this._orientationHandler = null;
+    }
+    if (this._scaleResizeHandler && this.scale) {
+      this.scale.off('resize', this._scaleResizeHandler);
+      this._scaleResizeHandler = null;
     }
 
     if (this.tilePool) {

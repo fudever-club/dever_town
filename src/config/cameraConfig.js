@@ -9,9 +9,24 @@
  *   Bắc mờ để nhìn xuyên phòng — giữ sau cờ XRAY.DOLLHOUSE_ENABLED.
  */
 
-/** Kích thước viewport logic của game (khớp src/main.js). */
+/**
+ * Kích thước viewport logic tham chiếu của game (khớp width/height ban đầu trong
+ * src/main.js). Dùng làm mốc tính zoom-range "vừa khít phòng" (0.99–2.5) và giá
+ * trị dự phòng cho các phép đổi tọa độ màn hình — KHÔNG còn là kích thước canvas
+ * thực tế (chế độ Phaser.Scale.RESIZE cho canvas bám theo #game-container).
+ */
 export const CAMERA_VIEW_W = 800;
 export const CAMERA_VIEW_H = 600;
+
+/**
+ * Vùng đệm camera quanh phòng (headroom padding): cho phép camera nhìn rộng hơn
+ * phòng một chút khi player đi về phía Bắc, không bị gò bó hoặc che khuất tên phòng.
+ * (Giá trị cũ hardcode trong WorldScene.create: PADDING_X=64, PADDING_Y=96.)
+ * updateCameraBounds() dùng làm bounds tối thiểu; khi viewport RESIZE lớn hơn,
+ * bounds tự mở rộng đúng bằng vùng nhìn thấy để player luôn ở giữa màn hình.
+ */
+export const CAMERA_BOUNDS_PAD_X = 64;
+export const CAMERA_BOUNDS_PAD_Y = 96;
 
 export const CAMERA_ZOOM = {
   /** localStorage lưu zoom người dùng chọn. */

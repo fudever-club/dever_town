@@ -34,8 +34,12 @@ const config = {
   },
   scene: [BootScene, WorldScene],
   scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    // RESIZE: canvas lấp đầy #game-container (kích thước game = kích thước
+    // container, cập nhật theo mọi thay đổi viewport). Camera viewport tự mở
+    // rộng theo; WorldScene.updateCameraBounds() mở rộng camera bounds tương
+    // ứng để player luôn ở giữa và vùng thế giới hiển thị tăng theo màn hình
+    // (không chỉ phóng to điểm ảnh). autoCenter vô tác dụng ở chế độ RESIZE.
+    mode: Phaser.Scale.RESIZE
   }
 };
 
