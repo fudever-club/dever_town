@@ -3,7 +3,7 @@
  * Phase 1d: kiểm chứng raise-hand / spotlight / moderation (server + client)
  */
 import { setupVoiceHandler } from '../server/socket/voiceHandler.js';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 
 let pass = 0, fail = 0;
 const ok = (cond, msg) => { if (cond) { pass++; } else { fail++; console.error('FAIL:', msg); } };
@@ -73,7 +73,12 @@ ok(cliSrc.includes('onModeration = callbacks.onModeration'), 'init nhận onMode
 ok(cliSrc.includes('onHostChanged = callbacks.onHostChanged'), 'init nhận onHostChanged');
 
 // 3. UI: nút giơ tay + handlers
-const uiSrc = readFileSync('src/ui/gameplay/InteractiveModal.js', 'utf8');
+// (InteractiveModal.js was split into InteractiveModal.<area>.js prototype-patch
+// modules on 2026-10-07 — scan all of them, not just the thin shell.)
+const uiSrc = readdirSync('src/ui/gameplay')
+  .filter(f => /^InteractiveModal(\.|$)/.test(f) && f.endsWith('.js'))
+  .map(f => readFileSync(`src/ui/gameplay/${f}`, 'utf8'))
+  .join('\n');
 ok(uiSrc.includes('btn-raise-hand'), 'có nút Giơ Tay');
 ok(uiSrc.includes('handleHandChanged'), 'có handleHandChanged');
 ok(uiSrc.includes('handleSpotlightChanged'), 'có handleSpotlightChanged');
