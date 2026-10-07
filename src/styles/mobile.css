@@ -754,3 +754,45 @@
   }
 }
 
+/* Landscape phones (chiều cao <=450px): thu gọn touch controls để không che game.
+   D-pad 52px -> 40px, action buttons nhỏ lại, gap thu hẹp. */
+@media (max-height: 450px) and (orientation: landscape) {
+  .touch-dpad-btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .touch-dpad-center {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .touch-dpad-container {
+    gap: 4px !important;
+    padding: 6px !important;
+  }
+  .touch-dpad-middle {
+    gap: 4px !important;
+  }
+  .touch-action-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .touch-action-btn.duel,
+  .touch-action-btn.emote {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .touch-action-btn.interact {
+    width: 52px !important;
+    height: 52px !important;
+  }
+  .touch-actions-container {
+    gap: 4px !important;
+  }
+  .touch-actions-sub-row,
+  .touch-actions-main-row {
+    gap: 6px !important;
+  }
+  .mobile-touch-controls {
+    padding: 0 10px 8px 10px !important;
+  }
+}
