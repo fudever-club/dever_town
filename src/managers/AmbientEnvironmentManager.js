@@ -340,15 +340,20 @@ export class AmbientEnvironmentManager {
   }
 
   /**
-   * Tạo cụm bụi bước chân li ti khi người chơi di chuyển
+   * Tạo cụm bụi bước chân li ti khi người chơi di chuyển.
+   *
+   * Perf: dùng MỘT ParticleEmitter tái sử dụng (tạo lười một lần) + explode(3)
+   * thay vì scene.add.particles + delayedCall destroy mỗi bước (~13 lần/giây
+   * khi đang đi). Không cấp phát mỗi bước, không garbage churn.
    * @param {number} x
    * @param {number} y
    */
-  spawnFootstepDust(x, y) {
-    if (!this.scene || !this.scene.add) return;
+  _getFootstepEmitter() {
+    if (this.footstepEmitter && this.footstepEmitter.active) return this.footstepEmitter;
+    if (!this.scene || !this.scene.add) return null;
 
     try {
-      const dust = this.scene.add.particles(x, y + 10, 'particle_dust', {
+      this.footstepEmitter = this.scene.add.particles(0, 0, 'particle_dust', {
         lifespan: 350,
         speedX: { min: -15, max: 15 },
         speedY: { min: -5, max: 5 },
@@ -356,12 +361,22 @@ export class AmbientEnvironmentManager {
         alpha: { start: 0.65, end: 0 },
         emitting: false
       });
-      dust.setDepth(y - 1);
-      dust.explode(3);
+      // Không đưa vào activeEmitters: emitter này sống suốt đời scene,
+      // không bị clearEmitters() hủy khi đổi phòng.
+      return this.footstepEmitter;
+    } catch (e) {
+      return null;
+    }
+  }
 
-      this.scene.time.delayedCall(450, () => {
-        if (dust && dust.destroy) dust.destroy();
-      });
+  spawnFootstepDust(x, y) {
+    if (!this.scene || !this.scene.add) return;
+
+    try {
+      const dust = this._getFootstepEmitter();
+      if (!dust) return;
+      dust.setDepth(y - 1);
+      dust.explode(3, x, y + 10);
     } catch (e) {}
   }
 
@@ -590,6 +605,11 @@ export class AmbientEnvironmentManager {
     if (this.lightOverlay) {
       this.lightOverlay.destroy();
       this.lightOverlay = null;
+    }
+    // Emitter bụi bước chân tái sử dụng (không nằm trong activeEmitters)
+    if (this.footstepEmitter) {
+      try { this.footstepEmitter.destroy(); } catch (e) {}
+      this.footstepEmitter = null;
     }
   }
 }
