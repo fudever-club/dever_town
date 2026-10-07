@@ -35,17 +35,18 @@ export const SHEEP_DREAM_CONFIG = {
     spawnIntervalMs: 2200,      // Lúc đầu 2.2s/con
     minSpawnIntervalMs: 900,    // Tối thiểu 0.9s/con
     spawnIntervalDecay: 0.94,   // Mỗi con giảm 6%
-    jumpHeight: 80,             // Độ cao nhảy qua rào (đủ để chân qua thanh trên)
-    jumpDurationMs: 900,
+    jumpHeight: 95,             // Đủ cao để cừu chậm nhất cũng qua được rào 64px
+    jumpDurationMs: 1200,       // Bay lâu hơn để kịp qua rào
   },
 
-  // Hàng rào
+  // Hàng rào — thấp kiểu farm (theo reference của Hưng): 2 thanh ngang,
+  // đỉnh rào chỉ cao hơn lưng cừu ~20px. Cột cắm sâu xuống đất.
   fence: {
     x: 320,                     // Giữa canvas
     width: 12,
-    height: 90,
-    y: 310,                     // Chân hàng rào (mặt đất cừu chạy)
-    postBottom: 395,            // Đáy cột cắm sâu vào đồi cỏ (mặt cỏ ~370)
+    height: 52,                 // Thấp: đỉnh ở y=318 (mặt đất 370 - 52)
+    y: 370,                     // Mặt đất nơi cừu chạy (khớp mặt đồi cỏ)
+    postBottom: 395,            // Đáy cột cắm sâu vào đồi cỏ
   },
 
   // Điểm & thưởng
