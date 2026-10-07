@@ -186,6 +186,12 @@ export class InteractionManager {
         case 'sports_activity':
           color = 0x22c55e; // Green
           break;
+        case 'sit_chair':
+          color = 0x60a5fa; // Sky — ghế ngồi học
+          break;
+        case 'sit_sofa':
+          color = 0xf472b6; // Pink — sofa thư giãn
+          break;
         default:
           break;
       }

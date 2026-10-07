@@ -794,7 +794,11 @@ export const MAPS_CONFIG = {
     zones: [
       { id: 'zone_dorm_rest', type: 'rest_bed', tileX: 2, tileY: 2, name: 'Giường Ngủ KTX FUDA', label: 'Nghỉ Ngơi' },
       { id: 'zone_dorm_study', type: 'code_editor', tileX: 7, tileY: 4, name: 'Bàn Học Cá Nhân KTX', label: 'Học Bài & Code' },
-      { id: 'zone_dorm_lounge', type: 'coffee_lofi', tileX: 11, tileY: 6, name: 'Góc Sofa Thư Giãn KTX', label: 'Thư Giãn' }
+      { id: 'zone_dorm_lounge', type: 'coffee_lofi', tileX: 11, tileY: 6, name: 'Góc Sofa Thư Giãn KTX', label: 'Thư Giãn' },
+      // NOTE: (7,3) là ô bàn học (tile 4, solid) nên đặt ghế ở (8,4): ô sàn (tile 1),
+      // kề bàn học (8,3) và kề zone bàn học (7,4), không đè zone nào
+      { id: 'zone_dorm_sit_desk', type: 'sit_chair', tileX: 8, tileY: 4, name: 'Ghế Bàn Học KTX', label: 'Ngồi Học' },
+      { id: 'zone_dorm_sit_sofa', type: 'sit_sofa', tileX: 10, tileY: 6, name: 'Sofa KTX FUDA', label: 'Ngồi Thư Giãn' }
     ]
   },
 
