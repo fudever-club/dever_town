@@ -1,0 +1,756 @@
+/* --- mobile.css: mobile touch controls + responsive (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   MOBILE TOUCH VIRTUAL CONTROLS (Minecraft & Stardew Ergonomic Style)
+   ========================================================================== */
+.chat-mobile-close-btn {
+  display: none;
+}
+
+#chat-mobile-backdrop {
+  display: none;
+}
+
+.mobile-touch-controls {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: var(--z-100000);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  padding: var(--space-0-calc-16px-env-safe-area-inset-right-0px-calc-16px-env-safe-area-inset-bottom-0px-calc-16px-env-safe-area-inset-left-0px);
+}
+
+.touch-dpad-container {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6px);
+  background: radial-gradient(circle, var(--color-rgba-15-23-42-0-4) 0%, var(--color-rgba-15-23-42-0) 70%);
+  padding: var(--space-8px);
+  border-radius: var(--radius-full);
+}
+
+.touch-dpad-middle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6px);
+}
+
+.touch-dpad-center {
+  width: 44px;
+  height: 44px;
+  background: var(--color-rgba-15-23-42-0-6);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.touch-dpad-center::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--color-rgba-56-189-248-0-5);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 8px var(--color-rgba-56-189-248-0-6);
+}
+
+.touch-dpad-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-14px);
+  background: var(--color-rgba-15-23-42-0-82);
+  border: 1.5px solid var(--color-rgba-255-255-255-0-22);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ffffff);
+  cursor: pointer;
+  touch-action: none;
+  transition: transform 0.08s ease, background 0.08s ease, box-shadow 0.08s ease;
+  box-shadow: 0 6px 16px var(--color-rgba-0-0-0-0-55), inset 0 1px 1px var(--color-rgba-255-255-255-0-2);
+}
+
+.touch-dpad-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--color-ffffff);
+}
+
+.touch-dpad-btn.active, .touch-dpad-btn:active {
+  background: var(--color-rgba-242-111-33-0-9);
+  border-color: var(--color-f26f21);
+  transform: scale(0.88);
+  box-shadow: 0 0 20px var(--color-rgba-242-111-33-0-8), inset 0 2px 4px var(--color-rgba-0-0-0-0-3);
+}
+
+.touch-actions-container {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-8px);
+  padding-bottom: var(--space-4px);
+}
+
+.touch-actions-sub-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8px);
+  justify-content: flex-end;
+}
+
+.touch-actions-main-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10px);
+  justify-content: flex-end;
+}
+
+.touch-action-btn {
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-rgba-255-255-255-0-3);
+  background: var(--color-rgba-15-23-42-0-85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  touch-action: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  box-shadow: 0 6px 20px var(--color-rgba-0-0-0-0-65), inset 0 1px 1px var(--color-rgba-255-255-255-0-25);
+}
+
+.touch-action-btn.duel {
+  width: 44px;
+  height: 44px;
+  font-size: var(--text-19px);
+  background: linear-gradient(135deg, var(--color-0ea5e9), var(--color-0284c7));
+  border-color: var(--color-rgba-56-189-248-0-5);
+  box-shadow: 0 4px 14px var(--color-rgba-14-165-233-0-4);
+}
+
+.touch-action-btn.emote {
+  width: 44px;
+  height: 44px;
+  font-size: var(--text-19px);
+  background: linear-gradient(135deg, var(--color-a855f7), var(--color-7c3aed));
+  border-color: var(--color-rgba-192-132-252-0-5);
+  box-shadow: 0 4px 14px var(--color-rgba-168-85-247-0-4);
+}
+
+.touch-action-btn.interact {
+  width: 66px;
+  height: 66px;
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  font-size: var(--text-26px);
+  font-weight: 900;
+  border-color: var(--color-rgba-255-255-255-0-5);
+  box-shadow: var(--shadow-12);
+}
+
+.touch-action-btn.inv {
+  width: 50px;
+  height: 50px;
+  font-size: var(--text-22px);
+  background: linear-gradient(135deg, var(--color-0284c7), var(--color-0369a1));
+}
+
+.touch-action-btn.chat {
+  width: 44px;
+  height: 44px;
+  font-size: var(--text-19px);
+  background: var(--color-rgba-30-41-59-0-9);
+  border-color: var(--color-rgba-56-189-248-0-4);
+}
+
+.touch-action-btn.active, .touch-action-btn:active {
+  transform: scale(0.88);
+}
+
+/* ==========================================================================
+   TOÀN DIỆN RESPONSIVE CHO MOBILE & TABLET (< 1024px & < 768px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  html, body {
+    overflow: hidden !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: var(--space-0) !important;
+    padding: var(--space-0) !important;
+    position: fixed !important;
+  }
+
+  #app, #app-layout {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: var(--space-0) !important;
+    padding: var(--space-0) !important;
+    gap: var(--space-0) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  #main-header, #ui-header {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: var(--space-2px-10px) !important;
+    margin: var(--space-0) !important;
+    border-radius: var(--radius-0) !important;
+    border: none !important;
+    background: linear-gradient(180deg, var(--color-rgba-15-23-42-0-85) 0%, var(--color-rgba-15-23-42-0-3) 70%, transparent 100%) !important;
+    backdrop-filter: blur(4px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+    z-index: var(--z-1000);
+  }
+  #main-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-container {
+    gap: var(--space-6px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-title {
+    font-size: var(--text-14px) !important;
+  }
+
+  .brand-badge {
+    font-size: var(--text-10px) !important;
+    padding: var(--space-2px-6px) !important;
+  }
+
+  .room-nav-container {
+    margin: var(--space-0-4px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .room-select {
+    padding: var(--space-3px-6px) !important;
+    font-size: var(--text-11px) !important;
+    background: var(--color-rgba-15-23-42-0-85) !important;
+  }
+
+  .user-profile-badge {
+    display: none !important;
+  }
+
+  .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: var(--space-5px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header-actions button span[data-i18n] {
+    display: none !important;
+  }
+
+  .btn-primary-sm, .btn-ghost, .btn-icon-square {
+    padding: var(--space-0) !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: var(--text-14px) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--color-rgba-15-23-42-0-75) !important;
+    border-radius: var(--radius-8px) !important;
+    border: 1px solid var(--color-rgba-255-255-255-0-12) !important;
+  }
+
+  #header-quests-btn {
+    width: auto !important;
+    min-width: 44px !important;
+    padding: var(--space-0-6px) !important;
+    gap: var(--space-3px) !important;
+  }
+
+  #header-inventory-btn,
+  #fullscreen-btn {
+    display: none !important;
+  }
+
+  .network-ping-badge, .badge-online, .status-indicator {
+    display: none !important;
+  }
+
+  /* Game Canvas Viewport Maximization (Full Edge-to-Edge Minecraft/Stardew Style) */
+  #main-content {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    margin: var(--space-0) !important;
+    padding: var(--space-0) !important;
+    display: block !important;
+    overflow: hidden !important;
+    z-index: var(--z-1) !important;
+  }
+
+  #game-container {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    aspect-ratio: unset !important;
+    border-radius: var(--radius-0) !important;
+    border: none !important;
+    overflow: hidden !important;
+    background: var(--color-070a12) !important;
+    z-index: var(--z-1) !important;
+  }
+
+  #game-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: var(--radius-0) !important;
+    display: block !important;
+  }
+
+  /* Overlay Virtual Controls (Semi-Transparent Direct-on-Map Layer) */
+  .mobile-touch-controls {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    z-index: var(--z-1005) !important;
+    pointer-events: none !important;
+    padding: var(--space-0-calc-14px-env-safe-area-inset-right-0px-calc-14px-env-safe-area-inset-bottom-0px-calc-14px-env-safe-area-inset-left-0px) !important;
+  }
+
+  .touch-dpad-btn {
+    background: var(--color-rgba-15-23-42-0-45) !important;
+    border: 1.5px solid var(--color-rgba-255-255-255-0-2) !important;
+    backdrop-filter: blur(4px) !important;
+  }
+
+  .touch-dpad-btn.active, .touch-dpad-btn:active {
+    background: var(--color-rgba-242-111-33-0-9) !important;
+    border-color: var(--color-f26f21) !important;
+  }
+
+  .touch-action-btn {
+    background: var(--color-rgba-15-23-42-0-45) !important;
+    border: 1.5px solid var(--color-rgba-255-255-255-0-25) !important;
+    backdrop-filter: blur(4px) !important;
+  }
+
+  .touch-action-btn.interact {
+    background: linear-gradient(135deg, var(--color-rgba-242-111-33-0-85), var(--color-rgba-234-88-12-0-85)) !important;
+    border-color: var(--color-rgba-255-255-255-0-45) !important;
+  }
+
+  .touch-action-btn.inv {
+    background: var(--color-rgba-2-132-199-0-55) !important;
+    border-color: var(--color-rgba-56-189-248-0-35) !important;
+  }
+
+  .touch-action-btn.chat {
+    background: var(--color-rgba-30-41-59-0-55) !important;
+    border-color: var(--color-rgba-56-189-248-0-35) !important;
+  }
+
+  .touch-action-btn.duel {
+    background: linear-gradient(135deg, var(--color-rgba-14-165-233-0-75), var(--color-rgba-2-132-199-0-75)) !important;
+    border-color: var(--color-rgba-56-189-248-0-5) !important;
+  }
+
+  .touch-action-btn.emote {
+    background: linear-gradient(135deg, var(--color-rgba-168-85-247-0-75), var(--color-rgba-124-58-237-0-75)) !important;
+    border-color: var(--color-rgba-192-132-252-0-5) !important;
+  }
+
+  /* Mobile Chat Floating Popover / Bottom Drawer */
+  #chat-mobile-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: var(--color-rgba-0-0-0-0-7) !important;
+    backdrop-filter: blur(6px) !important;
+    z-index: var(--z-10000004) !important;
+    display: block !important;
+    transition: opacity 0.25s ease !important;
+  }
+
+  #chat-mobile-backdrop.hidden {
+    display: none !important;
+  }
+
+  #chat-wrapper {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 65vh !important;
+    max-height: 520px !important;
+    background: var(--color-rgba-15-23-42-0-98) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--color-rgba-242-111-33-0-4) !important;
+    border-bottom: none !important;
+    border-radius: var(--radius-20px-20px-0-0) !important;
+    z-index: var(--z-10000005) !important;
+    box-shadow: 0 -12px 40px var(--color-rgba-0-0-0-0-95), 0 0 25px var(--color-rgba-242-111-33-0-2) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateY(115%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
+  }
+
+  #chat-wrapper.mobile-open {
+    transform: translateY(0%) !important;
+    pointer-events: auto !important;
+  }
+
+  .chat-header {
+    padding: var(--space-12px-16px) !important;
+    border-bottom: 1px solid var(--color-rgba-255-255-255-0-1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .chat-header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-10px) !important;
+  }
+
+  .chat-mobile-close-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: var(--radius-full) !important;
+    background: var(--color-rgba-255-255-255-0-1) !important;
+    border: 1px solid var(--color-rgba-255-255-255-0-2) !important;
+    color: var(--color-ffffff) !important;
+    font-size: var(--text-13px) !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .chat-mobile-close-btn:active {
+    background: var(--color-rgba-242-111-33-0-8) !important;
+    transform: scale(0.9) !important;
+  }
+
+  .chat-messages-box {
+    flex: 1 !important;
+    padding: var(--space-12px-16px) !important;
+    overflow-y: auto !important;
+  }
+
+  .chat-input-row {
+    padding: var(--space-10px-14px-calc-10px-env-safe-area-inset-bottom-0px) !important;
+    border-top: 1px solid var(--color-rgba-255-255-255-0-08) !important;
+    background: var(--color-rgba-15-23-42-0-95) !important;
+  }
+
+  /* Welcome Gate Mobile Card */
+  .gate-card {
+    grid-template-columns: 1fr !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    width: 95vw !important;
+    border-radius: var(--radius-16px) !important;
+  }
+
+  .gate-hero-panel {
+    padding: var(--space-20px) !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--color-rgba-255-255-255-0-1) !important;
+  }
+
+  .gate-main-title {
+    font-size: var(--text-28px) !important;
+  }
+
+  .gate-features-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .gate-form-panel {
+    padding: var(--space-20px) !important;
+  }
+
+  /* Modals Mobile Scroll & Responsive Layout (Impeccable Touch Experience) */
+  .modal-backdrop {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: var(--space-10px) !important;
+    align-items: flex-start !important;
+    touch-action: pan-y !important;
+  }
+
+  .modal-card, .modal-card-lg, .modal-card-xl, .interactive-modal-card {
+    width: 100% !important;
+    max-width: 96vw !important;
+    height: auto !important;
+    max-height: 94vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: var(--space-16px-14px) !important;
+    margin: var(--space-auto-0) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    touch-action: pan-y !important;
+  }
+
+  .interactive-pane {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12px);
+    touch-action: pan-y;
+  }
+
+  .interactive-pane.hidden {
+    display: none !important;
+  }
+
+  /* Coffee & Pomodoro Mobile Stack */
+  .coffee-workspace-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-16px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .lofi-player-box {
+    height: auto !important;
+    min-height: 0 !important;
+    flex: none !important;
+    padding: var(--space-10px) !important;
+  }
+
+  .lofi-iframe-wrapper {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .lofi-iframe-wrapper iframe {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .pomodoro-box {
+    height: auto !important;
+    min-height: 200px !important;
+    flex: none !important;
+    padding: var(--space-18px-12px) !important;
+    gap: var(--space-14px) !important;
+  }
+
+  .pomo-display {
+    font-size: var(--text-44px) !important;
+  }
+
+  /* Slide / Web / Meeting / Canteen Mobile Stack */
+  .iframe-container {
+    height: 52vh !important;
+    min-height: 320px !important;
+    flex: none !important;
+  }
+
+  .code-workspace-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-14px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .code-editor-panel {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .code-box {
+    min-height: 200px !important;
+    height: 200px !important;
+  }
+
+  .notes-panel {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .notes-box {
+    min-height: 180px !important;
+    height: 180px !important;
+  }
+
+  .gallery-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-14px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .gallery-canvas-wrapper canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .inventory-workspace, .wardrobe-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-14px) !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .wardrobe-options-panel {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .inventory-grid {
+    max-height: 220px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-title,
+  .brand-badge {
+    display: none !important;
+  }
+
+  .brand-container {
+    gap: var(--space-0) !important;
+    margin-right: var(--space-2px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .room-nav-container {
+    max-width: 86px !important;
+    margin: var(--space-0-1px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .room-select {
+    max-width: 100% !important;
+    font-size: var(--text-10px) !important;
+    padding: var(--space-2px-2px) !important;
+  }
+
+  #main-header, #ui-header {
+    overflow: hidden !important;
+    padding: var(--space-2px-3px) !important;
+    width: 100vw !important;
+    box-sizing: border-box !important;
+    gap: var(--space-0) !important;
+  }
+
+  /* Ẩn các nút trùng lặp đã có trên phím cảm ứng touch controls để thanh header không bao giờ tràn mép */
+  #header-inventory-btn,
+  #fullscreen-btn,
+  #header-emote-btn,
+  #header-speed-duel-btn,
+  #header-logout-btn {
+    display: none !important;
+  }
+
+  .header-actions {
+    gap: var(--space-3px) !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Nút header chỉ hiện icon trên màn hình nhỏ để header không tràn ở 375px.
+     Nhãn chữ ẩn đi, icon vẫn giữ nguyên chức năng (xem qua title/tooltip);
+     điểm D-Coin vẫn xem được ở Daily Goal HUD trên mobile. */
+  .header-actions .btn-primary-sm span,
+  .header-actions .btn-icon-square span {
+    display: none !important;
+  }
+  .header-actions .btn-primary-sm,
+  .header-actions .btn-icon-square,
+  .header-actions #header-quests-btn {
+    width: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    padding: var(--space-0) !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .btn-primary-sm, .btn-ghost, .btn-icon-square {
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    font-size: var(--text-12px) !important;
+    border-radius: var(--radius-6px) !important;
+  }
+
+  #header-quests-btn {
+    min-width: 36px !important;
+    padding: var(--space-0-3px) !important;
+    gap: var(--space-2px) !important;
+    font-size: var(--text-10px) !important;
+  }
+
+  .sports-direction-bar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .campus-map-workspace {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-12px) !important;
+  }
+}
+
+/* Màn hình rất nhỏ (<=360px): ẩn room selector trên header
+   (vẫn chuyển phòng được qua portal và bản đồ) để header không tràn */
+@media (max-width: 360px) {
+  #main-header .room-nav-container {
+    display: none !important;
+  }
+}
+

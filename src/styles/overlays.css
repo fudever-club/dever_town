@@ -1,0 +1,133 @@
+/* --- overlays.css: server lag & sync spinner overlay (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   SERVER LAG & SYNC SPINNER OVERLAY (Non-intrusive Top Floating Banner)
+   ========================================================================== */
+.lag-spinner-overlay {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-100000);
+  pointer-events: none;
+  width: auto;
+  max-width: 90%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lag-spinner-overlay.hidden {
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  pointer-events: none;
+}
+
+.lag-spinner-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-14px);
+  background: var(--color-rgba-15-23-42-0-95);
+  border: 1.5px solid var(--color-rgba-242-111-33-0-6);
+  padding: var(--space-10px-18px);
+  border-radius: var(--radius-14px);
+  box-shadow: 0 12px 36px var(--color-rgba-0-0-0-0-85), 0 0 24px var(--color-rgba-242-111-33-0-35);
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  animation: slideDown 0.3s ease;
+}
+
+.lag-spinner-circle {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-ring.outer {
+  position: absolute;
+  inset: 0;
+  border: 2.5px solid transparent;
+  border-top-color: var(--color-f26f21);
+  border-right-color: var(--color-38bdf8);
+  border-radius: var(--radius-full);
+  animation: spin360 1s linear infinite;
+}
+
+.spinner-ring.inner {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid transparent;
+  border-bottom-color: var(--color-f59e0b);
+  border-left-color: var(--color-a855f7);
+  border-radius: var(--radius-full);
+  animation: spin360Rev 1.3s linear infinite;
+}
+
+.spinner-core-icon {
+  font-size: var(--text-13px);
+  filter: drop-shadow(0 0 6px var(--color-f26f21));
+  animation: pulseCore 1.2s ease-in-out infinite;
+}
+
+.lag-spinner-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3px);
+  text-align: left;
+}
+
+.lag-spinner-title {
+  font-size: var(--text-13px);
+  font-weight: 800;
+  color: var(--color-f87171);
+  margin: var(--space-0);
+  letter-spacing: 0.2px;
+}
+
+.lag-spinner-sub {
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+  line-height: 1.35;
+  margin: var(--space-0);
+}
+
+.lag-spinner-close-btn {
+  pointer-events: auto;
+  background: var(--color-rgba-255-255-255-0-08);
+  border: 1px solid var(--color-rgba-255-255-255-0-18);
+  color: var(--color-cbd5e1);
+  font-size: var(--text-11px);
+  font-weight: 600;
+  padding: var(--space-6px-12px);
+  border-radius: var(--radius-8px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  margin-left: var(--space-6px);
+  flex-shrink: 0;
+}
+
+.lag-spinner-close-btn:hover {
+  background: var(--color-rgba-242-111-33-0-25);
+  color: var(--color-ffffff);
+  border-color: var(--color-f26f21);
+  box-shadow: var(--shadow-6);
+}
+
+@keyframes spin360 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin360Rev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulseCore {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
