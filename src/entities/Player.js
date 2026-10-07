@@ -453,7 +453,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (!targetPose) return false;                       // type không hợp lệ
       if (!canTransitionPose(this.pose, targetPose)) return false;
 
-      this.pose = targetPose;
+      this.setPose(targetPose);   // gán pose + emit 'playerActivity' cho multiplayer
       this._sitMoveFrames = 0;
 
       // Dừng hẳn chuyển động khi ngồi
@@ -476,7 +476,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (!canTransitionPose(this.pose, POSE.STAND)) return false;
       if (this.pose === POSE.STAND) return true;           // đã đứng: no-op
 
-      this.pose = POSE.STAND;
+      this.setPose(POSE.STAND);   // gán pose + emit 'playerActivity' cho multiplayer
       this._sitMoveFrames = 0;
 
       // Về vận tốc 0 + phát idle animation theo hướng hiện tại
