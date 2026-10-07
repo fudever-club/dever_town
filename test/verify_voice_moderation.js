@@ -89,7 +89,9 @@ ok(htmlSrc.includes('id="btn-raise-hand"'), 'index.html có nút Giơ Tay');
 ok(!/>Giơ Tay.*[\u{1F300}-\u{1FAFF}]/u.test(htmlSrc), 'nút Giơ Tay không có emoji');
 
 // 4. CSS cho hand/spotlight/mod
-const cssSrc = readFileSync('src/styles/main.css', 'utf8');
+// CSS is modular since 2026-10-07 (main.css @imports modules): scan all stylesheets.
+const cssSrc = readdirSync('src/styles').filter(f => f.endsWith('.css'))
+  .map(f => readFileSync(`src/styles/${f}`, 'utf8')).join('\n');
 ok(cssSrc.includes('.tile-hand-badge'), 'CSS có tile-hand-badge');
 ok(cssSrc.includes('.voice-tile.spotlighted'), 'CSS có spotlighted');
 ok(cssSrc.includes('.tile-mod-actions'), 'CSS có tile-mod-actions');

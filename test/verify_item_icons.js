@@ -1,7 +1,7 @@
 /**
  * verify_item_icons.js — kiểm tra static cho pixel item icons 16x16.
  */
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { execSync } from 'child_process';
 
 let pass = 0, fail = 0;
@@ -14,7 +14,9 @@ const TG = readFileSync('src/utils/TextureGenerator.js', 'utf8');
 const BS = readFileSync('src/scenes/BootScene.js', 'utf8');
 const IM = readFileSync('src/ui/gameplay/InventoryModal.js', 'utf8');
 const WS = readFileSync('src/scenes/WorldScene.js', 'utf8');
-const CSS = readFileSync('src/styles/main.css', 'utf8');
+// CSS is modular since 2026-10-07 (main.css @imports modules): scan all stylesheets.
+const CSS = readdirSync('src/styles').filter(f => f.endsWith('.css'))
+  .map(f => readFileSync(`src/styles/${f}`, 'utf8')).join('\n');
 
 // 1. generateItemIcons tồn tại và đủ 7 items
 ok(TG.includes('static generateItemIcons(scene)'), 'có generateItemIcons');
