@@ -1187,6 +1187,50 @@
         "h": 64
       },
       "duration": 120
+    },
+    "char_sample_dev_dever (sit_upright 0)": {
+      "filename": "char_sample_dev_dever (sit_upright 0)",
+      "frame": {
+        "x": 288,
+        "y": 384,
+        "w": 48,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 64
+      },
+      "duration": 120
+    },
+    "char_sample_dev_dever (sit_leanback 0)": {
+      "filename": "char_sample_dev_dever (sit_leanback 0)",
+      "frame": {
+        "x": 336,
+        "y": 384,
+        "w": 48,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 64
+      },
+      "duration": 120
     }
   },
   "meta": {
@@ -1252,6 +1296,18 @@
         "name": "cheer",
         "from": 48,
         "to": 53,
+        "direction": "forward"
+      },
+      {
+        "name": "sit_upright",
+        "from": 54,
+        "to": 54,
+        "direction": "forward"
+      },
+      {
+        "name": "sit_leanback",
+        "from": 55,
+        "to": 55,
         "direction": "forward"
       }
     ]
