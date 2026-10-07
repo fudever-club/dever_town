@@ -15,6 +15,9 @@ const SOLID_TILES = new Set([
   25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37
 ]);
 
+// localStorage key cho vị trí kéo-thả của minimap (persist qua các lần load)
+const MINIMAP_POS_KEY = 'dever_minimap_pos_v1';
+
 export class MinimapOverlay {
   /**
    * @param {Object} options
@@ -37,6 +40,7 @@ export class MinimapOverlay {
 
     this.initDOM();
     this.bindEvents();
+    this._initDrag();
   }
 
   initDOM() {
@@ -46,6 +50,13 @@ export class MinimapOverlay {
 
     this.container.innerHTML = `
       <div class="minimap-header">
+        <span class="minimap-grip" title="Kéo để di chuyển">
+          <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+            <circle cx="2.5" cy="2.5" r="1.3"/><circle cx="7.5" cy="2.5" r="1.3"/>
+            <circle cx="2.5" cy="7" r="1.3"/><circle cx="7.5" cy="7" r="1.3"/>
+            <circle cx="2.5" cy="11.5" r="1.3"/><circle cx="7.5" cy="11.5" r="1.3"/>
+          </svg>
+        </span>
         <span class="minimap-title">RADAR HUD</span>
         <button type="button" class="minimap-toggle-btn" id="minimap-toggle-btn" title="Thu nhỏ / Mở rộng [M]">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -95,6 +106,142 @@ export class MinimapOverlay {
         this.toggleCollapse();
       }
     });
+  }
+
+  // ---------------------------------------------------------------
+  // Kéo-thả minimap (draggable HUD)
+  // - Kéo bằng header (chuột + cảm ứng qua Pointer Events)
+  // - Vị trí lưu localStorage, khôi phục khi load lại
+  // - Giới hạn trong viewport; resize thì kẹp lại
+  // - Double-click header để reset về vị trí mặc định
+  // ---------------------------------------------------------------
+  _initDrag() {
+    this._dragState = null;
+    this._onDragMove = this._onDragMove.bind(this);
+    this._onDragEnd = this._onDragEnd.bind(this);
+    this._onResizeClamp = () => this._clampToViewport();
+
+    this._applySavedPosition();
+
+    const header = this.container.querySelector('.minimap-header');
+    if (header) {
+      header.addEventListener('pointerdown', (e) => this._onDragStart(e));
+      header.addEventListener('dblclick', (e) => this._onHeaderDblClick(e));
+    }
+    window.addEventListener('resize', this._onResizeClamp);
+  }
+
+  _applySavedPosition() {
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(MINIMAP_POS_KEY));
+    } catch (err) { /* bỏ qua */ }
+    if (saved && typeof saved.left === 'number' && typeof saved.top === 'number') {
+      this._setPosition(saved.left, saved.top, true);
+    } else {
+      // Chuyển vị trí CSS mặc định (bottom/left hoặc media-query top/left)
+      // thành left/top inline để drag tính toán nhất quán
+      this._captureCssPosition();
+    }
+  }
+
+  _captureCssPosition() {
+    const rect = this.container.getBoundingClientRect();
+    this.container.style.left = rect.left + 'px';
+    this.container.style.top = rect.top + 'px';
+    this.container.style.right = 'auto';
+    this.container.style.bottom = 'auto';
+  }
+
+  _setPosition(left, top, skipSave) {
+    const rect = this.container.getBoundingClientRect();
+    const maxLeft = Math.max(0, window.innerWidth - rect.width);
+    const maxTop = Math.max(0, window.innerHeight - rect.height);
+    const cl = Math.min(Math.max(0, left), maxLeft);
+    const ct = Math.min(Math.max(0, top), maxTop);
+    this.container.style.left = cl + 'px';
+    this.container.style.top = ct + 'px';
+    this.container.style.right = 'auto';
+    this.container.style.bottom = 'auto';
+    if (!skipSave) {
+      try {
+        localStorage.setItem(MINIMAP_POS_KEY, JSON.stringify({ left: cl, top: ct }));
+      } catch (err) { /* bỏ qua */ }
+    }
+  }
+
+  _clampToViewport() {
+    if (!this.container) return;
+    const rect = this.container.getBoundingClientRect();
+    this._setPosition(rect.left, rect.top, false);
+  }
+
+  _onDragStart(e) {
+    // Không kéo khi bấm vào nút thu gọn; chỉ nút trái chuột / cảm ứng
+    if (e.target && e.target.closest && e.target.closest('.minimap-toggle-btn')) return;
+    if (e.button !== undefined && e.button !== 0) return;
+
+    e.preventDefault();
+    const rect = this.container.getBoundingClientRect();
+    this._dragState = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startLeft: rect.left,
+      startTop: rect.top,
+      moved: false,
+      pointerId: e.pointerId,
+    };
+
+    const header = this.container.querySelector('.minimap-header');
+    try {
+      header.setPointerCapture(e.pointerId);
+    } catch (err) { /* bỏ qua */ }
+    this.container.classList.add('dragging');
+    header.addEventListener('pointermove', this._onDragMove);
+    header.addEventListener('pointerup', this._onDragEnd, { once: true });
+    header.addEventListener('pointercancel', this._onDragEnd, { once: true });
+  }
+
+  _onDragMove(e) {
+    const s = this._dragState;
+    if (!s || e.pointerId !== s.pointerId) return;
+    const dx = e.clientX - s.startX;
+    const dy = e.clientY - s.startY;
+    if (Math.abs(dx) + Math.abs(dy) > 3) s.moved = true;
+    // skipSave=true trong lúc kéo để tránh ghi localStorage mỗi frame
+    this._setPosition(s.startLeft + dx, s.startTop + dy, true);
+  }
+
+  _onDragEnd(e) {
+    const header = this.container.querySelector('.minimap-header');
+    if (header) header.removeEventListener('pointermove', this._onDragMove);
+    const s = this._dragState;
+    this._dragState = null;
+    if (this.container) this.container.classList.remove('dragging');
+    if (s && s.moved && this.container) {
+      // Lưu vị trí cuối sau khi thả
+      const rect = this.container.getBoundingClientRect();
+      try {
+        localStorage.setItem(MINIMAP_POS_KEY, JSON.stringify({ left: rect.left, top: rect.top }));
+      } catch (err) { /* bỏ qua */ }
+    }
+  }
+
+  _onHeaderDblClick(e) {
+    if (e.target && e.target.closest && e.target.closest('.minimap-toggle-btn')) return;
+    try {
+      localStorage.removeItem(MINIMAP_POS_KEY);
+    } catch (err) { /* bỏ qua */ }
+    // Tắt transition tạm thời để đọc vị trí CSS mặc định chính xác
+    // (nếu không, getBoundingClientRect sẽ đọc giữa chừng animation)
+    this.container.classList.add('dragging');
+    this.container.style.left = '';
+    this.container.style.top = '';
+    this.container.style.right = '';
+    this.container.style.bottom = '';
+    void this.container.offsetHeight; // force reflow để CSS áp dụng ngay
+    this._captureCssPosition();
+    this.container.classList.remove('dragging');
   }
 
   toggleCollapse() {
@@ -267,6 +414,10 @@ export class MinimapOverlay {
   }
 
   destroy() {
+    if (this._onResizeClamp) {
+      window.removeEventListener('resize', this._onResizeClamp);
+      this._onResizeClamp = null;
+    }
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }
