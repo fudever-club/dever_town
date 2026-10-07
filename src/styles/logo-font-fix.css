@@ -1,0 +1,3 @@
+/* Logo font fix — tách khỏi main.css (220KB, vượt giới hạn API push).
+   Load SAU main.css để override. Fix stale 'Press Start 2P' reference. */
+.logo-group { font-family: 'Tilt Neon', 'Be Vietnam Pro', sans-serif !important; }
