@@ -44,7 +44,8 @@ export const SHEEP_DREAM_CONFIG = {
     x: 320,                     // Giữa canvas
     width: 12,
     height: 90,
-    y: 310,                     // Chân hàng rào
+    y: 310,                     // Chân hàng rào (mặt đất cừu chạy)
+    postBottom: 395,            // Đáy cột cắm sâu vào đồi cỏ (mặt cỏ ~370)
   },
 
   // Điểm & thưởng

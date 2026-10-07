@@ -431,8 +431,10 @@ export class SheepDreamEngine {
     const c = this.cfg.colors;
     const f = this.cfg.fence;
     const topY = f.y - f.height;
+    // Cột cắm sâu xuống đất (không lơ lửng): đáy cột = f.postBottom
+    const botY = f.postBottom || f.y;
     const postW = 14;
-    const postH = f.height;
+    const postH = botY - topY;
     const postL = f.x - 30;   // Cột trái
     const postR = f.x + 30;   // Cột phải
 
@@ -470,6 +472,16 @@ export class SheepDreamEngine {
     };
     drawPost(postL);
     drawPost(postR);
+
+    // Ụ đất ở chân cột — chỗ cột đâm xuống mặt cỏ
+    // (mặt đồi cỏ tại x cột ≈ 370 với canvas 640x400)
+    const groundY = 372;
+    ctx.fillStyle = c.fenceDark;
+    [postL, postR].forEach((px) => {
+      ctx.beginPath();
+      ctx.ellipse(px, groundY, 13, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
     // 3 thanh ngang
     const railY = [topY + 14, topY + 40, topY + 66];
