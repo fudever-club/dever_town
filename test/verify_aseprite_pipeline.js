@@ -64,19 +64,20 @@ const devJsonPath = path.resolve('public/assets/characters/aseprite/char_dev_gen
 const devJson = JSON.parse(fs.readFileSync(devJsonPath, 'utf-8'));
 assert(devJson.meta && devJson.meta.app.includes('aseprite'), 'Metadata định danh chuẩn Aseprite');
 assert(devJson.meta.size.w === 384 && devJson.meta.size.h === 448, 'Kích thước sheet chuẩn 384x448 px');
-assert(devJson.meta.frameTags && devJson.meta.frameTags.length === 9, 'Đầy đủ 9 Animation Tags Aseprite');
+assert(devJson.meta.frameTags && devJson.meta.frameTags.length === 11, 'Đầy đủ 11 Animation Tags Aseprite');
 
 const tagNames = devJson.meta.frameTags.map(t => t.name);
 const expectedTags = [
   'idle_down', 'idle_up', 'idle_left', 'idle_right',
-  'walk_down', 'walk_left', 'walk_right', 'walk_up', 'cheer'
+  'walk_down', 'walk_left', 'walk_right', 'walk_up', 'cheer',
+  'sit_upright', 'sit_leanback'
 ];
 expectedTags.forEach(tag => {
   assert(tagNames.includes(tag), `Chứa animation tag: ${tag}`);
 });
 
 const frameKeys = Object.keys(devJson.frames);
-assert(frameKeys.length === 54, `Tổng cộng đúng 54 frames diễn hoạt (thực tế: ${frameKeys.length})`);
+assert(frameKeys.length === 56, `Tổng cộng đúng 56 frames diễn hoạt (thực tế: ${frameKeys.length})`);
 
 // Kiểm tra chi tiết 8 frames cho walk_down
 const walkDownTag = devJson.meta.frameTags.find(t => t.name === 'walk_down');
