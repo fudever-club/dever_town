@@ -8,7 +8,7 @@ export class TextureGenerator {
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 38;
+    const numTiles = 42; // 0-41: bao gồm ghế ngồi (40) và sofa (41)
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
