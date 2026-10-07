@@ -158,6 +158,21 @@ export class WorldScene extends Phaser.Scene {
           }
           return;
         }
+        // Ghế/sofa ngồi: E bật/tắt tư thế ngồi qua Player FSM (interface từ Player worker).
+        // Guard typeof để an toàn nếu Player worker chưa merge sit()/standUp().
+        if (zoneData.type === 'sit_chair' || zoneData.type === 'sit_sofa') {
+          const player = this.player;
+          if (player) {
+            const sitting = typeof player.isSitting === 'function' ? player.isSitting() : !!player.pose;
+            if (sitting) {
+              if (typeof player.standUp === 'function') player.standUp();
+            } else {
+              const pose = zoneData.type === 'sit_chair' ? 'upright' : 'leanback';
+              if (typeof player.sit === 'function') player.sit(pose);
+            }
+          }
+          return;
+        }
         if (this.interactiveModal) {
           this.interactiveModal.show({ ...zoneData, roomId: this.currentRoomId });
         }
@@ -1736,15 +1751,19 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * Xử lý trạng thái hoạt động từ người chơi khác (ví dụ: đang mơ).
+   * Xử lý trạng thái hoạt động từ người chơi khác (ví dụ: đang mơ),
+   * kèm tư thế ngồi/đứng đồng bộ cùng channel.
    */
-  handleRemoteActivity({ id, activity }) {
+  handleRemoteActivity({ id, activity, pose }) {
     const isSelf = this.socketManager?.socket?.id === id;
     if (isSelf) return;
 
     const remote = this.remotePlayers.get(id);
     if (remote && remote.setActivity) {
       remote.setActivity(activity);
+    }
+    if (remote && remote.setPose) {
+      remote.setPose(pose || 'stand');
     }
   }
 
