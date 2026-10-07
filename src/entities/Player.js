@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { POSE, SIT_ANIM, sitTypeToPose, canTransitionPose, isSitPose, POSE_MOVEMENT } from '../config/poseConfig.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
@@ -78,6 +79,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.speechBubble = null;
     this.speechTimer = null;
 
+    // FSM tư thế: 'stand' | 'sit_upright' | 'sit_leanback'
+    // Đồng bộ với multiplayer qua player.pose (worker multiplayer đọc trực tiếp)
+    this.pose = POSE.STAND;
+    // Bộ đếm frame giữ phím di chuyển khi đang ngồi — chống joystick drift (xem POSE_MOVEMENT)
+    this._sitMoveFrames = 0;
+
     // Trạng thái hoạt động (null = bình thường, 'dreaming' = đang mơ)
     // Đồng bộ qua multiplayer để người khác thấy ZZZ
     this.activity = null;
@@ -152,11 +159,28 @@ export class Player extends Phaser.GameObjects.Sprite {
       }
     }
 
-    // Gửi qua socket để người khác thấy
+    // Gửi qua socket để người khác thấy (kèm pose hiện tại để đồng bộ tư thế)
     try {
       const sm = this.scene?.socketManager || window.__DEVER_SOCKET__;
       if (sm && sm.socket && sm.socket.connected) {
-        sm.socket.emit('playerActivity', { activity });
+        sm.socket.emit('playerActivity', { activity, pose: this.pose || POSE.STAND });
+      }
+    } catch (e) {}
+  }
+
+  /**
+   * Đồng bộ tư thế ngồi/đứng qua multiplayer (dùng chung channel 'playerActivity').
+   * Player worker gọi từ sit()/standUp(), ví dụ: this.setPose('sit_upright').
+   * @param {'stand'|'sit_upright'|'sit_leanback'} pose
+   */
+  setPose(pose) {
+    const validPoses = Object.values(POSE);
+    this.pose = validPoses.includes(pose) ? pose : POSE.STAND;
+
+    try {
+      const sm = this.scene?.socketManager || window.__DEVER_SOCKET__;
+      if (sm && sm.socket && sm.socket.connected) {
+        sm.socket.emit('playerActivity', { activity: this.activity ?? null, pose: this.pose });
       }
     } catch (e) {}
   }
@@ -417,13 +441,114 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  /**
+   * Người chơi ngồi xuống ghế/vật thể.
+   * @param {'upright'|'leanback'} type - 'upright' = ngồi thẳng (học/làm việc),
+   *   'leanback' = ngả lưng thư giãn (nghỉ ngơi/chơi/ăn)
+   * @returns {boolean} true nếu chuyển pose thành công
+   */
+  sit(type) {
+    try {
+      const targetPose = sitTypeToPose(type);
+      if (!targetPose) return false;                       // type không hợp lệ
+      if (!canTransitionPose(this.pose, targetPose)) return false;
+
+      this.setPose(targetPose);   // gán pose + emit 'playerActivity' cho multiplayer
+      this._sitMoveFrames = 0;
+
+      // Dừng hẳn chuyển động khi ngồi
+      if (this.body) this.body.setVelocity(0, 0);
+
+      this._playSitAnimation();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Đứng dậy từ tư thế ngồi: về pose 'stand', phát idle animation,
+   * mở lại input di chuyển (vòng update sau tự xử lý input như bình thường).
+   * @returns {boolean} true nếu chuyển pose thành công
+   */
+  standUp() {
+    try {
+      if (!canTransitionPose(this.pose, POSE.STAND)) return false;
+      if (this.pose === POSE.STAND) return true;           // đã đứng: no-op
+
+      this.setPose(POSE.STAND);   // gán pose + emit 'playerActivity' cho multiplayer
+      this._sitMoveFrames = 0;
+
+      // Về vận tốc 0 + phát idle animation theo hướng hiện tại
+      this.stopMovement();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * @returns {boolean} true nếu đang ngồi (sit_upright hoặc sit_leanback)
+   */
+  isSitting() {
+    return isSitPose(this.pose);
+  }
+
+  /**
+   * Phát animation ngồi cho avatar hiện tại: `${tag}_${avatarId}`
+   * (ví dụ: `sit_upright_hoodie_dever`). Kiểm tra anims tồn tại trước
+   * khi phát theo đúng pattern dùng ở stopMovement().
+   */
+  _playSitAnimation() {
+    try {
+      const tag = SIT_ANIM[this.pose];
+      if (!tag) return;
+      const sitAnimKey = `${tag}_${this.avatarId}`;
+      if (this.scene?.anims?.exists(sitAnimKey)) {
+        this.anims.play(sitAnimKey, true);
+      } else {
+        // Fallback: frame tĩnh facing down (frame 0) nếu sprite pipeline chưa có anim ngồi
+        this.setFrame(0);
+      }
+    } catch (e) {}
+  }
+
   update(inputData) {
     if (!inputData) return;
     syncEmoteOverlays(this);
 
+    // --- FSM TƯ THẾ: chặn di chuyển khi đang ngồi, tự đứng dậy nếu cố tình di chuyển ---
+    let effectiveInput = inputData;
+    if (this.isSitting()) {
+      const magnitudeSq = inputData.vector?.lengthSq?.() ?? 0;
+      const intendsToMove = inputData.isMoving && magnitudeSq > POSE_MOVEMENT.autoStandUpMinMagnitudeSq;
+      if (intendsToMove) {
+        this._sitMoveFrames += 1;
+      } else {
+        this._sitMoveFrames = 0; // drift nhẹ / thả phím -> reset, không đứng dậy
+      }
+
+      if (this._sitMoveFrames >= POSE_MOVEMENT.autoStandUpFrames) {
+        // Giữ phím di chuyển đủ lâu: tự đứng dậy, frame này xử lý input bình thường
+        this._sitMoveFrames = 0;
+        this.standUp();
+      } else {
+        // Đang ngồi: bỏ qua input di chuyển (giữ nguyên vị trí, chỉ giữ anim ngồi)
+        effectiveInput = {
+          ...inputData,
+          vector: new Phaser.Math.Vector2(0, 0),
+          left: false,
+          right: false,
+          up: false,
+          down: false,
+          isMoving: false
+        };
+      }
+    }
+
     const baseSpeed = 160;
     const speed = baseSpeed * (this.speedMultiplier ?? 1.0);
-    const { vector, left, right, up, down, isMoving } = inputData;
+    const { vector, left, right, up, down, isMoving } = effectiveInput;
 
     // --- Delta time độc lập khung hình (mượt ở mọi FPS) ---
     const deltaMs = this.scene?.sys?.game?.loop?.delta ?? 16.67;
@@ -520,6 +645,13 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.audioManager.playFootstep(surface);
       }
+    } else if (this.isSitting()) {
+      // Đang ngồi: giữ nguyên animation ngồi, không chơi idle/breathe.
+      // Scale giữ 1.0 (tư thế ngồi không nhún nhịp thở như đứng).
+      this._playSitAnimation();
+      this.anims.timeScale = 1; // reset nếu sit() gọi khi đang đi (walk timeScale != 1)
+      this.scaleX = 1.0;
+      this.scaleY = 1.0;
     } else {
       if (!this._stoppedMovingTime) {
         this._stoppedMovingTime = performance.now();

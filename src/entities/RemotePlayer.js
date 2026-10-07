@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
 import { PERF_CONFIG } from '../config/perfConfig.js';
+import { POSE, isSitPose } from '../config/poseConfig.js';
 import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
@@ -27,6 +28,8 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.id = options.id;
     this.name = options.name || 'Thành viên khác';
     this.avatarId = avatarId;
+    // Tư thế đồng bộ từ playerActivity (xem poseConfig.js)
+    this.pose = POSE.STAND;
     this.role = options.role || 'guest';
     this.equippedItemId = options.equippedItemId || null;
 
@@ -325,6 +328,37 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
   }
 
   /**
+   * Đặt tư thế ngồi/đứng của người chơi khác (đồng bộ từ 'playerActivity').
+   * @param {string} pose - 'stand' | 'sit_upright' | 'sit_leanback'
+   */
+  setPose(pose) {
+    const validPoses = Object.values(POSE);
+    this.pose = validPoses.includes(pose) ? pose : POSE.STAND;
+    this._applyPoseAnimation();
+  }
+
+  /**
+   * Trả về animation key cho tư thế ngồi, hoặc null nếu:
+   * - pose là 'stand' (render idle/walk bình thường), hoặc
+   * - avatar chưa có sit frames (chỉ Hoodie DEVER có cho đến hiện tại).
+   */
+  _getSitAnimKey() {
+    if (!isSitPose(this.pose)) return null;
+    const key = `${this.pose}_${this.avatarId}`;
+    return this.scene?.anims?.exists(key) ? key : null;
+  }
+
+  /** Áp dụng ngay animation tư thế (không crash khi thiếu frame). */
+  _applyPoseAnimation() {
+    const key = this._getSitAnimKey();
+    if (!key) return;
+    try {
+      this.anims.play(key, true);
+      this.anims.timeScale = 1;
+    } catch (e) {}
+  }
+
+  /**
    * Client-side render culling: hide all visuals of this RemotePlayer when it
    * is outside the camera world view (plus a margin so edge players don't pop),
    * and restore them when it comes back into view.
@@ -413,9 +447,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const isVisiblyMoving = this.targetMoving || distSq > 4;
     const breatheKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
     const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
-    const animKey = isVisiblyMoving
-      ? `walk_${this.currentDirection}_${this.avatarId}`
-      : (this.scene?.anims?.exists(breatheKey) ? breatheKey : defaultIdleKey);
+    // Tư thế ngồi (sync từ playerActivity) ưu tiên hơn walk/idle.
+    // Null khi pose là 'stand' hoặc avatar chưa có sit frames -> fallback idle.
+    const sitAnimKey = this._getSitAnimKey();
+    const animKey = sitAnimKey
+      ?? (isVisiblyMoving
+        ? `walk_${this.currentDirection}_${this.avatarId}`
+        : (this.scene?.anims?.exists(breatheKey) ? breatheKey : defaultIdleKey));
 
     try {
       if (this.scene?.anims?.exists(animKey)) {
@@ -428,7 +466,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const dtSec = Math.max(delta, 1) / 1000;
     const movedPx = Math.hypot(this.x - prevX, this.y - prevY);
     const pxPerSec = movedPx / dtSec;
-    if (isVisiblyMoving) {
+    if (isVisiblyMoving && !sitAnimKey) {
       this.anims.timeScale = Phaser.Math.Clamp(pxPerSec / 160, 0.2, 1.25);
     } else {
       this.anims.timeScale = 1;
