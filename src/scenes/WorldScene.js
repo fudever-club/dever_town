@@ -722,7 +722,13 @@ export class WorldScene extends Phaser.Scene {
         const p = mapData.portals[idx];
         if (p && lbl) {
           const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
-          lbl.setText(portalText);
+          const inner = lbl.getData ? lbl.getData('txt') : null;
+          if (inner) {
+            inner.setText(portalText);
+            this._layoutPortalPill(lbl);
+          } else if (lbl.setText) {
+            lbl.setText(portalText);
+          }
         }
       });
     }
@@ -893,20 +899,26 @@ export class WorldScene extends Phaser.Scene {
         const targetY = isStaggeredPortal ? (avgY - 26) : (avgY - 14);
         const clampedY = Phaser.Math.Clamp(targetY, 18, rows * tileSize - 18);
 
-        const label = this.add.text(avgX, clampedY, portalText, {
+        // Nhãn portal: pill tối + viền tím + chữ trắng Be Vietnam Pro — cùng ngôn ngữ
+        // thị giác với prompt [E] (viền cam) và badge zone (viền màu zone).
+        const labelText = this.add.text(0, 0, portalText, {
           fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
           fontSize: '11px',
           fontWeight: '700',
-          color: '#e9d5ff',
-          stroke: '#1e1b4b',
-          strokeThickness: 3,
-          backgroundColor: 'rgba(15, 23, 42, 0.92)',
-          padding: { x: 8, y: 3 },
+          color: '#ffffff',
+          stroke: '#0f172a',
+          strokeThickness: 2,
           resolution: typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2
-        }).setOrigin(0.5, 0.5).setDepth(99999);
+        }).setOrigin(0.5, 0.5);
+        const labelBg = this.add.graphics();
+        const label = this.add.container(avgX, clampedY, [labelBg, labelText]);
+        label.setDepth(99999);
+        label.setData('txt', labelText);
+        label.setData('bg', labelBg);
+        this._layoutPortalPill(label);
 
         // Kẹp tọa độ X động theo bề rộng thực tế + fallback độ dài ký tự (phòng khi webfont chưa tải xong)
-        const estWidth = Math.max(label.width || 0, portalText.length * 8 + 16);
+        const estWidth = Math.max(labelText.width || 0, portalText.length * 8 + 16) + 20;
         const halfW = estWidth / 2;
         label.x = Phaser.Math.Clamp(avgX, halfW + 12, cols * tileSize - halfW - 12);
         this.portalLabels.push(label);
@@ -1017,6 +1029,21 @@ export class WorldScene extends Phaser.Scene {
     if (this.roomBanner) {
       this.roomBanner.show(roomId, this.remotePlayers.size + 1);
     }
+  }
+
+  // Vẽ lại pill nền cho nhãn portal theo đúng bề rộng text hiện tại
+  // (dùng khi tạo mới và khi đổi ngôn ngữ qua refreshSceneLanguage).
+  _layoutPortalPill(label) {
+    const txt = label.getData('txt');
+    const bg = label.getData('bg');
+    if (!txt || !bg) return;
+    const w = Math.max(txt.width || 0, 40) + 20;
+    const h = Math.max(txt.height || 0, 14) + 10;
+    bg.clear();
+    bg.fillStyle(0x0f172a, 0.92);
+    bg.fillRoundedRect(-w / 2, -h / 2, w, h, 8);
+    bg.lineStyle(1.5, 0xa78bfa, 0.95); // Viền tím = nhận diện portal
+    bg.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
   }
 
   handlePortalOverlap(portalData) {

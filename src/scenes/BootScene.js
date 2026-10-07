@@ -112,6 +112,32 @@ export class BootScene extends Phaser.Scene {
       } catch (e) {}
     }
 
-    this.scene.start('WorldScene');
+    // Preload webfont (Tilt Neon / Be Vietnam Pro) TRƯỚC KHI WorldScene bake canvas text.
+    // Canvas text của Phaser "dính" font tại thời điểm tạo — nếu font Google chưa tải xong,
+    // nhãn portal / prompt [E] / badge sẽ vĩnh viễn dùng font fallback hệ thống và trông
+    // khác nhau tùy thời điểm mạng. Chờ tối đa 2.5s rồi cho game chạy tiếp kể cả khi lỗi.
+    this._waitForFonts().finally(() => this.scene.start('WorldScene'));
+  }
+
+  _waitForFonts() {
+    try {
+      if (typeof document === 'undefined' || !document.fonts || !document.fonts.load) {
+        return Promise.resolve();
+      }
+      const specs = [
+        '400 16px "Tilt Neon"',
+        '700 16px "Tilt Neon"',
+        '400 16px "Be Vietnam Pro"',
+        '600 16px "Be Vietnam Pro"',
+        '700 16px "Be Vietnam Pro"',
+        '800 16px "Be Vietnam Pro"',
+      ];
+      return Promise.race([
+        Promise.all(specs.map((s) => document.fonts.load(s).catch(() => []))),
+        new Promise((res) => setTimeout(res, 2500)),
+      ]).then(() => undefined);
+    } catch (e) {
+      return Promise.resolve();
+    }
   }
 }

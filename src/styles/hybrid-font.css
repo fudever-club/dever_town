@@ -29,6 +29,7 @@ button, input, select, textarea, optgroup, option,
 .btn-profile-action, .friend-request-card, .btn-friend-accept, .btn-friend-decline,
 .chat-tab-btn, .friends-add-input, .btn-friend-action, .btn-rotate, .btn-select-avatar,
 .header-points-text, .header-user-name,
+.dever-toast, .campus-time-hud, .dever-zoom-controls .dzc-btn,
 .quiz-option, .quiz-question, .quiz-body, .quiz-score, .quiz-timer {
   font-family: var(--font-body) !important;
 }
