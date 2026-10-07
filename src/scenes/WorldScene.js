@@ -88,6 +88,8 @@ export class WorldScene extends Phaser.Scene {
     this.occluderTiles = [];
     this.zoomControls = null;
     this._userZoom = null;
+    // true = zoom tự động theo viewport (tính lại khi resize); false = người dùng đã chỉnh tay.
+    this._zoomIsAuto = true;
     this._zoomTween = null;
     this._xrayTimer = 0;
     this._tileCullTimer = 0;
@@ -425,7 +427,14 @@ export class WorldScene extends Phaser.Scene {
     return { min: computeMinZoom(roomW, roomH), max: CAMERA_ZOOM.MAX };
   }
 
-  /** Zoom mặc định: desktop 1.0 (thấy toàn phòng), mobile giữ công thức adaptive cũ. */
+  /**
+   * Zoom mặc định: desktop = vừa khít phòng theo viewport thực tế (RESIZE),
+   * mobile giữ công thức adaptive cũ.
+   *
+   * Trước đây desktop luôn 1.0 → trên màn hình lớn (1920x1080) phòng chỉ chiếm
+   * một phần nhỏ giữa biển đen. Giờ tính fit-zoom động: min(viewW/roomW, viewH/roomH)
+   * để phòng luôn lấp đầy viewport ở mọi kích thước màn hình.
+   */
   computeDefaultZoom() {
     const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     if (isMobile) {
@@ -433,7 +442,19 @@ export class WorldScene extends Phaser.Scene {
       // Màn hình ngang: tầm nhìn rộng rãi bao quát căn phòng
       return computeDefaultMobileZoom(window.innerWidth, window.innerHeight);
     }
-    return CAMERA_ZOOM.DEFAULT_DESKTOP;
+    // Desktop: auto-fit phòng vào viewport thực tế (chế độ RESIZE).
+    const mapData = this.mapData || MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    let roomW = GAME_CONFIG.MAP_WIDTH;
+    let roomH = GAME_CONFIG.MAP_HEIGHT;
+    if (mapData && Array.isArray(mapData.layout) && mapData.layout.length > 0) {
+      roomW = mapData.layout[0].length * GAME_CONFIG.TILE_SIZE;
+      roomH = mapData.layout.length * GAME_CONFIG.TILE_SIZE;
+    }
+    const viewW = (this.scale && this.scale.width) || window.innerWidth;
+    const viewH = (this.scale && this.scale.height) || window.innerHeight;
+    const fitZoom = computeMinZoom(roomW, roomH, viewW, viewH);
+    const range = this.getZoomRange();
+    return snapZoom(clampZoom(fitZoom, range.min, CAMERA_ZOOM.MAX));
   }
 
   /** Zoom mà người chơi đang dùng (target, không phải giá trị tween giữa chừng). */
@@ -505,6 +526,8 @@ export class WorldScene extends Phaser.Scene {
     const range = this.getZoomRange();
     newZoom = snapZoom(clampZoom(newZoom, range.min, range.max));
     this._userZoom = newZoom;
+    // Người dùng đã chỉnh tay → tắt auto-zoom, resize sau này giữ nguyên lựa chọn.
+    this._zoomIsAuto = false;
     this._persistZoom(newZoom);
     if (screenPt) {
       const ox = camera.width / 2, oy = camera.height / 2;
@@ -530,6 +553,8 @@ export class WorldScene extends Phaser.Scene {
     const range = this.getZoomRange();
     newZoom = snapZoom(clampZoom(newZoom, range.min, range.max));
     this._userZoom = newZoom;
+    // Người dùng đã chỉnh tay → tắt auto-zoom, resize sau này giữ nguyên lựa chọn.
+    this._zoomIsAuto = false;
     this._persistZoom(newZoom);
 
     const ox = camera.width / 2, oy = camera.height / 2;
@@ -615,11 +640,23 @@ export class WorldScene extends Phaser.Scene {
     const camera = this.cameras.main;
     const range = this.getZoomRange();
 
-    // Giữ zoom người dùng đã chọn (kể cả khi resize/xoay màn hình): chỉ re-clamp.
+    // Chế độ auto (người dùng chưa chỉnh tay): tính lại fit-zoom theo viewport
+    // hiện tại mỗi khi resize → phòng luôn lấp đầy màn hình ở mọi kích thước.
+    // Chế độ manual (đã chỉnh tay hoặc có zoom lưu): giữ nguyên lựa chọn, chỉ re-clamp.
     // range.min vẫn tính theo mốc tham chiếu 800x600 (0.99–2.5 được giữ nguyên).
-    let zoom = this._userZoom;
-    if (zoom == null) zoom = this._loadStoredZoom();
-    if (zoom == null) zoom = this.computeDefaultZoom();
+    let zoom;
+    if (this._zoomIsAuto === false && this._userZoom != null) {
+      zoom = this._userZoom;
+    } else {
+      zoom = this._loadStoredZoom();
+      if (zoom == null) {
+        zoom = this.computeDefaultZoom();
+        this._zoomIsAuto = true;
+      } else {
+        // Có zoom đã lưu từ lần trước → coi như lựa chọn của người dùng.
+        this._zoomIsAuto = false;
+      }
+    }
     zoom = snapZoom(clampZoom(zoom, range.min, range.max));
     this._userZoom = zoom;
 
