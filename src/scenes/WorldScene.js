@@ -788,7 +788,9 @@ export class WorldScene extends Phaser.Scene {
 
     for (const o of this.occluderTiles) {
       const behindA = shouldXrayFade(px, py, o.x, o.y, tileSize);
-      const dollhouse = XRAY.DOLLHOUSE_ENABLED && zoom < 1.0 && o.row <= XRAY.DOLLHOUSE_MAX_ROW;
+      // Dollhouse chỉ khi zoom dưới mức tối thiểu (auto-zoom mặc định có thể
+      // là 0.99 nên ngưỡng 1.0 cũ sẽ kích hoạt nhầm ở chế độ mặc định).
+      const dollhouse = XRAY.DOLLHOUSE_ENABLED && zoom < this.getZoomRange().min && o.row <= XRAY.DOLLHOUSE_MAX_ROW;
       const targetAlpha = behindA ? XRAY.FADE_ALPHA : (dollhouse ? XRAY.DOLLHOUSE_ALPHA : 1.0);
       if (o.targetAlpha === targetAlpha) continue;
       o.targetAlpha = targetAlpha;
