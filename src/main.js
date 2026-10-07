@@ -12,8 +12,13 @@ const config = {
   pixelArt: true,
   roundPixels: true,
   backgroundColor: '#070a12',
-  // Phase 0: cap DPR ở 2 để tránh GPU quá tải trên điện thoại màn hình DPR=3
-  // (canvas 2400x1800 cho game logic 800x600). Desktop vẫn nét, mobile nhẹ hơn rõ rệt.
+  // DEAD CONFIG - DO NOT "FIX": Phaser 3.90 IGNORES the top-level `resolution`
+  // GameConfig property (verified: game.config.resolution === undefined at boot;
+  // the string "resolution" never appears in Phaser's config handling code).
+  // Canvas backing store is therefore FIXED at 800x600 and CSS-upscaled by
+  // Phaser.Scale.FIT. This accident is what keeps fill-rate low on phones.
+  // Removing the line changes nothing; RAISING resolution (e.g. a "DPR
+  // sharpness fix") would multiply the fill cost up to 4x on DPR-2 devices.
   resolution: Math.min(window.devicePixelRatio || 1, 2),
   render: {
     antialias: false,
