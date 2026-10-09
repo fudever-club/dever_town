@@ -128,6 +128,11 @@
   font-family: inherit;
   outline: none;
   cursor: pointer;
+  /* Vertically center native select text (2026-10-09): explicit height +
+     matching line-height, otherwise the text sits low in the pill. */
+  height: 20px;
+  line-height: 20px;
+  padding: 0 2px 0 0;
 }
 
 .room-select option {
@@ -304,12 +309,23 @@
   background: var(--color-rgba-100-116-139-0-15);
   border-color: var(--color-rgba-100-116-139-0-35);
   box-shadow: none;
-  opacity: 0.55;
+  opacity: 0.85;
 }
 
 .badge-online.is-offline .online-num,
 .badge-online.is-offline .online-label {
   color: var(--color-94a3b8);
+}
+
+/* Offline label replaces the count — never show a stale number while disconnected. */
+.badge-online .offline-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-94a3b8);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .btn-primary-sm {

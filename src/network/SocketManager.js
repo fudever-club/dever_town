@@ -358,26 +358,38 @@ export class SocketManager {
   }
 
   updateConnectionStatus(online, mode = 'multiplayer') {
-    // Merged indicator (2026-10-09): the standalone .status-indicator element
-    // was removed — connection state now lives solely in #network-ping-badge.
-    // This keeps the online-count pill honest by dimming it when offline.
-    const onlineBadge = document.getElementById('online-count-badge');
-    if (onlineBadge) {
-      onlineBadge.classList.toggle('is-offline', !online);
+    // State-aware player pill (2026-10-09): the pill must NEVER show a player
+    // count when the socket is down — a stale number is contradictory.
+    // Online  -> "N / Online" (green, real count)
+    // Offline -> "Ngoại tuyến" (grey, no count)
+    this._badgeOnline = online !== false;
+    this._renderOnlineBadge();
+  }
+
+  /**
+   * Render the player-count pill from connection state + last known count.
+   * Never shows a count while offline.
+   */
+  _renderOnlineBadge() {
+    const el = document.getElementById('online-count-badge');
+    if (!el) return;
+    const online = this._badgeOnline !== false;
+    el.classList.toggle('is-offline', !online);
+    if (online) {
+      const total = this._lastPlayerTotal ?? 1;
+      el.innerHTML = `<span class="online-num">${total}</span><span class="online-label">Online</span>`;
+    } else {
+      el.innerHTML = `<span class="online-label offline-label">Ngoại tuyến</span>`;
     }
   }
 
   updateRoomCountsUI(counts) {
-    // Cập nhật tổng online
-    const onlineEl = document.getElementById('online-count-badge');
-    if (onlineEl && counts.total !== undefined) {
-      const numEl = onlineEl.querySelector('.online-num');
-      if (numEl) {
-        numEl.textContent = counts.total;
-      } else {
-        onlineEl.innerHTML = `<span class="online-num">${counts.total}</span><span class="online-label">Online</span>`;
-      }
+    // Cập nhật tổng online (stash the count; render only when online)
+    if (counts.total !== undefined) {
+      const n = Math.max(0, parseInt(counts.total, 10) || 0);
+      this._lastPlayerTotal = n;
     }
+    this._renderOnlineBadge();
 
     // Cập nhật số lượng 8 phòng
     const optMain = document.getElementById('opt-main_hall');
