@@ -14,6 +14,7 @@ import { GeometryDashEngine } from './retro/GeometryDashEngine.js';
 import { Match3Engine } from './retro/Match3Engine.js';
 import { PacmanEngine } from './retro/PacmanEngine.js';
 import { questManager } from '../../managers/QuestManager.js';
+import { isTouchDevice } from './common/touchHints.js';
 
 export class RetroArcade {
   constructor(canvas, options = {}) {
@@ -60,6 +61,8 @@ export class RetroArcade {
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
+
+    this.handleOrientationChange = this.handleOrientationChange.bind(this);
 
     this.lastTime = 0;
 
@@ -202,6 +205,46 @@ export class RetroArcade {
     }
   }
 
+  // Bố cục playfield theo hướng màn hình (2026-10-09, yêu cầu của Hưng):
+  // desktop giữ nguyên 640×360; mobile portrait → 480×640 (3:4, tận dụng
+  // chiều dọc); mobile landscape → 720×360 (2:1, tận dụng chiều ngang).
+  // Tốc độ px/sec của các engine không đổi nên độ khó giữ nguyên.
+  getOrientationLayout() {
+    if (!isTouchDevice()) return { w: 640, h: 360 };
+    const portrait = window.innerHeight >= window.innerWidth;
+    return portrait ? { w: 480, h: 640 } : { w: 720, h: 360 };
+  }
+
+  getCurrentEngine() {
+    if (this.currentGame === 'snake') return this.snakeEngine;
+    if (this.currentGame === 'sokoban') return this.sokobanEngine;
+    if (this.currentGame === 'goldminer') return this.goldMinerEngine;
+    if (this.currentGame === 'flappybug') return this.flappyBugEngine;
+    if (this.currentGame === 'geometrydash') return this.geometryDashEngine;
+    if (this.currentGame === 'match3') return this.match3Engine;
+    if (this.currentGame === 'pacman') return this.pacmanEngine;
+    return null;
+  }
+
+  // Đặt lại kích thước logic của canvas theo hướng hiện tại.
+  // Trả về true nếu kích thước thực sự thay đổi. Các engine giữ state,
+  // chỉ kẹp (clamp) thực thể vào biên mới qua resize(w, h).
+  applyOrientationLayout() {
+    const { w, h } = this.getOrientationLayout();
+    if (this.canvas.width === w && this.canvas.height === h) return false;
+    this.canvas.width = w;
+    this.canvas.height = h;
+    this.width = w;
+    this.height = h;
+    this.getCurrentEngine()?.resize?.(w, h);
+    return true;
+  }
+
+  handleOrientationChange() {
+    if (!this.isRunning) return;
+    this.applyOrientationLayout();
+  }
+
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
@@ -214,6 +257,12 @@ export class RetroArcade {
     this.canvas.addEventListener('mouseup', this.handleMouseUp);
     this.canvas.addEventListener('touchstart', this.handleTouchStart, { passive: true });
     this.canvas.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+    window.addEventListener('resize', this.handleOrientationChange);
+    window.addEventListener('orientationchange', this.handleOrientationChange);
+
+    // Áp dụng playfield theo hướng màn hình TRƯỚC khi reset game,
+    // để reset() dùng đúng cols/rows mới.
+    this.applyOrientationLayout();
 
     // Reset game hiện tại
     if (this.currentGame === 'snake') this.snakeEngine.reset();
@@ -241,6 +290,8 @@ export class RetroArcade {
     this.canvas.removeEventListener('mouseup', this.handleMouseUp);
     this.canvas.removeEventListener('touchstart', this.handleTouchStart);
     this.canvas.removeEventListener('touchend', this.handleTouchEnd);
+    window.removeEventListener('resize', this.handleOrientationChange);
+    window.removeEventListener('orientationchange', this.handleOrientationChange);
   }
 
   handleKeyDown(e) {

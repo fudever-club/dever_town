@@ -80,6 +80,32 @@ export class SnakeEngine {
     this.callbacks.onScoreUpdate?.(0);
   }
 
+  // Playfield thích ứng hướng màn hình (2026-10-09): tính lại cols/rows
+  // theo kích thước logic mới, kẹp mọi thực thể vào biên mới, giữ nguyên
+  // state (điểm, combo, buff). Grid 20px và tốc độ tick không đổi.
+  resize(w, h) {
+    this.cols = Math.floor(w / this.grid);
+    this.rows = Math.floor(h / this.grid);
+    const clampCell = (p) => ({
+      ...p,
+      x: Math.min(Math.max(p.x, 0), this.cols - 1),
+      y: Math.min(Math.max(p.y, 0), this.rows - 1)
+    });
+    if (Array.isArray(this.snake)) this.snake = this.snake.map(clampCell);
+    if (Array.isArray(this.prevSnake)) this.prevSnake = this.prevSnake.map(clampCell);
+    if (Array.isArray(this.foods)) this.foods = this.foods.map(clampCell);
+    if (Array.isArray(this.portals)) {
+      this.portals = this.portals.map((p) => {
+        const c = clampCell(p);
+        return {
+          ...c,
+          targetX: Math.min(Math.max(p.targetX, 0), this.cols - 1),
+          targetY: Math.min(Math.max(p.targetY, 0), this.rows - 1)
+        };
+      });
+    }
+  }
+
   spawnFood(preferredType = null) {
     if (this.foods.length >= (SNAKE_CONFIG.maxFoods || 4)) return;
 
