@@ -1,18 +1,22 @@
-/* --- footer.css: cyber footer & controls guide (split from main.css 2026-10-07) --- */
-/* --- CYBER FOOTER & CONTROLS GUIDE --- */
+/* --- footer.css: slim status bar (redesigned 2026-10-09) ---
+   Bottom bar slimmed 42px -> 32px: logo mark + help button only.
+   Removed: brand text, version, LIVE badge, scrolling ticker, key-hint chips, slogan.
+   Ticker -> toast + header bell. Key hints -> ? help overlay. */
+/* --- SLIM FOOTER --- */
 #main-footer, .cyber-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-16px);
-  padding: var(--space-8px-18px);
-  min-height: 42px;
+  gap: var(--space-12px);
+  padding: var(--space-2px-10px);
+  min-height: 32px;
+  max-height: 32px;
   background: var(--color-rgba-11-19-41-0-88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--color-rgba-56-189-248-0-22);
   box-shadow: 0 -4px 20px var(--color-rgba-0-0-0-0-4), inset 0 1px 0 var(--color-rgba-56-189-248-0-12);
-  font-family: var(--font-sans-outfit-alt);
+  font-family: var(--font-sans);
   z-index: var(--z-50);
   position: relative;
   flex-shrink: 0;
@@ -21,85 +25,92 @@
 .footer-left {
   display: flex;
   align-items: center;
-  gap: var(--space-10px);
   flex-shrink: 0;
 }
 
-.footer-brand-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-7px);
-  padding: var(--space-3px-9px);
-  background: var(--color-rgba-56-189-248-0-08);
-  border: 1px solid var(--color-rgba-56-189-248-0-28);
-  border-radius: var(--radius-pill);
+.footer-logo-mark {
+  width: 24px;
+  height: 24px;
+  display: block;
+  opacity: 0.92;
 }
 
-.brand-glow-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  background: var(--color-22c55e);
-  box-shadow: 0 0 8px var(--color-22c55e);
-  animation: pulseDot 2s ease-in-out infinite;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
-}
-
-.footer-left .brand-tag {
-  font-size: var(--text-11px);
-  font-weight: 700;
-  color: var(--color-38bdf8);
-  letter-spacing: 0.6px;
-}
-
-.footer-divider {
-  color: var(--color-334155);
-  font-size: var(--text-11px);
-}
-
-.footer-left .version-tag {
-  font-size: var(--text-11px);
-  color: var(--color-64748b);
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
-/* Center: Controls Pill Guide */
-.footer-center-controls {
+.footer-right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-14px);
-  flex-wrap: wrap;
+  gap: var(--space-8px);
+  flex-shrink: 0;
 }
 
-.control-pill {
+/* "?" hotkey help button */
+.footer-help-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-rgba-56-189-248-0-08);
+  border: 1px solid var(--color-rgba-56-189-248-0-28);
+  color: var(--color-38bdf8);
+  font-size: var(--text-14px);
+  font-weight: 700;
+  font-family: var(--font-sans);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-6px);
-  font-size: var(--text-11px);
-  color: var(--color-94a3b8);
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
 }
 
-.key-group {
+.footer-help-btn:hover {
+  background: var(--color-rgba-56-189-248-0-2);
+  border-color: var(--color-38bdf8);
+  box-shadow: 0 0 10px var(--color-rgba-56-189-248-0-35);
+  transform: translateY(-1px);
+}
+
+.footer-help-btn:active {
+  transform: translateY(1px);
+}
+
+/* --- HELP OVERLAY (hotkey list) --- */
+.help-card {
+  max-width: 440px;
+}
+
+.help-hotkey-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8px);
+}
+
+.help-hotkey-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12px);
+  padding: var(--space-6px-8px);
+  border-radius: var(--radius-8px);
+  background: var(--color-rgba-255-255-255-0-02);
+}
+
+.help-keys {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3px);
+  min-width: 120px;
+  flex-shrink: 0;
 }
 
-.key-badge {
+.help-keys kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 20px;
-  padding: var(--space-0-5px);
+  min-width: 22px;
+  height: 24px;
+  padding: var(--space-0-6px);
   font-family: var(--font-mono-ui);
-  font-size: var(--text-10px);
+  font-size: var(--text-11px);
   font-weight: 700;
   color: var(--color-e2e8f0);
   background: linear-gradient(180deg, var(--color-1e293b) 0%, var(--color-0f172a) 100%);
@@ -110,54 +121,13 @@
   line-height: 1;
 }
 
-.key-badge.key-highlight {
-  background: linear-gradient(180deg, var(--color-rgba-242-111-33-0-25) 0%, var(--color-rgba-242-111-33-0-12) 100%);
-  border-color: var(--color-rgba-242-111-33-0-6);
-  border-bottom-color: var(--color-f26f21);
-  color: var(--color-fb923c);
-  box-shadow: 0 0 10px var(--color-rgba-242-111-33-0-35);
-}
-
-.control-label {
-  font-size: var(--text-11px);
-  font-weight: 500;
+.help-desc {
+  font-size: var(--text-12px);
   color: var(--color-cbd5e1);
-}
-
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8px);
-  flex-shrink: 0;
-}
-
-.footer-motto {
-  font-size: var(--text-10px);
-  font-weight: 700;
-  color: var(--color-475569);
-  letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 @media (max-width: 900px) {
   #main-footer, .cyber-footer {
-    padding: var(--space-6px-12px);
-    gap: var(--space-8px);
-  }
-  .footer-right {
-    display: none;
-  }
-  .footer-center-controls {
-    gap: var(--space-8px);
+    padding: var(--space-2px-10px);
   }
 }
-
-@media (max-width: 600px) {
-  .footer-left .version-tag, .footer-divider {
-    display: none;
-  }
-  .control-pill:nth-child(n+4) {
-    display: none;
-  }
-}
-

@@ -198,3 +198,103 @@
   transform: translateY(1px);
 }
 
+
+/* --- CHAT COLLAPSE TAB (desktop, 2026-10-09) ---
+   Chat panel slides away; collapsed state = 48px tab on right edge.
+   Default: collapsed (per Hung). Hotkey C toggles. State in localStorage. */
+#chat-tab-toggle {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  #main-content {
+    transition: grid-template-columns 0.25s ease;
+  }
+
+  #main-content.chat-collapsed {
+    grid-template-columns: minmax(0, 1fr) 48px;
+  }
+
+  #main-content.chat-collapsed #chat-wrapper {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+  }
+
+  #main-content.chat-collapsed #chat-wrapper > *:not(#chat-tab-toggle) {
+    display: none !important;
+  }
+
+  #main-content.chat-collapsed #chat-tab-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6px);
+    width: 100%;
+    height: 100%;
+    min-height: 96px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-94a3b8);
+    position: relative;
+    padding: var(--space-8px-0);
+  }
+
+  #main-content.chat-collapsed #chat-tab-toggle:hover {
+    color: var(--color-f26f21);
+    background: var(--color-rgba-242-111-33-0-08);
+  }
+
+  #main-content.chat-collapsed #chat-tab-toggle:focus-visible {
+    outline: 2px solid var(--color-f26f21);
+    outline-offset: -2px;
+  }
+
+  .chat-tab-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .chat-tab-unread {
+    min-width: 20px;
+    height: 20px;
+    padding: var(--space-0-5px);
+    border-radius: var(--radius-pill);
+    background: var(--color-f26f21);
+    color: var(--color-ffffff);
+    font-size: var(--text-10px);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 2px 8px var(--color-rgba-242-111-33-0-5);
+  }
+}
+
+/* Mobile touch chat button unread badge */
+.touch-chat-unread {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-f26f21);
+  color: var(--color-ffffff);
+  font-size: var(--text-10px);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+#touch-btn-chat {
+  position: relative;
+}

@@ -36,11 +36,125 @@ export class ChatBox {
     this.privateHistories = new Map(); // key: friendName (lowercase) -> array of messages
     this.unreadCount = 0;
 
+    // Desktop collapse tab elements
+    this.chatTabToggle = document.getElementById('chat-tab-toggle');
+    this.chatTabUnread = document.getElementById('chat-tab-unread');
+    this.touchChatUnread = document.getElementById('touch-chat-unread');
+    this.mainContent = document.getElementById('main-content');
+    this.chatTabUnreadCount = 0;
+
+    // Desktop chat open state. Default: collapsed (per Hung 2026-10-09).
+    let storedChatOpen = null;
+    try { storedChatOpen = localStorage.getItem('dever_chat_open_v1'); } catch (e) {}
+    this.chatOpen = storedChatOpen === null ? false : storedChatOpen === '1';
+
     this.loadPrivateHistories();
     this.initEvents();
     this.initTabs();
     this.initStickers();
     this.initMobileEvents();
+    this.initChatToggle();
+    this.applyChatOpenState(false);
+  }
+
+  // --- Desktop chat collapse -------------------------------------------------
+  isDesktopLayout() {
+    return window.matchMedia('(min-width: 1025px)').matches;
+  }
+
+  isChatVisible() {
+    if (this.isDesktopLayout()) return this.chatOpen;
+    return !!(this.chatWrapper && this.chatWrapper.classList.contains('mobile-open'));
+  }
+
+  isAnyModalOpen() {
+    const modals = document.querySelectorAll('.modal-backdrop');
+    for (const m of modals) {
+      if (!m.classList.contains('hidden')) return true;
+    }
+    return false;
+  }
+
+  applyChatOpenState(persist) {
+    if (this.mainContent) {
+      this.mainContent.classList.toggle('chat-collapsed', !this.chatOpen);
+    }
+    if (persist) {
+      try { localStorage.setItem('dever_chat_open_v1', this.chatOpen ? '1' : '0'); } catch (e) {}
+    }
+  }
+
+  toggleChat() {
+    if (this.chatOpen) this.closeChat();
+    else this.openChat();
+  }
+
+  openChat() {
+    this.chatOpen = true;
+    this.applyChatOpenState(true);
+    this.clearChatTabUnread();
+    if (this.isDesktopLayout() && this.chatInput) {
+      setTimeout(() => { if (this.chatInput) this.chatInput.focus(); }, 120);
+    }
+  }
+
+  closeChat() {
+    this.chatOpen = false;
+    this.applyChatOpenState(true);
+    if (this.chatInput) this.chatInput.blur();
+  }
+
+  bumpChatTabUnread() {
+    this.chatTabUnreadCount++;
+    this.renderChatTabUnread();
+  }
+
+  clearChatTabUnread() {
+    this.chatTabUnreadCount = 0;
+    this.renderChatTabUnread();
+  }
+
+  renderChatTabUnread() {
+    const n = this.chatTabUnreadCount;
+    const label = n > 99 ? '99+' : String(n);
+    for (const el of [this.chatTabUnread, this.touchChatUnread]) {
+      if (!el) continue;
+      el.textContent = label;
+      el.classList.toggle('hidden', n === 0);
+    }
+  }
+
+  initChatToggle() {
+    if (this.chatTabToggle) {
+      this.chatTabToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleChat();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code !== 'KeyC' && e.code !== 'Escape') return;
+      const activeTag = document.activeElement ? document.activeElement.tagName : '';
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+      if (this.isAnyModalOpen()) return;
+      // Focus mode exit takes precedence (handled by FocusMode, but Esc here must not fight it)
+      if (document.body.classList.contains('focus-mode')) return;
+
+      if (e.code === 'KeyC') {
+        e.preventDefault();
+        if (this.isDesktopLayout()) {
+          this.toggleChat();
+        } else {
+          if (this.isChatVisible()) this.closeMobileChat();
+          else this.openMobileChat();
+        }
+      } else if (e.code === 'Escape') {
+        // Esc closes open desktop chat panel
+        if (this.isDesktopLayout() && this.chatOpen) {
+          this.closeChat();
+        }
+      }
+    });
   }
 
   loadPrivateHistories() {
@@ -117,6 +231,7 @@ export class ChatBox {
 
       // Xóa chấm đỏ tin nhắn chưa đọc
       this.clearUnread();
+      this.clearChatTabUnread();
 
       // Nếu chưa chọn bạn nào, tự động chọn người bạn đầu tiên nếu có
       if (!this.activeFriend) {
@@ -314,12 +429,18 @@ export class ChatBox {
   }
 
   openMobileChat() {
+    // Desktop: delegate to the collapsible panel
+    if (this.isDesktopLayout()) {
+      this.openChat();
+      return;
+    }
     if (this.chatWrapper) {
       this.chatWrapper.classList.add('mobile-open');
     }
     if (this.mobileBackdrop) {
       this.mobileBackdrop.classList.remove('hidden');
     }
+    this.clearChatTabUnread();
     setTimeout(() => {
       if (this.chatInput) {
         this.chatInput.focus();
@@ -328,6 +449,11 @@ export class ChatBox {
   }
 
   closeMobileChat() {
+    // Desktop: delegate to the collapsible panel
+    if (this.isDesktopLayout()) {
+      this.closeChat();
+      return;
+    }
     if (this.chatWrapper) {
       this.chatWrapper.classList.remove('mobile-open');
     }
@@ -535,6 +661,9 @@ export class ChatBox {
     } else if (!isSelf) {
       // Có tin nhắn riêng mới nhưng đang ở tab khác hoặc chat với bạn khác
       this.showUnread();
+      if (!this.isChatVisible()) {
+        this.bumpChatTabUnread();
+      }
       const worldScene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       if (worldScene && worldScene.showToast) {
         worldScene.showToast(`Tin nhắn riêng mới từ ${senderName}: ${message.slice(0, 30)}...`);
@@ -713,10 +842,17 @@ export class ChatBox {
     itemDiv.appendChild(metaDiv);
     itemDiv.appendChild(bodyDiv);
 
-    this.chatMessages.appendChild(itemDiv);
+    if (this.chatMessages) {
+      this.chatMessages.appendChild(itemDiv);
+    }
 
     if (this.activeTab === 'room') {
       this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
+
+    // Bump the collapse-tab / touch-button unread badge when the panel is hidden
+    if (!isSelf && !this.isChatVisible()) {
+      this.bumpChatTabUnread();
     }
   }
 }

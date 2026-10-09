@@ -47,6 +47,8 @@ import { LightingManager } from '../managers/LightingManager.js';
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
 import { CampusTicker } from '../ui/common/CampusTicker.js';
+import { HelpOverlay } from '../ui/common/HelpOverlay.js';
+import { FocusMode } from '../ui/common/FocusMode.js';
 import { TilePool } from '../utils/TilePool.js';
 import { ZoomControls } from '../ui/hud/ZoomControls.js';
 import {
@@ -117,6 +119,8 @@ export class WorldScene extends Phaser.Scene {
       : null;
     this.achievementManager = new AchievementManager({ scene: this, juiceManager: this.juiceManager });
     this.campusTicker = new CampusTicker();
+    this.helpOverlay = new HelpOverlay();
+    this.focusMode = new FocusMode();
     this.floorManager = new FloorManager(this);
     this.transitionManager = new SceneTransitionManager(this);
 

@@ -1,0 +1,51 @@
+/* --- focus-mode.css: "focus mode" (hotkey H) hides all HUD chrome (2026-10-09) ---
+   Pure CSS class toggle on body. Press H again or Esc to restore. */
+body.focus-mode #main-header,
+body.focus-mode #main-footer {
+  display: none !important;
+}
+
+body.focus-mode #chat-wrapper,
+body.focus-mode #chat-mobile-backdrop {
+  display: none !important;
+}
+
+body.focus-mode #minimap-overlay {
+  display: none !important;
+}
+
+body.focus-mode #dever-toast {
+  display: none !important;
+}
+
+body.focus-mode #main-content {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Focus-mode exit hint pill (bottom-right, subtle) */
+#focus-mode-hint {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: var(--z-9999999);
+  background: var(--color-rgba-15-23-42-0-9);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-94a3b8);
+  font-size: var(--text-11px);
+  font-family: var(--font-sans);
+  padding: var(--space-6px-10px);
+  border-radius: var(--radius-pill);
+  display: none;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
+body.focus-mode #focus-mode-hint {
+  display: block;
+  animation: focusHintIn 0.25s ease;
+}
+
+@keyframes focusHintIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

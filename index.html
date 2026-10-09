@@ -427,6 +427,21 @@
 
         <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản" data-i18n="logoutBtn">Đăng xuất</button>
 
+        <!-- Nút Thông Báo (thay thế ticker footer) -->
+        <div class="header-bell-wrap">
+          <button id="header-bell-btn" class="btn-icon-square btn-bell" title="Thông báo & Tin tức">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="bell-unread-dot" class="bell-unread-dot hidden"></span>
+          </button>
+          <div id="bell-dropdown" class="bell-dropdown hidden">
+            <div class="bell-dropdown-header">Thông báo</div>
+            <div id="bell-dropdown-list" class="bell-dropdown-list"></div>
+          </div>
+        </div>
+
         <!-- Fullscreen Toggle -->
         <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
           <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -559,7 +574,7 @@
             <div class="touch-actions-sub-row">
               <button type="button" id="touch-btn-speed-duel" class="touch-action-btn duel" title="Đấu Trí Siêu Tốc">⚡</button>
               <button type="button" id="touch-btn-emote" class="touch-action-btn emote" title="Biểu Cảm [G]">✨</button>
-              <button type="button" id="touch-btn-chat" class="touch-action-btn chat" title="Mở Chat">💬</button>
+              <button type="button" id="touch-btn-chat" class="touch-action-btn chat" title="Mở Chat">💬<span id="touch-chat-unread" class="touch-chat-unread hidden">0</span></button>
             </div>
             <div class="touch-actions-main-row">
               <button type="button" id="touch-btn-inventory" class="touch-action-btn inv" title="Túi Đồ [I]">🎒</button>
@@ -592,6 +607,13 @@
 
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
+        <!-- Collapsed tab (desktop): shown when chat panel is collapsed -->
+        <button type="button" id="chat-tab-toggle" class="chat-tab-toggle" title="Mở Chat [C]" aria-label="Mở Chat">
+          <svg class="chat-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span id="chat-tab-unread" class="chat-tab-unread hidden">0</span>
+        </button>
         <div class="chat-header">
           <div class="chat-header-title">
             <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -667,56 +689,16 @@
       </section>
     </main>
 
-    <!-- Footer Status & Controls Guide -->
+    <!-- Footer Status Bar (slim: logo + help only) -->
     <footer id="main-footer" class="cyber-footer">
       <div class="footer-left">
-        <div class="footer-brand-badge">
-          <span class="brand-glow-dot"></span>
-          <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • METAVERSE</span>
-        </div>
-        <span class="footer-divider">|</span>
-        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.4.2</span>
-      </div>
-
-      <div class="footer-center-controls" id="footer-controls-guide">
-        <div class="control-pill">
-          <div class="key-group">
-            <kbd class="key-badge">W</kbd>
-            <kbd class="key-badge">A</kbd>
-            <kbd class="key-badge">S</kbd>
-            <kbd class="key-badge">D</kbd>
-          </div>
-          <span class="control-label">Di chuyển</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge key-highlight">E</kbd>
-          <span class="control-label">Tương tác</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">Tab</kbd>
-          <span class="control-label">Biểu cảm</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">M</kbd>
-          <span class="control-label">Bản đồ</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">I</kbd>
-          <span class="control-label">Tủ đồ</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">ESC</kbd>
-          <span class="control-label">Đóng</span>
-        </div>
+        <img src="/assets/logos/dever_logo_nontext.png" class="footer-logo-mark" alt="DEVER" width="24" height="24" />
       </div>
 
       <div class="footer-right">
-        <span class="footer-motto">WORK HARD • PLAY HARD</span>
+        <button type="button" id="footer-help-btn" class="footer-help-btn" title="Phím tắt & Hướng dẫn [?]">
+          ?
+        </button>
       </div>
     </footer>
   </div>
@@ -1804,6 +1786,37 @@
     </div>
   </div>
 
+  <!-- HOTKEY HELP OVERLAY (phím tắt) -->
+  <div id="help-overlay" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="help-overlay-title" aria-hidden="true">
+    <div class="modal-card modal-card-sm help-card" tabindex="-1">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div>
+            <h2 id="help-overlay-title" class="modal-title">Phím Tắt & Hướng Dẫn</h2>
+            <p class="modal-sub">Điều khiển nhân vật trong DEVER TOWN</p>
+          </div>
+        </div>
+        <button type="button" id="help-overlay-close" class="modal-close-btn" aria-label="Đóng hướng dẫn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-hotkey-grid">
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="help-desc">Di chuyển nhân vật</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>E</kbd></span><span class="help-desc">Tương tác với vật thể / NPC</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>C</kbd></span><span class="help-desc">Mở / đóng khung chat</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>Enter</kbd></span><span class="help-desc">Mở chat và nhập tin nhắn</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>Tab</kbd></span><span class="help-desc">Vòng xoay biểu cảm</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>G</kbd></span><span class="help-desc">Biểu cảm nhanh</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>M</kbd></span><span class="help-desc">Thu gọn / mở rộng bản đồ radar</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>I</kbd></span><span class="help-desc">Mở túi đồ</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>F</kbd></span><span class="help-desc">Danh sách bạn bè</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>Z</kbd></span><span class="help-desc">Đấu trí siêu tốc</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>H</kbd></span><span class="help-desc">Chế độ tập trung (ẩn toàn bộ giao diện)</span></div>
+          <div class="help-hotkey-row"><span class="help-keys"><kbd>Esc</kbd></span><span class="help-desc">Đóng hộp thoại / thoát chế độ tập trung</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 7. REAL-TIME DEVICE LOGIN APPROVAL MODAL -->
   <div id="device-approval-modal" class="modal-backdrop hidden">
     <div class="modal-card modal-card-sm" style="border: 1px solid rgba(242, 111, 33, 0.4); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);">
@@ -1842,6 +1855,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Focus mode exit hint -->
+  <div id="focus-mode-hint">Nhấn H hoặc Esc để hiện giao diện</div>
 
   <script type="module" src="/src/main.js"></script>
 </body>
