@@ -1,4 +1,5 @@
 import { audioManager } from '../../utils/AudioManager.js';
+import { getEmoteIconURL } from '../../utils/emoteIcons.js';
 
 export class TouchControls {
   /**
@@ -16,6 +17,10 @@ export class TouchControls {
 
   init() {
     if (!this.container || !this.inputController) return;
+
+    // Thay emoji placeholder bang pixel-art icons (khop voi EmoteBar).
+    // Giu nguyen DOM IDs va span badge ben trong nut chat.
+    this.injectPixelIcons();
 
     // 1. D-Pad Direction Buttons
     const dpadButtons = {
@@ -173,6 +178,43 @@ export class TouchControls {
     // Tự động kiểm tra hiển thị trên thiết bị di động
     this.checkVisibility();
     window.addEventListener('resize', () => this.checkVisibility());
+  }
+
+  /**
+   * Thay emoji trong cac nut action bang pixel-art <img> (16x16 dataURL).
+   * Fallback giu emoji neu icon chua duoc sinh (BootScene chua chay).
+   */
+  injectPixelIcons() {
+    const mapping = [
+      ['touch-btn-speed-duel', 'touch_duel', 'Đấu Trí Siêu Tốc'],
+      ['touch-btn-emote', 'touch_emote', 'Biểu Cảm'],
+      ['touch-btn-chat', 'touch_chat', 'Mở Chat'],
+      ['touch-btn-inventory', 'touch_bag', 'Túi Đồ']
+    ];
+
+    mapping.forEach(([btnId, iconId, alt]) => {
+      const btn = document.getElementById(btnId);
+      if (!btn || btn.querySelector('.touch-pixel-icon')) return;
+      const url = this.scene ? getEmoteIconURL(this.scene, iconId) : null;
+      if (!url) return; // fallback: giu emoji cu
+
+      const img = document.createElement('img');
+      img.className = 'touch-pixel-icon';
+      img.src = url;
+      img.alt = alt;
+      img.draggable = false;
+
+      // Nut chat co span badge ben trong — chen img truoc span, xoa text node emoji.
+      const badge = btn.querySelector('.touch-chat-unread');
+      Array.from(btn.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) node.remove();
+      });
+      if (badge) {
+        btn.insertBefore(img, badge);
+      } else {
+        btn.prepend(img);
+      }
+    });
   }
 
   checkVisibility() {

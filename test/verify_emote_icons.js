@@ -18,11 +18,15 @@ const WS = readFileSync('src/scenes/WorldScene.js', 'utf8');
 // EmoteBar CSS được tách ra file riêng (giới hạn ~100KB khi push qua GitHub API)
 const CSS = readFileSync('src/styles/emote-bar.css', 'utf8');
 
-// 1. generateEmoteIcons tồn tại và đủ 8 emotes
+// 1. generateEmoteIcons tồn tại và đủ 8 emotes + 4 touch icons (mobile buttons)
 ok(EI.includes('export function generateEmoteIcons(scene)'), 'có generateEmoteIcons');
 const emoteIds = ['wave', 'heart', 'fire', 'clap', 'dance', 'question', 'nod', 'power'];
 for (const id of emoteIds) {
   ok(EI.includes(`${id}(ctx)`), `vẽ icon '${id}'`);
+}
+const touchIds = ['touch_duel', 'touch_emote', 'touch_chat', 'touch_bag'];
+for (const id of touchIds) {
+  ok(EI.includes(`${id}(ctx)`), `vẽ touch icon '${id}'`);
 }
 ok(EI.includes("'emoteicon'"), 'prefix emoteicon');
 ok(EI.includes('export function getEmoteIconURL(scene, emoteId)'), 'có getEmoteIconURL');
@@ -65,16 +69,16 @@ try {
       const scene = { textures: { exists: () => false, remove: () => {}, addCanvas: (k, c) => { rects[k] = c._rects; } } };
       generateEmoteIcons(scene);
       const keys = Object.keys(rects);
-      if (keys.length !== 8) throw new Error('expected 8, got ' + keys.length);
+      if (keys.length !== 12) throw new Error('expected 12, got ' + keys.length);
       for (const k of keys) {
         for (const [x,y,w,h] of rects[k]) {
           if (x < 0 || y < 0 || x + w > 16 || y + h > 16) throw new Error(k + ' out of 16x16 bounds');
         }
       }
-      console.log('8 emote icons, all in 16x16 bounds');
+      console.log('12 icons (8 emote + 4 touch), all in 16x16 bounds');
     });
   "`, { stdio: 'pipe' });
-  ok(true, '8 icons sinh được, nằm trong 16x16');
+  ok(true, '12 icons sinh được, nằm trong 16x16');
 } catch (e) { ok(false, 'generateEmoteIcons lỗi: ' + e.message); }
 
 console.log(`\n${pass} passed, ${fail} failed`);

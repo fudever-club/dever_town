@@ -127,6 +127,46 @@ export function generateEmoteIcons(scene) {
         R(ctx, 8, 10, 2, 4, '#1e293b');
         R(ctx, 1, 2, 1, 2, '#fde047');
         R(ctx, 14, 2, 1, 2, '#fde047');
+      },
+      // Touch: tia set vang (nut Dau Tri Sieu Toc)
+      touch_duel(ctx) {
+        R(ctx, 9, 1, 3, 3, '#fde047');
+        R(ctx, 8, 4, 4, 2, '#fde047');
+        R(ctx, 7, 6, 5, 2, '#fbbf24');
+        R(ctx, 6, 8, 4, 2, '#fbbf24');
+        R(ctx, 8, 10, 3, 2, '#f59e0b');
+        R(ctx, 6, 12, 3, 3, '#f59e0b');
+        R(ctx, 9, 2, 1, 5, '#fef9c3');
+      },
+      // Touch: tia lanh sang (nut Bieu Cam)
+      touch_emote(ctx) {
+        R(ctx, 7, 2, 2, 8, '#fef9c3');
+        R(ctx, 4, 5, 8, 2, '#fef9c3');
+        R(ctx, 12, 1, 1, 4, '#fde047');
+        R(ctx, 11, 2, 3, 1, '#fde047');
+        R(ctx, 2, 10, 1, 4, '#fde047');
+        R(ctx, 1, 11, 3, 1, '#fde047');
+      },
+      // Touch: bong bong chat (nut Chat)
+      touch_chat(ctx) {
+        R(ctx, 2, 3, 12, 7, '#e0f2fe');
+        R(ctx, 2, 3, 12, 1, '#ffffff');
+        R(ctx, 2, 9, 12, 1, '#7dd3fc');
+        R(ctx, 5, 10, 3, 2, '#e0f2fe');
+        R(ctx, 5, 12, 2, 1, '#e0f2fe');
+        R(ctx, 4, 5, 8, 1, '#0284c7');
+        R(ctx, 4, 7, 5, 1, '#0284c7');
+      },
+      // Touch: ba lo (nut Tui Do)
+      touch_bag(ctx) {
+        R(ctx, 4, 4, 8, 9, '#0284c7');
+        R(ctx, 4, 4, 8, 2, '#0ea5e9');
+        R(ctx, 4, 11, 8, 2, '#0369a1');
+        R(ctx, 6, 2, 4, 2, '#475569');
+        R(ctx, 6, 6, 4, 4, '#f26f21');
+        R(ctx, 6, 6, 4, 1, '#fdba74');
+        R(ctx, 2, 6, 2, 5, '#0369a1');
+        R(ctx, 12, 6, 2, 5, '#0369a1');
       }
     };
     TextureGenerator._paintIcons(scene, 'emoteicon', drawers);

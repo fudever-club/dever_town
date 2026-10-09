@@ -243,12 +243,21 @@
   transform: translateY(-1px);
 }
 
+.btn-quests:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn-quests:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
+}
+
 .quest-coin-icon {
   font-size: var(--text-14px);
 }
 
 .header-points-text {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-weight: 800;
   color: var(--color-fef08a);
   background: var(--color-rgba-0-0-0-0-25);

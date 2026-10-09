@@ -177,6 +177,21 @@
   transform: scale(0.88);
 }
 
+/* Pixel-art icons thay emoji tren nut action mobile (2026-10-09) */
+.touch-action-btn .touch-pixel-icon {
+  width: 26px;
+  height: 26px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+  user-select: none;
+}
+
+.touch-action-btn.inv .touch-pixel-icon {
+  width: 30px;
+  height: 30px;
+}
+
 /* ==========================================================================
    TOÀN DIỆN RESPONSIVE CHO MOBILE & TABLET (< 1024px & < 768px)
    ========================================================================== */

@@ -647,6 +647,16 @@
   color: var(--color-ffffff);
 }
 
+.modal-close-btn:active {
+  transform: scale(0.9);
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
+  border-radius: var(--radius-6px);
+}
+
 .modal-header-section {
   text-align: left;
   margin-bottom: var(--space-12px);

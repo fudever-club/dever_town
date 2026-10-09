@@ -254,6 +254,16 @@
   box-shadow: 0 0 12px var(--color-rgba-56-189-248-0-25);
 }
 
+.wardrobe-tab-btn:active {
+  transform: scale(0.97);
+}
+
+.wardrobe-tab-btn:focus-visible,
+.wardrobe-chip-btn:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
+}
+
 /* Character Presets Grid */
 .wardrobe-character-grid {
   display: grid;
@@ -445,6 +455,10 @@
   border-color: var(--color-38bdf8);
   color: var(--color-38bdf8);
   box-shadow: 0 0 8px var(--color-rgba-56-189-248-0-4);
+}
+
+.wardrobe-chip-btn:active {
+  transform: scale(0.95);
 }
 
 

@@ -7,6 +7,9 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     // các nút tương tác trong test khi game khởi tạo chậm.
     await page.addInitScript(() => {
       localStorage.setItem('dever_onboarding_seen', 'true');
+      // Tour coach-marks mới (2026-10-09) dùng key riêng — tắt luôn để không che nút test
+      localStorage.setItem('dever_onboarded_v1', '1');
+      localStorage.setItem('dever_chat_hint_seen', '1');
     });
     await page.goto('/');
 

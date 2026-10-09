@@ -301,6 +301,15 @@
   opacity: 0.92;
 }
 
+.btn-send-friend-req:active {
+  transform: scale(0.96);
+}
+
+.btn-send-friend-req:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
+}
+
 .friends-tabs-nav {
   display: flex;
   gap: var(--space-8px);
@@ -326,8 +335,69 @@
   background: var(--color-rgba-56-189-248-0-12);
 }
 
+.friends-tab-btn:hover:not(.active) {
+  color: var(--color-e2e8f0);
+  background: var(--color-rgba-255-255-255-0-04);
+}
+
+.friends-tab-btn:active {
+  transform: scale(0.97);
+}
+
+.friends-tab-btn:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
+}
+
 .friends-filter-bar {
   margin-bottom: var(--space-10px);
+}
+
+/* Unified search: 1 o nhap + mode toggle (2026-10-09, critique #8) */
+.friends-search-box {
+  margin-bottom: var(--space-14px);
+}
+
+.friends-search-modes {
+  display: inline-flex;
+  gap: var(--space-4px);
+  background: var(--color-rgba-15-23-42-0-6);
+  border: 1px solid var(--color-rgba-255-255-255-0-08);
+  border-radius: var(--radius-8px);
+  padding: var(--space-3px);
+  margin-bottom: var(--space-8px);
+}
+
+.friends-search-mode {
+  background: transparent;
+  border: none;
+  color: var(--color-94a3b8);
+  font-family: var(--font-sans);
+  font-size: var(--text-12px);
+  font-weight: 700;
+  padding: var(--space-6px-12px);
+  border-radius: var(--radius-6px);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+
+.friends-search-mode:hover {
+  color: var(--color-e2e8f0);
+}
+
+.friends-search-mode.active {
+  color: var(--color-38bdf8);
+  background: var(--color-rgba-56-189-248-0-12);
+}
+
+.friends-search-mode:active {
+  transform: scale(0.97);
+}
+
+.friends-search-mode:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
 }
 
 .friends-filter-input {
@@ -498,6 +568,15 @@
 
 .btn-friend-action.unfriend-btn:hover {
   color: var(--color-ef4444);
+}
+
+.btn-friend-action:active {
+  transform: scale(0.95);
+}
+
+.btn-friend-action:focus-visible {
+  outline: 2px solid var(--color-38bdf8);
+  outline-offset: 2px;
 }
 
 .btn-friend-action.accept-btn {

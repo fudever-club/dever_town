@@ -18,6 +18,7 @@ export class FriendsListModal {
     this.isOpen = false;
     this.activeTab = 'friends'; // 'friends' | 'requests'
     this.searchQuery = '';
+    this.searchMode = 'filter'; // 'filter' | 'add' — unified search box
 
     this.initDOM();
     this.bindEvents();
@@ -46,22 +47,28 @@ export class FriendsListModal {
           <button type="button" id="friends-modal-close-btn" class="modal-close-btn">&times;</button>
         </div>
 
-        <!-- Add Friend by ID / Name Form -->
-        <div class="friends-search-add-box">
-          <div class="friends-input-wrapper">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              type="text"
-              id="friends-add-input"
-              class="friends-add-input"
-              placeholder="Nhập Tên hoặc ID người chơi để gửi lời mời kết bạn..."
-              autocomplete="off"
-            />
+        <!-- Unified Search: 1 o nhap duy nhat — Loc danh sach HOAC Them ban moi -->
+        <div class="friends-search-box">
+          <div class="friends-search-modes" role="tablist" aria-label="Chế độ tìm kiếm">
+            <button type="button" class="friends-search-mode active" data-mode="filter" id="friends-mode-filter">Lọc danh sách</button>
+            <button type="button" class="friends-search-mode" data-mode="add" id="friends-mode-add">Thêm bạn mới</button>
           </div>
-          <button type="button" id="friends-send-req-btn" class="btn-send-friend-req">Gửi Lời Mời</button>
+          <div class="friends-search-add-box">
+            <div class="friends-input-wrapper">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                id="friends-add-input"
+                class="friends-add-input"
+                placeholder="Lọc nhanh danh sách bạn bè..."
+                autocomplete="off"
+              />
+            </div>
+            <button type="button" id="friends-send-req-btn" class="btn-send-friend-req hidden">Gửi Lời Mời</button>
+          </div>
         </div>
 
         <!-- Tabs Navigation -->
@@ -76,14 +83,6 @@ export class FriendsListModal {
 
         <!-- Tab 1: Friends List Content -->
         <div id="friends-tab-content-list" class="friends-tab-view">
-          <div class="friends-filter-bar">
-            <input
-              type="text"
-              id="friends-filter-input"
-              class="friends-filter-input"
-              placeholder="Lọc nhanh danh sách bạn bè..."
-            />
-          </div>
           <div id="friends-cards-container" class="friends-cards-container">
             <!-- Rendered dynamically -->
           </div>
@@ -146,9 +145,46 @@ export class FriendsListModal {
       });
     });
 
-    // Gửi lời mời kết bạn theo Tên / ID
-    const sendReqBtn = this.modalEl.querySelector('#friends-send-req-btn');
+    // Unified search: 1 o nhap duy nhat — che do Loc danh sach / Them ban moi
+    const modeBtns = this.modalEl.querySelectorAll('.friends-search-mode');
     const addInput = this.modalEl.querySelector('#friends-add-input');
+    const sendReqBtn = this.modalEl.querySelector('#friends-send-req-btn');
+
+    const applySearchMode = (mode) => {
+      this.searchMode = mode;
+      modeBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-mode') === mode));
+      if (addInput) {
+        addInput.value = '';
+        addInput.placeholder = mode === 'add'
+          ? 'Nhập Tên hoặc ID người chơi để gửi lời mời kết bạn...'
+          : 'Lọc nhanh danh sách bạn bè...';
+      }
+      if (sendReqBtn) {
+        sendReqBtn.classList.toggle('hidden', mode !== 'add');
+      }
+      this.searchQuery = '';
+      this.render();
+    };
+
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode') || 'filter';
+        if (mode !== this.searchMode) {
+          audioManager.playClick();
+          applySearchMode(mode);
+        }
+      });
+    });
+
+    if (addInput) {
+      addInput.addEventListener('input', (e) => {
+        // Chi loc live o che do filter; che do add cho Enter / nut Gui
+        if (this.searchMode === 'filter') {
+          this.searchQuery = (e.target.value || '').trim().toLowerCase();
+          this.render();
+        }
+      });
+    }
 
     const handleSendRequest = () => {
       const val = (addInput.value || '').trim();
@@ -191,19 +227,11 @@ export class FriendsListModal {
     }
     if (addInput) {
       addInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+        // Chi gui loi moi bang Enter o che do "Them ban moi"
+        if (e.key === 'Enter' && this.searchMode === 'add') {
           e.preventDefault();
           handleSendRequest();
         }
-      });
-    }
-
-    // Lọc danh sách bạn bè
-    const filterInput = this.modalEl.querySelector('#friends-filter-input');
-    if (filterInput) {
-      filterInput.addEventListener('input', (e) => {
-        this.searchQuery = (e.target.value || '').trim().toLowerCase();
-        this.renderFriendsList();
       });
     }
 
@@ -409,18 +437,24 @@ export class FriendsListModal {
     container.innerHTML = '';
     const pendingList = window.__PENDING_REQUESTS__ || [];
 
-    if (pendingList.length === 0) {
+    // Unified search cung loc ca tab loi moi
+    const filtered = pendingList.filter(req => {
+      if (!this.searchQuery) return true;
+      return (req.fromName || '').toLowerCase().includes(this.searchQuery);
+    });
+
+    if (filtered.length === 0) {
       container.innerHTML = `
         <div class="friends-empty-box">
           <div class="friends-empty-icon">DEVER</div>
-          <h4 class="friends-empty-title">Không có lời mời nào đang chờ</h4>
-          <p class="friends-empty-desc">Khi người chơi khác gửi lời mời kết bạn tới bạn, thông báo và danh sách sẽ hiển thị tại đây.</p>
+          <h4 class="friends-empty-title">${this.searchQuery ? 'Không tìm thấy lời mời phù hợp' : 'Không có lời mời nào đang chờ'}</h4>
+          <p class="friends-empty-desc">${this.searchQuery ? 'Hãy thử tìm kiếm với từ khóa hoặc tên khác.' : 'Khi người chơi khác gửi lời mời kết bạn tới bạn, thông báo và danh sách sẽ hiển thị tại đây.'}</p>
         </div>
       `;
       return;
     }
 
-    pendingList.forEach((req, idx) => {
+    filtered.forEach((req, idx) => {
       const card = document.createElement('div');
       card.className = 'friend-list-card request-card';
 
