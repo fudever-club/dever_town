@@ -38,8 +38,11 @@ export class GeometryDashEngine {
 
     this.screenX = 110; // Tọa độ X cố định của Cube trên màn hình
     this.size = this.cfg.physics.cubeSize || 28;
-    this.groundY = this.cfg.physics.groundY || 300;
-    this.ceilingY = this.cfg.physics.ceilingY || 52;
+    // Bố cục dọc thích ứng hướng màn hình (2026-10-09): sàn luôn cách đáy
+    // 60px (desktop h=360 → groundY=300, khớp config), trần giữ 52px.
+    // Vật lý (gravity 1950, jumpImpulse -560, baseSpeed 330 px/sec) giữ
+    // nguyên tuyệt đối nên độ khó không đổi.
+    this.layoutVertical(canvas.height);
 
     this.cube = {
       y: this.groundY - this.size,
@@ -59,6 +62,33 @@ export class GeometryDashEngine {
 
     // Tạo các phần tử của màn chơi
     this.initLevel();
+  }
+
+  // Sàn cách đáy 60px, trần 52px — desktop cho đúng 300/52 như config cũ.
+  layoutVertical(h) {
+    this.groundY = h - 60;
+    this.ceilingY = 52;
+  }
+
+  // Playfield thích ứng hướng màn hình (2026-10-09): initLevel() là deterministic
+  // nên chỉ cần dựng lại màn chơi từ groundY/ceilingY mới, giữ nguyên tiến
+  // trình (cameraX), vật lý cube và độ cao tương đối so với sàn.
+  resize(w, h) {
+    const oldGy = this.groundY;
+    const aboveGround = oldGy - this.cube.y;
+    const keepCamX = this.cameraX;
+    const keepVy = this.cube.vy;
+    const keepGrounded = this.cube.isGrounded;
+    this.w = w;
+    this.h = h;
+    this.layoutVertical(h);
+    this.initLevel();
+    this.cameraX = keepCamX;
+    this.cube.y = this.groundY - aboveGround;
+    this.cube.y = Math.min(Math.max(this.cube.y, this.ceilingY), this.groundY - this.size);
+    this.cube.vy = keepVy;
+    this.cube.isGrounded = keepGrounded;
+    this.trail = [];
   }
 
   initLevel() {
