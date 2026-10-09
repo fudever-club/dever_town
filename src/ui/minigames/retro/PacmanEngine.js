@@ -963,7 +963,120 @@ export class PacmanEngine {
     ctx.fill();
   }
 
+  // Playfield thích ứng hướng màn hình (2026-10-09): mê cung 28×21 cố định
+  // (tileSize 16, tốc độ px/sec không đổi → độ khó giữ nguyên), chỉ căn giữa
+  // lại trong khung mới và dời các thực thể theo đúng delta.
+  resize(w, h) {
+    const oldSX = this.startX;
+    const oldSY = this.startY;
+    this.w = w;
+    this.h = h;
+    this.startX = Math.floor((w - this.cols * this.tileSize) / 2);
+    this.startY = Math.floor((h - this.rows * this.tileSize) / 2);
+    const dx = this.startX - oldSX;
+    const dy = this.startY - oldSY;
+    const shift = (e) => {
+      if (!e) return;
+      e.x += dx;
+      e.y += dy;
+    };
+    shift(this.pacman);
+    shift(this.fruit);
+    for (const g of this.ghosts || []) {
+      shift(g);
+      g.homeX += dx;
+      g.homeY += dy;
+    }
+  }
+
+  // HUD cho màn hình dọc hẹp: 2 dải gọn trên/dưới mê cung, không đè gameplay.
+  renderHUDPortrait(ctx) {
+    ctx.save();
+    const w = this.w;
+    const mazeBottom = this.startY + this.rows * this.tileSize;
+
+    // --- Dải trên: điểm / màn / còn lại ---
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('ĐIỂM', 14, 26);
+    ctx.font = '900 18px "Be Vietnam Pro", sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(this.score.toString(), 14, 50);
+    ctx.font = '700 10px "Be Vietnam Pro", sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`KỶ LỤC ${this.highScore}`, 14, 68);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('MÀN CHƠI', w / 2, 26);
+    ctx.font = '900 15px "Be Vietnam Pro", sans-serif';
+    ctx.fillStyle = '#10b981';
+    ctx.fillText(`CẤP ${this.level}`, w / 2, 50);
+    let modeText = 'SCATTER';
+    let modeColor = '#10b981';
+    if (this.frightenedTimer > 0) {
+      modeText = 'OVERDRIVE';
+      modeColor = '#f59e0b';
+    } else if (this.globalMode === 'chase') {
+      modeText = 'CHASE';
+      modeColor = '#ef4444';
+    }
+    ctx.font = '900 12px "Be Vietnam Pro", sans-serif';
+    ctx.fillStyle = modeColor;
+    ctx.fillText(modeText, w / 2, 68);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('CÒN LẠI', w - 14, 26);
+    ctx.font = '900 15px "Be Vietnam Pro", sans-serif';
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillText(`${this.pelletsRemaining}/${this.totalPellets}`, w - 14, 50);
+
+    // --- Dải dưới mê cung: mạng sống + gợi ý điều khiển ---
+    const by = mazeBottom + 34;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('MẠNG SỐNG', 14, by);
+    for (let i = 0; i < this.lives; i++) {
+      ctx.save();
+      ctx.translate(22 + i * 22, by + 20);
+      ctx.fillStyle = '#facc15';
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0.25 * Math.PI, 1.75 * Math.PI);
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#64748b';
+    ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
+    ctx.fillText(
+      this.isTouch ? 'CHẠM / VUỐT ĐỂ ĐỔI HƯỚNG' : 'W/A/S/D HOẶC MŨI TÊN ĐỂ DI CHUYỂN • R: CHƠI LẠI',
+      w / 2,
+      by + 52
+    );
+
+    // Overlay Ready / Game Over
+    if (this.state === 'ready') {
+      this.renderCenterBanner(ctx, 'CYBER PAC-MAN', this.isTouch ? 'Chạm để Bắt Đầu' : 'Nhấn W/A/S/D hoặc Click để Bắt Đầu', '#38bdf8');
+    } else if (this.state === 'game_over') {
+      this.renderCenterBanner(ctx, 'GAME OVER', this.isTouch ? 'Chạm để Thử Lại' : 'Nhấn Space hoặc Click để Thử Lại', '#ef4444');
+    }
+
+    ctx.restore();
+  }
+
   renderHUD(ctx) {
+    // Màn hình dọc hẹp: HUD gọn 2 dải trên/dưới mê cung (2026-10-09).
+    if (this.w < 560) {
+      this.renderHUDPortrait(ctx);
+      return;
+    }
     ctx.save();
     ctx.fillStyle = this.cfg.colors?.hudText || '#f8fafc';
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
@@ -1007,7 +1120,7 @@ export class PacmanEngine {
     }
 
     // HUD Bên Phải
-    const rightX = 556;
+    const rightX = this.w - 84; // 640-84=556: desktop giữ nguyên vị trí cũ
     ctx.textAlign = 'left';
     ctx.fillStyle = '#94a3b8';
     ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
