@@ -68,6 +68,12 @@ export class TouchControls {
       dpadContainer.classList.toggle('hidden', isAnalog);
     }
 
+    // Analog mode: giữ nút action BÊN PHẢI (justify-content: flex-end),
+    // vì D-pad bị ẩn làm space-between đẩy actions sang trái (bug 2026-10-09).
+    if (this.container) {
+      this.container.classList.toggle('analog-mode', isAnalog);
+    }
+
     if (isAnalog) {
       if (!this.analogStick) {
         this.analogStick = new AnalogStick({ inputController: this.inputController });

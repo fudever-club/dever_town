@@ -25,6 +25,12 @@
   padding: var(--space-0-calc-16px-env-safe-area-inset-right-0px-calc-16px-env-safe-area-inset-bottom-0px-calc-16px-env-safe-area-inset-left-0px);
 }
 
+/* Chế độ analog: D-pad ẩn đi, giữ cụm nút action BÊN PHẢI (2026-10-09).
+   Không có rule này, space-between với 1 item sẽ đẩy actions sang trái. */
+.mobile-touch-controls.analog-mode {
+  justify-content: flex-end;
+}
+
 .touch-dpad-container {
   pointer-events: auto;
   display: flex;

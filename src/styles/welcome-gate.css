@@ -665,15 +665,21 @@
   flex: 1;
   accent-color: var(--color-f26f21);
   cursor: pointer;
+  margin: 0; /* reset native margin để align-items: center chuẩn với label */
 }
 
 .slider-val {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--text-12px);
   font-weight: 700;
   color: var(--color-f26f21);
   min-width: 36px;
   text-align: right;
+  /* Căn giữa theo track của slider (2026-10-09): input range native cao hơn
+     track hiển thị, font-mono cũ còn làm chữ lệch baseline. */
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
 }
 
 .controls-guide .settings-hint {
