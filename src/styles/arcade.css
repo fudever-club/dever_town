@@ -537,4 +537,9 @@
     max-width: 100%;
     aspect-ratio: 16 / 9;
   }
+  /* Volleyball hiện hàng nút cảm ứng dưới canvas -> trừ thêm chiều cao của nó,
+     không thì nút bị cắt ở đáy modal (landscape 375px cao). */
+  #interactive-modal.playing-minigame:has(.sports-touch-controls:not(.hidden)) #sports-arcade-canvas {
+    height: calc(100vh - 178px);
+  }
 }
