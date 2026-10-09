@@ -24,6 +24,13 @@ export class VolleyballRallyEngine {
     // tham chiếu đúng các nút đó.
     this.isTouch = isTouchDevice();
 
+    // Camera view cho orientation-aware layout (2026-10-09): logic luôn chạy
+    // trong 640×360; render áp transform.
+    this.viewScale = 1;
+    this.viewOX = 0;
+    this.viewOY = 0;
+    this.layoutView(canvas.width, canvas.height);
+
     this.playerScore = 0;
     this.botScore = 0;
     this.rallyCount = 0;
@@ -850,12 +857,20 @@ export class VolleyballRallyEngine {
 
   render() {
     const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
     const cfg = VOLLEYBALL_CONFIG;
 
-    // 1. Sân bóng sàn gỗ Maple & Nhà thi đấu
-    this.drawCourt(ctx, w, h, cfg);
+    ctx.clearRect(0, 0, dw, dh);
+
+    // Camera transform: gameplay trong không gian logic 640×360
+    ctx.save();
+    ctx.translate(this.viewOX, this.viewOY);
+    ctx.scale(this.viewScale, this.viewScale);
+
+    // 1. Sân bóng sàn gỗ Maple — kéo dài tới đáy vùng nhìn thấy (portrait)
+    const viewBottom = (dh - this.viewOY) / this.viewScale;
+    this.drawCourt(ctx, 640, Math.max(360, viewBottom), cfg);
 
     // 2. Vệt bóng sấm sét (Ball Trails)
     this.drawBallTrails(ctx);
@@ -878,16 +893,39 @@ export class VolleyballRallyEngine {
     // 7. Quả bóng chuyền Mikasa quay tròn theo vận tốc
     this.drawBall(ctx, this.ball.x, this.ball.y, this.ball.radius, this.ballRotation, this.ball.isSpiked, this.ball.isBoomSpike);
 
-    // 8. Chớp sáng va chạm (White Flash Hit-Stop)
+    // 8. Chớp sáng va chạm (White Flash Hit-Stop) — phủ đúng vùng nhìn thấy
     if (this.whiteFlashAlpha > 0.01) {
-      ctx.save();
       ctx.fillStyle = `rgba(255, 255, 255, ${this.whiteFlashAlpha})`;
-      ctx.fillRect(0, 0, w, h);
-      ctx.restore();
+      ctx.fillRect(-this.viewOX / this.viewScale, -this.viewOY / this.viewScale, dw / this.viewScale, dh / this.viewScale);
     }
 
-    // 9. HUD Tỉ số & Hướng dẫn
+    ctx.restore(); // hết camera transform
+
+    // 9. HUD Tỉ số & Hướng dẫn — tọa độ màn hình thực
     this.renderHUD(ctx);
+  }
+
+  // Bố cục camera theo hướng màn hình (2026-10-09):
+  // - Desktop/landscape: 1:1, căn giữa theo chiều ngang mới.
+  // - Portrait: 1:1, pan ngang để toàn sân (player 120 → bot 520) lọt khung,
+  //   sân kéo dài lấp đầy chiều dọc. Vật lý giữ nguyên.
+  layoutView(w, h) {
+    this.viewScale = 1;
+    this.viewOX = (w - 640) / 2;
+    this.viewOY = 0;
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ đổi camera, logic giữ nguyên.
+  resize(w, h) {
+    this.layoutView(w, h);
+  }
+
+  // Đổi tọa độ canvas-logic sang tọa độ view (không gian gameplay 640×360)
+  toViewCoords(x, y) {
+    return {
+      x: (x - this.viewOX) / this.viewScale,
+      y: (y - this.viewOY) / this.viewScale
+    };
   }
 
   drawCourt(ctx, w, h, cfg) {
@@ -1277,41 +1315,45 @@ export class VolleyballRallyEngine {
   }
 
   renderHUD(ctx) {
+    // HUD vẽ trong tọa độ màn hình thực (sau camera transform) — 2026-10-09
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
+    const sbX = dw / 2 - 100;
     ctx.save();
 
     // Bảng Tỉ số phong cách Scoreboard điện tử
     ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-    ctx.fillRect(220, 10, 200, 52);
+    ctx.fillRect(sbX, 10, 200, 52);
     ctx.strokeStyle = '#334155';
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(220, 10, 200, 52);
+    ctx.strokeRect(sbX, 10, 200, 52);
 
     ctx.fillStyle = '#f8fafc';
     ctx.font = '800 18px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`${this.playerScore}   :   ${this.botScore}`, 320, 34);
+    ctx.fillText(`${this.playerScore}   :   ${this.botScore}`, dw / 2, 34);
 
     ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#fbbf24';
-    ctx.fillText(`RALLY CHUỖI: ${this.rallyCount}`, 320, 52);
+    ctx.fillText(`RALLY CHUỖI: ${this.rallyCount}`, dw / 2, 52);
 
     // Gợi ý hành động bên dưới
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     if (this.state === 'serving_player') {
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText(this.isTouch ? 'Bấm nút Nhảy để PHÁT BÓNG!' : 'Bấm nút Hành Động / Phím Cách để PHÁT BÓNG!', 320, 340);
+      ctx.fillText(this.isTouch ? 'Bấm nút Nhảy để PHÁT BÓNG!' : 'Bấm nút Hành Động / Phím Cách để PHÁT BÓNG!', dw / 2, dh - 18);
     } else if (this.state === 'rally') {
       if (this.player.isGrounded) {
         ctx.fillStyle = '#94a3b8';
-        ctx.fillText(this.isTouch ? 'Nhảy: [nút Nhảy] | Cứu bóng xa: Bấm nhả khi bóng sát sàn' : 'Nhảy: [Cách/W/Lên] | Cứu bóng xa: Bấm nhả khi bóng sát sàn', 320, 340);
+        ctx.fillText(this.isTouch ? 'Nhảy: [nút Nhảy] | Cứu bóng xa: Bấm nhả khi bóng sát sàn' : 'Nhảy: [Cách/W/Lên] | Cứu bóng xa: Bấm nhả khi bóng sát sàn', dw / 2, dh - 18);
       } else {
         ctx.fillStyle = '#f59e0b';
-        ctx.fillText('⚡ BẤM ĐÚNG VÒNG HỒNG TÂM ĐỂ TUNG BOOM SPIKE! ⚡', 320, 340);
+        ctx.fillText('⚡ BẤM ĐÚNG VÒNG HỒNG TÂM ĐỂ TUNG BOOM SPIKE! ⚡', dw / 2, dh - 18);
       }
     } else {
       ctx.fillStyle = '#22c55e';
-      ctx.fillText('Bấm nút Hành Động để sang lượt tiếp theo', 320, 340);
+      ctx.fillText('Bấm nút Hành Động để sang lượt tiếp theo', dw / 2, dh - 18);
     }
 
     ctx.restore();
