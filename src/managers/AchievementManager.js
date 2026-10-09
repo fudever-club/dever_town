@@ -177,9 +177,15 @@ export class AchievementManager {
     // Note: ach.icon may be an emoji badge (game content, allowed); the tag and
     // titles stay text-only per the no-emoji-in-toasts rule.
     const badgeURL = TextureGenerator.getBadgeIconURL(this.scene, achievementId);
-    const iconHTML = badgeURL
-      ? `<img src="${badgeURL}" alt="" width="40" height="40" style="image-rendering: pixelated;" />`
-      : `<span class="achievement-toast-emoji">${ach.icon || ''}</span>`;
+    // Build icon HTML only when there's real content — an empty icon box
+    // looks broken (reported 2026-10-09). ToastManager hides the icon div
+    // when iconHTML is empty.
+    let iconHTML = '';
+    if (badgeURL) {
+      iconHTML = `<img src="${badgeURL}" alt="" width="40" height="40" style="image-rendering: pixelated;" />`;
+    } else if (ach.icon && ach.icon.trim()) {
+      iconHTML = `<span class="achievement-toast-emoji">${ach.icon}</span>`;
+    }
     toastManager.achievementToast({
       iconHTML,
       title: ach.title,

@@ -121,9 +121,14 @@ export class ToastManager {
         const el = document.createElement('div');
         el.className = 'achievement-toast-banner';
         el.dataset.toastId = toastId;
+        // Icon box is only rendered when there's an actual icon — an empty
+        // box looks broken (reported 2026-10-09).
+        const iconDiv = iconHTML && iconHTML.trim()
+          ? `<div class="achievement-toast-icon">${iconHTML}</div>`
+          : '';
         // innerHTML only with game-config strings (titles/descs), never user input.
         el.innerHTML = `
-          <div class="achievement-toast-icon">${iconHTML || ''}</div>
+          ${iconDiv}
           <div class="achievement-toast-content">
             <span class="achievement-toast-tag">DANH HIỆU MỚI MỞ KHÓA</span>
             <h4 class="achievement-toast-title"></h4>

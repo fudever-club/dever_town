@@ -358,19 +358,12 @@ export class SocketManager {
   }
 
   updateConnectionStatus(online, mode = 'multiplayer') {
-    const statusText = document.querySelector('.status-text');
-    const dot = document.querySelector('.dot');
-    if (statusText && dot) {
-      if (mode === 'standalone') {
-        statusText.textContent = 'Khám Phá Campus';
-        dot.className = 'dot online';
-      } else if (online) {
-        statusText.textContent = 'Online';
-        dot.className = 'dot online';
-      } else {
-        statusText.textContent = 'Mất kết nối...';
-        dot.className = 'dot offline';
-      }
+    // Merged indicator (2026-10-09): the standalone .status-indicator element
+    // was removed — connection state now lives solely in #network-ping-badge.
+    // This keeps the online-count pill honest by dimming it when offline.
+    const onlineBadge = document.getElementById('online-count-badge');
+    if (onlineBadge) {
+      onlineBadge.classList.toggle('is-offline', !online);
     }
   }
 

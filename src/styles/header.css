@@ -205,7 +205,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-5px);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--text-11px);
   font-weight: 700;
   padding: var(--space-4px-8px);
@@ -297,6 +297,19 @@
   display: block;
   line-height: 1;
   margin-top: var(--space-1px);
+}
+
+/* Dimmed when the socket is offline — the ping badge carries the "Mất kết nối" state. */
+.badge-online.is-offline {
+  background: var(--color-rgba-100-116-139-0-15);
+  border-color: var(--color-rgba-100-116-139-0-35);
+  box-shadow: none;
+  opacity: 0.55;
+}
+
+.badge-online.is-offline .online-num,
+.badge-online.is-offline .online-label {
+  color: var(--color-94a3b8);
 }
 
 .btn-primary-sm {
