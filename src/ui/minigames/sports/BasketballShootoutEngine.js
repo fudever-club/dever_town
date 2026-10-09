@@ -515,11 +515,12 @@ export class BasketballShootoutEngine {
       return;
     }
     if (h >= w) {
-      // Portrait: zoom nhẹ vào vùng hành động (cầu thủ → rổ), sân kéo dài
-      // lấp đầy chiều dọc. Trung tâm view x=300 để cầu thủ (x=100) và bảng
-      // rổ (x=510) đều lọt khung.
-      this.viewScale = 1.05;
-      this.viewOX = w / 2 - 300 * this.viewScale;
+      // Portrait: rổ + bảng rổ cần lề phải thoáng (Hung 2026-10-09: bảng rổ
+      // dính sát mép phải ở bản cũ). viewScale 1.0, tâm x=312: mép phải bảng
+      // rổ (x=520) cách mép màn hình ~32px, cầu thủ (x=100) vẫn lọt khung.
+      // Chỉ đổi camera — vật lý (gravity, restitution) và tọa độ logic giữ nguyên.
+      this.viewScale = 1.0;
+      this.viewOX = w / 2 - 312 * this.viewScale;
       this.viewOY = (h - 360 * this.viewScale) / 2;
     } else {
       this.viewScale = 1;
