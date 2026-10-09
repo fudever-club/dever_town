@@ -686,7 +686,7 @@ export class SokobanEngine {
     const w = this.canvas.width;
     const y = 12, h = 26, gap = 8, margin = 8;
     const defs = [
-      { id: 'levels', label: this.isTouch ? 'Màn' : 'Màn (L)', bw: 38, color: '#a855f7' },
+      { id: 'levels', label: this.isTouch ? 'Màn' : 'Màn (L)', bw: this.isTouch ? 38 : 50, color: '#a855f7' },
       { id: 'restart', label: this.isTouch ? 'Chơi Lại' : 'Chơi Lại (R)', bw: 72, color: '#f59e0b' },
       { id: 'undo', label: this.isTouch ? 'Hoàn Tác' : 'Hoàn Tác (U)', bw: 85, color: '#38bdf8' },
     ];
