@@ -128,6 +128,11 @@ export class FriendsListModal {
       if (e.key === 'Escape' && this.isOpen) {
         this.hide();
       } else if ((e.key === 'f' || e.key === 'F') && !this.isInputFocused()) {
+        // Không cướp phím F khi NPC dialogue đang mở — NPC tự xử lý F để đóng
+        // (tránh mở Friends vô tình rồi chặn mọi tương tác E sau đó)
+        const npcModal = document.getElementById('npc-dialogue-modal');
+        const npcOpen = npcModal && npcModal.style.bottom !== '-200px' && npcModal.style.bottom !== '';
+        if (npcOpen) return;
         const activeModal = document.querySelector('.modal-backdrop:not(.hidden)');
         if (!activeModal || activeModal === this.modalEl) {
           e.preventDefault();

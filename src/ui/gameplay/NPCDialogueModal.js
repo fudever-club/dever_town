@@ -152,14 +152,18 @@ export class NPCDialogueModal {
       const key = e.code || e.key;
       if (key === 'KeyE' || key === 'e' || key === 'E' || key === 'Space' || key === ' ') {
         e.preventDefault();
+        e.stopPropagation();
         this.advance();
       }
       if (key === 'KeyF' || key === 'f' || key === 'F' || key === 'Escape') {
         e.preventDefault();
+        e.stopPropagation();
         this.close();
       }
     };
-    window.addEventListener('keydown', this._handleKey);
+    // Capture phase: chạy trước mọi bubble listener trên window (vd: phím F của
+    // FriendsListModal) để 1 lần nhấn F đóng NPC không vô tình mở Friends.
+    window.addEventListener('keydown', this._handleKey, true);
     
     // Click to advance
     this.modal.addEventListener('click', () => { if (this.isOpen) this.advance(); });
@@ -317,7 +321,7 @@ export class NPCDialogueModal {
   
   destroy() {
     if (this.typewriterTimer) clearInterval(this.typewriterTimer);
-    window.removeEventListener('keydown', this._handleKey);
+    window.removeEventListener('keydown', this._handleKey, true);
     if (this.overlay.parentNode) this.overlay.remove();
     if (this.modal.parentNode) this.modal.remove();
   }
