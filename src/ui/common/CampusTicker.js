@@ -47,6 +47,13 @@ export class CampusTicker {
         this.bellDropdown.classList.add('hidden');
       }
     });
+
+    // Esc đóng dropdown chuông (đồng nhất với help overlay / overflow menu)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.bellDropdown && !this.bellDropdown.classList.contains('hidden')) {
+        this.bellDropdown.classList.add('hidden');
+      }
+    });
   }
 
   toggleDropdown() {

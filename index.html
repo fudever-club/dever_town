@@ -354,14 +354,6 @@
           <span data-i18n="inventoryBtn">Túi Đồ</span>
         </button>
 
-        <!-- Nút Tủ Đồ Tùy Chỉnh -->
-        <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
-          </svg>
-          <span data-i18n="wardrobeBtn">Tủ Đồ</span>
-        </button>
-
         <!-- Nút Bạn Bè & Kết Bạn [Phím F] -->
         <button id="header-friends-btn" class="btn-primary-sm btn-friends" title="Danh Sách Bạn Bè & Kết Bạn [Phím F]">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -374,48 +366,6 @@
           <span id="friends-badge-count" class="friends-badge-count hidden">0</span>
         </button>
 
-        <!-- Nút Cổng Tiện Ích FPTU & Tải Phần Mềm Thi -->
-        <button id="header-fptu-portal-btn" class="btn-primary-sm btn-fptu-portal" title="Cổng Thông Tin FPTU & Kho Phần Mềm Thi">
-          <span class="portal-icon">🏛️</span>
-          <span data-i18n="fptuPortalBtn">Cổng FPTU</span>
-        </button>
-
-        <!-- Nút Nhiệm Vụ Hằng Ngày & Tích Điểm -->
-        <button id="header-quests-btn" class="btn-primary-sm btn-quests" title="Nhiệm Vụ Hằng Ngày & Điểm Thưởng">
-          <span class="quest-coin-icon">🪙</span>
-          <span id="header-points-display" class="header-points-text">0</span>
-          <span data-i18n="questsBtn">Nhiệm Vụ</span>
-        </button>
-
-        <!-- Nút Biểu Cảm Nhanh [G] -->
-        <button id="header-emote-btn" class="btn-primary-sm btn-emote" title="Biểu Cảm & Nhảy Múa [Phím G]">
-          <span class="emote-btn-icon">✨</span>
-          <span data-i18n="emoteBtn">Biểu Cảm</span>
-        </button>
-
-        <!-- Nút Đấu Trí Siêu Tốc -->
-        <button id="header-speed-duel-btn" class="btn-primary-sm btn-speed-duel" title="Đấu Trí Lập Trình Siêu Tốc [Phím Z]">
-          <span class="duel-btn-icon">⚡</span>
-          <span data-i18n="speedDuelBtn">Đấu Trí</span>
-        </button>
-
-        <!-- Nút Bật/Tắt Nhạc Nền 8-Bit BGM -->
-        <button id="header-bgm-btn" class="btn-icon-square btn-bgm" title="Bật / Tắt Nhạc Nền 8-Bit Vui Nhộn">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18V5l12-2v13"></path>
-            <circle cx="6" cy="18" r="3"></circle>
-            <circle cx="18" cy="16" r="3"></circle>
-          </svg>
-        </button>
-
-        <button id="header-auth-btn" class="btn-primary-sm" title="Tài khoản & Đổi Avatar">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span id="auth-btn-text" data-i18n="profileBtn">Hồ Sơ</span>
-        </button>
-
         <!-- Nút Cài Đặt Hệ Thống (Âm Thanh & Ngôn Ngữ) -->
         <button id="header-settings-btn" class="btn-primary-sm btn-settings" title="Cài Đặt Hệ Thống & Ngôn Ngữ">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -425,7 +375,16 @@
           <span data-i18n="settingsBtn">Cài Đặt</span>
         </button>
 
-        <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản" data-i18n="logoutBtn">Đăng xuất</button>
+        <!-- Nút menu "⋯" gom các chức năng phụ (Tủ Đồ, Cổng FPTU, Nhiệm Vụ, Biểu Cảm, Đấu Trí, Nhạc, Hồ Sơ, Đăng xuất, Toàn màn hình) -->
+        <div class="header-overflow-wrap">
+          <button id="header-overflow-btn" class="btn-icon-square" title="Thêm chức năng" aria-haspopup="true" aria-expanded="false" aria-controls="header-overflow-menu">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.8"></circle>
+              <circle cx="12" cy="12" r="1.8"></circle>
+              <circle cx="19" cy="12" r="1.8"></circle>
+            </svg>
+          </button>
+        </div>
 
         <!-- Nút Thông Báo (thay thế ticker footer) -->
         <div class="header-bell-wrap">
@@ -436,27 +395,8 @@
             </svg>
             <span id="bell-unread-dot" class="bell-unread-dot hidden"></span>
           </button>
-          <div id="bell-dropdown" class="bell-dropdown hidden">
-            <div class="bell-dropdown-header">Thông báo</div>
-            <div id="bell-dropdown-list" class="bell-dropdown-list"></div>
-          </div>
         </div>
 
-        <!-- Fullscreen Toggle -->
-        <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
-          <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <polyline points="9 21 3 21 3 15"></polyline>
-            <line x1="21" y1="3" x2="14" y2="10"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-          <svg id="fullscreen-icon-compress" class="btn-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 14 10 14 10 20"></polyline>
-            <polyline points="20 10 14 10 14 4"></polyline>
-            <line x1="14" y1="10" x2="21" y2="3"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-        </button>
         <!-- Network Latency / Ping Indicator -->
         <span id="network-ping-badge" class="network-ping-badge good" title="Độ trễ máy chủ Realtime (Ping)">
           <span class="ping-dot green"></span> 35ms
@@ -471,7 +411,103 @@
           <span class="status-text" data-i18n="onlineText">Online</span>
         </div>
       </div>
+
+
     </header>
+
+      <!-- Overflow menu "⋯": các nút phụ đã gom (giữ nguyên DOM ID, emoji thay bằng SVG theo rule 5) -->
+    <div id="header-overflow-menu" class="header-overflow-menu hidden" role="menu" aria-hidden="true">
+      <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" role="menuitem" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+        </svg>
+        <span data-i18n="wardrobeBtn">Tủ Đồ</span>
+      </button>
+
+      <button id="header-fptu-portal-btn" class="btn-primary-sm btn-fptu-portal" role="menuitem" title="Cổng Thông Tin FPTU & Kho Phần Mềm Thi">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" x2="21" y1="22" y2="22"></line>
+          <line x1="6" x2="6" y1="18" y2="11"></line>
+          <line x1="10" x2="10" y1="18" y2="11"></line>
+          <line x1="14" x2="14" y1="18" y2="11"></line>
+          <line x1="18" x2="18" y1="18" y2="11"></line>
+          <polygon points="12 2 20 7 4 7"></polygon>
+        </svg>
+        <span data-i18n="fptuPortalBtn">Cổng FPTU</span>
+      </button>
+
+      <button id="header-quests-btn" class="btn-primary-sm btn-quests" role="menuitem" title="Nhiệm Vụ Hằng Ngày & Điểm Thưởng">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M10 8.5v7M10 8.5h2.5a3.5 3.5 0 0 1 0 7H10"></path>
+        </svg>
+        <span data-i18n="questsBtn">Nhiệm Vụ</span>
+        <span id="header-points-display" class="header-points-text">0</span>
+      </button>
+
+      <button id="header-emote-btn" class="btn-primary-sm btn-emote" role="menuitem" title="Biểu Cảm & Nhảy Múa [Phím G]">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 3l1.9 5.7 5.7 1.9-5.7 1.9L12 18.2l-1.9-5.7-5.7-1.9 5.7-1.9z"></path>
+          <path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path>
+        </svg>
+        <span data-i18n="emoteBtn">Biểu Cảm</span>
+      </button>
+
+      <button id="header-speed-duel-btn" class="btn-primary-sm btn-speed-duel" role="menuitem" title="Đấu Trí Lập Trình Siêu Tốc [Phím Z]">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span data-i18n="speedDuelBtn">Đấu Trí</span>
+      </button>
+
+      <button id="header-bgm-btn" class="btn-icon-square btn-bgm" role="menuitem" title="Bật / Tắt Nhạc Nền 8-Bit Vui Nhộn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        <span>Nhạc Nền</span>
+      </button>
+
+      <button id="header-auth-btn" class="btn-primary-sm" role="menuitem" title="Tài khoản & Đổi Avatar">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span id="auth-btn-text" data-i18n="profileBtn">Hồ Sơ</span>
+      </button>
+
+      <button id="header-logout-btn" class="btn-ghost hidden" role="menuitem" title="Đăng xuất tài khoản">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span data-i18n="logoutBtn">Đăng xuất</span>
+      </button>
+
+      <button id="fullscreen-btn" class="btn-icon-square" role="menuitem" title="Chuyển chế độ Toàn màn hình">
+        <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <svg id="fullscreen-icon-compress" class="btn-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="4 14 10 14 10 20"></polyline>
+          <polyline points="20 10 14 10 14 4"></polyline>
+          <line x1="14" y1="10" x2="21" y2="3"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <span>Toàn Màn Hình</span>
+      </button>
+    </div>
+
+    <!-- Bell dropdown: tách ra body để thoát overflow của header trên mobile -->
+    <div id="bell-dropdown" class="bell-dropdown hidden">
+      <div class="bell-dropdown-header">Thông báo</div>
+      <div id="bell-dropdown-list" class="bell-dropdown-list"></div>
+    </div>
 
     <!-- Main Workspace (800x600 Game Canvas + 344px Live Chat = 1160px) -->
     <main id="main-content">
@@ -481,39 +517,39 @@
           <div class="onboarding-card">
             <div class="onboarding-header">
               <span class="onboarding-badge" data-i18n="onboardingBadge">HƯỚNG DẪN TÂN THỦ</span>
-              <h3 class="onboarding-title" data-i18n="onboardingTitle">Chào mừng bạn đến với DEVER TOWN! 🎮</h3>
+              <h3 class="onboarding-title" data-i18n="onboardingTitle">Chào mừng bạn đến với DEVER TOWN!</h3>
             </div>
             <div class="onboarding-grid">
               <div class="onboarding-item">
-                <span class="onboarding-icon">🕹️</span>
+                <span class="onboarding-kbd"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep1Title">Di Chuyển</h4>
                   <p data-i18n="onboardingStep1Desc">Dùng phím <strong>W, A, S, D</strong> hoặc <strong>Phím Mũi Tên</strong> để điều khiển nhân vật.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">⚡</span>
+                <span class="onboarding-kbd"><kbd>E</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep2Title">Tương Tác Sự Kiện</h4>
                   <p data-i18n="onboardingStep2Desc">Bước vào vòng sáng quanh đồ vật và nhấn phím <strong>[E]</strong> để mở Slide, Code, Lofi, Web, Thể thao.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">🎒</span>
+                <span class="onboarding-kbd"><kbd>I</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep3Title">Túi Đồ FPTU</h4>
                   <p data-i18n="onboardingStep3Desc">Nhấn phím <strong>[I]</strong> để mở Túi đồ, nhặt đồ rơi và cầm MacBook, Cóc Vàng, Bàn phím trên tay.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">🚪</span>
+                <span class="onboarding-kbd"><kbd>Portal</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep4Title">9 Phân Khu Chức Năng</h4>
                   <p data-i18n="onboardingStep4Desc">Bước qua cổng <strong>Portal màu tím</strong> hoặc dùng Menu đổi phòng trên thanh điều hướng.</p>
                 </div>
               </div>
             </div>
-            <button type="button" id="onboarding-close-btn" class="onboarding-btn" data-i18n="onboardingDismissBtn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
+            <button type="button" id="onboarding-close-btn" class="onboarding-btn" data-i18n="onboardingDismissBtn">Đã Hiểu & Bắt Đầu Khám Phá</button>
           </div>
         </div>
 
@@ -1812,6 +1848,15 @@
           <div class="help-hotkey-row"><span class="help-keys"><kbd>Z</kbd></span><span class="help-desc">Đấu trí siêu tốc</span></div>
           <div class="help-hotkey-row"><span class="help-keys"><kbd>H</kbd></span><span class="help-desc">Chế độ tập trung (ẩn toàn bộ giao diện)</span></div>
           <div class="help-hotkey-row"><span class="help-keys"><kbd>Esc</kbd></span><span class="help-desc">Đóng hộp thoại / thoát chế độ tập trung</span></div>
+        </div>
+        <div class="help-tutorial-section">
+          <h3 class="help-section-title">Hướng dẫn cơ bản</h3>
+          <ol class="help-tutorial-list">
+            <li><strong>Chào mừng đến DEVER TOWN</strong> — thị trấn ảo của CLB FU-DEVER. Đi dạo, gặp gỡ và trò chuyện với mọi người.</li>
+            <li><strong>Di chuyển</strong> bằng W A S D hoặc phím mũi tên (trên điện thoại dùng D-pad ảo). <strong>Nhấn E</strong> khi đứng gần vật phát sáng, cổng tím hoặc NPC để tương tác.</li>
+            <li><strong>Trò chuyện</strong> bằng phím C, <strong>mở túi đồ</strong> bằng I, <strong>xem bản đồ radar</strong> bằng M.</li>
+            <li><strong>Khám phá 9 phân khu</strong> bằng cách bước qua cổng tím hoặc dùng menu đổi phòng trên thanh điều hướng.</li>
+          </ol>
         </div>
       </div>
     </div>

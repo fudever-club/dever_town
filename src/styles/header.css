@@ -490,3 +490,114 @@
   font-size: var(--text-12px);
   color: var(--color-64748b);
 }
+
+/* --- HEADER OVERFLOW MENU "⋯" (gom nút phụ, 2026-10-09) ---
+   Menu đặt fixed + neo bằng JS để thoát khỏi overflow-x của .header-actions
+   (cùng kỹ thuật với .bell-dropdown). */
+.header-overflow-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+#header-overflow-btn.active {
+  background: var(--color-rgba-56-189-248-0-15);
+  color: var(--color-38bdf8);
+  border-color: var(--color-rgba-56-189-248-0-4);
+}
+
+.header-overflow-menu {
+  position: fixed;
+  /* top/right set từ JS (getBoundingClientRect) */
+  min-width: 230px;
+  max-width: 86vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: var(--color-rgba-15-23-42-0-98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-12px);
+  box-shadow: 0 16px 48px var(--color-rgba-0-0-0-0-7);
+  z-index: var(--z-10000005);
+  animation: bellDropIn 0.18s ease;
+}
+
+.header-overflow-menu.hidden {
+  display: none;
+}
+
+/* Reset các nút về dạng hàng menu (đè cả rule mobile 28px) */
+.header-overflow-menu .btn-primary-sm,
+.header-overflow-menu .btn-icon-square,
+.header-overflow-menu .btn-ghost {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 44px !important;
+  padding: 10px 12px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  color: var(--color-e2e8f0) !important;
+  font-family: var(--font-body) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  cursor: pointer;
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+}
+
+.header-overflow-menu button:hover {
+  background: var(--color-rgba-56-189-248-0-12) !important;
+  color: var(--color-38bdf8) !important;
+}
+
+.header-overflow-menu button:active {
+  background: var(--color-rgba-56-189-248-0-2) !important;
+}
+
+/* Nút đang ẩn (vd: Đăng xuất khi chưa login) vẫn ẩn trong menu */
+.header-overflow-menu button.hidden {
+  display: none !important;
+}
+
+.header-overflow-menu .btn-icon {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0;
+}
+
+.header-overflow-menu button span {
+  display: inline !important;
+}
+
+/* Điểm D-Coin trong mục Nhiệm Vụ: đẩy sang phải */
+.header-overflow-menu .header-points-text {
+  margin-left: auto;
+  font-family: var(--font-mono-system);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-fbbf24);
+  padding: 2px 8px !important;
+  background: var(--color-rgba-251-191-36-0-12);
+  border-radius: 10px;
+}
+
+/* Trạng thái BGM đang bật trong menu */
+.header-overflow-menu #header-bgm-btn.active {
+  color: var(--color-34d399) !important;
+}

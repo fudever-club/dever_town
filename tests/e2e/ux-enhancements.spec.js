@@ -71,18 +71,19 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(title).toContainText(/Lab|Tech/);
   });
 
-  test('03. Emote Bar opens via [G] or Header button and triggers reaction', async ({ page }) => {
+  test('03. Emote Bar opens via [G] or Header button and triggers reaction', async ({ page }, testInfo) => {
     const emoteBar = page.locator('#emote-bar');
     await expect(emoteBar).toHaveClass(/hidden/);
 
-    // Mở bằng nút Header hoặc nút Touch Controls nếu trên mobile
-    const headerEmoteBtn = page.locator('#header-emote-btn');
-    if (await headerEmoteBtn.isVisible()) {
-      await headerEmoteBtn.click();
-    } else {
+    // Mở bằng nút Header (đã gom vào overflow menu "⋯" từ 2026-10-09) hoặc nút Touch Controls nếu trên mobile
+    const isMobile = testInfo.project.name.toLowerCase().includes('mobile');
+    if (isMobile) {
       const touchEmote = page.locator('#touch-btn-emote');
       await touchEmote.dispatchEvent('pointerdown');
       await touchEmote.dispatchEvent('pointerup');
+    } else {
+      await page.locator('#header-overflow-btn').click();
+      await page.locator('#header-emote-btn').click();
     }
     await expect(emoteBar).toHaveClass(/visible/);
 
@@ -102,18 +103,19 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(emoteBar).not.toHaveClass(/visible/);
   });
 
-  test('04. Speed Code Duel opens, starts sprint, answers question and scores', async ({ page }) => {
+  test('04. Speed Code Duel opens, starts sprint, answers question and scores', async ({ page }, testInfo) => {
     const duelModal = page.locator('#speed-code-duel-modal');
     await expect(duelModal).toHaveClass(/hidden/);
 
-    // Mở minigame qua nút Header hoặc nút Touch Controls nếu trên mobile
-    const duelBtn = page.locator('#header-speed-duel-btn');
-    if (await duelBtn.isVisible()) {
-      await duelBtn.click();
-    } else {
+    // Mở minigame qua nút Header (đã gom vào overflow menu "⋯" từ 2026-10-09) hoặc nút Touch Controls nếu trên mobile
+    const isMobile = testInfo.project.name.toLowerCase().includes('mobile');
+    if (isMobile) {
       const touchDuel = page.locator('#touch-btn-speed-duel');
       await touchDuel.dispatchEvent('pointerdown');
       await touchDuel.dispatchEvent('pointerup');
+    } else {
+      await page.locator('#header-overflow-btn').click();
+      await page.locator('#header-speed-duel-btn').click();
     }
     await expect(duelModal).not.toHaveClass(/hidden/);
 
@@ -151,13 +153,16 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
 
   test('05. Chiptune 8-Bit BGM button toggles state', async ({ page }) => {
     const bgmBtn = page.locator('#header-bgm-btn');
+    // Nút đã gom vào overflow menu "⋯" từ 2026-10-09 — mở menu trước
+    await page.locator('#header-overflow-btn').click();
     await expect(bgmBtn).toBeVisible();
 
-    // Bật nhạc nền
+    // Bật nhạc nền (chọn mục trong menu sẽ tự đóng menu)
     await bgmBtn.click();
     await expect(bgmBtn).toHaveClass(/active/);
 
-    // Tắt nhạc nền
+    // Tắt nhạc nền (mở lại menu trước)
+    await page.locator('#header-overflow-btn').click();
     await bgmBtn.click();
     await expect(bgmBtn).not.toHaveClass(/active/);
   });
