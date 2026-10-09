@@ -407,3 +407,134 @@
     gap: var(--space-8px);
   }
 }
+
+/* ==========================================================================
+   MINIGAME MOBILE TOUCH-NATIVE + DESKTOP ENLARGEMENT (2026-10-09, Hưng)
+   - Mobile (pointer: coarse): mọi game arcade/sports đều chơi được bằng cảm
+     ứng trên canvas (tap / vuốt / kéo) -> ẩn toàn bộ nút DOM thừa, ẩn modal
+     header khi đang chơi, topbar gọn lại. Canvas portrait giữ 16:9 full-width;
+     landscape thì canvas ăn theo chiều cao để to nhất có thể.
+   - Desktop: canvas hiển thị 640 -> 960px (diện tích x2.25). Backing store vẫn
+     640x360 nên mọi logic/cơ chế game giữ nguyên 100%; retro dùng
+     image-rendering: pixelated để pixel-art nét căng khi phóng to.
+   ========================================================================== */
+
+/* Nút đóng trong topbar — chỉ hiện trên mobile (khi modal header bị ẩn) */
+.game-close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  margin-left: auto;
+  border-radius: var(--radius-10px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-ffffff);
+  cursor: pointer;
+}
+.game-close-btn:active { transform: scale(0.95); }
+
+/* Pixel-art nét khi phóng to bằng CSS (desktop 1.5x, mobile scale) */
+#retro-arcade-canvas {
+  image-rendering: pixelated;
+}
+
+/* ---------- Desktop: phóng to canvas 640 -> 960px ---------- */
+@media (min-width: 1024px) {
+  .arcade-canvas-wrapper {
+    max-width: 960px;
+  }
+  #retro-arcade-canvas {
+    max-width: 960px;
+  }
+  .game-topbar {
+    max-width: 960px;
+  }
+  .arcade-touch-controls {
+    max-width: 640px;
+  }
+}
+
+/* ---------- Mobile cảm ứng: tối đa diện tích canvas ---------- */
+@media (pointer: coarse) {
+  /* Ẩn modal header (title + slogan) khi đang chơi game; nút X nằm ở topbar */
+  #interactive-modal.playing-minigame .modal-header {
+    display: none;
+  }
+  #interactive-modal.playing-minigame .game-close-btn {
+    display: inline-flex;
+  }
+  /* Mọi game arcade đã chơi được bằng tap/vuốt trên canvas -> ẩn cụm nút DOM */
+  #interactive-modal.playing-minigame #arcade-touch-controls {
+    display: none;
+  }
+  /* Sports: football/basketball/barista/volleyball đều có điều khiển cảm ứng
+     trên canvas (hoặc cụm nút gọn của volleyball) -> ẩn nút hành động lớn */
+  #interactive-modal.playing-minigame #sports-action-btn {
+    display: none;
+  }
+  /* Topbar gọn trên mobile */
+  #interactive-modal.playing-minigame .game-topbar {
+    gap: var(--space-6px);
+    padding: var(--space-2px) var(--space-4px);
+  }
+  #interactive-modal.playing-minigame .game-back-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    font-size: var(--text-10px);
+    padding: var(--space-3px-8px);
+  }
+  /* Topbar 2 hàng có chủ đích trên mobile: hàng 1 = back + đóng (căn 2 đầu),
+     hàng 2 = các badge điểm. Tránh nút X bị rớt xuống hàng một mình trông dở. */
+  #interactive-modal.playing-minigame .game-topbar {
+    row-gap: var(--space-6px);
+  }
+  #interactive-modal.playing-minigame .game-back-btn {
+    order: 1;
+  }
+  #interactive-modal.playing-minigame .game-close-btn {
+    order: 2;
+  }
+  /* Flex line-break: ép mọi badge xuống hàng 2 */
+  #interactive-modal.playing-minigame .game-topbar::after {
+    content: '';
+    order: 3;
+    flex-basis: 100%;
+    height: 0;
+    margin: 0;
+  }
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    order: 4;
+  }
+  /* Modal đỡ padding để canvas rộng thêm vài px */
+  #interactive-modal.playing-minigame .modal-card-xl {
+    padding: var(--space-12px) !important;
+  }
+}
+
+/* Landscape mobile: canvas ăn theo chiều cao viewport (to hơn hẳn portrait).
+   Dùng vh trực tiếp thay vì flex-chain vì chuỗi height:100% resolve không ổn
+   định trên một số trình duyệt (canvas bị tràn khỏi modal). */
+@media (pointer: coarse) and (orientation: landscape) {
+  /* Du cho 1 hang: bo line-break, tra order ve mac dinh */
+  #interactive-modal.playing-minigame .game-topbar::after {
+    display: none;
+  }
+  #interactive-modal.playing-minigame .game-back-btn,
+  #interactive-modal.playing-minigame .game-close-btn,
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    order: 0;
+  }
+  #interactive-modal.playing-minigame #retro-arcade-canvas,
+  #interactive-modal.playing-minigame #sports-arcade-canvas {
+    width: auto;
+    height: calc(100vh - 124px); /* trừ modal padding + topbar 1 hàng + gaps */
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+}

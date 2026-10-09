@@ -24,11 +24,16 @@ const SPORTS_ICONS = {
 };
 
 const SPORTS_GAMES = [
-  { id: 'football', name: 'Sút Phạt Đền 11M', badge: 'SÚT PHẠT ĐỀN 11M', controls: 'Space: sút bóng', highKey: 'footballHigh', highFmt: (v) => `${v}` },
-  { id: 'basketball', name: 'Bóng Rổ Flappy', badge: 'BÓNG RỔ FLAPPY DUNK', controls: 'Space / Click: nhấp bóng', highKey: 'basketballHigh', highFmt: (v) => `${v}đ` },
-  { id: 'volleyball', name: 'Bóng Chuyền Spike', badge: 'BÓNG CHUYỀN SPIKE RALLY', controls: 'A/D: di chuyển • Space: đập', highKey: 'volleyballHigh', highFmt: (v) => `${v}` },
-  { id: 'barista', name: 'Quầy Barista', badge: 'QUẦY BARISTA DEVER', controls: 'Space: pha chế', highKey: 'baristaScore', highFmt: (v) => `${v}đ` }
+  { id: 'football', name: 'Sút Phạt Đền 11M', badge: 'SÚT PHẠT ĐỀN 11M', controls: 'Space: sút bóng', touch: 'Vuốt để ngắm & sút • chạm để di chuyển găng', highKey: 'footballHigh', highFmt: (v) => `${v}` },
+  { id: 'basketball', name: 'Bóng Rổ Flappy', badge: 'BÓNG RỔ FLAPPY DUNK', controls: 'Space / Click: nhấp bóng', touch: 'Kéo để ném • chạm để nhảy', highKey: 'basketballHigh', highFmt: (v) => `${v}đ` },
+  { id: 'volleyball', name: 'Bóng Chuyền Spike', badge: 'BÓNG CHUYỀN SPIKE RALLY', controls: 'A/D: di chuyển • Space: đập', touch: 'Nút Trái/Phải di chuyển • Nhảy để đập', highKey: 'volleyballHigh', highFmt: (v) => `${v}` },
+  { id: 'barista', name: 'Quầy Barista', badge: 'QUẦY BARISTA DEVER', controls: 'Space: pha chế', touch: 'Chạm & kéo để pha chế', highKey: 'baristaScore', highFmt: (v) => `${v}đ` }
 ];
+
+// true khi thiết bị dùng cảm ứng là chính — card chọn môn hiện hướng dẫn chạm.
+function isCoarsePointerSports() {
+  return typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
+}
 
 InteractiveModal.prototype.initSportsEngine = function() {
   this.sportsGameType = 'football';
@@ -56,6 +61,11 @@ InteractiveModal.prototype.setupSportsView = function(zoneData) {
   const pane = document.getElementById('pane-sports');
   if (!pane) return;
   pane.classList.remove('hidden');
+
+  // Ẩn slogan "FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD" trên
+  // màn hình minigame để tối đa diện tích chơi (2026-10-09, yêu cầu của Hưng).
+  // base.show() sẽ hiện lại cho các zone khác.
+  document.getElementById('interactive-modal-desc')?.classList.add('hidden');
 
   const canvas = document.getElementById('sports-arcade-canvas');
   if (canvas && !this.sportsArcade) {
@@ -94,6 +104,16 @@ InteractiveModal.prototype.setupSportsView = function(zoneData) {
   if (btnJump && !btnJump.dataset.initialized) {
     btnJump.dataset.initialized = 'true';
     btnJump.addEventListener('click', () => { if (this.sportsArcade) this.sportsArcade.onActionTrigger(); });
+  }
+
+  // Close button trong topbar (hiện trên mobile khi modal header bị ẩn)
+  const closeBtn = document.getElementById('sports-close-btn');
+  if (closeBtn && !closeBtn.dataset.initialized) {
+    closeBtn.dataset.initialized = 'true';
+    closeBtn.addEventListener('click', () => {
+      audioManager.playClick();
+      this.hide();
+    });
   }
 
   // Back button -> select screen
@@ -136,7 +156,7 @@ InteractiveModal.prototype.buildSportsCards = function() {
       `<span class="game-card-controls"></span>`;
     card.querySelector('.game-card-name').textContent = g.name;
     card.querySelector('.game-card-high').textContent = `Kỷ lục: ${g.highFmt(scores[g.highKey] ?? 0)}`;
-    card.querySelector('.game-card-controls').textContent = g.controls;
+    card.querySelector('.game-card-controls').textContent = isCoarsePointerSports() && g.touch ? g.touch : g.controls;
 
     card.addEventListener('click', () => {
       audioManager.playClick();
@@ -162,6 +182,8 @@ InteractiveModal.prototype.showSportsSelect = function() {
   const play = document.getElementById('sports-play-screen');
   if (sel) sel.classList.remove('hidden');
   if (play) play.classList.add('hidden');
+  // Rời gameplay -> hiện lại modal header (mobile)
+  document.getElementById('interactive-modal')?.classList.remove('playing-minigame');
   this.buildSportsCards();
   this.refreshSportsCardHighs();
 };
@@ -175,6 +197,10 @@ InteractiveModal.prototype.playSportsGame = function(sportId) {
   const play = document.getElementById('sports-play-screen');
   if (sel) sel.classList.add('hidden');
   if (play) play.classList.remove('hidden');
+
+  // Vào gameplay -> ẩn modal header trên mobile để tối đa diện tích canvas
+  // (CSS: #interactive-modal.playing-minigame .modal-header { display:none })
+  document.getElementById('interactive-modal')?.classList.add('playing-minigame');
 
   if (this.sportsArcade) {
     this.sportsArcade.setGame(sportId);

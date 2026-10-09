@@ -202,7 +202,12 @@ export class InteractiveModal {
     const descEl = document.getElementById('interactive-modal-desc');
 
     if (titleEl) titleEl.textContent = zoneData.name || 'Khu Vực Tương Tác FU-DEVER';
-    if (descEl) descEl.textContent = 'FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD';
+    // Slogan mặc định cho mọi zone; các zone minigame (arcade/sports) sẽ tự ẩn
+    // trong setup view của chúng để tối đa diện tích màn hình chơi (2026-10-09).
+    if (descEl) {
+      descEl.classList.remove('hidden');
+      descEl.textContent = 'FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD';
+    }
 
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));
@@ -289,6 +294,8 @@ export class InteractiveModal {
       this.retroArcade.stop();
     }
     this.modalEl.classList.add('hidden');
+    // Thoát chế độ gameplay minigame (hiện lại modal header trên mobile)
+    this.modalEl.classList.remove('playing-minigame');
 
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));

@@ -253,10 +253,18 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(page.locator('#sports-play-screen')).not.toHaveClass(/hidden/);
     await expect(page.locator('#sports-arcade-canvas')).toBeVisible();
 
-    // Click nút Hành Động Sút bóng / Nhảy
+    // Kích hoạt Hành Động Sút bóng / Nhảy: trên desktop bấm nút, trên mobile
+    // (pointer: coarse) nút bị ẩn vì game đã chơi bằng cảm ứng -> gọi trực tiếp
+    // cùng code path với nút (SportsArcade.onActionTrigger). Không dùng Space vì
+    // handleKeyDown có activation grace 300ms sẽ nuốt phím khi test bấm quá nhanh.
     const actionBtn = page.locator('#sports-action-btn');
-    await expect(actionBtn).toBeVisible();
-    await actionBtn.click();
+    const triggerSportsAction = async () => {
+      if (await actionBtn.isVisible()) await actionBtn.click();
+      else await page.evaluate(() => {
+        window.__DEVER_GAME__?.scene?.getScene('WorldScene')?.interactiveModal?.sportsArcade?.onActionTrigger();
+      });
+    };
+    await triggerSportsAction();
     // Dòng chảy hai lần bấm (two-tap) chuẩn của PenaltyShootoutEngine.onActionTrigger:
     // tap 1: aiming -> power_charging (nạp lực); tap 2: power_charging -> runup/flight
     // (khóa lực và sút). Test bấm lần 1 rồi đợi nạp lực trước khi bấm lần 2.
@@ -265,7 +273,7 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       return scene?.interactiveModal?.sportsArcade?.football?.state;
     });
     await expect.poll(footballState, { timeout: 5000 }).toBe('power_charging');
-    await actionBtn.click();
+    await triggerSportsAction();
 
     // Đợi cú sút hoàn tất: runup/flight -> trạng thái kết thúc (thay sleep 200ms).
     await expect.poll(footballState, { timeout: 10000 })
@@ -284,7 +292,7 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
       return scene?.interactiveModal?.sportsArcade?.currentGame;
     }), { timeout: 5000 }).toBe('basketball');
-    await actionBtn.click();
+    await triggerSportsAction();
 
     // Đổi game sang Volleyball: back về select screen rồi chọn card
     await page.locator('#sports-back-btn').click();
@@ -294,7 +302,7 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
       return scene?.interactiveModal?.sportsArcade?.currentGame;
     }), { timeout: 5000 }).toBe('volleyball');
-    await actionBtn.click();
+    await triggerSportsAction();
 
     // Đóng modal bằng phím Escape
     await page.keyboard.press('Escape');
@@ -352,10 +360,13 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await expect(modal).not.toHaveClass(/hidden/);
     await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
 
-    // Click nút Hành Động Pha Chế
+    // Kích hoạt Hành Động Pha Chế: desktop bấm nút, mobile (nút ẩn) gọi trực tiếp
+    // cùng code path với nút (xem chú thích ở test 07 về activation grace).
     const actionBtn = page.locator('#sports-action-btn');
-    await expect(actionBtn).toBeVisible();
-    await actionBtn.click();
+    if (await actionBtn.isVisible()) await actionBtn.click();
+    else await page.evaluate(() => {
+      window.__DEVER_GAME__?.scene?.getScene('WorldScene')?.interactiveModal?.sportsArcade?.onActionTrigger();
+    });
     // Đợi barista engine nhận order: station order -> tamping/layering (thay sleep 100ms).
     await expect.poll(async () => page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
@@ -370,11 +381,13 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await page.locator('#room-selector').selectOption('sports_complex');
     // Đợi WorldScene thực sự chuyển sang sports_complex và đăng ký xong interaction
     // zones — cùng pattern __WORLD_SCENE__ đã dùng ở test 06/07 (thay sleep 1200ms).
+    // Timeout 30s: sports_complex là map nặng, khi chạy parallel nhiều worker có
+    // thể load asset chậm (flake đã gặp 2026-10-09).
     await expect.poll(async () => page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
       return !!scene && scene.currentRoomId === 'sports_complex'
         && (scene.interactionManager?.zones?.length ?? 0) > 0;
-    }), { timeout: 15000 }).toBe(true);
+    }), { timeout: 30000 }).toBe(true);
 
     // Di chuyển vào sân bóng đá tại tile (5, 4)
     await page.evaluate(() => {

@@ -47,6 +47,12 @@ export class RetroArcade {
     // Common input state
     this.keys = {};
 
+    // Vuốt trên cảm ứng cho game định hướng (snake/pacman/sokoban):
+    // ghi lại điểm chạm để phân biệt tap (đổi hướng theo vị trí chạm) và
+    // swipe (đổi hướng theo hướng vuốt). Thêm 2026-10-09 (mobile touch-native).
+    this.touchSwipeStart = null;
+    this.SWIPE_THRESHOLD_PX = 24; // ngưỡng vuốt, tính theo pixel logic của canvas
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -200,6 +206,7 @@ export class RetroArcade {
     if (this.isRunning) return;
     this.isRunning = true;
     this.activationGraceUntil = Date.now() + 250;
+    this.touchSwipeStart = null;
 
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
@@ -380,6 +387,14 @@ export class RetroArcade {
     if (this.currentGame === 'match3') {
       const coords = this.getCanvasCoords(e);
       this.match3Engine?.handlePointerDown(coords.x, coords.y);
+    } else if (
+      this.currentGame === 'snake' ||
+      this.currentGame === 'pacman' ||
+      this.currentGame === 'sokoban'
+    ) {
+      // Game định hướng: hoãn xử lý đến touchend để phân biệt tap vs swipe.
+      // (flappy/dash/goldminer vẫn phản hồi ngay trên touchstart vì cần latency thấp.)
+      this.touchSwipeStart = this.getCanvasCoords(e);
     } else {
       this.handleClick(e);
     }
@@ -390,6 +405,46 @@ export class RetroArcade {
     if (this.currentGame === 'match3') {
       const coords = this.getCanvasCoords(e);
       this.match3Engine?.handlePointerUp(coords.x, coords.y);
+      return;
+    }
+    if (
+      (this.currentGame === 'snake' ||
+        this.currentGame === 'pacman' ||
+        this.currentGame === 'sokoban') &&
+      this.touchSwipeStart
+    ) {
+      const start = this.touchSwipeStart;
+      this.touchSwipeStart = null;
+      const end = this.getCanvasCoords(e);
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      if (Math.hypot(dx, dy) >= this.SWIPE_THRESHOLD_PX) {
+        // Vuốt: đổi hướng theo trục chính của hướng vuốt
+        const horiz = Math.abs(dx) > Math.abs(dy);
+        const sx = horiz ? Math.sign(dx) : 0;
+        const sy = horiz ? 0 : Math.sign(dy);
+        if (this.currentGame === 'snake') this.snakeEngine?.setDirection(sx, sy);
+        else if (this.currentGame === 'pacman') this.pacmanEngine?.setDirection(sx, sy);
+        else if (this.currentGame === 'sokoban') this.sokobanEngine?.move(sx, sy);
+      } else {
+        // Tap: giữ nguyên hành vi cũ (đổi hướng theo vị trí chạm tương đối)
+        this.handleTapAt(start.x, start.y);
+      }
+    }
+  }
+
+  // Xử lý tap tại tọa độ logic (x, y) cho game định hướng — dùng chung cho
+  // touchend (tap) để giữ hành vi tap-relative-direction hiện tại.
+  handleTapAt(x, y) {
+    if (this.currentGame === 'snake') {
+      if (this.snakeEngine.handlePointerClick) this.snakeEngine.handlePointerClick(x, y);
+      else this.snakeEngine.onActionTrigger();
+    } else if (this.currentGame === 'pacman') {
+      if (this.pacmanEngine.handlePointerClick) this.pacmanEngine.handlePointerClick(x, y);
+      else this.pacmanEngine.onActionTrigger();
+    } else if (this.currentGame === 'sokoban') {
+      if (this.sokobanEngine.handlePointerClick) this.sokobanEngine.handlePointerClick(x, y);
+      else this.sokobanEngine.onActionTrigger();
     }
   }
 

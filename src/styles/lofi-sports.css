@@ -306,3 +306,15 @@
   background: var(--color-rgba-245-158-11-0-15);
 }
 
+
+/* ---------- Desktop: phóng to canvas sports 640 -> 960px (2026-10-09) ----------
+   Backing store vẫn 640x360 nên mọi cơ chế game giữ nguyên 100%; chỉ phóng to
+   hiển thị bằng CSS. Xem thêm chú thích trong src/styles/arcade.css. */
+@media (min-width: 1024px) {
+  .sports-arena {
+    max-width: 960px;
+  }
+  #sports-arcade-canvas {
+    max-width: 960px;
+  }
+}

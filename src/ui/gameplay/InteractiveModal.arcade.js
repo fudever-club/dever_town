@@ -27,19 +27,29 @@ const ARCADE_ICONS = {
 };
 
 const ARCADE_GAMES = [
-  { id: 'snake', name: 'Cyber Snake', badge: 'CYBER SNAKE 60FPS', controls: 'WASD / Mũi tên • Space: bứt tốc', highKey: 'snakeHigh', highFmt: (v) => `${v}` },
-  { id: 'sokoban', name: 'Buggy Sokoban', badge: 'BUGGY SOKOBAN', controls: 'WASD: đẩy hộp • U: hoàn tác', highKey: 'sokobanLevel', highFmt: (v) => `Màn ${v}` },
-  { id: 'goldminer', name: 'FPTU Gold Miner', badge: 'FPTU GOLD MINER', controls: 'Space: thả móc', highKey: 'goldminerHigh', highFmt: (v) => `${v}` },
-  { id: 'flappybug', name: 'Flappy Bug', badge: 'FLAPPY BUGGY', controls: 'Space / Click: vỗ cánh', highKey: 'flappyHigh', highFmt: (v) => `${v}` },
-  { id: 'geometrydash', name: 'Dever Dash', badge: 'DEVER DASH 3.0', controls: 'Space / Click: nhảy', highKey: 'dashHighPercent', highFmt: (v) => `${v}%` },
-  { id: 'match3', name: 'Cyber Match', badge: 'CYBER CANDY MATCH', controls: 'Click / Kéo: hoán đổi', highKey: 'match3High', highFmt: (v) => `${v}` },
-  { id: 'pacman', name: 'Cyber Pac-Man', badge: 'CYBER PAC-MAN', controls: 'WASD: di chuyển', highKey: 'pacmanHigh', highFmt: (v) => `${v}` }
+  { id: 'snake', name: 'Cyber Snake', badge: 'CYBER SNAKE 60FPS', controls: 'WASD / Mũi tên • Space: bứt tốc', touch: 'Chạm / vuốt để đổi hướng', highKey: 'snakeHigh', highFmt: (v) => `${v}` },
+  { id: 'sokoban', name: 'Buggy Sokoban', badge: 'BUGGY SOKOBAN', controls: 'WASD: đẩy hộp • U: hoàn tác', touch: 'Chạm để di chuyển • nút trên màn hình để hoàn tác', highKey: 'sokobanLevel', highFmt: (v) => `Màn ${v}` },
+  { id: 'goldminer', name: 'FPTU Gold Miner', badge: 'FPTU GOLD MINER', controls: 'Space: thả móc', touch: 'Chạm để thả móc', highKey: 'goldminerHigh', highFmt: (v) => `${v}` },
+  { id: 'flappybug', name: 'Flappy Bug', badge: 'FLAPPY BUGGY', controls: 'Space / Click: vỗ cánh', touch: 'Chạm để vỗ cánh', highKey: 'flappyHigh', highFmt: (v) => `${v}` },
+  { id: 'geometrydash', name: 'Dever Dash', badge: 'DEVER DASH 3.0', controls: 'Space / Click: nhảy', touch: 'Chạm để nhảy', highKey: 'dashHighPercent', highFmt: (v) => `${v}%` },
+  { id: 'match3', name: 'Cyber Match', badge: 'CYBER CANDY MATCH', controls: 'Click / Kéo: hoán đổi', touch: 'Kéo để hoán đổi', highKey: 'match3High', highFmt: (v) => `${v}` },
+  { id: 'pacman', name: 'Cyber Pac-Man', badge: 'CYBER PAC-MAN', controls: 'WASD: di chuyển', touch: 'Chạm / vuốt để đổi hướng', highKey: 'pacmanHigh', highFmt: (v) => `${v}` }
 ];
+
+// true khi thiết bị dùng cảm ứng là chính — card chọn game hiện hướng dẫn chạm.
+function isCoarsePointer() {
+  return typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
+}
 
 InteractiveModal.prototype.setupArcadeGamesView = function(zoneData) {
   const pane = document.getElementById('pane-arcade-games');
   if (!pane) return;
   pane.classList.remove('hidden');
+
+  // Ẩn slogan "FU-DEVER • FPT UNIVERSITY ĐÀ NẴNG • WORK HARD - PLAY HARD" trên
+  // màn hình minigame để tối đa diện tích chơi (2026-10-09, yêu cầu của Hưng).
+  // base.show() sẽ hiện lại cho các zone khác.
+  document.getElementById('interactive-modal-desc')?.classList.add('hidden');
 
   const canvas = document.getElementById('retro-arcade-canvas');
   if (canvas && !this.retroArcade) {
@@ -81,6 +91,16 @@ InteractiveModal.prototype.setupArcadeGamesView = function(zoneData) {
   if (btnUndo && !btnUndo.dataset.initialized) {
     btnUndo.dataset.initialized = 'true';
     btnUndo.addEventListener('click', () => this.retroArcade?.undo());
+  }
+
+  // Close button trong topbar (hiện trên mobile khi modal header bị ẩn)
+  const closeBtn = document.getElementById('arcade-close-btn');
+  if (closeBtn && !closeBtn.dataset.initialized) {
+    closeBtn.dataset.initialized = 'true';
+    closeBtn.addEventListener('click', () => {
+      audioManager.playClick();
+      this.hide();
+    });
   }
 
   // Back button -> select screen
@@ -125,7 +145,7 @@ InteractiveModal.prototype.buildArcadeCards = function() {
       `<span class="game-card-controls"></span>`;
     card.querySelector('.game-card-name').textContent = g.name;
     card.querySelector('.game-card-high').textContent = highText;
-    card.querySelector('.game-card-controls').textContent = g.controls;
+    card.querySelector('.game-card-controls').textContent = isCoarsePointer() && g.touch ? g.touch : g.controls;
 
     card.addEventListener('click', () => {
       audioManager.playClick();
@@ -151,6 +171,8 @@ InteractiveModal.prototype.showArcadeSelect = function() {
   const play = document.getElementById('arcade-play-screen');
   if (sel) sel.classList.remove('hidden');
   if (play) play.classList.add('hidden');
+  // Rời gameplay -> hiện lại modal header (mobile)
+  document.getElementById('interactive-modal')?.classList.remove('playing-minigame');
   this.buildArcadeCards();
   this.refreshArcadeCardHighs();
 };
@@ -164,6 +186,10 @@ InteractiveModal.prototype.playArcadeGame = function(gameId) {
   const play = document.getElementById('arcade-play-screen');
   if (sel) sel.classList.add('hidden');
   if (play) play.classList.remove('hidden');
+
+  // Vào gameplay -> ẩn modal header trên mobile để tối đa diện tích canvas
+  // (CSS: #interactive-modal.playing-minigame .modal-header { display:none })
+  document.getElementById('interactive-modal')?.classList.add('playing-minigame');
 
   if (this.retroArcade) {
     this.retroArcade.setGame(gameId);
