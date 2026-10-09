@@ -10,6 +10,7 @@
 
 import { FLAPPY_BUG_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class FlappyBugEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -17,6 +18,8 @@ export class FlappyBugEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cfg = FLAPPY_BUG_CONFIG;
     this.w = canvas.width;
@@ -607,7 +610,7 @@ export class FlappyBugEngine {
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
-      ctx.fillText('BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ VỖ CÁNH', w / 2, 230);
+      ctx.fillText(this.isTouch ? 'CHẠM ĐỂ VỖ CÁNH' : 'BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ VỖ CÁNH', w / 2, 230);
       ctx.globalAlpha = 1.0;
     } else if (this.state === 'playing') {
       // Điểm số lớn sắc nét trên đỉnh màn hình
@@ -667,7 +670,7 @@ export class FlappyBugEngine {
         ctx.fillStyle = '#38bdf8';
         ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Bấm Space hoặc Click Chuột để bay tiếp', w / 2, my + mh - 26);
+        ctx.fillText(this.isTouch ? 'Chạm để bay tiếp' : 'Bấm Space hoặc Click Chuột để bay tiếp', w / 2, my + mh - 26);
       }
     }
 

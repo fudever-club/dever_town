@@ -12,6 +12,7 @@
 import { BARISTA_CONFIG } from '../../../config/minigamesConfig.js';
 import { LatteArtRecognizer } from '../common/LatteArtRecognizer.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class BaristaSimulatorEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -19,6 +20,8 @@ export class BaristaSimulatorEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks; // { onScoreUpdate, onAchievement }
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.recognizer = new LatteArtRecognizer();
     this.drinkKeys = Object.keys(BARISTA_CONFIG.drinks);
@@ -703,7 +706,7 @@ export class BaristaSimulatorEngine {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#38bdf8';
     ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Nhấp chuột hoặc Bấm nút [Hành Động / Space] để nhận đơn!', 320, 260);
+    ctx.fillText(this.isTouch ? 'Chạm để nhận đơn!' : 'Nhấp chuột hoặc Bấm nút [Hành Động / Space] để nhận đơn!', 320, 260);
     ctx.restore();
   }
 
@@ -823,7 +826,7 @@ export class BaristaSimulatorEngine {
       ctx.fillText(`LỰC NÉN TAMPER: ${Math.round(this.tampingForce)} KG / 18 KG LÝ TƯỞNG`, 320, 122);
       ctx.fillStyle = '#38bdf8';
       ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
-      ctx.fillText('GIỮ phím [Space] hoặc Chuột để nén, THẢ TAY trong vạch xanh để chiết xuất!', 320, 270);
+      ctx.fillText(this.isTouch ? 'GIỮ tay để nén, THẢ trong vạch xanh để chiết xuất!' : 'GIỮ phím [Space] hoặc Chuột để nén, THẢ TAY trong vạch xanh để chiết xuất!', 320, 270);
     }
     ctx.restore();
   }
@@ -942,12 +945,12 @@ export class BaristaSimulatorEngine {
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     if (this.currentIce < this.recipe.targetIce) {
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText(`Nhấp chuột / Bấm nút để THẢ ĐÁ VIÊN (${this.currentIce}/${this.recipe.targetIce})`, 320, 325);
+      ctx.fillText(this.isTouch ? `Chạm để THẢ ĐÁ VIÊN (${this.currentIce}/${this.recipe.targetIce})` : `Nhấp chuột / Bấm nút để THẢ ĐÁ VIÊN (${this.currentIce}/${this.recipe.targetIce})`, 320, 325);
     } else if (this.activeLayerIndex < this.recipe.layers.length) {
       const layer = this.recipe.layers[this.activeLayerIndex];
       const prog = Math.round(this.layerProgress[this.activeLayerIndex] || 0);
       ctx.fillStyle = '#fbbf24';
-      ctx.fillText(`GIỮ nút / Chuột để RÓT ${layer.name.toUpperCase()} (Hiện tại: ${prog}% / Mục tiêu: 100%)`, 320, 325);
+      ctx.fillText(this.isTouch ? `GIỮ tay để RÓT ${layer.name.toUpperCase()} (Hiện tại: ${prog}% / Mục tiêu: 100%)` : `GIỮ nút / Chuột để RÓT ${layer.name.toUpperCase()} (Hiện tại: ${prog}% / Mục tiêu: 100%)`, 320, 325);
     }
     ctx.restore();
   }
@@ -1016,10 +1019,10 @@ export class BaristaSimulatorEngine {
     ctx.fillStyle = '#ffffff';
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('GIỮ nút [Space] hoặc Chuột để SỤC HƠI STEAM WAND!', 320, 275);
+    ctx.fillText(this.isTouch ? 'GIỮ tay để SỤC HƠI STEAM WAND!' : 'GIỮ nút [Space] hoặc Chuột để SỤC HƠI STEAM WAND!', 320, 275);
     ctx.fillStyle = '#22c55e';
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Khi cả 2 đồng hồ đều ở VÙNG XANH: Bấm nút để chuyển sang Rót Nghệ Thuật!', 320, 295);
+    ctx.fillText(this.isTouch ? 'Khi cả 2 đồng hồ đều ở VÙNG XANH là đạt chuẩn!' : 'Khi cả 2 đồng hồ đều ở VÙNG XANH: Bấm nút để chuyển sang Rót Nghệ Thuật!', 320, 295);
     ctx.restore();
   }
 
@@ -1130,7 +1133,7 @@ export class BaristaSimulatorEngine {
 
     ctx.fillStyle = '#fbbf24';
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Bấm nút để RẮC TOPPING hoặc HOÀN TẤT MÓN CÀ PHÊ', 320, 88);
+    ctx.fillText(this.isTouch ? 'Rót bọt sữa vẽ hình theo ý thích!' : 'Bấm nút để RẮC TOPPING hoặc HOÀN TẤT MÓN CÀ PHÊ', 320, 88);
     ctx.restore();
   }
 

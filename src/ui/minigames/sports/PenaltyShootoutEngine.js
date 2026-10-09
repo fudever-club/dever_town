@@ -13,6 +13,7 @@
 
 import { FOOTBALL_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class PenaltyShootoutEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -20,6 +21,8 @@ export class PenaltyShootoutEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.role = 'striker'; // 'striker' | 'goalkeeper'
     this.streak = 0;
@@ -1297,17 +1300,17 @@ export class PenaltyShootoutEngine {
 
     if (this.role === 'striker') {
       if (this.state === 'aiming') {
-        ctx.fillText('Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI hoặc bấm Space để nạp lực!', 320, 345);
+        ctx.fillText(this.isTouch ? 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI!' : 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI hoặc bấm Space để nạp lực!', 320, 345);
       } else if (this.state === 'power_charging') {
-        ctx.fillText('Bấm Space / Enter lần nữa tại vạch vàng để sút!', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm lần nữa tại vạch vàng để sút!' : 'Bấm Space / Enter lần nữa tại vạch vàng để sút!', 320, 345);
       } else {
-        ctx.fillText('Bấm nút Hành Động hoặc Click để chuyển sang Lượt Thủ Môn', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm để chuyển sang Lượt Thủ Môn' : 'Bấm nút Hành Động hoặc Click để chuyển sang Lượt Thủ Môn', 320, 345);
       }
     } else {
       if (this.state === 'gk_wait' || this.state === 'gk_in_flight') {
         ctx.fillText('Di chuyển chuột / ngón tay để ĐEO GĂNG ĐÓN BÓNG CỨU THUA!', 320, 345);
       } else {
-        ctx.fillText('Bấm nút Hành Động hoặc Click để trở lại Lượt Tiền Đạo', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm để trở lại Lượt Tiền Đạo' : 'Bấm nút Hành Động hoặc Click để trở lại Lượt Tiền Đạo', 320, 345);
       }
     }
 

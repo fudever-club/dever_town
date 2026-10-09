@@ -14,6 +14,7 @@
 
 import { GEOMETRY_DASH_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class GeometryDashEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -21,6 +22,8 @@ export class GeometryDashEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cfg = GEOMETRY_DASH_CONFIG;
     this.w = canvas.width;
@@ -820,7 +823,7 @@ export class GeometryDashEngine {
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
-      ctx.fillText('BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ BẮT ĐẦU', w / 2, 230);
+      ctx.fillText(this.isTouch ? 'CHẠM ĐỂ BẮT ĐẦU' : 'BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ BẮT ĐẦU', w / 2, 230);
       ctx.globalAlpha = 1.0;
     } else if (this.state === 'complete') {
       ctx.textAlign = 'center';
@@ -835,7 +838,7 @@ export class GeometryDashEngine {
       ctx.fillText(`Hoàn thành sau ${this.attempts} lần thử!`, w / 2, 180);
 
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText('Bấm Phím Cách (Space) để chạy lại từ đầu', w / 2, 220);
+      ctx.fillText(this.isTouch ? 'Chạm để chạy lại từ đầu' : 'Bấm Phím Cách (Space) để chạy lại từ đầu', w / 2, 220);
     }
 
     ctx.restore();

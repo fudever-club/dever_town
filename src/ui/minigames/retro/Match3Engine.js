@@ -9,6 +9,7 @@
  * - Chống bế tắc tự động (Deadlock Auto-Shuffle) và Tự động gợi ý nước đi (Auto-Hint)
  */
 import { MATCH3_CONFIG } from '../../../config/minigamesConfig.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class Match3Engine {
   constructor(canvas, juiceFX = null, callbacks = {}) {
@@ -16,6 +17,8 @@ export class Match3Engine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
     this.config = MATCH3_CONFIG;
 
     this.state = 'ready'; // 'ready', 'swapping', 'swapping_back', 'clearing', 'dropping', 'game_over', 'game_clear'
@@ -1521,11 +1524,15 @@ export class Match3Engine {
       ctx.fill();
     }
 
-    // Hướng dẫn phím nhanh
+    // Hướng dẫn phím nhanh (cảm ứng: phím H/R không tồn tại → hiện hướng dẫn chạm)
     ctx.fillStyle = '#475569';
     ctx.font = "10px 'Segoe UI', sans-serif";
-    ctx.fillText('[H] Gợi ý', px + pw / 2, 280);
-    ctx.fillText('[R] Chơi lại', px + pw / 2, 298);
+    if (this.isTouch) {
+      ctx.fillText('Kéo để hoán đổi', px + pw / 2, 289);
+    } else {
+      ctx.fillText('[H] Gợi ý', px + pw / 2, 280);
+      ctx.fillText('[R] Chơi lại', px + pw / 2, 298);
+    }
   }
 
   renderRightHUD(ctx) {
@@ -1639,7 +1646,7 @@ export class Match3Engine {
     // Lời nhắc
     ctx.fillStyle = '#94a3b8';
     ctx.font = "12px 'Segoe UI', sans-serif";
-    ctx.fillText('Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
+    ctx.fillText(this.isTouch ? 'Bấm nút [‹] để về danh sách game' : 'Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
 
     ctx.restore();
   }

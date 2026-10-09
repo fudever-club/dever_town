@@ -17,6 +17,7 @@
 
 import { PACMAN_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class PacmanEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -24,6 +25,8 @@ export class PacmanEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cfg = PACMAN_CONFIG;
     this.w = canvas.width;
@@ -1032,18 +1035,23 @@ export class PacmanEngine {
     ctx.fillStyle = '#e2e8f0';
     ctx.fillText(`${this.pelletsRemaining}/${this.totalPellets}`, rightX, 106);
 
-    // Phím bấm gợi ý
+    // Phím bấm gợi ý (cảm ứng: phím R không tồn tại → hiện hướng dẫn chạm/vuốt)
     ctx.fillStyle = '#64748b';
     ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('W / A / S / D', rightX, 290);
-    ctx.fillText('MŨI TÊN DI CHUYỂN', rightX, 306);
-    ctx.fillText('R: CHƠI LẠI', rightX, 322);
+    if (this.isTouch) {
+      ctx.fillText('CHẠM / VUỐT', rightX, 290);
+      ctx.fillText('ĐỂ ĐỔI HƯỚNG', rightX, 306);
+    } else {
+      ctx.fillText('W / A / S / D', rightX, 290);
+      ctx.fillText('MŨI TÊN DI CHUYỂN', rightX, 306);
+      ctx.fillText('R: CHƠI LẠI', rightX, 322);
+    }
 
     // Overlay Game Over hoặc Ready
     if (this.state === 'ready') {
-      this.renderCenterBanner(ctx, 'CYBER PAC-MAN', 'Nhấn W/A/S/D hoặc Click để Bắt Đầu', '#38bdf8');
+      this.renderCenterBanner(ctx, 'CYBER PAC-MAN', this.isTouch ? 'Chạm để Bắt Đầu' : 'Nhấn W/A/S/D hoặc Click để Bắt Đầu', '#38bdf8');
     } else if (this.state === 'game_over') {
-      this.renderCenterBanner(ctx, 'GAME OVER', 'Nhấn Space hoặc Click để Thử Lại', '#ef4444');
+      this.renderCenterBanner(ctx, 'GAME OVER', this.isTouch ? 'Chạm để Thử Lại' : 'Nhấn Space hoặc Click để Thử Lại', '#ef4444');
     }
 
     ctx.restore();

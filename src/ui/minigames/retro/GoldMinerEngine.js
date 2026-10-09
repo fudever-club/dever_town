@@ -11,6 +11,7 @@
 
 import { GOLD_MINER_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class GoldMinerEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -18,6 +19,8 @@ export class GoldMinerEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cash = 0;
     this.day = 1;
@@ -1096,9 +1099,9 @@ export class GoldMinerEngine {
     ctx.font = '700 12.5px "Be Vietnam Pro", sans-serif';
     if (this.hook.state === 'pull' && this.hook.grabbed && this.dynamiteCount > 0) {
       ctx.fillStyle = '#ef4444';
-      ctx.fillText('BẤM PHÍM [Space / S / Nút Nổ] ĐỂ KÍCH NỔ DYNAMITE HỦY ĐÁ!', 320, 348);
+      ctx.fillText(this.isTouch ? 'CHẠM VÀO ICON DYNAMITE ĐỂ KÍCH NỔ HỦY ĐÁ!' : 'BẤM PHÍM [Space / S / Nút Nổ] ĐỂ KÍCH NỔ DYNAMITE HỦY ĐÁ!', 320, 348);
     } else {
-      ctx.fillText('Bấm [Space / Chuột] để PHÓNG MÓC · Bấm [Space] khi kéo đá để DÙNG DYNAMITE', 320, 348);
+      ctx.fillText(this.isTouch ? 'Chạm để PHÓNG MÓC · Chạm icon Dynamite khi kéo đá để HỦY ĐÁ' : 'Bấm [Space / Chuột] để PHÓNG MÓC · Bấm [Space] khi kéo đá để DÙNG DYNAMITE', 320, 348);
     }
     ctx.restore();
   }
@@ -1149,7 +1152,7 @@ export class GoldMinerEngine {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('VÀO CỬA HÀNG THỢ MỎ [Space]', 320, 256);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ VÀO CỬA HÀNG THỢ MỎ' : 'VÀO CỬA HÀNG THỢ MỎ [Space]', 320, 256);
     ctx.restore();
   }
 
@@ -1299,7 +1302,7 @@ export class GoldMinerEngine {
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 13.5px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('BẮT ĐẦU NGÀY MỚI [Space]', 320, nextBtnY + 24);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ BẮT ĐẦU NGÀY MỚI' : 'BẮT ĐẦU NGÀY MỚI [Space]', 320, nextBtnY + 24);
 
     this.shopButtons.push({
       type: 'next_day',
@@ -1312,7 +1315,7 @@ export class GoldMinerEngine {
     // Dòng ghi chú
     ctx.fillStyle = '#78716c';
     ctx.font = '500 11px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Bấm phím [1 - 5] hoặc click để MUA · Bấm [Space] hoặc click nút để Bắt Đầu', 320, 328);
+    ctx.fillText(this.isTouch ? 'Chạm để MUA · Chạm nút để Bắt Đầu' : 'Bấm phím [1 - 5] hoặc click để MUA · Bấm [Space] hoặc click nút để Bắt Đầu', 320, 328);
     ctx.restore();
   }
 
@@ -1379,7 +1382,7 @@ export class GoldMinerEngine {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('THỬ LẠI TỪ NGÀY 1 [Space]', 320, 249);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ THỬ LẠI TỪ NGÀY 1' : 'THỬ LẠI TỪ NGÀY 1 [Space]', 320, 249);
     ctx.restore();
   }
 }

@@ -11,6 +11,7 @@
 import { SOKOBAN_LEVELS } from '../../../config/sokobanLevels.js';
 import { SOKOBAN_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class SokobanEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -18,6 +19,8 @@ export class SokobanEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.tileSize = SOKOBAN_CONFIG.tileSize || 38;
     this.currentLevelIndex = 0;
@@ -682,7 +685,7 @@ export class SokobanEngine {
     ctx.fillStyle = '#38bdf8';
     ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Hoàn Tác (U)', 462, 29);
+    ctx.fillText(this.isTouch ? 'Hoàn Tác' : 'Hoàn Tác (U)', 462, 29);
 
     // Nút [Chơi Lại (R)]
     ctx.fillStyle = '#1e293b';
@@ -692,7 +695,7 @@ export class SokobanEngine {
     ctx.strokeStyle = '#f59e0b';
     ctx.stroke();
     ctx.fillStyle = '#f59e0b';
-    ctx.fillText('Chơi Lại (R)', 548, 29);
+    ctx.fillText(this.isTouch ? 'Chơi Lại' : 'Chơi Lại (R)', 548, 29);
 
     // Nút [Màn (L)]
     ctx.fillStyle = '#1e293b';
@@ -702,14 +705,14 @@ export class SokobanEngine {
     ctx.strokeStyle = '#a855f7';
     ctx.stroke();
     ctx.fillStyle = '#a855f7';
-    ctx.fillText('Màn (L)', 609, 29);
+    ctx.fillText(this.isTouch ? 'Màn' : 'Màn (L)', 609, 29);
 
     // Cảnh báo Deadlock góc chết
     if (this.deadlockedBoxes.length > 0 && !this.won) {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#ef4444';
       ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
-      ctx.fillText('CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm Hoàn Tác (U)', 18, 62);
+      ctx.fillText(this.isTouch ? 'CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm nút Hoàn Tác' : 'CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm Hoàn Tác (U)', 18, 62);
     }
 
     // Gợi ý điều khiển phía dưới
@@ -717,10 +720,10 @@ export class SokobanEngine {
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     if (this.won) {
       ctx.fillStyle = '#4ade80';
-      ctx.fillText('CHIẾN THẮNG! Bấm Phím Cách (Space) hoặc Click để sang Màn Tiếp Theo', w / 2, this.canvas.height - 12);
+      ctx.fillText(this.isTouch ? 'CHIẾN THẮNG! Chạm để sang Màn Tiếp Theo' : 'CHIẾN THẮNG! Bấm Phím Cách (Space) hoặc Click để sang Màn Tiếp Theo', w / 2, this.canvas.height - 12);
     } else {
       ctx.fillStyle = '#64748b';
-      ctx.fillText('Dùng WASD / Mũi Tên: Di chuyển · U: Hoàn tác · R: Chơi lại · L: Chọn màn', w / 2, this.canvas.height - 12);
+      ctx.fillText(this.isTouch ? 'Chạm để di chuyển • nút trên màn hình để hoàn tác' : 'Dùng WASD / Mũi Tên: Di chuyển · U: Hoàn tác · R: Chơi lại · L: Chọn màn', w / 2, this.canvas.height - 12);
     }
 
     ctx.restore();

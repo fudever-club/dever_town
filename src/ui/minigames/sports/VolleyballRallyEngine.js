@@ -11,6 +11,7 @@
 
 import { VOLLEYBALL_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class VolleyballRallyEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -18,6 +19,10 @@ export class VolleyballRallyEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    // Lưu ý: volleyball giữ cụm nút DOM Trái/Nhảy/Phải trên mobile nên hint chạm
+    // tham chiếu đúng các nút đó.
+    this.isTouch = isTouchDevice();
 
     this.playerScore = 0;
     this.botScore = 0;
@@ -1295,11 +1300,11 @@ export class VolleyballRallyEngine {
     ctx.textAlign = 'center';
     if (this.state === 'serving_player') {
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText('Bấm nút Hành Động / Phím Cách để PHÁT BÓNG!', 320, 340);
+      ctx.fillText(this.isTouch ? 'Bấm nút Nhảy để PHÁT BÓNG!' : 'Bấm nút Hành Động / Phím Cách để PHÁT BÓNG!', 320, 340);
     } else if (this.state === 'rally') {
       if (this.player.isGrounded) {
         ctx.fillStyle = '#94a3b8';
-        ctx.fillText('Nhảy: [Cách/W/Lên] | Cứu bóng xa: Bấm nhả khi bóng sát sàn', 320, 340);
+        ctx.fillText(this.isTouch ? 'Nhảy: [nút Nhảy] | Cứu bóng xa: Bấm nhả khi bóng sát sàn' : 'Nhảy: [Cách/W/Lên] | Cứu bóng xa: Bấm nhả khi bóng sát sàn', 320, 340);
       } else {
         ctx.fillStyle = '#f59e0b';
         ctx.fillText('⚡ BẤM ĐÚNG VÒNG HỒNG TÂM ĐỂ TUNG BOOM SPIKE! ⚡', 320, 340);

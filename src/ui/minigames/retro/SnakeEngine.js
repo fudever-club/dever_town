@@ -10,6 +10,7 @@
 
 import { SNAKE_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class SnakeEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -17,6 +18,9 @@ export class SnakeEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị: cảm ứng → chạm/vuốt,
+    // desktop → phím. Thêm 2026-10-09 (yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.grid = SNAKE_CONFIG.gridSize || 20;
     this.cols = Math.floor(canvas.width / this.grid);
@@ -806,7 +810,7 @@ export class SnakeEngine {
     ctx.fillStyle = '#64748b';
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('WASD / Mũi Tên: Lái Buggy · Shift: Bứt Tốc · R: Chơi Lại', w - 18, 28);
+    ctx.fillText(this.isTouch ? 'Chạm / vuốt để đổi hướng' : 'WASD / Mũi Tên: Lái Buggy · Shift: Bứt Tốc · R: Chơi Lại', w - 18, 28);
 
     // Màn hình Game Over
     if (this.gameOver) {
@@ -824,7 +828,7 @@ export class SnakeEngine {
 
       ctx.fillStyle = '#38bdf8';
       ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
-      ctx.fillText('Bấm Phím Cách (Space) hoặc R hoặc Click Chuột để chơi lại', w / 2, 225);
+      ctx.fillText(this.isTouch ? 'Chạm để chơi lại' : 'Bấm Phím Cách (Space) hoặc R hoặc Click Chuột để chơi lại', w / 2, 225);
     }
 
     ctx.restore();

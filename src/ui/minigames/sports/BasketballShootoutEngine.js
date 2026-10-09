@@ -11,6 +11,7 @@
 
 import { BASKETBALL_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class BasketballShootoutEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -18,6 +19,8 @@ export class BasketballShootoutEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.score = 0;
     this.streak = 0;
@@ -926,9 +929,9 @@ export class BasketballShootoutEngine {
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
 
     if (this.state === 'aiming') {
-      ctx.fillText('Kéo chuột/vuốt màn hình để NHẮM NÉM TỰ DO | Phím: [Mũi tên/Cách]', 320, 342);
+      ctx.fillText(this.isTouch ? 'Kéo để NHẮM & NÉM TỰ DO' : 'Kéo chuột/vuốt màn hình để NHẮM NÉM TỰ DO | Phím: [Mũi tên/Cách]', 320, 342);
     } else {
-      ctx.fillText('Bấm nút Hành Động hoặc Phím Cách để ném quả tiếp theo', 320, 342);
+      ctx.fillText(this.isTouch ? 'Chạm để ném quả tiếp theo' : 'Bấm nút Hành Động hoặc Phím Cách để ném quả tiếp theo', 320, 342);
     }
 
     ctx.restore();
