@@ -59,7 +59,7 @@ export class GoldMinerEngine {
 
     const cfg = GOLD_MINER_CONFIG.hook;
     this.hook = {
-      x: cfg.startX,
+      x: this.canvas.width / 2, // giữa khung (desktop 640/2=320, khớp config cũ)
       y: cfg.startY,
       angle: 0,
       dir: 1,
@@ -146,6 +146,27 @@ export class GoldMinerEngine {
     }
   }
 
+  // Playfield thích ứng hướng màn hình (2026-10-09): mỏ sâu hơn trên màn hình
+  // dọc (minerals spawn theo canvas.height trong resetDay). Móc tự vươn tới
+  // biên canvas nên tầm với tự thích ứng; tốc độ bắn/kéo (px/frame) giữ nguyên.
+  // Resize giữa ngày: kẹp khoáng sản/chuột chũi vào biên mới, căn lại trục móc.
+  resize(w, h) {
+    const clampX = (x, m = 40) => Math.min(Math.max(x, m), w - m);
+    const clampY = (y, top = 100, bot = 40) => Math.min(Math.max(y, top), h - bot);
+    for (const m of this.minerals || []) {
+      m.x = clampX(m.x);
+      m.y = clampY(m.y);
+    }
+    for (const mole of this.moles || []) {
+      mole.x = clampX(mole.x, 30);
+      mole.y = clampY(mole.y, 120, 60);
+    }
+    // Trục móc về giữa khi đang đu (không phá cú bắn/kéo đang diễn ra)
+    if (this.hook && this.hook.state === 'swing') {
+      this.hook.x = w / 2;
+    }
+  }
+
   generatePolygonVertices(radius, sides) {
     const pts = [];
     const step = (Math.PI * 2) / sides;
@@ -179,7 +200,7 @@ export class GoldMinerEngine {
 
     this.resetDay();
     audioManager.playVictory();
-    this.juiceFX?.spawnFloatingText(`NGÀY ${this.day} — MỤC TIÊU: $${this.targetCash}`, 320, 150, {
+    this.juiceFX?.spawnFloatingText(`NGÀY ${this.day} — MỤC TIÊU: $${this.targetCash}`, this.canvas.width / 2, 150, {
       color: '#fbbf24',
       size: 20,
       fontWeight: '900'
@@ -301,13 +322,13 @@ export class GoldMinerEngine {
     // Kiểm tra xem đã sở hữu tối đa chưa
     if (item.id === 'dynamite') {
       if (this.dynamiteCount >= (item.maxHold || 5)) {
-        this.juiceFX?.spawnFloatingText('Đã Đầy Thuốc Nổ (Tối Đa 5 Quả)!', 320, 290, { color: '#f59e0b', size: 14 });
+        this.juiceFX?.spawnFloatingText('Đã Đầy Thuốc Nổ (Tối Đa 5 Quả)!', this.canvas.width / 2, 290, { color: '#f59e0b', size: 14 });
         audioManager.playWrongBoop();
         return;
       }
     } else {
       if (this.purchasedToday.has(item.id)) {
-        this.juiceFX?.spawnFloatingText('Bạn Đã Mua Vật Phẩm Này Rồi!', 320, 290, { color: '#f59e0b', size: 14 });
+        this.juiceFX?.spawnFloatingText('Bạn Đã Mua Vật Phẩm Này Rồi!', this.canvas.width / 2, 290, { color: '#f59e0b', size: 14 });
         audioManager.playWrongBoop();
         return;
       }
@@ -315,7 +336,7 @@ export class GoldMinerEngine {
 
     // Kiểm tra số dư tiền
     if (this.cash < item.price) {
-      this.juiceFX?.spawnFloatingText(`Không Đủ Tiền! Cần $${item.price}`, 320, 290, { color: '#ef4444', size: 15 });
+      this.juiceFX?.spawnFloatingText(`Không Đủ Tiền! Cần $${item.price}`, this.canvas.width / 2, 290, { color: '#ef4444', size: 15 });
       audioManager.playWrongBoop();
       return;
     }
@@ -327,10 +348,10 @@ export class GoldMinerEngine {
 
     if (item.id === 'dynamite') {
       this.dynamiteCount = Math.min(5, this.dynamiteCount + 1);
-      this.juiceFX?.spawnFloatingText(`+1 Thuốc Nổ Dynamite! (Hiện có: ${this.dynamiteCount})`, 320, 285, { color: '#22c55e', size: 15 });
+      this.juiceFX?.spawnFloatingText(`+1 Thuốc Nổ Dynamite! (Hiện có: ${this.dynamiteCount})`, this.canvas.width / 2, 285, { color: '#22c55e', size: 15 });
     } else {
       this.purchasedToday.add(item.id);
-      this.juiceFX?.spawnFloatingText(`Trang Bị: ${item.name}!`, 320, 285, { color: '#22c55e', size: 15 });
+      this.juiceFX?.spawnFloatingText(`Trang Bị: ${item.name}!`, this.canvas.width / 2, 285, { color: '#22c55e', size: 15 });
     }
     this.juiceFX?.spawnConfetti(320, 180, 18);
   }
@@ -523,13 +544,13 @@ export class GoldMinerEngine {
     if (m.type === 'diamond') {
       if (this.hasDiamondPolish) {
         earned = m.polishedVal || 900;
-        this.juiceFX.spawnFloatingText(`KIM CƯƠNG ĐÁNH BÓNG: +$${earned}`, 320, 110, {
+        this.juiceFX.spawnFloatingText(`KIM CƯƠNG ĐÁNH BÓNG: +$${earned}`, this.canvas.width / 2, 110, {
           color: '#38bdf8',
           size: 19,
           fontWeight: '900'
         });
       } else {
-        this.juiceFX.spawnFloatingText(`KIM CƯƠNG: +$${earned}`, 320, 110, {
+        this.juiceFX.spawnFloatingText(`KIM CƯƠNG: +$${earned}`, this.canvas.width / 2, 110, {
           color: '#38bdf8',
           size: 17,
           fontWeight: '800'
@@ -539,14 +560,14 @@ export class GoldMinerEngine {
       if (m.hasDiamond) {
         const dVal = this.hasDiamondPolish ? 900 : 600;
         earned = dVal + 2;
-        this.juiceFX.spawnFloatingText(`CHUỘT CHŨI KIM CƯƠNG: +$${earned}!`, 320, 110, {
+        this.juiceFX.spawnFloatingText(`CHUỘT CHŨI KIM CƯƠNG: +$${earned}!`, this.canvas.width / 2, 110, {
           color: '#38bdf8',
           size: 19,
           fontWeight: '900'
         });
       } else {
         earned = 2;
-        this.juiceFX.spawnFloatingText('CHUỘT CHŨI: +$2', 320, 110, {
+        this.juiceFX.spawnFloatingText('CHUỘT CHŨI: +$2', this.canvas.width / 2, 110, {
           color: '#fed7aa',
           size: 14,
           fontWeight: '700'
@@ -559,14 +580,14 @@ export class GoldMinerEngine {
         if (isFreeDynamite) {
           this.dynamiteCount++;
           earned = 300;
-          this.juiceFX.spawnFloatingText('CỎ 4 LÁ: TẶNG +1 DYNAMITE & $300!', 320, 110, {
+          this.juiceFX.spawnFloatingText('CỎ 4 LÁ: TẶNG +1 DYNAMITE & $300!', this.canvas.width / 2, 110, {
             color: '#22c55e',
             size: 18,
             fontWeight: '900'
           });
         } else {
           earned = Math.round(450 + Math.random() * 350);
-          this.juiceFX.spawnFloatingText(`CỎ 4 LÁ MAY MẮN: +$${earned}!`, 320, 110, {
+          this.juiceFX.spawnFloatingText(`CỎ 4 LÁ MAY MẮN: +$${earned}!`, this.canvas.width / 2, 110, {
             color: '#22c55e',
             size: 20,
             fontWeight: '900'
@@ -574,14 +595,14 @@ export class GoldMinerEngine {
         }
       } else {
         earned = Math.round(50 + Math.random() * 650);
-        this.juiceFX.spawnFloatingText(`TÚI BÍ ẨN: +$${earned}`, 320, 110, {
+        this.juiceFX.spawnFloatingText(`TÚI BÍ ẨN: +$${earned}`, this.canvas.width / 2, 110, {
           color: '#a855f7',
           size: 18,
           fontWeight: '800'
         });
       }
     } else {
-      this.juiceFX.spawnFloatingText(`+$${earned}`, 320, 110, {
+      this.juiceFX.spawnFloatingText(`+$${earned}`, this.canvas.width / 2, 110, {
         color: m.color || '#fbbf24',
         size: 18,
         fontWeight: '800'
@@ -1069,12 +1090,12 @@ export class GoldMinerEngine {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f8fafc';
     ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`NGÀY ${this.day}`, 320, 26);
+    ctx.fillText(`NGÀY ${this.day}`, this.canvas.width / 2, 26);
 
     const timeRatio = Math.max(0, this.timeLeft / 60);
     ctx.fillStyle = timeRatio > 0.35 ? '#22c55e' : '#ef4444';
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`⏱️ ${Math.ceil(this.timeLeft)}s`, 320, 42);
+    ctx.fillText(`⏱️ ${Math.ceil(this.timeLeft)}s`, this.canvas.width / 2, 42);
 
     // Dynamite & Buffs góc phải
     ctx.textAlign = 'right';
@@ -1099,9 +1120,9 @@ export class GoldMinerEngine {
     ctx.font = '700 12.5px "Be Vietnam Pro", sans-serif';
     if (this.hook.state === 'pull' && this.hook.grabbed && this.dynamiteCount > 0) {
       ctx.fillStyle = '#ef4444';
-      ctx.fillText(this.isTouch ? 'CHẠM VÀO ICON DYNAMITE ĐỂ KÍCH NỔ HỦY ĐÁ!' : 'BẤM PHÍM [Space / S / Nút Nổ] ĐỂ KÍCH NỔ DYNAMITE HỦY ĐÁ!', 320, 348);
+      ctx.fillText(this.isTouch ? 'CHẠM VÀO ICON DYNAMITE ĐỂ KÍCH NỔ HỦY ĐÁ!' : 'BẤM PHÍM [Space / S / Nút Nổ] ĐỂ KÍCH NỔ DYNAMITE HỦY ĐÁ!', this.canvas.width / 2, 348);
     } else {
-      ctx.fillText(this.isTouch ? 'Chạm để PHÓNG MÓC · Chạm icon Dynamite khi kéo đá để HỦY ĐÁ' : 'Bấm [Space / Chuột] để PHÓNG MÓC · Bấm [Space] khi kéo đá để DÙNG DYNAMITE', 320, 348);
+      ctx.fillText(this.isTouch ? 'Chạm để PHÓNG MÓC · Chạm icon Dynamite khi kéo đá để HỦY ĐÁ' : 'Bấm [Space / Chuột] để PHÓNG MÓC · Bấm [Space] khi kéo đá để DÙNG DYNAMITE', this.canvas.width / 2, 348);
     }
     ctx.restore();
   }
@@ -1127,19 +1148,19 @@ export class GoldMinerEngine {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
     ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('🎉 HOÀN THÀNH NGÀY!', 320, 95);
+    ctx.fillText('🎉 HOÀN THÀNH NGÀY!', this.canvas.width / 2, 95);
 
     ctx.fillStyle = '#f8fafc';
     ctx.font = '700 15px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, 320, 135);
+    ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, this.canvas.width / 2, 135);
 
     ctx.fillStyle = '#22c55e';
     ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Đã Vượt Mức Mục Tiêu: +$${this.cash - this.targetCash}`, 320, 165);
+    ctx.fillText(`Đã Vượt Mức Mục Tiêu: +$${this.cash - this.targetCash}`, this.canvas.width / 2, 165);
 
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Ghé Cửa Hàng Thợ Mỏ để sắm thuốc nổ & đồ nghề cho Ngày mới!', 320, 205);
+    ctx.fillText('Ghé Cửa Hàng Thợ Mỏ để sắm thuốc nổ & đồ nghề cho Ngày mới!', this.canvas.width / 2, 205);
 
     // Nút CTA vào Shop
     ctx.fillStyle = '#d97706';
@@ -1152,7 +1173,7 @@ export class GoldMinerEngine {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ VÀO CỬA HÀNG THỢ MỎ' : 'VÀO CỬA HÀNG THỢ MỎ [Space]', 320, 256);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ VÀO CỬA HÀNG THỢ MỎ' : 'VÀO CỬA HÀNG THỢ MỎ [Space]', this.canvas.width / 2, 256);
     ctx.restore();
   }
 
@@ -1169,7 +1190,7 @@ export class GoldMinerEngine {
     ctx.fillRect(0, 0, w, h);
 
     // Vầng sáng đèn măng-sông
-    const glow = ctx.createRadialGradient(320, 40, 10, 320, 140, 280);
+    const glow = ctx.createRadialGradient(320, 40, 10, this.canvas.width / 2, 140, 280);
     glow.addColorStop(0, 'rgba(251, 191, 36, 0.25)');
     glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = glow;
@@ -1179,11 +1200,11 @@ export class GoldMinerEngine {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
     ctx.font = '900 20px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('🏪 CỬA HÀNG THỢ MỎ (MINER SHOP)', 320, 32);
+    ctx.fillText('🏪 CỬA HÀNG THỢ MỎ (MINER SHOP)', this.canvas.width / 2, 32);
 
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
-    ctx.fillText(`Số Dư Tiền: $${this.cash} · Sắm đồ nghề chuẩn bị cho Ngày ${this.day + 1}`, 320, 52);
+    ctx.fillText(`Số Dư Tiền: $${this.cash} · Sắm đồ nghề chuẩn bị cho Ngày ${this.day + 1}`, this.canvas.width / 2, 52);
 
     // 5 Thẻ vật phẩm hàng hóa (Card layout)
     const items = [
@@ -1302,7 +1323,7 @@ export class GoldMinerEngine {
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 13.5px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ BẮT ĐẦU NGÀY MỚI' : 'BẮT ĐẦU NGÀY MỚI [Space]', 320, nextBtnY + 24);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ BẮT ĐẦU NGÀY MỚI' : 'BẮT ĐẦU NGÀY MỚI [Space]', this.canvas.width / 2, nextBtnY + 24);
 
     this.shopButtons.push({
       type: 'next_day',
@@ -1315,7 +1336,7 @@ export class GoldMinerEngine {
     // Dòng ghi chú
     ctx.fillStyle = '#78716c';
     ctx.font = '500 11px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(this.isTouch ? 'Chạm để MUA · Chạm nút để Bắt Đầu' : 'Bấm phím [1 - 5] hoặc click để MUA · Bấm [Space] hoặc click nút để Bắt Đầu', 320, 328);
+    ctx.fillText(this.isTouch ? 'Chạm để MUA · Chạm nút để Bắt Đầu' : 'Bấm phím [1 - 5] hoặc click để MUA · Bấm [Space] hoặc click nút để Bắt Đầu', this.canvas.width / 2, 328);
     ctx.restore();
   }
 
@@ -1357,19 +1378,19 @@ export class GoldMinerEngine {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ef4444';
     ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('HẾT THỜI GIAN KHAI MỎ!', 320, 95);
+    ctx.fillText('HẾT THỜI GIAN KHAI MỎ!', this.canvas.width / 2, 95);
 
     ctx.fillStyle = '#f8fafc';
     ctx.font = '700 15px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, 320, 135);
+    ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, this.canvas.width / 2, 135);
 
     ctx.fillStyle = '#f59e0b';
     ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Chưa Đạt Mục Tiêu Ngày: $${this.targetCash}`, 320, 165);
+    ctx.fillText(`Chưa Đạt Mục Tiêu Ngày: $${this.targetCash}`, this.canvas.width / 2, 165);
 
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Bạn Đã Khai Thác Đến Ngày ${this.day}. Hãy Cố Gắng Lần Sau!`, 320, 195);
+    ctx.fillText(`Bạn Đã Khai Thác Đến Ngày ${this.day}. Hãy Cố Gắng Lần Sau!`, this.canvas.width / 2, 195);
 
     // Nút Thử Lại
     ctx.fillStyle = '#ef4444';
@@ -1382,7 +1403,7 @@ export class GoldMinerEngine {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ THỬ LẠI TỪ NGÀY 1' : 'THỬ LẠI TỪ NGÀY 1 [Space]', 320, 249);
+    ctx.fillText(this.isTouch ? 'CHẠM ĐỂ THỬ LẠI TỪ NGÀY 1' : 'THỬ LẠI TỪ NGÀY 1 [Space]', this.canvas.width / 2, 249);
     ctx.restore();
   }
 }
