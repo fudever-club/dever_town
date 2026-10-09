@@ -157,11 +157,23 @@ export class ChatBox {
       const item = document.createElement('button');
       item.type = 'button';
       item.className = `picker-friend-item ${this.activeFriend?.name === f.name ? 'selected' : ''}`;
-      item.innerHTML = `
-        <span class="picker-friend-icon">${f.role === 'admin' ? '👑' : f.role === 'leader' ? '⚡' : '💻'}</span>
-        <span class="picker-friend-name">${f.name}</span>
-        <span class="picker-friend-streak">🔥 ${f.streak || 1}d</span>
-      `;
+
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'picker-friend-icon';
+      iconSpan.textContent = f.role === 'admin' ? '👑' : f.role === 'leader' ? '⚡' : '💻';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'picker-friend-name';
+      nameSpan.textContent = f.name;
+
+      const streakSpan = document.createElement('span');
+      streakSpan.className = 'picker-friend-streak';
+      streakSpan.textContent = `🔥 ${f.streak || 1}d`;
+
+      item.appendChild(iconSpan);
+      item.appendChild(nameSpan);
+      item.appendChild(streakSpan);
+
       item.addEventListener('click', () => {
         this.setActiveFriend(f);
         this.friendPickerDropdown.classList.add('hidden');

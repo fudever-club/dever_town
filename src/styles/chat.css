@@ -178,8 +178,8 @@
   box-shadow: var(--shadow-3);
   transition: all 0.2s ease;
   flex-shrink: 0;
-  width: 42px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
 }
 
 .chat-send-btn .send-icon, .btn-chat-send .send-icon, .chat-send-btn svg, .btn-chat-send svg {

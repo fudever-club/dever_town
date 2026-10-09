@@ -369,15 +369,15 @@
   --color-rgba-255-255-255-0-95: rgba(255,255,255,0.95); /* x1 */
   /* ---------- font families ---------- */
   --font-mono: 'JetBrains Mono', monospace; /* x39 */
-  --font-sans-outfit: 'Outfit', sans-serif; /* x38 */
+  --font-sans-outfit: 'Be Vietnam Pro', sans-serif; /* x38 */
   --font-mono-consolas: 'JetBrains Mono', Consolas, monospace; /* x4 */
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* x1 */
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* x1 */
   --font-pixel: 'Press Start 2P', monospace; /* x1 */
   --font-mono-system: 'JetBrains Mono', -apple-system, sans-serif; /* x1 */
-  --font-sans-outfit-alt: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif; /* x1 */
+  --font-sans-outfit-alt: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif; /* x1 */
   --font-mono-ui: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* x1 */
   --font-mono-fira-code: 'JetBrains Mono', 'Fira Code', monospace; /* x1 */
-  --font-sans-roboto: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* x1 */
+  --font-sans-roboto: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* x1 */
   /* ---------- type scale ---------- */
   --text-11px: 11px; /* x103 */
   --text-12px: 12px; /* x76 */
