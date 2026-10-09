@@ -23,6 +23,13 @@ export class BaristaSimulatorEngine {
     // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
     this.isTouch = isTouchDevice();
 
+    // Camera view cho orientation-aware layout (2026-10-09): logic luôn chạy
+    // trong 640×360; render áp transform.
+    this.viewScale = 1;
+    this.viewOX = 0;
+    this.viewOY = 0;
+    this.layoutView(canvas.width, canvas.height);
+
     // Tap tracking cho cảm ứng (2026-10-09): chạm nhanh = xác nhận (giống nút
     // Hành Động / Space), giữ lâu hoặc kéo = thao tác giữ. Ngưỡng theo px
     // canvas 640x360.
@@ -509,13 +516,23 @@ export class BaristaSimulatorEngine {
 
   render() {
     const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
     const theme = this.cfg.barTheme;
+
+    ctx.clearRect(0, 0, dw, dh);
+
+    // Camera transform: gameplay trong không gian logic 640×360
+    ctx.save();
+    ctx.translate(this.viewOX, this.viewOY);
+    ctx.scale(this.viewScale, this.viewScale);
+
+    // Chiều cao vùng nhìn thấy (logic) — quầy bar kéo dài lấp đầy portrait
+    const vh = Math.max(360, (dh - this.viewOY) / this.viewScale);
 
     // 1. Nền tường quán cafe cổ điển ấm cúng
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(0, 0, 640, vh);
 
     // Kệ gỗ trên cao chứa hũ hạt cà phê
     ctx.fillStyle = '#331f12';
@@ -532,23 +549,23 @@ export class BaristaSimulatorEngine {
     edisonGlow.addColorStop(0.5, 'rgba(217, 119, 6, 0.08)');
     edisonGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = edisonGlow;
-    ctx.fillRect(0, 0, w, 280);
+    ctx.fillRect(0, 0, 640, 280);
 
     // Bóng đèn Edison dây tóc
     this.drawEdisonBulb(ctx, 320, 0);
 
     // 2. Mặt bàn cà phê gỗ sồi 2.5D
-    const woodGrad = ctx.createLinearGradient(0, 175, 0, h);
+    const woodGrad = ctx.createLinearGradient(0, 175, 0, vh);
     woodGrad.addColorStop(0, theme.woodTop);
     woodGrad.addColorStop(0.08, theme.woodTrim);
     woodGrad.addColorStop(0.12, theme.woodFront);
     woodGrad.addColorStop(1, '#1c0c03');
     ctx.fillStyle = woodGrad;
-    ctx.fillRect(0, 175, w, h - 175);
+    ctx.fillRect(0, 175, 640, vh - 175);
 
     // Gờ nẹp kim loại đồng thau
     ctx.fillStyle = theme.gaugeGold;
-    ctx.fillRect(0, 186, w, 2.5);
+    ctx.fillRect(0, 186, 640, 2.5);
 
     // 3. Render các trạm tương tác chuyên biệt
     if (this.station === 'order') {
@@ -565,8 +582,33 @@ export class BaristaSimulatorEngine {
       this.renderResultStation(ctx);
     }
 
-    // 4. Render thanh HUD tiến độ & kiên nhẫn
+    ctx.restore(); // hết camera transform
+
+    // 4. Render thanh HUD tiến độ & kiên nhẫn — tọa độ màn hình thực
     this.renderTopBarHUD(ctx);
+  }
+
+  // Bố cục camera theo hướng màn hình (2026-10-09):
+  // - Desktop/landscape: 1:1, căn giữa theo chiều ngang mới.
+  // - Portrait: 1:1, pan ngang để quầy bar (tâm x=320) lọt khung, nền &
+  //   quầy kéo dài lấp đầy chiều dọc. Logic pha chế giữ nguyên.
+  layoutView(w, h) {
+    this.viewScale = 1;
+    this.viewOX = (w - 640) / 2;
+    this.viewOY = 0;
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ đổi camera, logic giữ nguyên.
+  resize(w, h) {
+    this.layoutView(w, h);
+  }
+
+  // Đổi tọa độ canvas-logic sang tọa độ view (không gian gameplay 640×360)
+  toViewCoords(x, y) {
+    return {
+      x: (x - this.viewOX) / this.viewScale,
+      y: (y - this.viewOY) / this.viewScale
+    };
   }
 
   drawEdisonBulb(ctx, x, y) {
@@ -634,13 +676,15 @@ export class BaristaSimulatorEngine {
   }
 
   renderTopBarHUD(ctx) {
+    // HUD vẽ trong tọa độ màn hình thực — co giãn theo chiều rộng (2026-10-09)
+    const dw = this.canvas.width;
     ctx.save();
     // Khung HUD
     ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(14, 8, 612, 32, 8);
+    ctx.roundRect(14, 8, dw - 28, 32, 8);
     ctx.fill();
     ctx.stroke();
 
@@ -650,24 +694,26 @@ export class BaristaSimulatorEngine {
     ctx.textAlign = 'left';
     ctx.fillText(`☕ ${this.recipe.name}`, 26, 28);
 
-    // Tiền tip
+    // Tiền tip — giữa thanh
     ctx.fillStyle = '#fbbf24';
     ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`Tips: ${this.totalTips}đ`, 260, 28);
+    ctx.textAlign = 'center';
+    ctx.fillText(`Tips: ${this.totalTips}đ`, dw / 2, 28);
 
-    // Thanh kiên nhẫn
+    // Thanh kiên nhẫn — neo mép phải
     const pRatio = Math.max(0, this.patience / this.maxPatience);
-    const barW = 140;
+    const barW = Math.min(140, dw - 220);
+    const barX = dw - 14 - barW;
     ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-    ctx.fillRect(440, 16, barW, 16);
+    ctx.fillRect(barX, 16, barW, 16);
 
     ctx.fillStyle = pRatio > 0.45 ? '#22c55e' : pRatio > 0.2 ? '#f59e0b' : '#ef4444';
-    ctx.fillRect(442, 18, (barW - 4) * pRatio, 12);
+    ctx.fillRect(barX + 2, 18, (barW - 4) * pRatio, 12);
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`Chờ: ${Math.ceil(this.patience)}s`, 510, 28);
+    ctx.fillText(`Chờ: ${Math.ceil(this.patience)}s`, barX + barW / 2, 28);
     ctx.restore();
   }
 
