@@ -232,3 +232,16 @@
   font-weight: bold;
 }
 
+
+/* Mobile QA 2026-10-09: keep arcade touch controls visible without scrolling.
+   The action button was below the fold (cut off) on 375px viewports. */
+@media (max-width: 640px) {
+  .arcade-touch-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: linear-gradient(to top, var(--color-0f172a) 70%, transparent);
+    padding-bottom: var(--space-8px);
+    margin-bottom: calc(var(--space-8px) * -1);
+  }
+}

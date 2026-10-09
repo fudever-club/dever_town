@@ -180,3 +180,15 @@
   border-radius: var(--radius-6px);
 }
 
+
+/* Mobile QA 2026-10-09: footer buttons overlapped on narrow screens
+   ("Khắc Phục Lỗi" on top of "Đóng Console"). Allow wrapping. */
+@media (max-width: 640px) {
+  .bug-dungeon-footer {
+    flex-wrap: wrap;
+    justify-content: stretch;
+  }
+  .bug-dungeon-footer > button {
+    flex: 1 1 140px;
+  }
+}

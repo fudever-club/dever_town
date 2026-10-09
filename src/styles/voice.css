@@ -451,3 +451,16 @@
   text-shadow: 0 2px 6px var(--color-rgba-0-0-0-0-4);
 }
 
+
+/* Mobile QA 2026-10-09: meeting header badges wrapped — "Mở Google Meet ngoài"
+   button was cut off on the right edge on 375px viewports. */
+@media (max-width: 640px) {
+  .voice-header-bar {
+    flex-wrap: wrap;
+    row-gap: var(--space-8px);
+  }
+  .voice-status-badges {
+    flex-wrap: wrap;
+    row-gap: var(--space-6px);
+  }
+}

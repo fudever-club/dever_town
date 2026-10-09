@@ -567,3 +567,11 @@
   line-height: 1.3;
 }
 
+
+/* Mobile QA 2026-10-09: canteen two-column grid was squeezed and cut off on
+   375px viewports. Stack vertically on mobile. */
+@media (max-width: 640px) {
+  .canteen-content-grid {
+    grid-template-columns: 1fr;
+  }
+}

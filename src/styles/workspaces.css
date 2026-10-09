@@ -707,3 +707,17 @@
   max-width: 780px;
 }
 
+
+/* Mobile QA 2026-10-09: URL input would not shrink, pushing the "Tải lại"
+   button off the right edge on 375px viewports. */
+.web-address-bar input {
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  .web-topbar {
+    flex-wrap: wrap;
+  }
+  .web-address-bar {
+    flex: 1 1 100%;
+  }
+}
