@@ -203,7 +203,9 @@ export const TRANSLATIONS = {
     settingsFootsteps: 'Bật Tiếng Bước Chân Khi Di Chuyển',
     settingsSfx: 'Bật Hiệu Ứng Âm Thanh (Click, Portal, Nhặt Đồ)',
     settingsControlsTitle: 'Phím Tắt Điều Khiển:',
-    settingsControlsDesc: 'W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ'
+    settingsControlsDesc: 'W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ',
+    settingsMoveModeLabel: 'Chế Độ Di Chuyển (Mobile):',
+    settingsAnalogVisible: 'Hiện cần analog (tắt: vuốt để di chuyển, không hiện cần)'
   },
 
   en: {
@@ -407,7 +409,9 @@ export const TRANSLATIONS = {
     settingsFootsteps: 'Enable Footstep Sounds While Walking',
     settingsSfx: 'Enable Sound Effects (Click, Portal, Pickups)',
     settingsControlsTitle: 'Controls Cheatsheet:',
-    settingsControlsDesc: 'W, A, S, D or Arrow Keys: Move | [E]: Interact | [I]: Open Inventory | [ESC]: Close Dialogs'
+    settingsControlsDesc: 'W, A, S, D or Arrow Keys: Move | [E]: Interact | [I]: Open Inventory | [ESC]: Close Dialogs',
+    settingsMoveModeLabel: 'Movement Mode (Mobile):',
+    settingsAnalogVisible: 'Show analog stick (off: swipe to move, stick hidden)'
   }
 };
 

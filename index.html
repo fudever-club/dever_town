@@ -1756,6 +1756,25 @@
           <label class="settings-label" data-i18n="settingsControlsTitle">Phím Tắt Điều Khiển:</label>
           <p class="settings-hint" data-i18n="settingsControlsDesc">W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ</p>
         </div>
+
+        <!-- Chế độ di chuyển trên mobile -->
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="settingsMoveModeLabel">Chế Độ Di Chuyển (Mobile):</label>
+          <div class="settings-lang-row">
+            <button type="button" id="setting-move-dpad" class="settings-lang-btn active">
+              <span>D-pad 4 Hướng</span>
+            </button>
+            <button type="button" id="setting-move-analog" class="settings-lang-btn">
+              <span>Cần Analog</span>
+            </button>
+          </div>
+          <div class="settings-row" id="setting-analog-visible-row">
+            <label class="settings-toggle-label">
+              <input type="checkbox" id="setting-analog-visible" checked />
+              <span data-i18n="settingsAnalogVisible">Hiện cần analog (tắt: vuốt để di chuyển, không hiện cần)</span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>

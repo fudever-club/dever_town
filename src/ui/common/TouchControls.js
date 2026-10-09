@@ -1,5 +1,7 @@
 import { audioManager } from '../../utils/AudioManager.js';
 import { getEmoteIconURL } from '../../utils/emoteIcons.js';
+import { AnalogStick } from './AnalogStick.js';
+import { MOVE_MODE_KEY, ANALOG_VISIBLE_KEY } from '../../config/controls.js';
 
 export class TouchControls {
   /**
@@ -11,8 +13,77 @@ export class TouchControls {
     this.inputController = inputController;
     this.scene = scene;
     this.container = document.getElementById('mobile-touch-controls');
+    this.analogStick = null;
 
     this.init();
+    this.applyMoveMode(this.getMoveMode());
+  }
+
+  /** Chế độ di chuyển: 'dpad' (mặc định) | 'analog'. Lưu localStorage. */
+  getMoveMode() {
+    try {
+      return localStorage.getItem(MOVE_MODE_KEY) === 'analog' ? 'analog' : 'dpad';
+    } catch (e) {
+      return 'dpad';
+    }
+  }
+
+  setMoveMode(mode) {
+    const m = mode === 'analog' ? 'analog' : 'dpad';
+    try {
+      localStorage.setItem(MOVE_MODE_KEY, m);
+    } catch (e) {}
+    this.applyMoveMode(m);
+    // Báo cho SettingsModal (nếu đang mở) đồng bộ UI.
+    window.dispatchEvent(new CustomEvent('dever:move-mode-changed', { detail: { mode: m } }));
+  }
+
+  isAnalogVisible() {
+    try {
+      return localStorage.getItem(ANALOG_VISIBLE_KEY) !== '0';
+    } catch (e) {
+      return true;
+    }
+  }
+
+  setAnalogVisible(visible) {
+    if (this.analogStick) {
+      this.analogStick.setVisible(visible);
+    } else {
+      try {
+        localStorage.setItem(ANALOG_VISIBLE_KEY, visible ? '1' : '0');
+      } catch (e) {}
+    }
+  }
+
+  isTouchDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 1024;
+  }
+
+  applyMoveMode(mode) {
+    const dpadContainer = this.container ? this.container.querySelector('.touch-dpad-container') : null;
+    const isAnalog = mode === 'analog';
+
+    if (dpadContainer) {
+      dpadContainer.classList.toggle('hidden', isAnalog);
+    }
+
+    if (isAnalog) {
+      if (!this.analogStick) {
+        this.analogStick = new AnalogStick({ inputController: this.inputController });
+      }
+      // Chỉ bật zone trên thiết bị cảm ứng — desktop không bao giờ chặn click.
+      this.analogStick.setEnabled(this.isTouchDevice());
+    } else {
+      if (this.analogStick) {
+        this.analogStick.setEnabled(false);
+      }
+      // Xóa vector analog còn sót khi chuyển về D-pad.
+      if (this.inputController && this.inputController.touchInput) {
+        this.inputController.touchInput.analogX = 0;
+        this.inputController.touchInput.analogY = 0;
+      }
+    }
   }
 
   init() {
@@ -219,11 +290,16 @@ export class TouchControls {
 
   checkVisibility() {
     if (!this.container) return;
-    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth <= 1024;
+    const isTouchDevice = this.isTouchDevice();
     if (isTouchDevice) {
       this.container.classList.remove('hidden');
     } else {
       this.container.classList.add('hidden');
+    }
+    // Desktop: tắt hẳn analog zone để không chặn click chuột.
+    if (this.analogStick) {
+      const shouldEnable = isTouchDevice && this.getMoveMode() === 'analog';
+      this.analogStick.setEnabled(shouldEnable);
     }
   }
 }

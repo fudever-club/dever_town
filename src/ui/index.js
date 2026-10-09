@@ -29,6 +29,7 @@ export { OnboardingGuide } from './common/OnboardingGuide.js';
 export { CoachMarks } from './common/CoachMarks.js';
 export { SettingsModal } from './common/SettingsModal.js';
 export { TouchControls } from './common/TouchControls.js';
+export { AnalogStick } from './common/AnalogStick.js';
 export { NetworkStatusOverlay } from './common/NetworkStatusOverlay.js';
 export { ToastManager, toastManager, TOAST_CONFIG } from './common/ToastManager.js';
 export { MinimapOverlay } from './common/MinimapOverlay.js';

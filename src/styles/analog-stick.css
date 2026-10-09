@@ -1,0 +1,78 @@
+/* --- analog-stick.css: floating analog stick cho mobile (2026-10-09) ---
+   Phong cách pixel-art: vòng tròn đứt nét + núm cam, khớp EmoteBar. */
+
+/* Vùng chạm: nửa trái màn hình dưới header. pointer-events chỉ khi bật. */
+.analog-stick-zone {
+  position: fixed;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  width: 50%;
+  z-index: 90000; /* dưới nút action (100000), trên canvas */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.analog-stick-zone.hidden {
+  display: none;
+}
+
+/* Đế cần: 120px, hiện tại điểm chạm */
+.analog-stick-base {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px dashed rgba(56, 189, 248, 0.55);
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.12) 70%, transparent 100%);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.25), inset 0 0 20px rgba(56, 189, 248, 0.08);
+  pointer-events: none;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  z-index: 90001;
+}
+
+.analog-stick-base.active {
+  border-style: solid;
+  border-color: rgba(242, 111, 33, 0.75);
+  box-shadow: 0 0 28px rgba(242, 111, 33, 0.35), inset 0 0 20px rgba(242, 111, 33, 0.1);
+}
+
+/* Chế độ ẩn: vẫn vuốt được, chỉ không hiện hình */
+.analog-stick-base[data-invisible="1"] {
+  visibility: hidden;
+}
+
+/* Núm cần: 52px, cam đặc */
+.analog-stick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fbbf24 0%, #f26f21 55%, #c2571a 100%);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 2px 3px rgba(255, 255, 255, 0.35);
+  /* transform được JS điều khiển khi kéo */
+}
+
+/* Gợi ý nhỏ khi mới bật analog (tự ẩn sau vài giây bằng JS nếu cần) */
+.analog-stick-hint {
+  position: fixed;
+  left: 25%;
+  bottom: 32%;
+  transform: translateX(-50%);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.85);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 20px;
+  padding: 8px 16px;
+  pointer-events: none;
+  z-index: 90002;
+  white-space: nowrap;
+}
