@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { ITEMS_DATABASE, PICKUP_SPOTS } from '../config/items.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { authService } from '../services/AuthService.js';
+import { toastManager } from '../ui/common/ToastManager.js';
 
 export class InventoryManager {
   /**
@@ -237,20 +238,7 @@ export class InventoryManager {
   }
 
   showToast(message) {
-    let toast = document.getElementById('dever-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'dever-toast';
-      toast.className = 'dever-toast';
-      document.body.appendChild(toast);
-    }
-
-    toast.textContent = message;
-    toast.classList.add('show');
-
-    clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2800);
+    // Routed through the global ToastManager queue (max 2 visible, FIFO).
+    toastManager.toast(message, { duration: 2800 });
   }
 }

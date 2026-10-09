@@ -1,5 +1,6 @@
 import { audioManager } from '../utils/AudioManager.js';
 import { authService } from '../services/AuthService.js';
+import { toastManager } from '../ui/common/ToastManager.js';
 
 export const DAILY_QUESTS_DEF = [
   {
@@ -395,23 +396,9 @@ export class QuestManager {
   }
 
   showToast(message) {
-    if (typeof document === 'undefined') return;
-    const toast = document.createElement('div');
-    toast.className = 'quest-toast-banner';
-    toast.setAttribute('role', 'status');
-    toast.setAttribute('aria-live', 'polite');
-    const toastDot = document.createElement('span');
-    toastDot.className = 'toast-dot';
-    const toastMsg = document.createElement('span');
-    toastMsg.textContent = message;
-    toast.appendChild(toastDot);
-    toast.appendChild(toastMsg);
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 400);
-    }, 3500);
+    // Routed through the global ToastManager queue (max 2 visible, FIFO).
+    // Keeps the .quest-toast-banner class so existing styles/tests apply.
+    toastManager.questToast(message);
   }
 
   async syncPointsToServer() {

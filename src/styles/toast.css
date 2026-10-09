@@ -1,11 +1,43 @@
-/* --- toast.css: toast notifications (split from main.css 2026-10-07) --- */
+/* --- toast.css: toast notifications (split from main.css 2026-10-07) ---
+   Toast zone (2026-10-09): ONE stack, top-center below the header.
+   Max 2 visible, rest queued FIFO by ToastManager. This zone never overlaps
+   the world-label zone (Phaser canvas) or the header zone by construction. */
 /* ==========================================================================
-   TOAST NOTIFICATION
+   TOAST STACK (the only toast zone on screen)
+   ========================================================================== */
+.dever-toast-stack {
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 9000; /* above canvas, below modals (10000005+) */
+  pointer-events: none;
+  width: max-content;
+  max-width: 94vw;
+}
+
+.dever-toast-stack > * {
+  pointer-events: none;
+  /* Border-box so max-width caps the TOTAL width (padding/border included).
+     Without this, content-box max-width + padding overflowed small viewports
+     by ~26px (critique item #5). */
+  box-sizing: border-box;
+}
+
+/* The lag banner's own dismiss button stays clickable. */
+.dever-toast-stack .lag-spinner-close-btn {
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   PILL TOAST (legacy .dever-toast class kept for compatibility)
    ========================================================================== */
 .dever-toast {
-  position: fixed;
-  top: 70px;
-  right: 24px;
+  position: static;
   background: var(--color-rgba-15-23-42-0-95);
   border: 1px solid var(--color-f26f21);
   box-shadow: 0 8px 24px var(--color-rgba-242-111-33-0-3);
@@ -15,11 +47,13 @@
   font-family: var(--font-sans-outfit);
   font-size: var(--text-13px);
   font-weight: 700;
-  z-index: var(--z-9999999);
+  max-width: min(88vw, 420px);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-align: center;
   opacity: 0;
-  transform: translateY(-12px);
-  pointer-events: none;
-  transition: all 0.3s ease-out;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 .dever-toast.show {
@@ -27,3 +61,76 @@
   transform: translateY(0);
 }
 
+.dever-toast.toast-leaving,
+.quest-toast-banner.toast-leaving,
+.achievement-toast-banner.toast-leaving {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+/* ==========================================================================
+   STACK-CHILD OVERRIDES (higher specificity beats the per-type fixed
+   positioning in quests.css / overlays.css regardless of import order)
+   ========================================================================== */
+.dever-toast-stack .quest-toast-banner {
+  position: static;
+  top: auto;
+  right: auto;
+  max-width: min(88vw, 420px);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  animation: toastStackIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dever-toast-stack .achievement-toast-banner {
+  max-width: min(92vw, 400px);
+  width: max-content;
+}
+
+.dever-toast-stack .achievement-toast-banner .achievement-toast-title,
+.dever-toast-stack .achievement-toast-banner .achievement-toast-desc {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+@keyframes toastStackIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   MOBILE (<=720px): compact toasts, no mid-word wrapping
+   ========================================================================== */
+@media (max-width: 720px) {
+  .dever-toast-stack {
+    top: 54px; /* below the 44px mobile header */
+    gap: 6px;
+    max-width: 96vw;
+  }
+
+  .dever-toast {
+    font-size: 12px;
+    padding: 8px 14px;
+    max-width: 92vw;
+  }
+
+  .dever-toast-stack .quest-toast-banner {
+    font-size: 12px;
+    padding: 8px 14px;
+    max-width: 92vw;
+  }
+
+  /* Achievement card goes compact: title + reward only. */
+  .dever-toast-stack .achievement-toast-banner {
+    min-width: 0;
+    width: 100%;
+    max-width: 94vw;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .dever-toast-stack .achievement-toast-banner .achievement-toast-desc {
+    display: none;
+  }
+}

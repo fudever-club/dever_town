@@ -1,6 +1,7 @@
 import { audioManager } from '../utils/AudioManager.js';
 import { questManager } from './QuestManager.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { toastManager } from '../ui/common/ToastManager.js';
 
 export const ACHIEVEMENTS_DEFINITIONS = {
   first_arrival: {
@@ -120,15 +121,10 @@ export class AchievementManager {
   }
 
   initDOM() {
+    // Toasts are rendered by the global ToastManager queue now
+    // (max 2 visible, FIFO) — no dedicated container needed.
     if (typeof document === 'undefined') return;
-    let toastContainer = document.getElementById('achievement-toast-container');
-    if (!toastContainer) {
-      toastContainer = document.createElement('div');
-      toastContainer.id = 'achievement-toast-container';
-      toastContainer.className = 'achievement-toast-container';
-      document.body.appendChild(toastContainer);
-    }
-    this.container = toastContainer;
+    this.container = null;
   }
 
   /**
@@ -176,38 +172,20 @@ export class AchievementManager {
   }
 
   showBanner(achievementId, ach) {
-    if (!this.container) return;
-
-    const banner = document.createElement('div');
-    banner.className = 'achievement-toast-banner';
+    // Routed through the global ToastManager queue (max 2 visible, FIFO).
+    // Keeps the .achievement-toast-banner class so existing styles/tests apply.
+    // Note: ach.icon may be an emoji badge (game content, allowed); the tag and
+    // titles stay text-only per the no-emoji-in-toasts rule.
     const badgeURL = TextureGenerator.getBadgeIconURL(this.scene, achievementId);
     const iconHTML = badgeURL
-      ? `<img src="${badgeURL}" alt="${ach.title}" width="40" height="40" style="image-rendering: pixelated;" />`
-      : ach.icon;
-    banner.innerHTML = `
-      <div class="achievement-toast-icon">${iconHTML}</div>
-      <div class="achievement-toast-content">
-        <span class="achievement-toast-tag">DANH HIỆU MỚI MỞ KHÓA</span>
-        <h4 class="achievement-toast-title">${ach.title}</h4>
-        <p class="achievement-toast-desc">${ach.desc}</p>
-      </div>
-      <div class="achievement-toast-reward">
-        <span>+${ach.rewardPoints}</span>
-        <small>ĐIỂM</small>
-      </div>
-    `;
-
-    this.container.appendChild(banner);
-
-    // Tự động xóa sau 5.2s
-    setTimeout(() => {
-      banner.classList.add('hide');
-      setTimeout(() => {
-        if (banner.parentElement) {
-          banner.parentElement.removeChild(banner);
-        }
-      }, 400);
-    }, 5200);
+      ? `<img src="${badgeURL}" alt="" width="40" height="40" style="image-rendering: pixelated;" />`
+      : `<span class="achievement-toast-emoji">${ach.icon || ''}</span>`;
+    toastManager.achievementToast({
+      iconHTML,
+      title: ach.title,
+      desc: ach.desc,
+      rewardHTML: `<span>+${ach.rewardPoints}</span><small>ĐIỂM</small>`,
+    });
   }
 
   isUnlocked(achievementId) {
