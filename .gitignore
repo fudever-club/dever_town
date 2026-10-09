@@ -36,3 +36,5 @@ android/app/.cxx
 
 # Electron builder output (Windows installer, unsigned)
 release/
+
+dist-artifacts/
