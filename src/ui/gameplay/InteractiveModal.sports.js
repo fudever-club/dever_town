@@ -184,6 +184,9 @@ InteractiveModal.prototype.showSportsSelect = function() {
   if (play) play.classList.add('hidden');
   // Rời gameplay -> hiện lại modal header (mobile)
   document.getElementById('interactive-modal')?.classList.remove('playing-minigame');
+  // Màn hình chọn game: title "Chọn game" (2026-10-09, theo yêu cầu của Hưng)
+  const titleEl = document.getElementById('interactive-modal-title');
+  if (titleEl) titleEl.textContent = 'Chọn game';
   this.buildSportsCards();
   this.refreshSportsCardHighs();
 };
@@ -201,6 +204,10 @@ InteractiveModal.prototype.playSportsGame = function(sportId) {
   // Vào gameplay -> ẩn modal header trên mobile để tối đa diện tích canvas
   // (CSS: #interactive-modal.playing-minigame .modal-header { display:none })
   document.getElementById('interactive-modal')?.classList.add('playing-minigame');
+
+  // Vào thẳng game của sân: title trở lại tên zone (hành vi cũ)
+  const titleEl = document.getElementById('interactive-modal-title');
+  if (titleEl) titleEl.textContent = this.currentZone?.name || 'Khu Vực Tương Tác FU-DEVER';
 
   if (this.sportsArcade) {
     this.sportsArcade.setGame(sportId);
