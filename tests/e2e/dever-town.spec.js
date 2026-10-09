@@ -2,6 +2,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () => {
 
+  test.beforeEach(async ({ page }) => {
+    // Tắt tour coach-marks (2026-10-09) để nó không che màn hình và chặn click trong test
+    await page.addInitScript(() => {
+      localStorage.setItem('dever_onboarded_v1', '1');
+      localStorage.setItem('dever_chat_hint_seen', '1');
+    });
+  });
+
   test('01. Welcome Gate loads with authentic branding & tabs', async ({ page }) => {
     await page.goto('/');
 
