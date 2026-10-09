@@ -35,6 +35,14 @@ export class PenaltyShootoutEngine {
     // Hit-stop freeze
     this.hitStopUntil = 0;
 
+    // Camera view cho orientation-aware layout (2026-10-09): gameplay logic
+    // luôn chạy trong không gian 640×360; render áp transform để lấp đầy
+    // khung màn hình (portrait: zoom vào khung thành).
+    this.viewScale = 1;
+    this.viewOX = 0;
+    this.viewOY = 0;
+    this.layoutView(canvas.width, canvas.height);
+
     // Khởi tạo lưới lò xo 8x6
     this.initNetGrid();
 
@@ -640,13 +648,57 @@ export class PenaltyShootoutEngine {
   // RENDERING PIPELINE (CANVAS 2D ART)
   // ==========================================
 
+  // Bố cục camera theo hướng màn hình (2026-10-09):
+  // - Desktop 640×360: 1:1.
+  // - Portrait: zoom lấp đầy chiều cao (scale = h/360), crop 2 bên — khung
+  //   thành (190..450) lấp đầy khung hình như camera sút phạt đền thực tế.
+  // - Landscape: giữ tỉ lệ 1:1, căn giữa khung thành theo chiều ngang mới.
+  layoutView(w, h) {
+    if (w === 640 && h === 360) {
+      this.viewScale = 1;
+      this.viewOX = 0;
+      this.viewOY = 0;
+      return;
+    }
+    if (h >= w) {
+      this.viewScale = h / 360;
+      this.viewOX = (w - 640 * this.viewScale) / 2;
+      this.viewOY = 0;
+    } else {
+      this.viewScale = 1;
+      this.viewOX = (w - 640) / 2;
+      this.viewOY = 0;
+    }
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ đổi camera, logic giữ nguyên.
+  resize(w, h) {
+    this.layoutView(w, h);
+  }
+
+  // Đổi tọa độ canvas-logic sang tọa độ view (không gian gameplay 640×360)
+  toViewCoords(x, y) {
+    return {
+      x: (x - this.viewOX) / this.viewScale,
+      y: (y - this.viewOY) / this.viewScale
+    };
+  }
+
   render() {
     const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
+    // Không gian gameplay logic: luôn 640×360, vật lý/AI không đổi
+    const w = 640;
+    const h = 360;
     const p = FOOTBALL_CONFIG.pitch;
 
-    ctx.clearRect(0, 0, w, h);
+    ctx.clearRect(0, 0, dw, dh);
+
+    // Camera transform: lấp đầy khung màn hình theo hướng
+    ctx.save();
+    ctx.translate(this.viewOX, this.viewOY);
+    ctx.scale(this.viewScale, this.viewScale);
 
     // 1. Bầu trời đêm FPTU Stadium
     this.renderNightSky(ctx, w);
@@ -693,7 +745,9 @@ export class PenaltyShootoutEngine {
     // 11. Đèn cao áp sân vận động (Dual Cone Floodlights)
     this.renderStadiumFloodlights(ctx, w, h);
 
-    // 12. Giao diện HUD & Thanh Lực (Power Meter)
+    ctx.restore(); // hết camera transform
+
+    // 12. Giao diện HUD & Thanh Lực (Power Meter) — tọa độ màn hình thực
     this.renderHUD(ctx);
   }
 
@@ -1246,6 +1300,9 @@ export class PenaltyShootoutEngine {
   }
 
   renderHUD(ctx) {
+    // HUD vẽ trong tọa độ màn hình thực (sau camera transform) — 2026-10-09
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
     ctx.save();
 
     // 1. Badge Vai trò & Chuỗi bàn thắng
@@ -1259,8 +1316,8 @@ export class PenaltyShootoutEngine {
     if (this.role === 'striker' && this.state === 'power_charging') {
       const barW = 180;
       const barH = 14;
-      const barX = 320 - barW / 2;
-      const barY = 285;
+      const barX = dw / 2 - barW / 2;
+      const barY = dh - 75;
 
       // Nền thanh lực
       ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
@@ -1300,17 +1357,17 @@ export class PenaltyShootoutEngine {
 
     if (this.role === 'striker') {
       if (this.state === 'aiming') {
-        ctx.fillText(this.isTouch ? 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI!' : 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI hoặc bấm Space để nạp lực!', 320, 345);
+        ctx.fillText(this.isTouch ? 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI!' : 'Kéo vuốt bóng để SÚT XOÁY QUẢ CHUỐI hoặc bấm Space để nạp lực!', dw / 2, dh - 16);
       } else if (this.state === 'power_charging') {
-        ctx.fillText(this.isTouch ? 'Chạm lần nữa tại vạch vàng để sút!' : 'Bấm Space / Enter lần nữa tại vạch vàng để sút!', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm lần nữa tại vạch vàng để sút!' : 'Bấm Space / Enter lần nữa tại vạch vàng để sút!', dw / 2, dh - 16);
       } else {
-        ctx.fillText(this.isTouch ? 'Chạm để chuyển sang Lượt Thủ Môn' : 'Bấm nút Hành Động hoặc Click để chuyển sang Lượt Thủ Môn', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm để chuyển sang Lượt Thủ Môn' : 'Bấm nút Hành Động hoặc Click để chuyển sang Lượt Thủ Môn', dw / 2, dh - 16);
       }
     } else {
       if (this.state === 'gk_wait' || this.state === 'gk_in_flight') {
-        ctx.fillText('Di chuyển chuột / ngón tay để ĐEO GĂNG ĐÓN BÓNG CỨU THUA!', 320, 345);
+        ctx.fillText('Di chuyển chuột / ngón tay để ĐEO GĂNG ĐÓN BÓNG CỨU THUA!', dw / 2, dh - 16);
       } else {
-        ctx.fillText(this.isTouch ? 'Chạm để trở lại Lượt Tiền Đạo' : 'Bấm nút Hành Động hoặc Click để trở lại Lượt Tiền Đạo', 320, 345);
+        ctx.fillText(this.isTouch ? 'Chạm để trở lại Lượt Tiền Đạo' : 'Bấm nút Hành Động hoặc Click để trở lại Lượt Tiền Đạo', dw / 2, dh - 16);
       }
     }
 

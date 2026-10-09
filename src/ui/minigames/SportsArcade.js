@@ -14,6 +14,7 @@ import { PenaltyShootoutEngine } from './sports/PenaltyShootoutEngine.js';
 import { BasketballShootoutEngine } from './sports/BasketballShootoutEngine.js';
 import { VolleyballRallyEngine } from './sports/VolleyballRallyEngine.js';
 import { BaristaSimulatorEngine } from './sports/BaristaSimulatorEngine.js';
+import { isTouchDevice } from './common/touchHints.js';
 
 export class SportsArcade {
   constructor(canvasEl, options = {}) {
@@ -170,6 +171,10 @@ export class SportsArcade {
   }
 
   bindEvents() {
+    this.handleOrientationChange = () => {
+      if (!this.running) return;
+      this.applyOrientationLayout();
+    };
     this.handleKeyDown = (e) => {
       if (!this.running) return;
       if (e.repeat) return; // Chống lặp phím liên tục khi người chơi nhấn giữ Space
@@ -212,6 +217,17 @@ export class SportsArcade {
       }
     };
 
+    // Đổi tọa độ sự kiện sang không gian view của engine hiện tại.
+    // Engine không có camera riêng (toViewCoords) thì giữ nguyên.
+    this.toEngineCoords = (e) => {
+      const c = this.getCanvasCoords(e);
+      const eng = this.getCurrentEngine?.();
+      if (eng && typeof eng.toViewCoords === 'function') {
+        return eng.toViewCoords(c.x, c.y);
+      }
+      return c;
+    };
+
     this.getCanvasCoords = (e) => {
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.canvas.width / rect.width;
@@ -226,7 +242,7 @@ export class SportsArcade {
 
     this.handlePointerDown = (e) => {
       if (!this.running || Date.now() < this.activationGraceUntil) return;
-      const { x, y } = this.getCanvasCoords(e);
+      const { x, y } = this.toEngineCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerDown(x, y);
       } else if (this.currentGame === 'basketball') {
@@ -238,7 +254,7 @@ export class SportsArcade {
 
     this.handlePointerMove = (e) => {
       if (!this.running) return;
-      const { x, y } = this.getCanvasCoords(e);
+      const { x, y } = this.toEngineCoords(e);
       if (this.currentGame === 'football') {
         this.penaltyEngine.handlePointerMove(x, y);
       } else if (this.currentGame === 'barista') {
@@ -250,7 +266,7 @@ export class SportsArcade {
 
     this.handlePointerUp = (e) => {
       if (!this.running) return;
-      const { x, y } = this.getCanvasCoords(e);
+      const { x, y } = this.toEngineCoords(e);
       if (this.currentGame === 'barista') {
         this.baristaEngine.handlePointerUp();
       } else if (this.currentGame === 'basketball') {
@@ -293,11 +309,50 @@ export class SportsArcade {
     this.currentGame = gameType;
     this.particles = [];
     this.activationGraceUntil = Date.now() + 350;
+    // Áp dụng playfield theo hướng màn hình TRƯỚC khi reset engine (2026-10-09)
+    this.applyOrientationLayout();
     if (gameType === 'football') this.penaltyEngine.resetStriker();
     else if (gameType === 'basketball') this.basketballEngine.reset();
     else if (gameType === 'volleyball') this.volleyballEngine.resetServe('player');
     else if (gameType === 'barista') this.baristaEngine.reset();
     this.updateHUD();
+  }
+
+  // Bố cục playfield theo hướng màn hình (2026-10-09, yêu cầu của Hưng):
+  // desktop giữ nguyên 640×360; mobile portrait → 480×640; landscape → 720×360.
+  // Game nào chưa có resize(w,h) thì giữ 640×360 (zero-regression từng batch).
+  getOrientationLayout() {
+    if (!isTouchDevice()) return { w: 640, h: 360, aspect: '16 / 9' };
+    const engine = this.getCurrentEngine();
+    if (typeof engine?.resize !== 'function') return { w: 640, h: 360, aspect: '16 / 9' };
+    const portrait = window.innerHeight >= window.innerWidth;
+    return portrait
+      ? { w: 480, h: 640, aspect: '3 / 4' }
+      : { w: 720, h: 360, aspect: '2 / 1' };
+  }
+
+  getCurrentEngine() {
+    if (this.currentGame === 'football') return this.penaltyEngine;
+    if (this.currentGame === 'basketball') return this.basketballEngine;
+    if (this.currentGame === 'volleyball') return this.volleyballEngine;
+    if (this.currentGame === 'barista') return this.baristaEngine;
+    return null;
+  }
+
+  applyOrientationLayout() {
+    const { w, h, aspect } = this.getOrientationLayout();
+    const changed = this.canvas.width !== w || this.canvas.height !== h;
+    if (changed) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.width = w;
+      this.height = h;
+    }
+    if (this.canvas.style.aspectRatio !== aspect) {
+      this.canvas.style.aspectRatio = aspect;
+    }
+    this.getCurrentEngine()?.resize?.(w, h);
+    return changed;
   }
 
   start() {
@@ -320,6 +375,9 @@ export class SportsArcade {
     window.addEventListener('touchend', this.handlePointerUp);
 
     this.canvas.addEventListener('click', this.handleCanvasClick);
+
+    window.addEventListener('resize', this.handleOrientationChange);
+    window.addEventListener('orientationchange', this.handleOrientationChange);
 
     const loop = (now) => {
       if (!this.running) return;
@@ -355,6 +413,9 @@ export class SportsArcade {
     window.removeEventListener('touchend', this.handlePointerUp);
 
     this.canvas.removeEventListener('click', this.handleCanvasClick);
+
+    window.removeEventListener('resize', this.handleOrientationChange);
+    window.removeEventListener('orientationchange', this.handleOrientationChange);
   }
 
   destroy() {
@@ -436,8 +497,21 @@ export class SportsArcade {
       this.baristaEngine.render();
     }
 
-    // Render hiệu ứng Juice (hạt, chữ bay) lên trên cùng
-    this.juiceFX.render(this.ctx);
+    // Render hiệu ứng Juice (hạt, chữ bay) lên trên cùng.
+    // Engine có camera view riêng (football): render juice trong cùng không
+    // gian view để hạt/chữ khớp vị trí gameplay (2026-10-09).
+    const activeEngine = this.getCurrentEngine?.();
+    if (activeEngine && typeof activeEngine.toViewCoords === 'function' &&
+        (activeEngine.viewScale !== 1 || activeEngine.viewOX || activeEngine.viewOY)) {
+      this.ctx.save();
+      this.ctx.translate(activeEngine.viewOX || 0, activeEngine.viewOY || 0);
+      const vs = activeEngine.viewScale || 1;
+      this.ctx.scale(vs, vs);
+      this.juiceFX.render(this.ctx);
+      this.ctx.restore();
+    } else {
+      this.juiceFX.render(this.ctx);
+    }
 
     this.ctx.restore();
   }
