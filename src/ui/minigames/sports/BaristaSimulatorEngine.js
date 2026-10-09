@@ -23,6 +23,15 @@ export class BaristaSimulatorEngine {
     // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
     this.isTouch = isTouchDevice();
 
+    // Tap tracking cho cảm ứng (2026-10-09): chạm nhanh = xác nhận (giống nút
+    // Hành Động / Space), giữ lâu hoặc kéo = thao tác giữ. Ngưỡng theo px
+    // canvas 640x360.
+    this._tapDownTime = 0;
+    this._tapDownX = 0;
+    this._tapDownY = 0;
+    this.TAP_MAX_MS = 350;
+    this.TAP_MAX_DIST = 14;
+
     this.recognizer = new LatteArtRecognizer();
     this.drinkKeys = Object.keys(BARISTA_CONFIG.drinks);
     this.currentDrinkIndex = 0;
@@ -204,6 +213,10 @@ export class BaristaSimulatorEngine {
 
   handlePointerDown(x, y) {
     this.mousePos = { x, y };
+    // Ghi nhận điểm chạm để phân biệt tap nhanh vs giữ/kéo trên cảm ứng.
+    this._tapDownTime = Date.now();
+    this._tapDownX = x;
+    this._tapDownY = y;
     const now = Date.now();
     if (now < this.actionCooldownUntil) return;
 
@@ -225,7 +238,9 @@ export class BaristaSimulatorEngine {
       this.isSteaming = true;
     } else if (this.station === 'latte_art') {
       this.isPouringMilk = true;
-      this.handlePointerMove(x, y);
+      // Desktop giữ hành vi cũ (chấm điểm ngay khi nhấn); cảm ứng chỉ vẽ khi rê
+      // thật để một cú chạm nhanh không để lại vệt mực lạc trước khi xác nhận.
+      if (!this.isTouch) this.handlePointerMove(x, y);
     } else if (this.station === 'result') {
       this.nextDrink();
     }
@@ -251,6 +266,19 @@ export class BaristaSimulatorEngine {
       this.isSteaming = false;
     } else if (this.station === 'latte_art') {
       this.isPouringMilk = false;
+    }
+
+    // Tap-to-advance trên cảm ứng (2026-10-09): chạm nhanh ở trạm steaming /
+    // latte_art gọi đúng code path của nút Hành Động / Space (onActionTrigger),
+    // vì nút DOM bị ẩn trên cảm ứng khiến flow bị kẹt ở hai trạm này.
+    if (this.isTouch && this._tapDownTime) {
+      const tapMs = Date.now() - this._tapDownTime;
+      const tapDist = Math.hypot(this.mousePos.x - this._tapDownX, this.mousePos.y - this._tapDownY);
+      this._tapDownTime = 0;
+      if (tapMs < this.TAP_MAX_MS && tapDist < this.TAP_MAX_DIST &&
+          (this.station === 'steaming' || this.station === 'latte_art')) {
+        this.onActionTrigger();
+      }
     }
   }
 
@@ -1022,7 +1050,7 @@ export class BaristaSimulatorEngine {
     ctx.fillText(this.isTouch ? 'GIỮ tay để SỤC HƠI STEAM WAND!' : 'GIỮ nút [Space] hoặc Chuột để SỤC HƠI STEAM WAND!', 320, 275);
     ctx.fillStyle = '#22c55e';
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(this.isTouch ? 'Khi cả 2 đồng hồ đều ở VÙNG XANH là đạt chuẩn!' : 'Khi cả 2 đồng hồ đều ở VÙNG XANH: Bấm nút để chuyển sang Rót Nghệ Thuật!', 320, 295);
+    ctx.fillText(this.isTouch ? 'Khi cả 2 đồng hồ đều ở VÙNG XANH: CHẠM NHANH để chuyển sang Rót Nghệ Thuật!' : 'Khi cả 2 đồng hồ đều ở VÙNG XANH: Bấm nút để chuyển sang Rót Nghệ Thuật!', 320, 295);
     ctx.restore();
   }
 
@@ -1133,7 +1161,7 @@ export class BaristaSimulatorEngine {
 
     ctx.fillStyle = '#fbbf24';
     ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(this.isTouch ? 'Rót bọt sữa vẽ hình theo ý thích!' : 'Bấm nút để RẮC TOPPING hoặc HOÀN TẤT MÓN CÀ PHÊ', 320, 88);
+    ctx.fillText(this.isTouch ? 'Chạm nhanh để TỰ VẼ / RẮC TOPPING / HOÀN TẤT món!' : 'Bấm nút để RẮC TOPPING hoặc HOÀN TẤT MÓN CÀ PHÊ', 320, 88);
     ctx.restore();
   }
 

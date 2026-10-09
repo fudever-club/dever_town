@@ -1044,6 +1044,16 @@ export class Match3Engine {
   }
 
   handlePointerUp(x, y) {
+    // Tap-to-restart trên cảm ứng (2026-10-09): chạm vào modal kết thúc chơi lại
+    // ngay — cùng code path với phím R, vì Space/R không tồn tại trên mobile.
+    if (this.isTouch && (this.state === 'game_over' || this.state === 'game_clear')) {
+      const { x: mx, y: my, w: mw, h: mh } = this.getGameOverModalBounds();
+      if (x >= mx && x <= mx + mw && y >= my && y <= my + mh) {
+        this.resetGame();
+      }
+      return;
+    }
+
     if (this.state !== 'ready') return;
 
     if (this.dragStart) {
@@ -1599,16 +1609,20 @@ export class Match3Engine {
     ctx.fillText(`STATUS: ${this.state.toUpperCase()}`, px + pw / 2, 298);
   }
 
+  // Bounds modal kết thúc (dùng chung cho render + tap-to-restart trên cảm ứng).
+  getGameOverModalBounds() {
+    const w = 340;
+    const h = 220;
+    return { x: (640 - w) / 2, y: (360 - h) / 2, w, h };
+  }
+
   renderGameOverModal(ctx) {
     ctx.save();
     ctx.fillStyle = 'rgba(10, 13, 26, 0.85)';
     ctx.fillRect(0, 0, 640, 360);
 
     const isWin = this.state === 'game_clear';
-    const modalW = 340;
-    const modalH = 220;
-    const modalX = (640 - modalW) / 2;
-    const modalY = (360 - modalH) / 2;
+    const { x: modalX, y: modalY, w: modalW, h: modalH } = this.getGameOverModalBounds();
 
     ctx.fillStyle = '#0f172a';
     ctx.strokeStyle = isWin ? '#10b981' : '#ef4444';
@@ -1646,7 +1660,7 @@ export class Match3Engine {
     // Lời nhắc
     ctx.fillStyle = '#94a3b8';
     ctx.font = "12px 'Segoe UI', sans-serif";
-    ctx.fillText(this.isTouch ? 'Bấm nút [‹] để về danh sách game' : 'Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
+    ctx.fillText(this.isTouch ? 'Chạm vào đây để chơi lại' : 'Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
 
     ctx.restore();
   }
