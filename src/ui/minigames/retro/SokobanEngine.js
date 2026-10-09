@@ -70,12 +70,39 @@ export class SokobanEngine {
     this.playerVisual = { x: this.player.x, y: this.player.y };
     this.facingDir = { dx: 0, dy: 1 };
 
-    // Căn giữa canvas
-    this.offsetX = Math.floor((this.canvas.width - this.cols * this.tileSize) / 2);
-    this.offsetY = Math.floor((this.canvas.height - this.rows * this.tileSize) / 2) + 12;
+    // Căn giữa canvas theo kích thước thực tế (2026-10-09, orientation-aware)
+    this.layoutTiles();
 
     this.checkDeadlocks();
     this.callbacks.onScoreUpdate?.(this.currentLevelIndex + 1);
+  }
+
+  // Bố cục ô cờ thích ứng hướng màn hình (2026-10-09):
+  // - Desktop 640×360: tileSize 38 như config, căn giữa.
+  // - Portrait: phóng to ô cờ để lấp đầy chiều dọc (tap target lớn hơn).
+  // - Landscape: giữ 38, căn giữa theo chiều ngang mới.
+  // Mọi thực thể dùng tọa độ tile nên tự đúng, không đổi logic game.
+  layoutTiles() {
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const base = SOKOBAN_CONFIG.tileSize || 38;
+    if (w === 640 && h === 360) {
+      this.tileSize = base;
+    } else if (h >= w) {
+      const availW = w - 32;
+      const availH = h - 170; // chừa HUD trên + gợi ý dưới
+      this.tileSize = Math.max(24, Math.floor(Math.min(availW / this.cols, availH / this.rows)));
+    } else {
+      this.tileSize = base;
+    }
+    this.offsetX = Math.floor((w - this.cols * this.tileSize) / 2);
+    this.offsetY = Math.floor((h - this.rows * this.tileSize) / 2) + 12;
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ tính lại tileSize/offset,
+  // thực thể tile-based giữ nguyên.
+  resize() {
+    this.layoutTiles();
   }
 
   restartLevel() {
