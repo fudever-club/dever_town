@@ -214,7 +214,7 @@ export class CanvasJuiceFX {
       ctx.save();
       const alpha = Math.min(1, ft.life / 0.3);
       ctx.globalAlpha = alpha;
-      ctx.font = `900 ${Math.round(ft.size * ft.scale)}px Outfit, sans-serif`;
+      ctx.font = `900 ${Math.round(ft.size * ft.scale)}px "Be Vietnam Pro", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 

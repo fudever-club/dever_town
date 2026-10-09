@@ -963,32 +963,32 @@ export class PacmanEngine {
   renderHUD(ctx) {
     ctx.save();
     ctx.fillStyle = this.cfg.colors?.hudText || '#f8fafc';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
 
     // HUD Bên Trái
     ctx.textAlign = 'left';
     ctx.fillText('ĐIỂM SỐ', 12, 35);
-    ctx.font = '900 18px Outfit, sans-serif';
+    ctx.font = '900 18px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#38bdf8';
     ctx.fillText(this.score.toString(), 12, 58);
 
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText('KỶ LỤC', 12, 88);
-    ctx.font = '900 14px Outfit, sans-serif';
+    ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#facc15';
     ctx.fillText(this.highScore.toString(), 12, 106);
 
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText('MÀN CHƠI', 12, 136);
-    ctx.font = '900 14px Outfit, sans-serif';
+    ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#10b981';
     ctx.fillText(`CẤP ${this.level}`, 12, 154);
 
     // Mạng sống (3 Chú Bọ)
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('MẠNG SỐNG', 12, 186);
 
     for (let i = 0; i < this.lives; i++) {
@@ -1007,7 +1007,7 @@ export class PacmanEngine {
     const rightX = 556;
     ctx.textAlign = 'left';
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('TRẠNG THÁI', rightX, 35);
 
     let modeText = 'SCATTER';
@@ -1020,21 +1020,21 @@ export class PacmanEngine {
       modeColor = '#ef4444';
     }
 
-    ctx.font = '900 14px Outfit, sans-serif';
+    ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = modeColor;
     ctx.fillText(modeText, rightX, 55);
 
     // Còn lại bao nhiêu viên năng lượng
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('CÒN LẠI', rightX, 88);
-    ctx.font = '900 14px Outfit, sans-serif';
+    ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#e2e8f0';
     ctx.fillText(`${this.pelletsRemaining}/${this.totalPellets}`, rightX, 106);
 
     // Phím bấm gợi ý
     ctx.fillStyle = '#64748b';
-    ctx.font = '600 10px Outfit, sans-serif';
+    ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
     ctx.fillText('W / A / S / D', rightX, 290);
     ctx.fillText('MŨI TÊN DI CHUYỂN', rightX, 306);
     ctx.fillText('R: CHƠI LẠI', rightX, 322);
@@ -1068,11 +1068,11 @@ export class PacmanEngine {
     ctx.shadowBlur = 0;
     ctx.textAlign = 'center';
     ctx.fillStyle = color;
-    ctx.font = '900 20px Outfit, sans-serif';
+    ctx.font = '900 20px "Be Vietnam Pro", sans-serif';
     ctx.fillText(title, cx, cy - 8);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText(sub, cx, cy + 18);
 
     ctx.restore();

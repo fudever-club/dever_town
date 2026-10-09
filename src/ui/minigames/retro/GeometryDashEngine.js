@@ -793,13 +793,13 @@ export class GeometryDashEngine {
     // Phần trăm hiển thị
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '900 11px Outfit, sans-serif';
+    ctx.font = '900 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#ffffff';
     ctx.fillText(`${this.currentPercent}%`, barX + barW / 2, barY + barH / 2);
 
     // 2. Bộ Đếm Số Lần Thử & Kỷ Lục
     ctx.textAlign = 'left';
-    ctx.font = '800 13px Outfit, sans-serif';
+    ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`LẦN THỬ: ${this.attempts}`, 18, 26);
 
@@ -810,13 +810,13 @@ export class GeometryDashEngine {
     // 3. Màn hình Chờ Bắt Đầu hoặc Hoàn Thành
     if (this.state === 'ready') {
       ctx.textAlign = 'center';
-      ctx.font = '900 24px Outfit, sans-serif';
+      ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = '#a855f7';
       ctx.shadowBlur = 12;
       ctx.fillText('DEVER DASH 3.0', w / 2, 120);
 
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
@@ -824,13 +824,13 @@ export class GeometryDashEngine {
       ctx.globalAlpha = 1.0;
     } else if (this.state === 'complete') {
       ctx.textAlign = 'center';
-      ctx.font = '900 28px Outfit, sans-serif';
+      ctx.font = '900 28px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#4ade80';
       ctx.shadowColor = '#22c55e';
       ctx.shadowBlur = 16;
       ctx.fillText('CHIẾN THẮNG 100%!', w / 2, 140);
 
-      ctx.font = '700 14px Outfit, sans-serif';
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#facc15';
       ctx.fillText(`Hoàn thành sau ${this.attempts} lần thử!`, w / 2, 180);
 

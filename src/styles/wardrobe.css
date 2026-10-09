@@ -447,3 +447,78 @@
   box-shadow: 0 0 8px var(--color-rgba-56-189-248-0-4);
 }
 
+
+/* --- WARDROBE RESPONSIVE (2026-10-09) ---
+   Fix: avatar cards bị cắt/tràn ở màn hẹp. Xếp dọc workspace, grid 1 cột,
+   cuộn mượt bằng touch/trackpad. */
+.wardrobe-options-panel,
+.wardrobe-character-grid {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.wardrobe-character-grid {
+  touch-action: pan-y;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 720px) {
+  .wardrobe-workspace {
+    grid-template-columns: 1fr;
+    gap: var(--space-12px);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .wardrobe-preview-panel {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .preview-box {
+    padding: var(--space-8px);
+  }
+
+  #wardrobe-preview-canvas {
+    width: 96px;
+    height: 96px;
+  }
+
+  .wardrobe-preview-controls {
+    width: auto;
+  }
+
+  .btn-apply-wardrobe {
+    width: auto;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .wardrobe-options-panel {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .wardrobe-character-grid {
+    grid-template-columns: 1fr;
+    max-height: 320px;
+  }
+
+  .wardrobe-tabs-header {
+    flex-wrap: wrap;
+  }
+
+  .wardrobe-tab-btn {
+    flex: 1 1 40%;
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1024px) {
+  .wardrobe-character-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -735,7 +735,7 @@ export class PenaltyShootoutEngine {
     ctx.strokeRect(0, ledY, w, 14);
 
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '800 9px Outfit, sans-serif';
+    ctx.font = '800 9px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
 
     const bannerText = FOOTBALL_CONFIG.theGolazo?.stadium?.ledText || 'FU-DEVER • WORK HARD - PLAY HARD • FPT UNIVERSITY DA NANG';
@@ -933,7 +933,7 @@ export class PenaltyShootoutEngine {
 
       // Số áo 10 sau lưng
       ctx.fillStyle = '#ffffff';
-      ctx.font = '800 8px Outfit, sans-serif';
+      ctx.font = '800 8px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('10', 0, -1);
 
@@ -1215,7 +1215,7 @@ export class PenaltyShootoutEngine {
     // Mũi tên chỉ hướng xoáy (nếu có độ xoáy quả chuối)
     if (Math.abs(this.spinCurl) > 0.2) {
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '700 11px Outfit, sans-serif';
+      ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       const arrow = this.spinCurl > 0 ? '⤸ Xoáy Phải' : '⤹ Xoáy Trái';
       ctx.fillText(arrow, midX, midY - 10);
@@ -1247,7 +1247,7 @@ export class PenaltyShootoutEngine {
 
     // 1. Badge Vai trò & Chuỗi bàn thắng
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 15px Outfit, sans-serif';
+    ctx.font = '800 15px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`Vai Trò: ${this.role === 'striker' ? 'TIỀN ĐẠO SÚT BÓNG' : 'THỦ MÔN BẮT BÓNG'}`, 20, 26);
     ctx.fillText(`Chuỗi Ghi Bàn: ${this.streak} 🔥`, 20, 46);
@@ -1285,7 +1285,7 @@ export class PenaltyShootoutEngine {
       ctx.stroke();
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '700 11px Outfit, sans-serif';
+      ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('SWEET SPOT (85%)', barX + barW * 0.82, barY - 5);
     }
@@ -1293,7 +1293,7 @@ export class PenaltyShootoutEngine {
     // 3. Thông báo hướng dẫn dưới chân màn hình
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
 
     if (this.role === 'striker') {
       if (this.state === 'aiming') {

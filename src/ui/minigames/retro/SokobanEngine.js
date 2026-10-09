@@ -452,7 +452,7 @@ export class SokobanEngine {
       ctx.fillStyle = '#ef4444';
       ctx.shadowColor = '#ef4444';
       ctx.shadowBlur = 6;
-      ctx.font = '900 16px Outfit, sans-serif';
+      ctx.font = '900 16px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('!', x, y);
@@ -663,11 +663,11 @@ export class SokobanEngine {
     ctx.save();
     // Thông tin Màn chơi
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 15px Outfit, sans-serif';
+    ctx.font = '800 15px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`${this.levelData.name} (${this.currentLevelIndex + 1}/15)`, 18, 26);
 
-    ctx.font = '600 13px Outfit, sans-serif';
+    ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`Số Bước: ${this.moves} · Chuẩn Par: ${this.levelData.parMoves}`, 18, 44);
 
@@ -680,7 +680,7 @@ export class SokobanEngine {
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '700 12px Outfit, sans-serif';
+    ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('Hoàn Tác (U)', 462, 29);
 
@@ -708,13 +708,13 @@ export class SokobanEngine {
     if (this.deadlockedBoxes.length > 0 && !this.won) {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText('CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm Hoàn Tác (U)', 18, 62);
     }
 
     // Gợi ý điều khiển phía dưới
     ctx.textAlign = 'center';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     if (this.won) {
       ctx.fillStyle = '#4ade80';
       ctx.fillText('CHIẾN THẮNG! Bấm Phím Cách (Space) hoặc Click để sang Màn Tiếp Theo', w / 2, this.canvas.height - 12);
@@ -750,13 +750,13 @@ export class SokobanEngine {
 
     // Tiêu đề modal
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('CHỌN MÀN CHƠI SOKOBAN (15 MÀN)', mx + 24, my + 32);
 
     // Nút đóng [X]
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText('✕', mx + modalW - 20, my + 32);
 
@@ -786,11 +786,11 @@ export class SokobanEngine {
 
       ctx.textAlign = 'center';
       ctx.fillStyle = isCur ? '#ffffff' : '#f1f5f9';
-      ctx.font = '800 13px Outfit, sans-serif';
+      ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Màn ${i + 1}`, bx + btnW / 2, by + 22);
 
       ctx.fillStyle = isCur ? '#bae6fd' : '#94a3b8';
-      ctx.font = '600 10px Outfit, sans-serif';
+      ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Par: ${SOKOBAN_LEVELS[i].parMoves}`, bx + btnW / 2, by + 38);
     }
 

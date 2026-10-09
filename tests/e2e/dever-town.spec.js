@@ -116,6 +116,10 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
       const touchChatBtn = page.locator('#touch-btn-chat');
       await touchChatBtn.click();
       await expect(page.locator('#chat-wrapper')).toHaveClass(/mobile-open/);
+    } else {
+      // Desktop: chat mặc định thu gọn (2026-10-09) -> mở bằng phím C
+      await page.keyboard.press('c');
+      await expect(page.locator('#main-content')).not.toHaveClass(/chat-collapsed/);
     }
 
     // Kiểm tra Chat input form

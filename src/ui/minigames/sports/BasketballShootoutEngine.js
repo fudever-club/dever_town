@@ -880,7 +880,7 @@ export class BasketballShootoutEngine {
     ctx.strokeRect(barX, barY, barW, barH);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`LỰC: ${Math.round(this.power * 100)}% | GÓC: ${Math.round(this.angle)}°`, barX, barY - 5);
 
@@ -908,7 +908,7 @@ export class BasketballShootoutEngine {
     ctx.strokeRect(15, 12, 175, 52);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`ĐIỂM: ${this.score}`, 25, 34);
 
@@ -916,14 +916,14 @@ export class BasketballShootoutEngine {
     if (this.isHeatCheck) fireTag = '⚡ HEAT CHECK! x3';
     else if (this.isOnFire) fireTag = '🔥 ON FIRE! x2';
 
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = this.isHeatCheck ? '#38bdf8' : this.isOnFire ? '#ea580c' : '#fbbf24';
     ctx.fillText(`CHUỖI: ${this.streak} ${fireTag}`, 25, 52);
 
     // Hướng dẫn tương tác
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
 
     if (this.state === 'aiming') {
       ctx.fillText('Kéo chuột/vuốt màn hình để NHẮM NÉM TỰ DO | Phím: [Mũi tên/Cách]', 320, 342);

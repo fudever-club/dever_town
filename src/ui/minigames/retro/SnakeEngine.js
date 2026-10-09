@@ -548,7 +548,7 @@ export class SnakeEngine {
         ctx.stroke();
 
         ctx.fillStyle = '#78350f';
-        ctx.font = '900 11px Outfit, sans-serif';
+        ctx.font = '900 11px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('D', fx, fy + 0.5);
@@ -764,14 +764,14 @@ export class SnakeEngine {
     ctx.save();
     // Điểm số chính
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 17px Outfit, sans-serif';
+    ctx.font = '800 17px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`Điểm Số: ${this.score}`, 18, 28);
 
     // Chuỗi Combo Streak
     if (this.comboTimer > 0 && this.comboMultiplier > 1) {
       ctx.fillStyle = '#facc15';
-      ctx.font = '900 14px Outfit, sans-serif';
+      ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
       const pct = Math.max(0, this.comboTimer / (SNAKE_CONFIG.comboWindowSec || 3.5));
       ctx.fillText(`COMBO x${this.comboMultiplier} (${pct.toFixed(1)}s)`, 18, 48);
 
@@ -786,25 +786,25 @@ export class SnakeEngine {
     let badgeY = 72;
     if (this.speedBuffTimer > 0) {
       ctx.fillStyle = '#ea580c';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`ỚT NITRO: ${this.speedBuffTimer.toFixed(1)}s`, 18, badgeY);
       badgeY += 18;
     }
     if (this.slowBuffTimer > 0) {
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`ĐỒNG HỒ BĂNG: ${this.slowBuffTimer.toFixed(1)}s`, 18, badgeY);
       badgeY += 18;
     }
     if (this.magnetBuffTimer > 0) {
       ctx.fillStyle = '#eab308';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`NAM CHÂM: ${this.magnetBuffTimer.toFixed(1)}s`, 18, badgeY);
     }
 
     // Nút gợi ý điều khiển
     ctx.fillStyle = '#64748b';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText('WASD / Mũi Tên: Lái Buggy · Shift: Bứt Tốc · R: Chơi Lại', w - 18, 28);
 
@@ -815,15 +815,15 @@ export class SnakeEngine {
 
       ctx.textAlign = 'center';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '900 32px Outfit, sans-serif';
+      ctx.font = '900 32px "Be Vietnam Pro", sans-serif';
       ctx.fillText('BUGGY ĐÃ BỊ KẸT!', w / 2, 145);
 
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '800 18px Outfit, sans-serif';
+      ctx.font = '800 18px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Điểm Số Cuối Cùng: ${this.score}`, w / 2, 185);
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '700 14px Outfit, sans-serif';
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
       ctx.fillText('Bấm Phím Cách (Space) hoặc R hoặc Click Chuột để chơi lại', w / 2, 225);
     }
 

@@ -63,7 +63,7 @@ export class DeviceApprovalModal {
     if (!waitingEl) {
       waitingEl = document.createElement('div');
       waitingEl.id = 'device-waiting-overlay';
-      waitingEl.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);z-index:10000020;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Outfit,sans-serif;';
+      waitingEl.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);z-index:10000020;display:flex;align-items:center;justify-content:center;color:#fff;font-family:"Be Vietnam Pro",sans-serif;';
       waitingEl.innerHTML = `
         <div style="text-align:center;padding:32px;background:rgba(30,41,59,0.95);border:1px solid rgba(242,111,33,0.5);border-radius:16px;max-width:420px;box-shadow:0 10px 40px rgba(0,0,0,0.8);">
           <div style="width:40px;height:40px;border:3px solid rgba(242,111,33,0.3);border-top-color:#f26f21;border-radius:50%;margin:0 auto 16px;animation:spinNeonRing 1s linear infinite;"></div>

@@ -164,7 +164,7 @@ InteractiveModal.prototype.renderMemorySlide = function(memory) {
 
     // 6. Title Text
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 18px "Outfit", system-ui, sans-serif';
+    ctx.font = 'bold 18px "Be Vietnam Pro", system-ui, sans-serif';
     ctx.textAlign = 'center';
     const displayTitle = memory.title;
     if (displayTitle.length > 36) {

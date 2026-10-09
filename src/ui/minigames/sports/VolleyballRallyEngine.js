@@ -1282,16 +1282,16 @@ export class VolleyballRallyEngine {
     ctx.strokeRect(220, 10, 200, 52);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 18px Outfit, sans-serif';
+    ctx.font = '800 18px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`${this.playerScore}   :   ${this.botScore}`, 320, 34);
 
-    ctx.font = '700 11px Outfit, sans-serif';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#fbbf24';
     ctx.fillText(`RALLY CHUỖI: ${this.rallyCount}`, 320, 52);
 
     // Gợi ý hành động bên dưới
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     if (this.state === 'serving_player') {
       ctx.fillStyle = '#38bdf8';

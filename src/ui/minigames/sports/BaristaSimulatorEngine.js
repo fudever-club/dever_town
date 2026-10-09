@@ -615,13 +615,13 @@ export class BaristaSimulatorEngine {
 
     // Tên món
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 13px Outfit, sans-serif';
+    ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`☕ ${this.recipe.name}`, 26, 28);
 
     // Tiền tip
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '700 12px Outfit, sans-serif';
+    ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Tips: ${this.totalTips}đ`, 260, 28);
 
     // Thanh kiên nhẫn
@@ -634,7 +634,7 @@ export class BaristaSimulatorEngine {
     ctx.fillRect(442, 18, (barW - 4) * pRatio, 12);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '600 10px Outfit, sans-serif';
+    ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`Chờ: ${Math.ceil(this.patience)}s`, 510, 28);
     ctx.restore();
@@ -673,15 +673,15 @@ export class BaristaSimulatorEngine {
 
     // Nội dung vé
     ctx.fillStyle = '#1c1917';
-    ctx.font = '900 13px Outfit, sans-serif';
+    ctx.font = '900 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`ORDER #${Math.floor(this.animTime * 10) % 90 + 10} • BÀN VIP`, -105, 18);
 
-    ctx.font = '700 12px Outfit, sans-serif';
+    ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#b45309';
     ctx.fillText(this.recipe.name.toUpperCase(), -105, 36);
 
-    ctx.font = '500 11px Outfit, sans-serif';
+    ctx.font = '500 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#44403c';
     ctx.fillText(`"${this.recipe.dialogue}"`, -105, 54, 210);
 
@@ -692,7 +692,7 @@ export class BaristaSimulatorEngine {
     ctx.lineTo(105, 78);
     ctx.stroke();
 
-    ctx.font = '600 10.5px Outfit, sans-serif';
+    ctx.font = '600 10.5px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#78716c';
     const iceText = this.recipe.targetIce > 0 ? `${this.recipe.targetIce} Viên Đá` : 'Uống Nóng (0 Đá)';
     ctx.fillText(`Yêu cầu: ${iceText} · Topping: ${this.recipe.topping}`, -105, 96);
@@ -702,7 +702,7 @@ export class BaristaSimulatorEngine {
     // Hướng dẫn
     ctx.textAlign = 'center';
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '700 14px Outfit, sans-serif';
+    ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Nhấp chuột hoặc Bấm nút [Hành Động / Space] để nhận đơn!', 320, 260);
     ctx.restore();
   }
@@ -745,7 +745,7 @@ export class BaristaSimulatorEngine {
 
     // Tên khách hàng
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '700 12px Outfit, sans-serif';
+    ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(this.recipe.customer, 0, 16);
     ctx.restore();
@@ -781,7 +781,7 @@ export class BaristaSimulatorEngine {
       ctx.fillRect(307, 230 - 32 * p, 26, 32 * p);
 
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`Đang Chiết Xuất Crema: ${Math.round(p * 100)}%`, 320, 270);
     } else {
@@ -818,11 +818,11 @@ export class BaristaSimulatorEngine {
       ctx.fillRect(curX - 3, 68, 6, 38);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`LỰC NÉN TAMPER: ${Math.round(this.tampingForce)} KG / 18 KG LÝ TƯỞNG`, 320, 122);
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '600 12px Outfit, sans-serif';
+      ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText('GIỮ phím [Space] hoặc Chuột để nén, THẢ TAY trong vạch xanh để chiết xuất!', 320, 270);
     }
     ctx.restore();
@@ -939,7 +939,7 @@ export class BaristaSimulatorEngine {
 
     // Hướng dẫn
     ctx.textAlign = 'center';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     if (this.currentIce < this.recipe.targetIce) {
       ctx.fillStyle = '#38bdf8';
       ctx.fillText(`Nhấp chuột / Bấm nút để THẢ ĐÁ VIÊN (${this.currentIce}/${this.recipe.targetIce})`, 320, 325);
@@ -1014,11 +1014,11 @@ export class BaristaSimulatorEngine {
 
     // Hướng dẫn
     ctx.fillStyle = '#ffffff';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('GIỮ nút [Space] hoặc Chuột để SỤC HƠI STEAM WAND!', 320, 275);
     ctx.fillStyle = '#22c55e';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Khi cả 2 đồng hồ đều ở VÙNG XANH: Bấm nút để chuyển sang Rót Nghệ Thuật!', 320, 295);
     ctx.restore();
   }
@@ -1060,12 +1060,12 @@ export class BaristaSimulatorEngine {
 
     // Chữ giá trị
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 12px Outfit, sans-serif';
+    ctx.font = '800 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(valText, 0, 16);
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '600 8.5px Outfit, sans-serif';
+    ctx.font = '600 8.5px "Be Vietnam Pro", sans-serif';
     ctx.fillText(title, 0, 28);
     ctx.restore();
   }
@@ -1125,11 +1125,11 @@ export class BaristaSimulatorEngine {
     // Hướng dẫn
     ctx.textAlign = 'center';
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Rê chuột / Chạm vào miệng ly để RÓT BỌT SỮA VẼ LATTE ART!', 320, 68);
 
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Bấm nút để RẮC TOPPING hoặc HOÀN TẤT MÓN CÀ PHÊ', 320, 88);
     ctx.restore();
   }
@@ -1185,30 +1185,30 @@ export class BaristaSimulatorEngine {
     ctx.shadowColor = 'transparent';
 
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '800 21px Outfit, sans-serif';
+    ctx.font = '800 21px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`Tác Phẩm: ${this.evaluation.title.toUpperCase()}`, 320, 95);
 
     // Sao vàng đánh giá
     const starStr = '★'.repeat(this.evaluation.stars) + '☆'.repeat(5 - this.evaluation.stars);
-    ctx.font = '800 25px Outfit, sans-serif';
+    ctx.font = '800 25px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#f59e0b';
     ctx.fillText(starStr, 320, 130);
 
-    ctx.font = '500 13px Outfit, sans-serif';
+    ctx.font = '500 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#e2e8f0';
     ctx.fillText(`"${this.evaluation.comment}"`, 320, 162);
 
-    ctx.font = '700 13.5px Outfit, sans-serif';
+    ctx.font = '700 13.5px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#38bdf8';
     ctx.fillText(`Điểm Nghệ Thuật: ${this.evaluation.score}/100 • Khách Hàng: ${this.recipe.customer}`, 320, 195);
 
     ctx.fillStyle = '#22c55e';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Tổng Tiền Tip Tích Lũy: ${this.totalTips}đ 💰`, 320, 225);
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Nhấp chuột hoặc Bấm nút [Hành Động] để nhận đơn tiếp theo!', 320, 265);
     ctx.restore();
   }

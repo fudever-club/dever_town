@@ -472,16 +472,6 @@
   color: var(--color-f1f5f9);
 }
 
-.quest-reward-tag {
-  font-family: var(--font-mono);
-  font-size: var(--text-12px);
-  font-weight: 800;
-  color: var(--color-fbbf24);
-  background: var(--color-rgba-245-158-11-0-15);
-  padding: var(--space-2px-8px);
-  border-radius: var(--radius-6px);
-}
-
 .quest-item-desc {
   font-size: var(--text-12px);
   color: var(--color-94a3b8);

@@ -104,7 +104,7 @@ InteractiveModal.prototype.renderInlineSlide = function() {
 
   inlineView.innerHTML = `
     <div style="flex:1;background:${slide.bg || '#0f172a'};padding:24px 28px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;">
-      <div style="color:#e2e8f0;font-family:'Outfit',sans-serif;line-height:1.6;">${slide.content}</div>
+      <div style="color:#e2e8f0;font-family:'Be Vietnam Pro',sans-serif;line-height:1.6;">${slide.content}</div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.7);padding:10px 18px;flex-shrink:0;">
       <button id="slide-prev-btn" style="background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;" ${idx === 0 ? 'disabled style="opacity:0.4;cursor:default;background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 14px;border-radius:8px;"' : ''}>&#8592; Trước</button>

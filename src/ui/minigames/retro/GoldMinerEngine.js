@@ -797,7 +797,7 @@ export class GoldMinerEngine {
 
       // Chữ TNT màu vàng
       ctx.fillStyle = '#fde047';
-      ctx.font = '900 11px Outfit, sans-serif';
+      ctx.font = '900 11px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('TNT', 0, 4);
 
@@ -829,7 +829,7 @@ export class GoldMinerEngine {
 
       // Dấu hỏi chấm vàng
       ctx.fillStyle = '#fde047';
-      ctx.font = '900 13px Outfit, sans-serif';
+      ctx.font = '900 13px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('?', 0, 8);
     } else {
@@ -1054,29 +1054,29 @@ export class GoldMinerEngine {
 
     // Tiền hiện tại & Mục tiêu ngày
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '800 15px Outfit, sans-serif';
+    ctx.font = '800 15px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`TIỀN: $${this.cash}`, 24, 27);
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '600 11.5px Outfit, sans-serif';
+    ctx.font = '600 11.5px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Mục Tiêu: $${this.targetCash}`, 24, 42);
 
     // Ngày chơi & Thời gian đếm ngược
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 14px Outfit, sans-serif';
+    ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`NGÀY ${this.day}`, 320, 26);
 
     const timeRatio = Math.max(0, this.timeLeft / 60);
     ctx.fillStyle = timeRatio > 0.35 ? '#22c55e' : '#ef4444';
-    ctx.font = '700 13px Outfit, sans-serif';
+    ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`⏱️ ${Math.ceil(this.timeLeft)}s`, 320, 42);
 
     // Dynamite & Buffs góc phải
     ctx.textAlign = 'right';
     ctx.fillStyle = '#ef4444';
-    ctx.font = '800 13.5px Outfit, sans-serif';
+    ctx.font = '800 13.5px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`🧨 x${this.dynamiteCount}`, this.canvas.width - 26, 27);
 
     // Huy hiệu Buff đang kích hoạt
@@ -1087,13 +1087,13 @@ export class GoldMinerEngine {
     if (this.hasLaserSight) activeBuffs.push('🎯');
 
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '12px Outfit, sans-serif';
+    ctx.font = '12px "Be Vietnam Pro", sans-serif';
     ctx.fillText(activeBuffs.length > 0 ? activeBuffs.join(' ') : 'Chưa có buff', this.canvas.width - 26, 42);
 
     // Dòng hướng dẫn phím ở đáy màn hình
     ctx.textAlign = 'center';
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '700 12.5px Outfit, sans-serif';
+    ctx.font = '700 12.5px "Be Vietnam Pro", sans-serif';
     if (this.hook.state === 'pull' && this.hook.grabbed && this.dynamiteCount > 0) {
       ctx.fillStyle = '#ef4444';
       ctx.fillText('BẤM PHÍM [Space / S / Nút Nổ] ĐỂ KÍCH NỔ DYNAMITE HỦY ĐÁ!', 320, 348);
@@ -1123,19 +1123,19 @@ export class GoldMinerEngine {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '900 22px Outfit, sans-serif';
+    ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
     ctx.fillText('🎉 HOÀN THÀNH NGÀY!', 320, 95);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '700 15px Outfit, sans-serif';
+    ctx.font = '700 15px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, 320, 135);
 
     ctx.fillStyle = '#22c55e';
-    ctx.font = '600 13px Outfit, sans-serif';
+    ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Đã Vượt Mức Mục Tiêu: +$${this.cash - this.targetCash}`, 320, 165);
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 12px Outfit, sans-serif';
+    ctx.font = '500 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Ghé Cửa Hàng Thợ Mỏ để sắm thuốc nổ & đồ nghề cho Ngày mới!', 320, 205);
 
     // Nút CTA vào Shop
@@ -1148,7 +1148,7 @@ export class GoldMinerEngine {
     ctx.stroke();
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 14px Outfit, sans-serif';
+    ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
     ctx.fillText('VÀO CỬA HÀNG THỢ MỎ [Space]', 320, 256);
     ctx.restore();
   }
@@ -1175,10 +1175,10 @@ export class GoldMinerEngine {
     // Tiêu đề Cửa Hàng
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fbbf24';
-    ctx.font = '900 20px Outfit, sans-serif';
+    ctx.font = '900 20px "Be Vietnam Pro", sans-serif';
     ctx.fillText('🏪 CỬA HÀNG THỢ MỎ (MINER SHOP)', 320, 32);
 
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`Số Dư Tiền: $${this.cash} · Sắm đồ nghề chuẩn bị cho Ngày ${this.day + 1}`, 320, 52);
 
@@ -1211,28 +1211,28 @@ export class GoldMinerEngine {
 
       // Phím tắt mua nhanh [1..5]
       ctx.fillStyle = '#f59e0b';
-      ctx.font = '800 11px Outfit, sans-serif';
+      ctx.font = '800 11px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(`[${i + 1}]`, cx + 8, cardY + 16);
 
       // Icon vật phẩm lớn
       ctx.textAlign = 'center';
-      ctx.font = '28px Outfit, sans-serif';
+      ctx.font = '28px "Be Vietnam Pro", sans-serif';
       ctx.fillText(it.icon || '📦', cx + cardW / 2, cardY + 50);
 
       // Tên vật phẩm
       ctx.fillStyle = '#f8fafc';
-      ctx.font = '700 11px Outfit, sans-serif';
+      ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
       ctx.fillText(it.name, cx + cardW / 2, cardY + 76);
 
       // Mô tả công dụng
       ctx.fillStyle = '#a8a29e';
-      ctx.font = '500 9.5px Outfit, sans-serif';
+      ctx.font = '500 9.5px "Be Vietnam Pro", sans-serif';
       this.drawWrappedText(ctx, it.desc, cx + cardW / 2, cardY + 94, cardW - 12, 12);
 
       // Giá niêm yết
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '800 13px Outfit, sans-serif';
+      ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`$${it.price}`, cx + cardW / 2, cardY + 138);
 
       // Nút MUA
@@ -1257,7 +1257,7 @@ export class GoldMinerEngine {
         ctx.fill();
 
         ctx.fillStyle = '#94a3b8';
-        ctx.font = '700 10.5px Outfit, sans-serif';
+        ctx.font = '700 10.5px "Be Vietnam Pro", sans-serif';
         ctx.fillText(isFull ? 'ĐÃ ĐẦY' : 'ĐÃ MUA', cx + cardW / 2, btnY + 15);
       } else {
         const canAfford = this.cash >= it.price;
@@ -1267,7 +1267,7 @@ export class GoldMinerEngine {
         ctx.fill();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '700 10.5px Outfit, sans-serif';
+        ctx.font = '700 10.5px "Be Vietnam Pro", sans-serif';
         ctx.fillText(canAfford ? 'MUA' : 'THIẾU TIỀN', cx + cardW / 2, btnY + 15);
 
         // Đăng ký vùng nút để click
@@ -1297,7 +1297,7 @@ export class GoldMinerEngine {
     ctx.stroke();
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 13.5px Outfit, sans-serif';
+    ctx.font = '800 13.5px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('BẮT ĐẦU NGÀY MỚI [Space]', 320, nextBtnY + 24);
 
@@ -1311,7 +1311,7 @@ export class GoldMinerEngine {
 
     // Dòng ghi chú
     ctx.fillStyle = '#78716c';
-    ctx.font = '500 11px Outfit, sans-serif';
+    ctx.font = '500 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Bấm phím [1 - 5] hoặc click để MUA · Bấm [Space] hoặc click nút để Bắt Đầu', 320, 328);
     ctx.restore();
   }
@@ -1353,19 +1353,19 @@ export class GoldMinerEngine {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ef4444';
-    ctx.font = '900 24px Outfit, sans-serif';
+    ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
     ctx.fillText('HẾT THỜI GIAN KHAI MỎ!', 320, 95);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '700 15px Outfit, sans-serif';
+    ctx.font = '700 15px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Tổng Tiền Thu Nhập: $${this.cash}`, 320, 135);
 
     ctx.fillStyle = '#f59e0b';
-    ctx.font = '600 13px Outfit, sans-serif';
+    ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Chưa Đạt Mục Tiêu Ngày: $${this.targetCash}`, 320, 165);
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 12px Outfit, sans-serif';
+    ctx.font = '500 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Bạn Đã Khai Thác Đến Ngày ${this.day}. Hãy Cố Gắng Lần Sau!`, 320, 195);
 
     // Nút Thử Lại
@@ -1378,7 +1378,7 @@ export class GoldMinerEngine {
     ctx.stroke();
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 14px Outfit, sans-serif';
+    ctx.font = '800 14px "Be Vietnam Pro", sans-serif';
     ctx.fillText('THỬ LẠI TỪ NGÀY 1 [Space]', 320, 249);
     ctx.restore();
   }

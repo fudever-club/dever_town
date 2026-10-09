@@ -594,7 +594,7 @@ export class TextureGenerator {
     ctx.fillText('FUDA', x + 16, y + 18);
 
     ctx.fillStyle = '#f26f21';
-    ctx.font = 'bold 6px "Outfit", sans-serif';
+    ctx.font = 'bold 6px "Be Vietnam Pro", sans-serif';
     ctx.fillText('DEVER', x + 16, y + 26);
   }
 

@@ -598,12 +598,12 @@ export class FlappyBugEngine {
       // Dòng chữ hướng dẫn nhấp nháy
       ctx.textAlign = 'center';
       ctx.fillStyle = '#f8fafc';
-      ctx.font = '900 24px Outfit, sans-serif';
+      ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
       ctx.shadowColor = '#06b6d4';
       ctx.shadowBlur = 10;
       ctx.fillText('FLAPPY BUGGY', w / 2, 110);
 
-      ctx.font = '700 14px Outfit, sans-serif';
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
@@ -612,7 +612,7 @@ export class FlappyBugEngine {
     } else if (this.state === 'playing') {
       // Điểm số lớn sắc nét trên đỉnh màn hình
       ctx.textAlign = 'center';
-      ctx.font = '900 38px Outfit, sans-serif';
+      ctx.font = '900 38px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
       ctx.shadowBlur = 8;
@@ -636,7 +636,7 @@ export class FlappyBugEngine {
       // Tiêu đề Game Over
       ctx.textAlign = 'center';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '900 22px Outfit, sans-serif';
+      ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
       ctx.fillText('BUGGY ĐÃ VA CHẠM!', w / 2, my + 38);
 
       // Huy chương (Medal)
@@ -645,27 +645,27 @@ export class FlappyBugEngine {
       // Điểm số hiện tại & Kỷ lục
       ctx.textAlign = 'right';
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText('ĐIỂM SỐ', mx + mw - 35, my + 82);
       ctx.fillStyle = '#ffffff';
-      ctx.font = '900 26px Outfit, sans-serif';
+      ctx.font = '900 26px "Be Vietnam Pro", sans-serif';
       ctx.fillText(this.score.toString(), mx + mw - 35, my + 112);
 
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText('KỶ LỤC TỐT NHẤT', mx + mw - 35, my + 140);
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '900 22px Outfit, sans-serif';
+      ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
       ctx.fillText(this.highScore.toString(), mx + mw - 35, my + 166);
 
       if (this.newBest) {
         ctx.fillStyle = '#f43f5e';
-        ctx.font = '800 12px Outfit, sans-serif';
+        ctx.font = '800 12px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('★ KỶ LỤC MỚI ĐƯỢC THIẾT LẬP! ★', w / 2, my + mh - 26);
       } else {
         ctx.fillStyle = '#38bdf8';
-        ctx.font = '600 12px Outfit, sans-serif';
+        ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Bấm Space hoặc Click Chuột để bay tiếp', w / 2, my + mh - 26);
       }
@@ -713,14 +713,14 @@ export class FlappyBugEngine {
 
     // Ngôi sao ở giữa
     ctx.fillStyle = ringColor;
-    ctx.font = '900 18px Outfit, sans-serif';
+    ctx.font = '900 18px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('★', cx, cy + 1);
 
     // Tên huy chương
     ctx.fillStyle = ringColor;
-    ctx.font = '800 11px Outfit, sans-serif';
+    ctx.font = '800 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText(medalName, cx, cy + 38);
     ctx.restore();
   }

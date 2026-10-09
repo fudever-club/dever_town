@@ -155,7 +155,6 @@ export class QuestModal {
           <div class="quest-info-block">
             <div class="quest-header-row">
               <span class="quest-item-title">${q.title}</span>
-              <span class="quest-reward-tag">+${q.points}</span>
             </div>
             <p class="quest-item-desc">${q.desc}</p>
             <div class="quest-bar-row">
