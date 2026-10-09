@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { NPC } from '../entities/NPC.js';
 import { NPC_CONFIG } from '../config/npcs.js';
 import { NPCDialogueModal } from '../ui/gameplay/NPCDialogueModal.js';
-import { GAME_CONFIG } from '../config/gameConfig.js';
+import { GAME_CONFIG, PORTAL_LABEL_CONFIG } from '../config/gameConfig.js';
 import { MAPS_CONFIG } from '../config/maps.js';
 import { InputController } from '../config/controls.js';
 import { Player } from '../entities/Player.js';
@@ -85,6 +85,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = null;
     this.tileSprites = [];
     this.portalLabels = [];
+    this._portalLabelTimer = 0;
     this.obstacleShadows = [];
     // Camera zoom (x-ray): tile che khuất, zoom người dùng, tween/pinch state
     this.occluderTiles = [];
@@ -916,7 +917,14 @@ export class WorldScene extends Phaser.Scene {
       this.tileSprites = [];
     }
     if (this.portalLabels && this.portalLabels.length > 0) {
-      this.portalLabels.forEach(lbl => lbl.destroy());
+      this.portalLabels.forEach(lbl => {
+        const dot = lbl.getData ? lbl.getData('dot') : null;
+        if (dot) {
+          this.tweens.killTweensOf(dot);
+          dot.destroy();
+        }
+        lbl.destroy();
+      });
       this.portalLabels = [];
     }
     if (this.obstacleShadows && this.obstacleShadows.length > 0) {
@@ -1074,6 +1082,32 @@ export class WorldScene extends Phaser.Scene {
         const estWidth = Math.max(labelText.width || 0, portalText.length * 8 + 16) + 20;
         const halfW = estWidth / 2;
         label.x = Phaser.Math.Clamp(avgX, halfW + 12, cols * tileSize - halfW - 12);
+
+        // Contextual labels (critique #1): lưu vị trí portal + vị trí gốc để
+        // fade theo khoảng cách và chống đè chữ trong _updatePortalLabels().
+        label.setData('portalX', avgX);
+        label.setData('portalY', avgY);
+        label.setData('baseX', label.x);
+        label.setData('baseY', label.y);
+
+        // Chấm marker tím: hiện khi portal ở xa (thay cho nhãn chữ).
+        const dot = this.add.circle(avgX, avgY, PORTAL_LABEL_CONFIG.DOT_RADIUS, 0xa78bfa, 0.9);
+        dot.setDepth(99998);
+        dot.setStrokeStyle(1.5, 0xffffff, 0.9);
+        dot.setVisible(false);
+        dot.setAlpha(PORTAL_LABEL_CONFIG.DOT_ALPHA);
+        label.setData('dot', dot);
+        // Nhịp "thở" nhẹ để marker dễ nhận ra mà không gây chú ý quá mức
+        this.tweens.add({
+          targets: dot,
+          scaleX: 1.35,
+          scaleY: 1.35,
+          duration: 900,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut'
+        });
+
         this.portalLabels.push(label);
       });
     }
@@ -1200,6 +1234,78 @@ export class WorldScene extends Phaser.Scene {
     bg.fillRoundedRect(-w / 2, -h / 2, w, h, 8);
     bg.lineStyle(1.5, 0xa78bfa, 0.95); // Viền tím = nhận diện portal
     bg.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
+    // Lưu kích thước cho pass chống đè chữ trong _updatePortalLabels()
+    label.setData('w', w);
+    label.setData('h', h);
+  }
+
+  // Nhãn portal theo ngữ cảnh (critique 2026-10-09 item #1): fade theo khoảng
+  // cách tới người chơi + chống đè chữ giữa các nhãn đang hiện.
+  // - Gần (< NEAR_PX): nhãn đầy đủ.
+  // - Giữa: alpha/scale giảm dần theo khoảng cách.
+  // - Xa (> FAR_PX): ẩn nhãn chữ, chỉ hiện chấm marker tím trên ô portal.
+  // Chạy throttle 150ms từ update() — không hardcode hằng số ở đây.
+  _updatePortalLabels() {
+    const labels = this.portalLabels;
+    if (!labels || labels.length === 0) return;
+    const cfg = PORTAL_LABEL_CONFIG;
+    const player = this.player;
+    const px = player ? player.x : null;
+    const py = player ? player.y : null;
+
+    // Pass 1: khoảng cách → alpha/scale/nhãn-chữ vs chấm marker
+    const visible = [];
+    for (const label of labels) {
+      if (!label || !label.active) continue;
+      // Reset về vị trí gốc trước pass chống đè
+      label.x = label.getData('baseX');
+      label.y = label.getData('baseY');
+
+      const portalX = label.getData('portalX');
+      const portalY = label.getData('portalY');
+      const dist = (px == null || portalX == null)
+        ? 0
+        : Math.hypot(portalX - px, portalY - py);
+
+      let t; // 1 = gần (đầy đủ), 0 = xa (chỉ marker)
+      if (dist <= cfg.NEAR_PX) t = 1;
+      else if (dist >= cfg.FAR_PX) t = 0;
+      else t = 1 - (dist - cfg.NEAR_PX) / (cfg.FAR_PX - cfg.NEAR_PX);
+
+      const txt = label.getData('txt');
+      const bg = label.getData('bg');
+      const dot = label.getData('dot');
+      if (t <= 0.001) {
+        label.setVisible(false);
+        if (dot && dot.active) dot.setVisible(true);
+      } else {
+        label.setVisible(true);
+        if (dot && dot.active) dot.setVisible(false);
+        if (txt) txt.setVisible(true);
+        if (bg) bg.setVisible(true);
+        label.setAlpha(cfg.MIN_ALPHA + (1 - cfg.MIN_ALPHA) * t);
+        label.setScale(0.82 + 0.18 * t);
+        if (t > 0.45) visible.push(label);
+      }
+    }
+
+    // Pass 2: chống đè chữ — đẩy nhãn thấp hơn xuống khi rect chồng nhau.
+    // Kẹp trong biên map để không phá test vision-inspection (y ≤ 592).
+    visible.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < visible.length; i++) {
+      const prev = visible[i - 1];
+      const cur = visible[i];
+      const prevW = (prev.getData('w') || 80) * prev.scaleX;
+      const curW = (cur.getData('w') || 80) * cur.scaleX;
+      const prevH = (prev.getData('h') || 24) * prev.scaleY;
+      const curH = (cur.getData('h') || 24) * cur.scaleY;
+      const xOverlap = Math.abs(cur.x - prev.x) < (prevW + curW) / 2 - cfg.DEOVERLAP_PAD;
+      const yOverlap = Math.abs(cur.y - prev.y) < (prevH + curH) / 2;
+      if (xOverlap && yOverlap) {
+        const push = (prevH + curH) / 2 - Math.abs(cur.y - prev.y) + 4;
+        cur.y = Math.min(cur.y + push, GAME_CONFIG.MAP_HEIGHT - 18);
+      }
+    }
   }
 
   handlePortalOverlap(portalData) {
@@ -2016,6 +2122,13 @@ export class WorldScene extends Phaser.Scene {
     if (this._tileCullTimer >= PERF_CONFIG.TILE_CULL_INTERVAL_MS) {
       this._tileCullTimer = 0;
       this._cullTiles();
+    }
+
+    // Nhãn portal theo ngữ cảnh: fade theo khoảng cách + chống đè chữ
+    this._portalLabelTimer += delta;
+    if (this._portalLabelTimer >= PORTAL_LABEL_CONFIG.UPDATE_MS) {
+      this._portalLabelTimer = 0;
+      this._updatePortalLabels();
     }
 
     // Chốt tâm follow sau zoom: sửa stall lerp+roundPixels làm view lệch khỏi player

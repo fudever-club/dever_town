@@ -39,3 +39,18 @@ export const GAME_CONFIG = {
     TICK_INTERVAL_MS: 1000 / 20
   }
 };
+
+/**
+ * Nhãn portal theo ngữ cảnh (contextual labels) — chống "text wallpaper".
+ * Nhãn chỉ hiện đầy đủ khi người chơi ở gần; ở xa chỉ còn chấm marker tím.
+ * (Critique 2026-10-09 item #1: portal label de-clutter)
+ */
+export const PORTAL_LABEL_CONFIG = {
+  UPDATE_MS: 150,   // throttle cập nhật fade (ms) — cùng nhịp với tile culling
+  NEAR_PX: 240,      // trong phạm vi này: nhãn hiện đầy đủ (alpha 1, scale 1)
+  FAR_PX: 520,       // ngoài phạm vi này: ẩn nhãn, chỉ hiện chấm marker
+  MIN_ALPHA: 0.12,   // alpha tối thiểu của nhãn ở vùng chuyển tiếp
+  DOT_ALPHA: 0.75,   // alpha chấm marker khi ở xa
+  DOT_RADIUS: 5,     // bán kính chấm marker (px, world)
+  DEOVERLAP_PAD: 6,  // padding khi đẩy nhãn chồng nhau
+};
