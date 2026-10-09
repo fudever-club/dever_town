@@ -54,6 +54,9 @@
   overflow-x: auto;
   padding-bottom: var(--space-2px);
   scrollbar-width: thin;
+  /* Gợi ý vuốt ngang trên mobile: mờ dần ở mép phải */
+  -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 90%, transparent 100%);
 }
 
 .lofi-genre-pill {

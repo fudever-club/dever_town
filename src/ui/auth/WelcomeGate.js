@@ -26,7 +26,7 @@ export class WelcomeGate {
     if (authService.isSessionValid(24)) {
       const user = authService.getUser();
       if (user) {
-        console.log('🔄 [WelcomeGate] Tự động duy trì phiên đăng nhập gần nhất:', user.display_name || user.email);
+        console.log('[WelcomeGate] Tự động duy trì phiên đăng nhập gần nhất:', user.display_name || user.email);
         this.startLoadingAndEnter({
           user,
           isGuest: user.role === 'guest'
