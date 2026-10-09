@@ -539,6 +539,7 @@
 .header-overflow-menu .btn-ghost {
   display: flex !important;
   align-items: center !important;
+  justify-content: flex-start !important;
   gap: 10px !important;
   width: 100% !important;
   min-width: 0 !important;

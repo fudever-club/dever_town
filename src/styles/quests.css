@@ -335,6 +335,7 @@
 
 .milestone-info {
   flex: 1;
+  min-width: 0; /* cho phép co lại khi nút milestone dài (mobile) */
   display: flex;
   flex-direction: column;
   gap: var(--space-6px);
@@ -392,7 +393,25 @@
   cursor: pointer;
   border: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  flex-shrink: 1;
   transition: all 0.2s;
+}
+
+/* Mobile: xếp dọc để nút đủ chỗ hiển thị đầy đủ chữ, không cắt */
+@media (max-width: 480px) {
+  .quest-milestone-card {
+    flex-wrap: wrap;
+  }
+  .quest-milestone-card .milestone-btn {
+    width: 100%;
+    flex: 1 1 100%;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .milestone-btn.ready {
