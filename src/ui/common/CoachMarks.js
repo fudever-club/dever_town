@@ -55,15 +55,15 @@ export class CoachMarks {
         mobileTargets: ['#touch-btn-chat'],
       },
       {
-        id: 'help',
+        id: 'focus',
         count: '4 / 4',
-        title: 'Trợ giúp và tập trung',
-        desc: 'Bấm nút ? để xem toàn bộ phím tắt và hướng dẫn. Nhấn H để ẩn giao diện, ngắm trọn thị trấn.',
-        mobileDesc: 'Bấm nút ? để xem hướng dẫn đầy đủ bất cứ lúc nào.',
-        keys: ['?', 'H'],
-        mobileKeys: ['?'],
-        targets: ['#footer-help-btn'],
-        mobileTargets: ['#footer-help-btn'],
+        title: 'Khám phá thêm',
+        desc: 'Nhấn phím H để ẩn toàn bộ giao diện, ngắm trọn thị trấn. Nhấn H hoặc Esc để hiện lại.',
+        mobileDesc: 'Bấm nút hình ba chấm trên thanh điều hướng để mở các tính năng phụ.',
+        keys: ['H'],
+        mobileKeys: [],
+        targets: [],
+        mobileTargets: ['#header-overflow-btn'],
       },
     ];
 

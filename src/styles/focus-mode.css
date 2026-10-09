@@ -1,7 +1,6 @@
 /* --- focus-mode.css: "focus mode" (hotkey H) hides all HUD chrome (2026-10-09) ---
    Pure CSS class toggle on body. Press H again or Esc to restore. */
-body.focus-mode #main-header,
-body.focus-mode #main-footer {
+body.focus-mode #main-header {
   display: none !important;
 }
 
