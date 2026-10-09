@@ -511,12 +511,6 @@
   #interactive-modal.playing-minigame .game-topbar .sports-badge {
     order: 4;
   }
-  /* Mobile portrait: playfield 3:4 tận dụng chiều dọc (2026-10-09).
-     Chỉ áp cho retro-arcade-canvas vì sports canvas vẫn dùng layout 16:9
-     cho đến batch thể thao. */
-  #interactive-modal.playing-minigame #retro-arcade-canvas {
-    aspect-ratio: 3 / 4;
-  }
   /* Modal đỡ padding để canvas rộng thêm vài px */
   #interactive-modal.playing-minigame .modal-card-xl {
     padding: var(--space-12px) !important;
@@ -536,16 +530,11 @@
   #interactive-modal.playing-minigame .game-topbar .sports-badge {
     order: 0;
   }
-  #interactive-modal.playing-minigame #retro-arcade-canvas {
-    width: auto;
-    height: calc(100vh - 124px); /* trừ modal padding + topbar 1 hàng + gaps */
-    max-width: 100%;
-    aspect-ratio: 2 / 1; /* playfield 2:1 tận dụng chiều ngang (2026-10-09) */
-  }
+  #interactive-modal.playing-minigame #retro-arcade-canvas,
   #interactive-modal.playing-minigame #sports-arcade-canvas {
     width: auto;
     height: calc(100vh - 124px); /* trừ modal padding + topbar 1 hàng + gaps */
     max-width: 100%;
-    aspect-ratio: 16 / 9; /* sports giữ 16:9 cho đến batch thể thao */
+    aspect-ratio: 16 / 9;
   }
 }

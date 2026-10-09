@@ -82,6 +82,37 @@ export class FlappyBugEngine {
     this.callbacks.onScoreUpdate?.(0);
   }
 
+  // Playfield thích ứng hướng màn hình (2026-10-09): cập nhật w/h, kẹp chú bọ
+  // vào biên mới, co giãn các cột hiện có theo tỉ lệ mặt đất mới, rải lại sao.
+  // Vật lý (gravity 920, flapForce -310, pipeSpeed 140) giữ nguyên.
+  resize(w, h) {
+    const phys = this.cfg.physics;
+    const groundH = phys.groundHeight || 44;
+    const oldGroundY = this.h - groundH;
+    this.w = w;
+    this.h = h;
+    const groundY = h - groundH;
+
+    const r = this.buggy.radius || 14;
+    this.buggy.y = Math.min(Math.max(this.buggy.y, r), groundY - r);
+
+    const gap = phys.pipeGap || 116;
+    const oldSpan = Math.max(1, oldGroundY - gap);
+    const newSpan = Math.max(1, groundY - gap);
+    for (const p of this.pipes) {
+      p.x = Math.min(p.x, w + 10);
+      const ratio = p.topH / oldSpan;
+      p.topH = Math.floor(ratio * newSpan);
+      p.bottomY = p.topH + gap;
+      p.bottomH = groundY - p.bottomY;
+    }
+
+    for (const s of this.stars) {
+      s.x = Math.random() * w;
+      s.y = Math.random() * Math.max(60, h - 90);
+    }
+  }
+
   flap() {
     if (this.state === 'game_over') {
       if (this.deathCooldown <= 0) {
@@ -242,9 +273,13 @@ export class FlappyBugEngine {
     const phys = this.cfg.physics;
     const groundY = this.h - (phys.groundHeight || 44);
     const minTop = 45;
-    const maxTop = 185;
-    const topH = Math.floor(minTop + Math.random() * (maxTop - minTop));
+    // Màn hình dọc: khe hở phân bố trên toàn chiều cao mới thay vì chỉ 185px
+    // trên cùng (2026-10-09). Desktop (h<=400) giữ nguyên để không đổi độ khó.
     const gap = phys.pipeGap || 116;
+    const maxTop = this.h > 400
+      ? Math.floor(groundY - gap - (this.cfg.portraitPipeTopMargin || 80))
+      : 185;
+    const topH = Math.floor(minTop + Math.random() * Math.max(20, maxTop - minTop));
 
     this.pipes.push({
       x: this.w + 10,
@@ -348,6 +383,12 @@ export class FlappyBugEngine {
     ctx.fillStyle = '#111827';
     ctx.globalAlpha = 0.55;
 
+    // Lát (tile) skyline theo chiều ngang để phủ màn hình rộng (landscape 2:1).
+    // (2026-10-09, orientation-aware layout)
+    for (let ox = 0; ox < this.w; ox += 640) {
+      ctx.save();
+      ctx.translate(ox, 0);
+
     // Vòm Cầu Rồng uốn lượn xa xăm
     ctx.beginPath();
     ctx.moveTo(30, groundY);
@@ -366,6 +407,9 @@ export class FlappyBugEngine {
     ctx.lineTo(605, groundY - 60);
     ctx.lineTo(605, groundY);
     ctx.fill();
+
+      ctx.restore();
+    }
 
     ctx.restore();
   }

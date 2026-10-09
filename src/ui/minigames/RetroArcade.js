@@ -209,10 +209,16 @@ export class RetroArcade {
   // desktop giữ nguyên 640×360; mobile portrait → 480×640 (3:4, tận dụng
   // chiều dọc); mobile landscape → 720×360 (2:1, tận dụng chiều ngang).
   // Tốc độ px/sec của các engine không đổi nên độ khó giữ nguyên.
+  // Game nào chưa có resize(w,h) thì giữ 640×360 để không vỡ layout
+  // (zero-regression theo từng batch).
   getOrientationLayout() {
-    if (!isTouchDevice()) return { w: 640, h: 360 };
+    if (!isTouchDevice()) return { w: 640, h: 360, aspect: '16 / 9' };
+    const engine = this.getCurrentEngine();
+    if (typeof engine?.resize !== 'function') return { w: 640, h: 360, aspect: '16 / 9' };
     const portrait = window.innerHeight >= window.innerWidth;
-    return portrait ? { w: 480, h: 640 } : { w: 720, h: 360 };
+    return portrait
+      ? { w: 480, h: 640, aspect: '3 / 4' }
+      : { w: 720, h: 360, aspect: '2 / 1' };
   }
 
   getCurrentEngine() {
@@ -229,15 +235,22 @@ export class RetroArcade {
   // Đặt lại kích thước logic của canvas theo hướng hiện tại.
   // Trả về true nếu kích thước thực sự thay đổi. Các engine giữ state,
   // chỉ kẹp (clamp) thực thể vào biên mới qua resize(w, h).
+  // LUÔN đồng bộ engine hiện tại (kể cả khi canvas đã đúng kích thước) vì
+  // đổi game qua select screen có thể đưa engine mới vào canvas cũ.
   applyOrientationLayout() {
-    const { w, h } = this.getOrientationLayout();
-    if (this.canvas.width === w && this.canvas.height === h) return false;
-    this.canvas.width = w;
-    this.canvas.height = h;
-    this.width = w;
-    this.height = h;
+    const { w, h, aspect } = this.getOrientationLayout();
+    const changed = this.canvas.width !== w || this.canvas.height !== h;
+    if (changed) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.width = w;
+      this.height = h;
+    }
+    if (this.canvas.style.aspectRatio !== aspect) {
+      this.canvas.style.aspectRatio = aspect;
+    }
     this.getCurrentEngine()?.resize?.(w, h);
-    return true;
+    return changed;
   }
 
   handleOrientationChange() {
