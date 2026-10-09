@@ -26,9 +26,11 @@ export { QuizMultiplayerModal } from './minigames/QuizMultiplayerModal.js';
 // 4. Common, HUD & Controls
 export { ChatBox } from './common/ChatBox.js';
 export { OnboardingGuide } from './common/OnboardingGuide.js';
+export { CoachMarks } from './common/CoachMarks.js';
 export { SettingsModal } from './common/SettingsModal.js';
 export { TouchControls } from './common/TouchControls.js';
 export { NetworkStatusOverlay } from './common/NetworkStatusOverlay.js';
+export { ToastManager, toastManager, TOAST_CONFIG } from './common/ToastManager.js';
 export { MinimapOverlay } from './common/MinimapOverlay.js';
 export { RoomBanner } from './common/RoomBanner.js';
 export { EmoteBar } from './common/EmoteBar.js';

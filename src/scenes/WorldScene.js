@@ -16,6 +16,7 @@ import {
   WardrobeModal,
   SettingsModal,
   OnboardingGuide,
+  CoachMarks,
   TouchControls,
   QuestModal,
   NetworkStatusOverlay,
@@ -74,6 +75,7 @@ import { PERF_CONFIG } from '../config/perfConfig.js';
 import { isInCulledView } from '../utils/culling.js';
 import { FloorManager } from '../managers/FloorManager.js';
 import { SceneTransitionManager } from '../managers/SceneTransitionManager.js';
+import { toastManager } from '../ui/common/ToastManager.js';
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -403,19 +405,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   showToast(message) {
-    let toast = document.getElementById('dever-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'dever-toast';
-      toast.className = 'dever-toast';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('show');
-    clearTimeout(this._toastTimer);
-    this._toastTimer = setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3200);
+    // Routed through the global ToastManager queue (max 2 visible, FIFO).
+    toastManager.toast(message, { duration: 3200 });
   }
 
   // ---------------------------------------------------------------------------
@@ -1479,7 +1470,12 @@ export class WorldScene extends Phaser.Scene {
 
     // 8. Onboarding Guide & Mobile Touch Controls
     this.onboardingGuide = new OnboardingGuide();
-    this.onboardingGuide.checkAndShow();
+    this.coachMarks = new CoachMarks();
+    // Chain: welcome card dismiss -> spotlight tour; returning players who
+    // already saw the welcome card get the tour directly (both one-time).
+    const welcomeWillShow = this.onboardingGuide.checkAndShow();
+    this.onboardingGuide.onDismiss = () => this.coachMarks.maybeStart();
+    if (!welcomeWillShow) this.coachMarks.maybeStart();
 
     this.touchControls = new TouchControls({
       inputController: this.inputController,

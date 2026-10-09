@@ -14,6 +14,7 @@ body.focus-mode #minimap-overlay {
   display: none !important;
 }
 
+body.focus-mode #dever-toast-stack,
 body.focus-mode #dever-toast {
   display: none !important;
 }

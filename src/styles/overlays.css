@@ -131,3 +131,78 @@
   50% { transform: scale(1.2); opacity: 1; }
 }
 
+
+/* ==========================================================================
+   LAG / RECONNECT BANNER — compact single-line pill inside the toast stack
+   (UI critique 2026-10-09 items #2 + #5).
+   Fixes the mobile shrink-to-fit collapse that wrapped the text one word per
+   line: the card is width:max-content capped at viewport width, and the title
+   ellipsizes instead of collapsing.
+   ========================================================================== */
+.dever-toast-stack .lag-spinner-overlay {
+  position: static;
+  transform: none;
+  width: max-content;
+  max-width: 94vw;
+}
+
+.dever-toast-stack .lag-spinner-overlay.hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.dever-toast-stack .lag-spinner-card {
+  width: max-content;
+  max-width: 94vw;
+  padding: 8px 12px;
+  gap: 10px;
+  border-radius: var(--radius-12px);
+  animation: toastStackIn 0.3s ease-out;
+}
+
+.dever-toast-stack .lag-spinner-circle {
+  width: 22px;
+  height: 22px;
+}
+
+.dever-toast-stack .spinner-core-icon {
+  font-size: 10px;
+}
+
+.dever-toast-stack .lag-spinner-text-group {
+  min-width: 0;
+}
+
+.dever-toast-stack .lag-spinner-title,
+.dever-toast-stack .lag-spinner-sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 56vw;
+  word-break: keep-all;
+}
+
+.dever-toast-stack .lag-spinner-title {
+  font-size: 12px;
+}
+
+.dever-toast-stack .lag-spinner-sub {
+  font-size: 11px;
+}
+
+@media (max-width: 720px) {
+  /* Single line on mobile: sub hidden, title ellipsizes. */
+  .dever-toast-stack .lag-spinner-sub {
+    display: none;
+  }
+
+  .dever-toast-stack .lag-spinner-title {
+    max-width: 62vw;
+  }
+
+  .dever-toast-stack .lag-spinner-close-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    margin-left: 2px;
+  }
+}

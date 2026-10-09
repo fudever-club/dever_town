@@ -93,6 +93,7 @@ export class ChatBox {
     this.chatOpen = true;
     this.applyChatOpenState(true);
     this.clearChatTabUnread();
+    window.dispatchEvent(new CustomEvent('dever:chat-opened'));
     if (this.isDesktopLayout() && this.chatInput) {
       setTimeout(() => { if (this.chatInput) this.chatInput.focus(); }, 120);
     }
@@ -441,6 +442,7 @@ export class ChatBox {
       this.mobileBackdrop.classList.remove('hidden');
     }
     this.clearChatTabUnread();
+    window.dispatchEvent(new CustomEvent('dever:chat-opened'));
     setTimeout(() => {
       if (this.chatInput) {
         this.chatInput.focus();

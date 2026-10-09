@@ -167,7 +167,7 @@ export const TRANSLATIONS = {
 
     // Onboarding Guide
     onboardingBadge: 'HƯỚNG DẪN TÂN THỦ',
-    onboardingTitle: 'Chào mừng bạn đến với DEVER TOWN! 🎮',
+    onboardingTitle: 'Chào mừng bạn đến với DEVER TOWN!',
     onboardingStep1Title: 'Di chuyển 4 hướng',
     onboardingStep1Desc: 'Dùng phím Mũi tên hoặc W A S D (Điện thoại có D-Pad ảo).',
     onboardingStep2Title: 'Tương tác phím [E]',
@@ -176,7 +176,7 @@ export const TRANSLATIONS = {
     onboardingStep3Desc: 'Nhặt vật phẩm rơi trên sàn, trang bị và cầm trên tay.',
     onboardingStep4Title: 'Khám phá 9 Phân Khu',
     onboardingStep4Desc: 'Bước qua các cổng dịch chuyển màu tím để sang phòng khác.',
-    onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay 🚀',
+    onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay',
 
     // Chat Box
     chatTitle: 'Kênh Chat FUDA & DEVER',
@@ -371,7 +371,7 @@ export const TRANSLATIONS = {
 
     // Onboarding Guide
     onboardingBadge: 'BEGINNER GUIDE',
-    onboardingTitle: 'Welcome to DEVER TOWN! 🎮',
+    onboardingTitle: 'Welcome to DEVER TOWN!',
     onboardingStep1Title: '4-Direction Movement',
     onboardingStep1Desc: 'Use Arrow keys or W A S D (Virtual D-Pad on mobile).',
     onboardingStep2Title: 'Interact with [E]',
@@ -380,7 +380,7 @@ export const TRANSLATIONS = {
     onboardingStep3Desc: 'Pick up items on the floor, equip and hold in hand.',
     onboardingStep4Title: 'Explore 9 Zones',
     onboardingStep4Desc: 'Walk through purple portals to teleport to other rooms.',
-    onboardingDismissBtn: 'Got it, Let\'s Play Now 🚀',
+    onboardingDismissBtn: 'Got it, Let\'s Play Now',
 
     // Chat Box
     chatTitle: 'FUDA & DEVER Live Chat',
