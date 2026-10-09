@@ -28,8 +28,6 @@ export class PenaltyShootoutEngine {
     this.streak = 0;
     this.highScore = 0;
 
-    // Scrolling text offset cho bảng LED
-    this.ledOffset = 0;
     this.animTime = 0;
 
     // Hit-stop freeze
@@ -373,7 +371,6 @@ export class PenaltyShootoutEngine {
 
   update(dt) {
     this.animTime += dt;
-    this.ledOffset = (this.ledOffset + dt * 45) % 800;
 
     // Đóng băng khung hình nếu đang trong Hit-Stop
     if (performance.now() < this.hitStopUntil) {
@@ -762,7 +759,7 @@ export class PenaltyShootoutEngine {
   renderGrandstandAndLED(ctx, w) {
     // Khán đài đêm & Chấm đèn flash nhấp nháy
     ctx.fillStyle = '#0a0f24';
-    ctx.fillRect(0, 35, w, 32);
+    ctx.fillRect(0, 35, w, 45);
 
     ctx.save();
     // Vẽ khán giả dạng silhouette
@@ -783,24 +780,6 @@ export class PenaltyShootoutEngine {
       ctx.fill();
     }
 
-    // Bảng LED điện tử chạy chữ
-    const ledY = 66;
-    ctx.fillStyle = '#060a17';
-    ctx.fillRect(0, ledY, w, 14);
-    ctx.strokeStyle = '#0284c7';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(0, ledY, w, 14);
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = '800 9px "Be Vietnam Pro", sans-serif';
-    ctx.textAlign = 'left';
-
-    const bannerText = FOOTBALL_CONFIG.theGolazo?.stadium?.ledText || 'FU-DEVER • WORK HARD - PLAY HARD • FPT UNIVERSITY DA NANG';
-    const textWidth = ctx.measureText(bannerText).width + 80;
-    const startX = -this.ledOffset;
-    for (let offset = startX; offset < w; offset += textWidth) {
-      ctx.fillText(bannerText, offset, ledY + 10);
-    }
     ctx.restore();
   }
 
