@@ -27,7 +27,7 @@ ok(!/targetRoomId: 'code_lab'/.test(mapsSrc), 'không còn portal tới code_lab
 // 2. Tile nội thất 38/39 được vẽ + solid (vẫn dùng cho meeting_room)
 ok(/drawConferenceTable\(ctx, 38 \* tileSize/.test(texSrc), 'tile 38 (bàn họp) được vẽ');
 ok(/drawProjectorScreen\(ctx, 39 \* tileSize/.test(texSrc), 'tile 39 (màn chiếu) được vẽ');
-ok(/37, 38, 39\]\)/.test(worldSrc), 'tile 38/39 có trong solidTiles');
+ok(/37, 38, 39(, 42)?\]\)/.test(worldSrc), 'tile 38/39 có trong solidTiles');
 
 // 3. Layout meeting_room: 19 dòng x 25 cột, spawn an toàn
 const meetLayout = mapsSrc.match(/meeting_room:\s*\{[\s\S]*?layout:\s*\[([\s\S]*?)\n    \],/);

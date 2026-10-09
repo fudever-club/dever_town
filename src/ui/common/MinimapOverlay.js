@@ -12,7 +12,8 @@ import { MAPS_CONFIG } from '../../config/maps.js';
 // Hoist lên module scope: không cấp phát lại mỗi frame (perf fix)
 const SOLID_TILES = new Set([
   2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22,
-  25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37
+  25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+  42 // hồ vườn FUDA (chặn đi bộ)
 ]);
 
 // localStorage key cho vị trí kéo-thả của minimap (persist qua các lần load)

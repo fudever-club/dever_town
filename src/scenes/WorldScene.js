@@ -44,6 +44,7 @@ import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { audioManager } from '../utils/AudioManager.js';
 import { i18n } from '../config/i18n.js';
 import { AmbientEnvironmentManager } from '../managers/AmbientEnvironmentManager.js';
+import { DuckWander } from '../managers/DuckWander.js';
 import { LightingManager } from '../managers/LightingManager.js';
 import { JuiceManager } from '../managers/JuiceManager.js';
 import { AchievementManager } from '../managers/AchievementManager.js';
@@ -87,6 +88,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = null;
     this.tileSprites = [];
     this.portalLabels = [];
+    this.decorationSprites = []; // decor tĩnh từ mapData.decorations (vd: tượng)
     this._portalLabelTimer = 0;
     this.obstacleShadows = [];
     // Camera zoom (x-ray): tile che khuất, zoom người dùng, tween/pinch state
@@ -115,6 +117,7 @@ export class WorldScene extends Phaser.Scene {
     this.tilePool = new TilePool(this, 550);
     this.juiceManager = new JuiceManager(this);
     this.ambientManager = new AmbientEnvironmentManager(this);
+    this.duckWander = new DuckWander(this); // vịt trời hồ vườn (chỉ main_hall tầng 1)
     this.lightingManager = new LightingManager(this);
     // L2: tắt chu kỳ ngày/đêm thì không cần HUD đồng hồ (luôn sáng như gather.town)
     this.campusTimeHUD = DAY_NIGHT_CYCLE_ENABLED
@@ -815,6 +818,42 @@ export class WorldScene extends Phaser.Scene {
    * CHỈ toggle `visible` — không destroy/reposition → không xung đột TilePool
    * (acquire() luôn reset visible=true, releaseAll() reset về pool).
    */
+  /**
+   * Spawn decor tĩnh khai báo trong mapData.decorations (data-driven, phòng nào có mới spawn).
+   * Mỗi decor: { textureKey, tileX, tileY, solid } — art đặt origin đáy để Y-sort đúng
+   * phối cảnh (công thức depth giống solid tiles), body vô hình trong obstacleGroup nếu solid.
+   */
+  _spawnDecorations(mapData, tileSize) {
+    const decorations = mapData.decorations;
+    if (!Array.isArray(decorations) || decorations.length === 0) return;
+    for (const d of decorations) {
+      if (!d || !d.textureKey || !this.textures.exists(d.textureKey)) continue;
+      const posX = d.tileX * tileSize + tileSize / 2;
+      const posY = d.tileY * tileSize + tileSize / 2;
+      const img = this.add.image(posX, posY + tileSize / 2, d.textureKey);
+      img.setOrigin(0.5, 1);
+      img.setDepth(posY + (tileSize / 2) - 1);
+      this.decorationSprites.push(img);
+      if (d.solid) {
+        const obstacle = this.obstacleGroup.create(posX, posY, null);
+        obstacle.setSize(tileSize, tileSize);
+        obstacle.setVisible(false);
+        obstacle.refreshBody();
+        const shadow = this.add.ellipse(
+          posX,
+          posY + tileSize * 0.38,
+          tileSize * 0.72,
+          tileSize * 0.24,
+          0x000000,
+          0.22
+        );
+        shadow.setDepth(1);
+        shadow._tileSprite = img; // cull cùng decor
+        this.obstacleShadows.push(shadow);
+      }
+    }
+  }
+
   _cullTiles() {
     const camera = this.cameras && this.cameras.main;
     if (!camera) return;
@@ -918,6 +957,10 @@ export class WorldScene extends Phaser.Scene {
       });
       this.portalLabels = [];
     }
+    if (this.decorationSprites && this.decorationSprites.length > 0) {
+      this.decorationSprites.forEach(d => d.destroy());
+      this.decorationSprites = [];
+    }
     if (this.obstacleShadows && this.obstacleShadows.length > 0) {
       this.obstacleShadows.forEach(s => s.destroy());
       this.obstacleShadows = [];
@@ -951,7 +994,8 @@ export class WorldScene extends Phaser.Scene {
     const tileSize = GAME_CONFIG.TILE_SIZE;
 
     // Solid obstacles
-    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]);
+    // Solid obstacles (42 = hồ vườn FUDA: nước tự nhiên, chặn đi bộ như tường)
+    const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42]);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -1009,6 +1053,10 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+
+    // Decor tĩnh từ config (mapData.decorations): vd tượng "Nhà Tư Tưởng" ở sân Tòa Alpha.
+    // Chỉ phòng nào khai báo mới spawn — các phòng khác không đổi hành vi.
+    this._spawnDecorations(mapData, tileSize);
 
     // Portals
     if (mapData.portals) {
@@ -1170,6 +1218,12 @@ export class WorldScene extends Phaser.Scene {
     // Cập nhật hiệu ứng hạt môi trường cho phòng
     if (this.ambientManager) {
       this.ambientManager.setRoom(roomId);
+    }
+
+    // Vịt trời hồ vườn — chỉ spawn ở main_hall tầng 1 (nơi có hồ)
+    if (this.duckWander) {
+      const floorIdx = this.floorManager ? this.floorManager.currentFloor : 0;
+      this.duckWander.setRoom(roomId, floorIdx);
     }
 
     // Kiểm tra mở khóa Tân Thủ DEVER khi đến Sảnh Alpha
@@ -2096,6 +2150,10 @@ export class WorldScene extends Phaser.Scene {
 
     if (this.bestiePetFollower) {
       this.bestiePetFollower.update();
+    }
+
+    if (this.duckWander) {
+      this.duckWander.update(time, delta);
     }
 
     if (this.minimap) {

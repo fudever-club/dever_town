@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { PondArt } from '../utils/pondArt.js';
 import { generateEmoteIcons } from '../utils/emoteIcons.js';
 
 export class BootScene extends Phaser.Scene {
@@ -19,6 +20,10 @@ export class BootScene extends Phaser.Scene {
 
     // 1. Sinh Tileset bản đồ (19 tiles)
     TextureGenerator.generateTileset(this);
+
+    // 1b. Sinh sprite vịt trời + tượng "Nhà Tư Tưởng" (hồ vườn sân Tòa Alpha)
+    PondArt.generateDuckSprite(this);
+    PondArt.generateThinkerStatue(this);
 
     // 2. Preload toàn bộ Spritesheets & JSON Atlas Aseprite 2D Pixel 60FPS (8-Frame Walk & 4-Frame Breathing)
     const allAsepriteCharacters = [

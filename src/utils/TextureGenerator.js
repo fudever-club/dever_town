@@ -2,13 +2,15 @@
  * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (38 ô) và Spritesheets Nhân vật trên HTML Canvas.
  * Tích hợp nhận diện thương hiệu FPT University Đà Nẵng, CLB FU-DEVER, Khu Thể Thao & Tùy chỉnh Tủ Đồ.
  */
+import { PondArt } from './pondArt.js';
+
 export class TextureGenerator {
   /**
    * Tạo Tileset hoàn chỉnh (30 ô 32x32)
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 42; // 0-41: bao gồm ghế ngồi (40) và sofa (41)
+    const numTiles = 43; // 0-42: thêm hồ vườn FUDA (42)
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
@@ -69,6 +71,9 @@ export class TextureGenerator {
     // 40-41: Ghế ngồi (walkable — dùng cho sit zones, nhân vật ngồi lên)
     this.drawSitChair(ctx, 40 * tileSize, 0, tileSize); // 40: Ghế gỗ ngồi học (Walkable)
     this.drawSitSofa(ctx, 41 * tileSize, 0, tileSize); // 41: Nệm sofa ngồi thư giãn (Walkable)
+
+    // 42: Hồ vườn FUDA (Obstacle — nước tự nhiên, khác hồ bơi tile 28)
+    PondArt.drawPondWater(ctx, 42 * tileSize, 0, tileSize); // 42: Mặt nước hồ vườn & vịt trời
 
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
@@ -1137,6 +1142,7 @@ export class TextureGenerator {
     ctx.fillStyle = '#fdba74';
     ctx.fillRect(x + 12, y + 6, 8, 1);
   }
+
 
   // 38: Bàn Họp Hội Nghị (Obstacle) — nhìn từ trên xuống, bàn gỗ dài + ghế
   static drawConferenceTable(ctx, x, y, size) {
