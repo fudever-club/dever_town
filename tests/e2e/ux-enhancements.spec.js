@@ -203,6 +203,8 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const modal = page.locator('#interactive-modal');
     await expect(modal).not.toHaveClass(/hidden/);
     await expect(page.locator('#pane-arcade-games')).not.toHaveClass(/hidden/);
+    // Vào máy nào chơi game đó luôn (2026-10-09 redesign) — gameplay hiện thẳng
+    await expect(page.locator('#arcade-play-screen')).not.toHaveClass(/hidden/);
     await expect(page.locator('#retro-arcade-canvas')).toBeVisible();
 
     // Đóng modal bằng phím Escape
@@ -247,6 +249,8 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     const modal = page.locator('#interactive-modal');
     await expect(modal).not.toHaveClass(/hidden/);
     await expect(page.locator('#pane-sports')).not.toHaveClass(/hidden/);
+    // Vào sân nào chơi môn đó luôn (2026-10-09 redesign) — gameplay hiện thẳng
+    await expect(page.locator('#sports-play-screen')).not.toHaveClass(/hidden/);
     await expect(page.locator('#sports-arcade-canvas')).toBeVisible();
 
     // Click nút Hành Động Sút bóng / Nhảy
@@ -271,29 +275,26 @@ test.describe('DEVER TOWN - UX Enhancements, Radar HUD & Speed Code Duel', () =>
     await page.keyboard.press('Space');
     await expect.poll(footballState, { timeout: 5000 }).toBe('gk_wait');
 
-    // Chuyển tab sang Basketball
-    const basketballTab = page.locator('.sports-nav-tab[data-sport="basketball"]');
-    if (await basketballTab.isVisible()) {
-      await basketballTab.click();
-      // Đợi tab switch thực sự landing (thay sleep 100ms)
-      await expect.poll(async () => page.evaluate(() => {
-        const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
-        return scene?.interactiveModal?.sportsArcade?.currentGame;
-      }), { timeout: 5000 }).toBe('basketball');
-      await actionBtn.click();
-    }
+    // Đổi game sang Basketball: back về select screen rồi chọn card
+    await page.locator('#sports-back-btn').click();
+    await expect(page.locator('#sports-select-screen')).not.toHaveClass(/hidden/);
+    await page.locator('.game-card[data-sport="basketball"]').click();
+    // Đợi game switch thực sự landing
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return scene?.interactiveModal?.sportsArcade?.currentGame;
+    }), { timeout: 5000 }).toBe('basketball');
+    await actionBtn.click();
 
-    // Chuyển tab sang Volleyball
-    const volleyballTab = page.locator('.sports-nav-tab[data-sport="volleyball"]');
-    if (await volleyballTab.isVisible()) {
-      await volleyballTab.click();
-      // Đợi tab switch thực sự landing (thay sleep 100ms)
-      await expect.poll(async () => page.evaluate(() => {
-        const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
-        return scene?.interactiveModal?.sportsArcade?.currentGame;
-      }), { timeout: 5000 }).toBe('volleyball');
-      await actionBtn.click();
-    }
+    // Đổi game sang Volleyball: back về select screen rồi chọn card
+    await page.locator('#sports-back-btn').click();
+    await expect(page.locator('#sports-select-screen')).not.toHaveClass(/hidden/);
+    await page.locator('.game-card[data-sport="volleyball"]').click();
+    await expect.poll(async () => page.evaluate(() => {
+      const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
+      return scene?.interactiveModal?.sportsArcade?.currentGame;
+    }), { timeout: 5000 }).toBe('volleyball');
+    await actionBtn.click();
 
     // Đóng modal bằng phím Escape
     await page.keyboard.press('Escape');

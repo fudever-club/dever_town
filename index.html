@@ -1435,33 +1435,30 @@
       <!-- View 7: Sports Mini-Game View (HTML5 Canvas Arcade Engine) -->
       <div id="pane-sports" class="interactive-pane hidden">
         <div class="sports-mini-workspace">
-          <div class="sports-header-box">
-            <div class="sports-badge-row">
+          <div id="sports-select-screen" class="game-select-screen">
+            <h2 class="game-select-title">Thể Thao</h2>
+            <p class="game-select-sub">Chọn môn để chơi</p>
+            <div class="game-card-grid" id="sports-game-grid"></div>
+          </div>
+          <div id="sports-play-screen" class="game-play-screen hidden">
+            <div class="game-topbar">
+              <button type="button" id="sports-back-btn" class="game-back-btn" aria-label="Về danh sách game"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
               <span id="sports-type-badge" class="sports-badge">Sút Phạt Đền 11M</span>
               <span id="sports-streak-badge" class="sports-badge streak">Chuỗi: 0</span>
               <span id="sports-high-badge" class="sports-badge high">Kỷ lục: 0</span>
             </div>
-            <div class="sports-nav-tabs" id="sports-nav-tabs">
-              <button type="button" class="sports-nav-tab active" data-sport="football">Sút Phạt Đền 11M</button>
-              <button type="button" class="sports-nav-tab" data-sport="basketball">Bóng Rổ Flappy</button>
-              <button type="button" class="sports-nav-tab" data-sport="volleyball">Bóng Chuyền Spike</button>
-              <button type="button" class="sports-nav-tab" data-sport="barista">Quầy Barista</button>
-            </div>
-            <p id="sports-game-desc" class="sports-desc">Canh hướng sút qua lại và bấm nút (hoặc phím Space) để đánh bại thủ môn.</p>
-          </div>
-
-          <div class="sports-arena">
-            <div class="sports-canvas-wrapper">
-              <canvas id="sports-arcade-canvas" width="640" height="360"></canvas>
-            </div>
-
-            <div class="sports-controls-row">
-              <div id="sports-touch-controls" class="sports-touch-controls hidden">
-                <button type="button" id="sports-btn-left" class="sports-touch-btn">Trái (A)</button>
-                <button type="button" id="sports-btn-jump" class="sports-touch-btn accent">Nhảy & Đập (Space)</button>
-                <button type="button" id="sports-btn-right" class="sports-touch-btn">Phải (D)</button>
+            <div class="sports-arena">
+              <div class="sports-canvas-wrapper">
+                <canvas id="sports-arcade-canvas" width="640" height="360"></canvas>
               </div>
-              <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE)</button>
+              <div class="sports-controls-row">
+                <div id="sports-touch-controls" class="sports-touch-controls hidden">
+                  <button type="button" id="sports-btn-left" class="sports-touch-btn">Trái (A)</button>
+                  <button type="button" id="sports-btn-jump" class="sports-touch-btn accent">Nhảy &amp; Đập (Space)</button>
+                  <button type="button" id="sports-btn-right" class="sports-touch-btn">Phải (D)</button>
+                </div>
+                <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE)</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1470,37 +1467,33 @@
       <!-- View Arcade: Retro Arcade & Minigames -->
       <div id="pane-arcade-games" class="interactive-pane hidden">
         <div class="arcade-workspace">
-          <div class="arcade-header-box">
-            <div class="arcade-badge-row">
-              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE</span>
+          <div id="arcade-select-screen" class="game-select-screen">
+            <h2 class="game-select-title">Retro Arcade</h2>
+            <p class="game-select-sub">Chọn game để chơi</p>
+            <div class="game-card-grid" id="arcade-game-grid"></div>
+          </div>
+          <div id="arcade-play-screen" class="game-play-screen hidden">
+            <div class="game-topbar">
+              <button type="button" id="arcade-back-btn" class="game-back-btn" aria-label="Về danh sách game"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE 60FPS</span>
               <span id="arcade-score-badge" class="sports-badge streak">Điểm: 0</span>
               <span id="arcade-high-badge" class="sports-badge high">Kỷ lục: 0</span>
             </div>
-            <div class="arcade-tabs" id="arcade-nav-tabs">
-              <button type="button" class="arcade-tab active" data-game="snake">Cyber Snake</button>
-              <button type="button" class="arcade-tab" data-game="sokoban">Buggy Sokoban</button>
-              <button type="button" class="arcade-tab" data-game="goldminer">FPTU Gold Miner</button>
-              <button type="button" class="arcade-tab" data-game="flappybug">Flappy Bug</button>
-              <button type="button" class="arcade-tab" data-game="geometrydash">Dever Dash</button>
-              <button type="button" class="arcade-tab" data-game="match3">Cyber Match</button>
-              <button type="button" class="arcade-tab" data-game="pacman">Cyber Pac-Man</button>
-            </div>
-            <p id="arcade-game-desc" class="sports-desc">Dùng phím mũi tên hoặc W/A/S/D để điều khiển rắn ăn táo và né va chạm. Phím SPACE để bứt tốc.</p>
-          </div>
-          <div class="arcade-arena">
-            <div class="arcade-canvas-wrapper">
-              <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
-            </div>
-            <div id="arcade-touch-controls" class="arcade-touch-controls">
-              <div class="arcade-dpad">
-                <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
-                <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
-                <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
-                <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+            <div class="arcade-arena">
+              <div class="arcade-canvas-wrapper">
+                <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
               </div>
-              <div class="arcade-actions">
-                <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
-                <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+              <div id="arcade-touch-controls" class="arcade-touch-controls">
+                <div class="arcade-dpad">
+                  <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
+                  <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
+                  <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
+                  <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+                </div>
+                <div class="arcade-actions">
+                  <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
+                  <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+                </div>
               </div>
             </div>
           </div>

@@ -245,3 +245,165 @@
     margin-bottom: calc(var(--space-8px) * -1);
   }
 }
+
+/* ==========================================================================
+   GAME SELECT + SLIM GAMEPLAY TOPBAR (2026-10-09 redesign)
+   Tab bars removed. E opens a game-select grid; gameplay gets a slim topbar
+   (back + title + score) and maximum canvas area. Shared by arcade & sports.
+   ========================================================================== */
+.game-select-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-16px);
+  overflow-y: auto;
+}
+
+.game-select-title {
+  font-family: var(--font-display);
+  font-size: var(--text-22px);
+  color: var(--color-ffffff);
+  margin: 0 0 var(--space-4px);
+  letter-spacing: 0.5px;
+}
+
+.game-select-sub {
+  font-family: var(--font-sans);
+  font-size: var(--text-13px);
+  color: var(--color-94a3b8);
+  margin: 0 0 var(--space-16px);
+}
+
+.game-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-12px);
+  width: 100%;
+  max-width: 720px;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6px);
+  padding: var(--space-16px) var(--space-12px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-14px);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--font-sans);
+}
+
+.game-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-f26f21);
+  box-shadow: 0 8px 24px var(--color-rgba-242-111-33-0-25);
+}
+
+.game-card:active {
+  transform: translateY(0);
+}
+
+.game-card:focus-visible {
+  outline: 2px solid var(--color-f26f21);
+  outline-offset: 2px;
+}
+
+.game-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-12px);
+  background: var(--color-rgba-255-255-255-0-05);
+}
+
+.game-card-name {
+  font-family: var(--font-display);
+  font-size: var(--text-15px);
+  color: var(--color-ffffff);
+  text-align: center;
+  line-height: 1.25;
+}
+
+.game-card-high {
+  font-size: var(--text-12px);
+  font-weight: 700;
+  color: var(--color-fbbf24);
+}
+
+.game-card-controls {
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.game-play-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: var(--space-8px);
+}
+
+.game-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10px);
+  width: 100%;
+  max-width: 720px;
+  padding: var(--space-4px) var(--space-8px);
+  flex-wrap: wrap;
+}
+
+.game-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--radius-10px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-ffffff);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.game-back-btn:hover {
+  background: var(--color-rgba-242-111-33-0-25);
+  border-color: var(--color-f26f21);
+}
+
+.game-back-btn:active {
+  transform: scale(0.95);
+}
+
+.game-topbar .sports-badge {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .game-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10px);
+  }
+  .game-card {
+    padding: var(--space-12px) var(--space-8px);
+  }
+  .game-card-icon {
+    width: 48px;
+    height: 48px;
+  }
+  .game-topbar {
+    gap: var(--space-8px);
+  }
+}
