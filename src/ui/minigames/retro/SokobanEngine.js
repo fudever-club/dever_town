@@ -197,21 +197,14 @@ export class SokobanEngine {
       return;
     }
 
-    // 2. Các nút điều khiển trên thanh HUD
-    // Nút Hoàn Tác [U] (x: 430, y: 15, w: 85, h: 26)
-    if (x >= 420 && x <= 505 && y >= 12 && y <= 40) {
-      this.undo();
-      return;
-    }
-    // Nút Chơi Lại [R] (x: 515, y: 15, w: 85, h: 26)
-    if (x >= 510 && x <= 585 && y >= 12 && y <= 40) {
-      this.restartLevel();
-      return;
-    }
-    // Nút Chọn Màn [L] (x: 590, y: 15, w: 40, h: 26)
-    if (x >= 590 && x <= 630 && y >= 12 && y <= 40) {
-      this.toggleLevelSelect();
-      return;
+    // 2. Các nút điều khiển trên thanh HUD (vị trí tính từ getHUDButtonRects — canh phải theo chiều rộng canvas)
+    for (const b of this.getHUDButtonRects()) {
+      if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
+        if (b.id === 'undo') this.undo();
+        else if (b.id === 'restart') this.restartLevel();
+        else if (b.id === 'levels') this.toggleLevelSelect();
+        return;
+      }
     }
 
     // 3. Nếu màn hình Thắng: click bất kỳ đâu để sang màn tiếp theo
@@ -687,52 +680,63 @@ export class SokobanEngine {
     ctx.restore();
   }
 
+  // Vị trí các nút HUD — canh phải theo chiều rộng canvas để không tràn ở portrait.
+  // Dùng chung cho render và hit-test click/tap.
+  getHUDButtonRects() {
+    const w = this.canvas.width;
+    const y = 12, h = 26, gap = 8, margin = 8;
+    const defs = [
+      { id: 'levels', label: this.isTouch ? 'Màn' : 'Màn (L)', bw: 38, color: '#a855f7' },
+      { id: 'restart', label: this.isTouch ? 'Chơi Lại' : 'Chơi Lại (R)', bw: 72, color: '#f59e0b' },
+      { id: 'undo', label: this.isTouch ? 'Hoàn Tác' : 'Hoàn Tác (U)', bw: 85, color: '#38bdf8' },
+    ];
+    let x = w - margin;
+    return defs.map(d => {
+      x -= d.bw;
+      const r = { ...d, x, y, h, w: d.bw };
+      x -= gap;
+      return r;
+    });
+  }
+
+  // Cắt chữ có dấu "…" khi vượt quá maxWidth
+  fitText(ctx, text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    let t = text;
+    while (t.length > 1 && ctx.measureText(t + '…').width > maxWidth) t = t.slice(0, -1);
+    return t + '…';
+  }
+
   renderHUD(ctx) {
     const w = this.canvas.width;
+    const btns = this.getHUDButtonRects();
 
     ctx.save();
-    // Thông tin Màn chơi
+    // Thông tin Màn chơi — cắt gọn nếu không đủ chỗ trước nút đầu tiên
     ctx.fillStyle = '#f8fafc';
     ctx.font = '800 15px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(`${this.levelData.name} (${this.currentLevelIndex + 1}/15)`, 18, 26);
+    const nameMax = Math.max(80, btns[btns.length - 1].x - 30);
+    ctx.fillText(this.fitText(ctx, `${this.levelData.name} (${this.currentLevelIndex + 1}/15)`, nameMax), 18, 26);
 
     ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`Số Bước: ${this.moves} · Chuẩn Par: ${this.levelData.parMoves}`, 18, 44);
 
-    // Nút [Hoàn Tác (U)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(420, 12, 85, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.fillStyle = '#38bdf8';
+    // Các nút HUD canh phải
     ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(this.isTouch ? 'Hoàn Tác' : 'Hoàn Tác (U)', 462, 29);
-
-    // Nút [Chơi Lại (R)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(512, 12, 72, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#f59e0b';
-    ctx.stroke();
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillText(this.isTouch ? 'Chơi Lại' : 'Chơi Lại (R)', 548, 29);
-
-    // Nút [Màn (L)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(590, 12, 38, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#a855f7';
-    ctx.stroke();
-    ctx.fillStyle = '#a855f7';
-    ctx.fillText(this.isTouch ? 'Màn' : 'Màn (L)', 609, 29);
+    for (const b of btns) {
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.roundRect(b.x, b.y, b.w, b.h, 4);
+      ctx.fill();
+      ctx.strokeStyle = b.color;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = b.color;
+      ctx.fillText(b.label, b.x + b.w / 2, b.y + 17);
+    }
 
     // Cảnh báo Deadlock góc chết
     if (this.deadlockedBoxes.length > 0 && !this.won) {
