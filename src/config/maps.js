@@ -59,8 +59,12 @@ export const MAPS_CONFIG = {
       { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
     ],
     decorations: [
-      // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ, góc Tây-Bắc hồ vườn (tile 1,15). Chi tiết: pondConfig.js
-      { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 1, tileY: 15, solid: true }
+      // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
+      { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
+      { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
+      { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
+      { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
+      { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
     ],
     floors: [
       {
@@ -109,8 +113,12 @@ export const MAPS_CONFIG = {
           { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
         ],
         decorations: [
-          // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ, góc Tây-Bắc hồ vườn (tile 1,15). Chi tiết: pondConfig.js
-          { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 1, tileY: 15, solid: true }
+          // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
+          { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
+          { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
+          { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
+          { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
+          { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
         ]
       },
       {

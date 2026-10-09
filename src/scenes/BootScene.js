@@ -21,9 +21,10 @@ export class BootScene extends Phaser.Scene {
     // 1. Sinh Tileset bản đồ (19 tiles)
     TextureGenerator.generateTileset(this);
 
-    // 1b. Sinh sprite vịt trời + tượng "Nhà Tư Tưởng" (hồ vườn sân Tòa Alpha)
+    // 1b. Sinh sprite vịt trời + tượng "Nhà Tư Tưởng" + vườn hoa (hồ vườn sân Tòa Alpha)
     PondArt.generateDuckSprite(this);
     PondArt.generateThinkerStatue(this);
+    PondArt.generateFlowerGarden(this);
 
     // 2. Preload toàn bộ Spritesheets & JSON Atlas Aseprite 2D Pixel 60FPS (8-Frame Walk & 4-Frame Breathing)
     const allAsepriteCharacters = [

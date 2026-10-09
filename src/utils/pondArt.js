@@ -103,23 +103,27 @@ export class PondArt {
 
   /**
    * Sinh texture tượng "Nhà Tư Tưởng" (phong cách The Thinker) trên bệ đá cao.
-   * v4 (2026-10-09): vẽ lại từ ảnh tham chiếu của Hung — bệ đá CAO (xấp xỉ chiều
-   * cao tượng, cột chữ nhật trơn, biển đồng nhỏ giữa mặt trước), tượng đồng đen
-   * ngồi trên tảng đá: gối nhô cao, khuỷu tay chống gối, cằm tựa nắm tay, thân
-   * gập sâu về trước. Canvas 48x112, mặt hướng trái.
+   * v5 (2026-10-09): Hung yêu cầu dáng "người đàn ông CHỐNG CẰM" phải đọc rõ
+   * ngay từ cái nhìn đầu tiên. Dựng lại hoàn toàn: khối lưng gù MỘT khối lớn
+   * bên phải, đầu là khối cầu RIÊNG cúi về trước-trái (tách khỏi vai bằng nền),
+   * chuỗi dọc đầu → cằm → NẮM TAY (sáng nhất) → cẳng tay trụ → khuỷu → gối
+   * nhô cao tạo thành tam giác "suy tư". v5.2: đầu = khối cầu bậc thang NHỎ đưa
+   * hẳn về trước-trái, tách khỏi ụ vai bằng khe nền 10px; tam giác nền giữa
+   * cẳng tay và ngực. Bệ đá cao + biển đồng giữ nguyên theo ảnh tham chiếu.
+   * Canvas 56x120, mặt hướng trái.
    * Key texture: 'thinker_statue'.
    */
   static generateThinkerStatue(scene) {
     if (scene.textures.exists('thinker_statue')) return;
-    const W = 48, H = 112;
+    const W = 56, H = 120;
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
     const R = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
 
-    // Bảng màu — đồng đen (ảnh tham chiếu gần như đen):
-    const BD = '#1d150e', BM = '#2e2318', BL = '#4a3826', BH = '#6e573a';
+    // Bảng màu — đồng đen (ảnh tham chiếu gần như đen), mid nâng sáng để tách khối:
+    const BD = '#1d150e', BM = '#33261a', BL = '#54402c', BH = '#8a6c42';
     // Đá xám bệ cao:
     const SD = '#5b6675', SM = '#8b95a5', SL = '#c3ccd8';
     // Biển đồng trên bệ:
@@ -129,131 +133,199 @@ export class PondArt {
     const MOSS = '#4d7c0f';
     const GAP = '#0b0805';          // khe tối tách chi tiết
 
-    const SIL = (x, y, w, h) => R(x, y, w, h, BD);
+    const M = (x, y, w, h) => R(x, y, w, h, BM);  // khối thịt chính
 
-    // ===== BỆ ĐÁ CAO (y 58–112) — cột chữ nhật trơn, cao xấp xỉ tượng =====
+    // ===== BỆ ĐÁ CAO (y 82–120) — cột chữ nhật trơn, cao như ảnh mẫu =====
     // Nắp bệ
-    R(8, 56, 32, 4, SM);
-    R(8, 56, 32, 1, SL);            // mặt trên sáng
-    R(8, 59, 32, 1, SD);            // gờ dưới nắp
+    R(5, 82, 46, 4, SM);
+    R(5, 82, 46, 1, SL);            // mặt trên sáng
+    R(5, 85, 46, 1, SD);            // gờ dưới nắp
     // Thân trụ trơn
-    R(11, 60, 26, 42, SM);
-    R(11, 60, 2, 42, SL);           // cạnh trái sáng (sáng từ trái-trên)
-    R(35, 60, 2, 42, SD);           // cạnh phải tối
-    R(11, 60, 26, 1, SL);
+    R(9, 86, 38, 26, SM);
+    R(9, 86, 2, 26, SL);            // cạnh trái sáng (sáng từ trái-trên)
+    R(45, 86, 2, 26, SD);           // cạnh phải tối
+    R(9, 86, 38, 1, SL);
     // Vân đá mờ
-    R(16, 66, 6, 1, SD); R(26, 76, 8, 1, SD); R(18, 86, 5, 1, SD); R(24, 94, 6, 1, SD);
-    R(30, 68, 4, 1, SL); R(14, 82, 7, 1, SL); R(28, 90, 5, 1, SL);
+    R(14, 92, 6, 1, SD); R(30, 98, 8, 1, SD); R(18, 104, 5, 1, SD);
+    R(34, 94, 4, 1, SL); R(16, 100, 7, 1, SL);
     // Biển đồng nhỏ giữa mặt trước thân trụ (như ảnh tham chiếu)
-    R(19, 74, 10, 9, PD);
-    R(20, 75, 8, 7, PM);
-    R(20, 75, 8, 1, PH);            // viền sáng trên biển
-    R(21, 77, 1, 1, PD); R(27, 77, 1, 1, PD); // đinh tán
-    R(21, 80, 6, 1, PD);            // dòng chữ khắc (gợi)
+    R(23, 94, 10, 10, PD);
+    R(24, 95, 8, 8, PM);
+    R(24, 95, 8, 1, PH);            // viền sáng trên biển
+    R(25, 96, 1, 1, PD); R(31, 96, 1, 1, PD); // đinh tán
+    R(25, 99, 6, 1, PD); R(25, 101, 6, 1, PD); // dòng chữ khắc (gợi)
     // Đế bệ
-    R(7, 102, 34, 10, SM);
-    R(7, 102, 34, 2, SL);
-    R(7, 110, 34, 2, SD);
-    R(33, 104, 8, 6, 'rgba(0,0,0,0.15)');
+    R(3, 112, 50, 8, SM);
+    R(3, 112, 50, 2, SL);
+    R(3, 118, 50, 2, SD);
+    R(45, 114, 6, 4, 'rgba(0,0,0,0.15)');
     // Rêu phong chân bệ
-    R(7, 110, 9, 2, MOSS); R(32, 110, 9, 2, MOSS); R(11, 102, 3, 2, MOSS);
+    R(3, 118, 8, 2, MOSS); R(45, 118, 8, 2, MOSS); R(10, 112, 3, 2, MOSS);
 
-    // ===== TẢNG ĐÁ NGỒI (y 50–58) — lộ rõ giữa tượng và nắp bệ =====
-    R(10, 50, 30, 8, RD);
-    R(10, 50, 30, 2, RM);           // mặt trên tảng đá bắt sáng
-    R(12, 53, 6, 2, RM); R(30, 54, 6, 2, RM); // gờ đá
-    R(10, 56, 30, 2, '#211d19');    // chân tảng tối
+    // ===== TẢNG ĐÁ NGỒI (y 74–82) — lộ rõ giữa tượng và nắp bệ =====
+    R(4, 74, 48, 8, RD);
+    R(4, 74, 48, 2, RM);            // mặt trên tảng đá bắt sáng
+    R(8, 76, 8, 2, RM); R(36, 77, 8, 2, RM); // gờ đá
+    R(4, 80, 48, 2, '#211d19');     // chân tảng tối
 
-    // ===== NHÂN VẬT ĐỒNG ĐEN — dáng "Người suy tư", mặt hướng trái =====
-    // v4: dựng lại giải phẫu — đầu cúi sâu, cằm đặt TRÊN nắm tay (khe tối tách),
-    // khuỷu tay phải chống lên chỏm gối nhô cao, lưng cong dài, bệ cao như ảnh mẫu.
+    // ===== NHÂN VẬT ĐỒNG ĐEN — "NGƯỜI ĐÀN ÔNG CHỐNG CẰM", mặt hướng trái =====
+    // v5.2: đầu = khối cầu bậc thang NHỎ đưa hẳn về trước-trái, tách khỏi vai
+    // bằng khe nền 10px; chuỗi dọc đầu → cằm → NẮM TAY (sáng nhất) → cẳng tay
+    // trụ → khuỷu → gối nhô cao; tam giác nền giữa cẳng tay và ngực.
 
-    // --- Silhouette (BD) ---
-    // Mông ngồi trên tảng đá
-    SIL(28, 42, 12, 10);
-    // Lưng: đường cong dài từ mông lên vai
-    SIL(30, 32, 11, 12);            // lưng dưới
-    SIL(29, 22, 11, 12);            // lưng giữa
-    SIL(27, 14, 11, 10);            // lưng trên
-    SIL(25, 8, 11, 8);              // ụ vai
-    SIL(27, 6, 8, 4);               // đỉnh vai
-    // Gáy / thang vai cuộn về trước, nối xuống đầu
-    SIL(18, 12, 10, 8);
-    SIL(14, 16, 8, 8);
-    // Đầu cúi sâu — treo thấp, cằm gần ngang gối (TO, rõ khối)
-    SIL(5, 19, 12, 13);
-    // Cằm / quai hàm nhô về trước-xuống (y29–33)
-    SIL(4, 29, 8, 5);
-    // Ngực (mặt trước thân, sau cánh tay)
-    SIL(16, 30, 7, 12);
-    // Bụng nối xuống hông
-    SIL(21, 40, 10, 8);
-    // Đùi phải: từ hông vươn tới gối nhô cao
-    SIL(10, 45, 20, 7);
-    // Chỏm gối phải NHÔ CAO (y43–52, nơi khuỷu tay chống)
-    SIL(6, 43, 9, 9);
-    // Bắp chân phải xuống
-    SIL(8, 51, 6, 6);
-    // Bàn chân phải đặt tảng đá
-    SIL(5, 56, 12, 2);
-    // Tay phải: vai -> bắp tay xuống khuỷu
-    SIL(15, 30, 7, 11);
-    // Khuỷu tay CHỐNG LÊN chỏm gối (y42–47, đè lên đỉnh gối)
-    SIL(10, 42, 7, 6);
-    // Cẳng tay dựng lên từ khuỷu tới nắm tay (y36–42) — trụ chéo rõ
-    SIL(9, 36, 6, 7);
-    // NẮM TAY đỡ cằm (y34–41) — to, ngay dưới khe cằm, điểm sáng nhất
-    SIL(5, 34, 9, 7);
-    // Tay trái gập ngang thân
-    SIL(20, 32, 6, 11);
-    // Bàn tay trái đặt gần gối
-    SIL(13, 42, 8, 5);
-    // Chân trái (xa): đùi + bắp chân + bàn chân thu sau
-    SIL(22, 46, 12, 6);
-    SIL(26, 51, 7, 6);
-    SIL(24, 56, 11, 2);
+    // --- Khối lưng gù (một khối lớn, bên phải) ---
+    M(28, 10, 14, 12);             // ụ vai
+    M(32, 20, 12, 14);             // lưng trên
+    M(32, 32, 12, 12);             // lưng dưới
+    M(30, 40, 14, 12);             // mông
+    M(28, 50, 14, 8);              // hông
+    // --- Thân trước (giữ phải x25 để chừa tam giác nền với cẳng tay) ---
+    M(27, 28, 8, 18);
+    M(25, 32, 8, 12);
+
+    // --- ĐẦU: khối cầu bậc thang, đưa về trước-trái, tách khỏi vai ---
+    R(9, 14, 7, 2, BM);            // đỉnh sọ
+    R(7, 16, 11, 8, BM);           // khối sọ
+    R(8, 24, 9, 3, BM);            // hàm dưới
+    R(5, 25, 8, 4, BM);            // cằm nhô về trước-xuống
+    // Cầu gáy thấp nối đầu với thân
+    M(14, 27, 7, 5);
+
+    // --- CÁNH TAY (anh hùng): nắm tay → cẳng tay → khuỷu ---
+    M(5, 31, 10, 9);               // NẮM TAY đỡ cằm — khối sáng nhất
+    M(8, 40, 7, 14);               // cẳng tay: trụ dọc
+    M(11, 52, 9, 7);               // khuỷu tay đè lên gối
+
+    // --- Chân: gối nhô cao dưới khuỷu, đùi về hông ---
+    M(9, 58, 11, 10);              // chỏm gối nhô cao
+    M(18, 60, 15, 8);              // đùi
+    M(11, 68, 7, 7);               // bắp chân
+    M(7, 73, 14, 3);               // bàn chân đặt tảng đá
+    // Tay trái buông dọc thân
+    M(29, 34, 6, 12);
+    M(27, 46, 8, 6);
+    // Chân trái (xa) thu sau
+    M(33, 60, 11, 7);
+    M(39, 67, 6, 7);
+    M(37, 73, 10, 3);
+
+    // --- Bóng sâu (BD): gầm khối + nếp gấp ---
+    R(30, 60, 14, 2, BD);          // gầm mông
+    R(9, 66, 11, 2, BD);           // bóng dưới gối
+    R(32, 42, 12, 2, BD);          // nếp lưng
+    R(5, 28, 8, 1, BD);            // bóng dưới quai hàm
 
     // --- Khe tối tách chi tiết (GAP) ---
-    R(5, 33, 7, 1, GAP);            // khe cằm / nắm tay — đọc rõ "cằm TỰA LÊN tay"
-    R(15, 22, 3, 9, GAP);           // khe đầu / gáy — tách đầu khỏi vai, đầu đọc độc lập
-    R(18, 42, 1, 5, GAP);           // khe tay trái / ngực
-    R(8, 46, 6, 1, GAP);            // khe khuỷu / gối — khuỷu ĐÈ LÊN gối
-
-    // --- Khắc thịt (BM, lùi 1px khỏi viền) ---
-    R(29, 43, 10, 8, BM);           // mông
-    R(31, 33, 9, 10, BM);           // lưng dưới
-    R(30, 23, 9, 10, BM);           // lưng giữa
-    R(28, 15, 9, 8, BM);            // lưng trên
-    R(26, 9, 9, 6, BM);             // ụ vai
-    R(6, 20, 10, 10, BM);           // đầu (to)
-    R(11, 46, 18, 5, BM);           // đùi phải
-    R(16, 31, 5, 9, BM);            // bắp tay phải
-    R(21, 33, 4, 9, BM);            // tay trái
+    R(5, 29, 10, 2, GAP);          // khe CẰM / NẮM TAY — "cằm tựa lên nắm tay"
+    R(11, 57, 9, 1, GAP);          // khe khuỷu / gối — khuỷu ĐÈ LÊN gối
 
     // --- Điểm sáng đồng (sáng từ trái-trên) ---
-    R(6, 34, 7, 3, BH);             // mu nắm tay — ĐIỂM SÁNG NHẤT (to)
-    R(6, 37, 7, 3, BL);             // nắm tay
-    R(8, 38, 2, 2, BD);             // kẽ ngón tay
-    R(6, 43, 9, 2, BL);             // chỏm gối — mặt trên nơi khuỷu chống
-    R(7, 43, 7, 1, BH);             // đỉnh chỏm gối bắt sáng
-    R(5, 19, 12, 1, BL);            // đỉnh đầu
-    R(4, 29, 8, 1, BL);            // quai hàm
-    R(10, 45, 20, 1, BL);           // mặt trên đùi
-    R(16, 30, 7, 1, BL);            // ngực
-    // Rim-light dọc sống lưng — tách khối lưng khỏi nền tối (2px, mạnh hơn)
-    R(39, 32, 2, 12, BL);
-    R(38, 22, 2, 10, BL);
-    R(36, 14, 2, 8, BL);
-    R(34, 8, 2, 6, BL);
-    R(41, 34, 1, 10, BH);           // viền sáng mảnh ngoài cùng lưng dưới
-    R(40, 24, 1, 8, BH);            // viền sáng mảnh ngoài cùng lưng giữa
-    R(40, 44, 2, 6, BM);
-    // Cẳng tay: dải sáng tách khỏi thân
-    R(10, 37, 2, 5, BL);
-    R(9, 37, 1, 5, BH);             // mép sáng cẳng tay
-    // Bóng sau đầu
-    R(16, 20, 2, 10, BD);
+    // NẮM TAY — ĐIỂM SÁNG NHẤT toàn tượng
+    R(5, 31, 10, 4, BH);
+    R(5, 35, 10, 2, BL);
+    R(6, 37, 2, 2, BD); R(10, 37, 2, 2, BD); // kẽ ngón tay
+    // Đầu: vòm sáng — đọc rõ khối cầu
+    R(9, 14, 7, 1, BL);
+    R(7, 16, 11, 1, BL);
+    R(7, 16, 2, 8, BL);
+    R(5, 25, 8, 1, BL);            // quai hàm
+    // Cẳng tay: mép sáng dọc — trụ tay nổi bật
+    R(8, 40, 2, 14, BL);
+    R(8, 40, 1, 14, BH);
+    // Chỏm gối + khuỷu
+    R(9, 58, 11, 2, BL);
+    R(9, 58, 9, 1, BH);
+    R(11, 52, 9, 1, BL);
+    // Đùi + vai
+    R(18, 60, 15, 1, BL);
+    R(28, 10, 14, 1, BL);
+    // Rim-light dọc sống lưng — tách khối lưng khỏi nền tối
+    R(42, 20, 2, 14, BL);
+    R(42, 34, 2, 12, BL);
+    R(40, 12, 2, 8, BL);
+    R(44, 22, 1, 12, BH);
+    R(44, 36, 1, 10, BH);
 
     scene.textures.addCanvas('thinker_statue', canvas);
+  }
+
+  /**
+   * Sinh texture VƯỜN HOA sân Tòa Alpha: hoa giấy (bougainvillea) + hoa hồng.
+   * Mỗi texture 32x32, decor tĩnh solid đặt trên cỏ. Key: 'flower_bougainvillea',
+   * 'flower_rose'. Palette: lá xanh game + cụm hoa giấy hồng/magenta giấy,
+   * hoa hồng đỏ/hồng với nhụy tối.
+   */
+  static generateFlowerGarden(scene) {
+    const R2 = (ctx, x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+
+    // ---- HOA GIẤY (bougainvillea): bụi rậm, cụm hoa giấy hồng/magenta ----
+    if (!scene.textures.exists('flower_bougainvillea')) {
+      const c = document.createElement('canvas');
+      c.width = 32; c.height = 32;
+      const ctx = c.getContext('2d');
+      const GD = '#1f4d1f', GM = '#2f7a2f', GL = '#4da64d';
+      const M1 = '#e84393', M2 = '#f368a8', M3 = '#c026d3', WC = '#fff7cc';
+      // Bóng đất
+      R2(ctx, 6, 28, 20, 2, 'rgba(0,0,0,0.25)');
+      // Tán lá rậm (bất đối xứng, bụi lan)
+      R2(ctx, 8, 16, 16, 10, GM);
+      R2(ctx, 6, 18, 4, 8, GM); R2(ctx, 22, 18, 4, 8, GM);
+      R2(ctx, 10, 12, 12, 6, GM);
+      R2(ctx, 12, 10, 8, 4, GM);
+      R2(ctx, 4, 20, 4, 6, GM); R2(ctx, 24, 20, 4, 6, GM);
+      R2(ctx, 8, 22, 16, 4, GD);            // chân bụi tối
+      R2(ctx, 10, 12, 12, 2, GL);           // đỉnh tán sáng
+      R2(ctx, 6, 18, 2, 8, GL);             // mép trái sáng
+      // Cụm hoa giấy — mảng hồng/magenta dày ở đỉnh tán
+      const clusters = [
+        [9, 13, 3, 2, M1], [14, 11, 3, 2, M2], [19, 13, 3, 2, M1],
+        [7, 17, 3, 2, M3], [12, 16, 4, 3, M1], [18, 17, 3, 2, M2],
+        [23, 16, 3, 2, M1], [10, 21, 3, 2, M2], [16, 21, 4, 3, M1],
+        [22, 21, 3, 2, M3], [13, 25, 3, 2, M1], [20, 25, 3, 2, M2],
+        [8, 24, 2, 2, M3], [24, 24, 2, 2, M1], [5, 21, 2, 2, M2],
+      ];
+      for (const [x, y, w, h, col] of clusters) R2(ctx, x, y, w, h, col);
+      // Nhụy hoa thật (chấm trắng/vàng li ti giữa cụm)
+      R2(ctx, 13, 17, 1, 1, WC); R2(ctx, 20, 14, 1, 1, WC);
+      R2(ctx, 17, 22, 1, 1, WC); R2(ctx, 11, 22, 1, 1, WC);
+      // Cành rủ
+      R2(ctx, 14, 28, 1, 2, GD); R2(ctx, 20, 28, 1, 2, GD);
+      scene.textures.addCanvas('flower_bougainvillea', c);
+    }
+
+    // ---- HOA HỒNG: bụi hồng với nụ đỏ/hồng ----
+    if (!scene.textures.exists('flower_rose')) {
+      const c = document.createElement('canvas');
+      c.width = 32; c.height = 32;
+      const ctx = c.getContext('2d');
+      const GD = '#245224', GM = '#357a35', GL = '#55a855';
+      // Bóng đất
+      R2(ctx, 7, 28, 18, 2, 'rgba(0,0,0,0.25)');
+      // Tán bụi
+      R2(ctx, 9, 16, 14, 10, GM);
+      R2(ctx, 7, 18, 4, 8, GM); R2(ctx, 21, 18, 4, 8, GM);
+      R2(ctx, 11, 13, 10, 5, GM);
+      R2(ctx, 13, 11, 6, 4, GM);
+      R2(ctx, 9, 23, 14, 3, GD);            // chân bụi tối
+      R2(ctx, 11, 13, 10, 2, GL);           // đỉnh sáng
+      R2(ctx, 7, 18, 2, 6, GL);             // mép trái sáng
+      // Hoa hồng: mỗi bông 4x4 — cánh ngoài + nhụy tối + điểm sáng
+      const rose = (x, y, petal, heart) => {
+        R2(ctx, x, y, 4, 4, petal);
+        R2(ctx, x + 1, y + 1, 2, 2, heart);
+        R2(ctx, x + 1, y, 2, 1, '#ff8fa3');
+      };
+      rose(10, 14, '#dc2626', '#991b1b');
+      rose(19, 15, '#f43f5e', '#be123c');
+      rose(14, 19, '#dc2626', '#991b1b');
+      rose(8, 21, '#f43f5e', '#be123c');
+      rose(21, 22, '#e11d48', '#9f1239');
+      // Nụ hồng
+      R2(ctx, 16, 11, 2, 3, '#dc2626');
+      R2(ctx, 16, 11, 2, 1, '#f87171');
+      // Thân cành
+      R2(ctx, 12, 26, 1, 2, GD); R2(ctx, 19, 26, 1, 2, GD);
+      scene.textures.addCanvas('flower_rose', c);
+    }
   }
 }

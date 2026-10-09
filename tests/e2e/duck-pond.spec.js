@@ -66,13 +66,21 @@ test.describe('DEVER TOWN - Duck Pond & Thinker Statue (Alpha Courtyard)', () =>
         textures: {
           duck: scene.textures.exists('duck'),
           statue: scene.textures.exists('thinker_statue'),
+          bougainvillea: scene.textures.exists('flower_bougainvillea'),
+          rose: scene.textures.exists('flower_rose'),
         },
       };
     });
-    expect(statics.decorCount).toBe(1);
-    expect(statics.decorTex).toEqual(['thinker_statue']);
+    expect(statics.decorCount).toBe(5);
+    expect(statics.decorTex).toEqual([
+      'thinker_statue',
+      'flower_bougainvillea', 'flower_bougainvillea',
+      'flower_rose', 'flower_rose',
+    ]);
     expect(statics.textures.duck).toBe(true);
     expect(statics.textures.statue).toBe(true);
+    expect(statics.textures.bougainvillea).toBe(true);
+    expect(statics.textures.rose).toBe(true);
 
     // Đẩy nhân vật vào hồ: phải bị chặn ở mép nước (không đi xuyên)
     const blocked = await page.evaluate(() => {
@@ -150,9 +158,9 @@ test.describe('DEVER TOWN - Duck Pond & Thinker Statue (Alpha Courtyard)', () =>
       scene.player.body.reset(px, py);
     }, [x, y]);
 
-    // 1. Wide: toàn sân cỏ phía nam (hồ + tượng + cột cờ)
-    await movePlayer(208, 560);
-    await setZoom(1.4);
+    // 1. Wide: toàn sân cỏ phía nam (hồ + vườn hoa + tượng phía Đông)
+    await movePlayer(400, 560);
+    await setZoom(1.2);
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `${IMG_DIR}/pond-wide.png` });
 
@@ -162,11 +170,17 @@ test.describe('DEVER TOWN - Duck Pond & Thinker Statue (Alpha Courtyard)', () =>
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `${IMG_DIR}/pond-ducks-closeup.png` });
 
-    // 3. Close-up tượng (tile 1,15 -> world 48,496): đứng cạnh tượng
-    await movePlayer(128, 496);
+    // 3. Close-up tượng v5 (tile 20,16 -> world 656,528): đứng cạnh tượng
+    await movePlayer(736, 560);
     await setZoom(2.5);
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `${IMG_DIR}/pond-statue-closeup.png` });
+
+    // 4. Close-up vườn hoa (hoa giấy tile 12-14,16; hoa hồng tile 11/13,18)
+    await movePlayer(400, 600);
+    await setZoom(2.5);
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: `${IMG_DIR}/pond-flowers-closeup.png` });
 
     // Khôi phục camera
     await page.evaluate(() => {

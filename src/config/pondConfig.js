@@ -30,10 +30,19 @@ export const DUCK_CONFIG = {
   bobFrequency: 2.4,      // rad/s
 };
 
-// Tượng "Nhà tư tưởng" (Thinker) — decor tĩnh đặt trên cỏ cạnh hồ.
+// Tượng "Nhà tư tưởng" (Thinker) — decor tĩnh đặt trên cỏ phía Đông hồ,
+// tách khỏi hồ cho thoáng (tile 20,16). Vườn hoa: hoa giấy + hoa hồng.
 export const STATUE_CONFIG = {
   textureKey: 'thinker_statue',
-  tileX: 1,               // góc Tây-Bắc của hồ, trên cỏ (không đè hồ)
-  tileY: 15,
+  tileX: 20,              // bãi cỏ phía Đông hồ — thoáng, không chắn lối/portal
+  tileY: 16,
   solid: true,            // chặn đi bộ qua bệ tượng
 };
+
+// Vườn hoa sân Tòa Alpha — decor tĩnh solid trên cỏ (không chắn lối đi).
+export const FLOWER_GARDEN_CONFIG = [
+  { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16 },
+  { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16 },
+  { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18 },
+  { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18 },
+];
