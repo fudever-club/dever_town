@@ -127,11 +127,11 @@ export class QuestModal {
     // Milestone Check
     if (milestoneBtn) {
       if (state.milestoneClaimed) {
-        milestoneBtn.textContent = '✅ Đã Nhận Thưởng';
+        milestoneBtn.textContent = 'Đã Nhận Thưởng';
         milestoneBtn.disabled = true;
         milestoneBtn.className = 'milestone-btn claimed';
       } else if (state.completedCount >= 4) {
-        milestoneBtn.textContent = '🎁 MỞ RƯƠNG (+50 🪙)';
+        milestoneBtn.textContent = 'MỞ RƯƠNG (+50)';
         milestoneBtn.disabled = false;
         milestoneBtn.className = 'milestone-btn ready pulse-anim';
       } else {
@@ -155,7 +155,7 @@ export class QuestModal {
           <div class="quest-info-block">
             <div class="quest-header-row">
               <span class="quest-item-title">${q.title}</span>
-              <span class="quest-reward-tag">+${q.points} 🪙</span>
+              <span class="quest-reward-tag">+${q.points}</span>
             </div>
             <p class="quest-item-desc">${q.desc}</p>
             <div class="quest-bar-row">
@@ -170,7 +170,7 @@ export class QuestModal {
               q.claimed
                 ? '<button type="button" class="quest-claim-btn done" disabled>Đã Nhận</button>'
                 : q.completed
-                ? `<button type="button" class="quest-claim-btn ready" data-quest-id="${q.id}">Nhận +${q.points} 🪙</button>`
+                ? `<button type="button" class="quest-claim-btn ready" data-quest-id="${q.id}">Nhận +${q.points}</button>`
                 : '<button type="button" class="quest-claim-btn in-prog" disabled>Chưa xong</button>'
             }
           </div>
