@@ -22,6 +22,13 @@ export class BasketballShootoutEngine {
     // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
     this.isTouch = isTouchDevice();
 
+    // Camera view cho orientation-aware layout (2026-10-09): gameplay logic
+    // luôn chạy trong không gian 640×360; render áp transform.
+    this.viewScale = 1;
+    this.viewOX = 0;
+    this.viewOY = 0;
+    this.layoutView(canvas.width, canvas.height);
+
     this.score = 0;
     this.streak = 0;
     this.highScore = 0;
@@ -450,12 +457,20 @@ export class BasketballShootoutEngine {
 
   render() {
     const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
     const cfg = BASKETBALL_CONFIG;
 
-    // 1. Sân bóng rổ Streetball hiện đại
-    this.drawStreetballCourt(ctx, w, h, cfg);
+    ctx.clearRect(0, 0, dw, dh);
+
+    // Camera transform: gameplay trong không gian logic 640×360
+    ctx.save();
+    ctx.translate(this.viewOX, this.viewOY);
+    ctx.scale(this.viewScale, this.viewScale);
+
+    // 1. Sân bóng rổ Streetball — kéo dài tới đáy vùng nhìn thấy (portrait)
+    const viewBottom = (dh - this.viewOY) / this.viewScale;
+    this.drawStreetballCourt(ctx, 640, Math.max(360, viewBottom), cfg);
 
     // 2. Vệt lửa & khói bay theo bóng (Fire Trail)
     this.drawBallTrails(ctx);
@@ -482,8 +497,48 @@ export class BasketballShootoutEngine {
       this.drawAimControls(ctx);
     }
 
-    // 9. HUD Điểm & Chuỗi
+    ctx.restore(); // hết camera transform
+
+    // 9. HUD Điểm & Chuỗi — tọa độ màn hình thực
     this.renderHUD(ctx);
+  }
+
+  // Bố cục camera theo hướng màn hình (2026-10-09):
+  // - Desktop/landscape: 1:1, căn giữa theo chiều ngang mới.
+  // - Portrait: zoom nhẹ 1.1x vào vùng hành động (bóng → rổ), sân kéo dài
+  //   lấp đầy chiều dọc. Vật lý (gravity, restitution) giữ nguyên.
+  layoutView(w, h) {
+    if (w === 640 && h === 360) {
+      this.viewScale = 1;
+      this.viewOX = 0;
+      this.viewOY = 0;
+      return;
+    }
+    if (h >= w) {
+      // Portrait: zoom nhẹ vào vùng hành động (cầu thủ → rổ), sân kéo dài
+      // lấp đầy chiều dọc. Trung tâm view x=300 để cầu thủ (x=100) và bảng
+      // rổ (x=510) đều lọt khung.
+      this.viewScale = 1.05;
+      this.viewOX = w / 2 - 300 * this.viewScale;
+      this.viewOY = (h - 360 * this.viewScale) / 2;
+    } else {
+      this.viewScale = 1;
+      this.viewOX = (w - 640) / 2;
+      this.viewOY = 0;
+    }
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ đổi camera, logic giữ nguyên.
+  resize(w, h) {
+    this.layoutView(w, h);
+  }
+
+  // Đổi tọa độ canvas-logic sang tọa độ view (không gian gameplay 640×360)
+  toViewCoords(x, y) {
+    return {
+      x: (x - this.viewOX) / this.viewScale,
+      y: (y - this.viewOY) / this.viewScale
+    };
   }
 
   drawStreetballCourt(ctx, w, h, cfg) {
@@ -865,7 +920,8 @@ export class BasketballShootoutEngine {
 
   drawAimControls(ctx) {
     ctx.save();
-    const barX = 20;
+    // Neo vào mép trái vùng nhìn thấy khi camera pan/zoom (2026-10-09)
+    const barX = Math.max(20, -this.viewOX / this.viewScale + 12);
     const barY = 300;
     const barW = 130;
     const barH = 12;
@@ -901,6 +957,9 @@ export class BasketballShootoutEngine {
   }
 
   renderHUD(ctx) {
+    // HUD vẽ trong tọa độ màn hình thực (sau camera transform) — 2026-10-09
+    const dw = this.canvas.width;
+    const dh = this.canvas.height;
     ctx.save();
 
     // Bảng Tỉ số & Điểm cao
@@ -929,9 +988,9 @@ export class BasketballShootoutEngine {
     ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
 
     if (this.state === 'aiming') {
-      ctx.fillText(this.isTouch ? 'Kéo để NHẮM & NÉM TỰ DO' : 'Kéo chuột/vuốt màn hình để NHẮM NÉM TỰ DO | Phím: [Mũi tên/Cách]', 320, 342);
+      ctx.fillText(this.isTouch ? 'Kéo để NHẮM & NÉM TỰ DO' : 'Kéo chuột/vuốt màn hình để NHẮM NÉM TỰ DO | Phím: [Mũi tên/Cách]', dw / 2, dh - 18);
     } else {
-      ctx.fillText(this.isTouch ? 'Chạm để ném quả tiếp theo' : 'Bấm nút Hành Động hoặc Phím Cách để ném quả tiếp theo', 320, 342);
+      ctx.fillText(this.isTouch ? 'Chạm để ném quả tiếp theo' : 'Bấm nút Hành Động hoặc Phím Cách để ném quả tiếp theo', dw / 2, dh - 18);
     }
 
     ctx.restore();
