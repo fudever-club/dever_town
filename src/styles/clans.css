@@ -1,0 +1,366 @@
+/* --- clans.css: Bang hội & sự kiện pháo đài Phase E (ClanModal + HUD pills) --- */
+/* Cyber-glass, Tilt Neon titles / Be Vietnam Pro body, no emoji. */
+
+/* ---------------------------------------------------------- modal card --- */
+.clan-modal-card {
+  width: 680px;
+  max-width: 94vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: rgba(13, 20, 36, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12);
+}
+
+.clan-modal-title {
+  font-family: var(--font-title, 'Tilt Neon', 'Be Vietnam Pro', sans-serif);
+  letter-spacing: 0.5px;
+}
+
+/* -------------------------------------------------------- status row --- */
+.clan-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clan-status-label {
+  font-size: 13px;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.clan-tag {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0b1020;
+  background: var(--clan-color, #38bdf8);
+  box-shadow: 0 0 12px var(--clan-color, #38bdf8);
+}
+
+.clan-leave-btn {
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.clan-leave-btn:hover {
+  background: rgba(248, 113, 113, 0.22);
+}
+
+/* ----------------------------------------------------------- clan grid --- */
+.clan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.clan-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.clan-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--clan-color, #38bdf8);
+}
+
+.clan-card-colorbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--clan-color, #38bdf8);
+  box-shadow: 0 0 10px var(--clan-color, #38bdf8);
+}
+
+.clan-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.clan-card-name {
+  font-family: var(--font-title, 'Tilt Neon', 'Be Vietnam Pro', sans-serif);
+  font-size: 17px;
+  margin: 0;
+  color: var(--clan-color, #38bdf8);
+}
+
+.clan-member-pill {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(226, 232, 240, 0.85);
+  white-space: nowrap;
+}
+
+.clan-card-base {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(148, 163, 184, 0.95);
+  margin: 0 0 6px;
+}
+
+.clan-card-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(226, 232, 240, 0.85);
+  margin: 0 0 12px;
+  min-height: 40px;
+}
+
+.clan-join-btn {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--clan-color, #38bdf8);
+  background: rgba(56, 189, 248, 0.1);
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clan-join-btn:hover:not(:disabled) {
+  background: var(--clan-color, #38bdf8);
+  color: #0b1020;
+}
+
+.clan-join-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.clan-join-btn.is-current {
+  border-style: dashed;
+}
+
+.clan-roster-note {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.8);
+  margin: 2px 0 0;
+  font-style: italic;
+}
+
+/* ------------------------------------------------------ event section --- */
+.clan-event-section {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(251, 191, 36, 0.35);
+}
+
+.clan-event-title {
+  font-family: var(--font-title, 'Tilt Neon', 'Be Vietnam Pro', sans-serif);
+  font-size: 16px;
+  color: #fbbf24;
+  margin: 0 0 8px;
+}
+
+.clan-event-status {
+  font-size: 13px;
+  color: rgba(226, 232, 240, 0.9);
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.clan-event-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.clan-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.clan-score-row.is-leader {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.clan-score-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.clan-score-pts {
+  margin-left: auto;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.clan-start-event-btn {
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: 1px solid #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  color: #fde68a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clan-start-event-btn:hover:not(:disabled) {
+  background: #fbbf24;
+  color: #0b1020;
+}
+
+.clan-start-event-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.clan-event-test-note {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.85);
+  margin: 8px 0 0;
+  font-style: italic;
+}
+
+.clan-report-title {
+  font-size: 13px;
+  color: #fde68a;
+  margin: 10px 0 6px;
+}
+
+.clan-report-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.clan-report-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.clan-report-amt {
+  font-weight: 700;
+  color: #34d399;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------- fort event HUD pill --- */
+.fort-event-pill {
+  position: absolute;
+  top: 118px; /* dưới hàng vitals (HP / vùng / ví) — tránh chồng toast top-center */
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  border-radius: 12px;
+  pointer-events: auto;
+  font-size: 13px;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.fort-event-pill .fort-pill-name {
+  font-family: var(--graal-title-font, 'Tilt Neon', 'Be Vietnam Pro', sans-serif);
+  color: #fbbf24;
+  letter-spacing: 0.04em;
+}
+
+.fort-event-pill .fort-pill-timer {
+  font-weight: 700;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+.fort-event-pill .fort-pill-leader {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: #0b1020;
+  background: var(--leader-color, #94a3b8);
+}
+
+.fort-event-pill.is-countdown {
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+/* ------------------------------------------------------ header clan tag --- */
+.clan-tag-pill {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0b1020;
+  background: var(--clan-color, #38bdf8);
+  box-shadow: 0 0 8px var(--clan-color, #38bdf8);
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------- mobile --- */
+@media (max-width: 640px) {
+  .clan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clan-card-desc {
+    min-height: 0;
+  }
+
+  .fort-event-pill {
+    top: auto;
+    bottom: 118px; /* trên dock + touch controls */
+    font-size: 12px;
+    padding: 6px 12px;
+    max-width: 94vw;
+    white-space: normal;
+    text-align: center;
+  }
+}

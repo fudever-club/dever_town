@@ -9,7 +9,7 @@
  *   - Action dock: 6 buttons + hotkey badges 1-6
  *       1 Balo    -> existing InventoryModal.toggle()
  *       2 Viec lam-> JobsModal Phase D1 (cleaner/delivery/bugHunter + barista/fishing sibling)
- *       3 Bang hoi -> toast "sap ra mat — Phase E" (Phase E builds it)
+ *       3 Bang hoi -> ClanModal Phase E (bang hoi + su kien phao dai test)
  *       4 Arcade  -> existing minigame select (interactiveModal arcade_games)
  *       5 Cho     -> toast "sap ra mat"
  *       6 KTX     -> toast "sap ra mat"
@@ -21,7 +21,10 @@
  */
 import { walletManager } from '../../managers/WalletManager.js';
 import { healthManager } from '../../managers/HealthManager.js';
-import { COMBAT_CONFIG } from '../../config/combatConfig.js';
+import { clanManager } from '../../managers/ClanManager.js';
+import { fortEventManager } from '../../managers/FortEventManager.js';
+import { COMBAT_CONFIG, FORT_EVENT_STATES } from '../../config/combatConfig.js';
+import { getClanById } from '../../config/clansConfig.js';
 import { toastManager } from '../common/ToastManager.js';
 
 const ICONS = {
@@ -52,6 +55,8 @@ export class GraalHUD {
     this.hpMax = COMBAT_CONFIG.maxHP;
     this._unsubWallet = null;
     this._unsubHealth = null;
+    this._unsubClan = null;
+    this._unsubFort = null;
     this._keyHandler = null;
     this._overlay = null;
 
@@ -60,6 +65,7 @@ export class GraalHUD {
     this._renderWallet(walletManager.getBalance());
     this._wireWallet();
     this._wireHealth();
+    this._wireClans();
     this._wireKeyboard();
     this._reskinRadar();
   }
@@ -97,6 +103,11 @@ export class GraalHUD {
         ${this._dockButtonHTML('5', 'market', 'Ch\u1ee3', ICONS.shop, 'Cho [5]')}
         ${this._dockButtonHTML('6', 'dorm', 'KTX', ICONS.building, 'KTX [6]')}
       </nav>
+      <div class="fort-event-pill graal-glass hidden" id="fort-event-pill" role="status" aria-label="Su kien phao dai">
+        <span class="fort-pill-name">PH\u00c1O \u0110\u00c0I</span>
+        <span class="fort-pill-timer" id="fort-pill-timer">--:--</span>
+        <span class="fort-pill-leader hidden" id="fort-pill-leader"></span>
+      </div>
     `;
 
     document.body.appendChild(overlay);
@@ -156,6 +167,79 @@ export class GraalHUD {
         this.setHP(event.hp, event.maxHP ?? COMBAT_CONFIG.maxHP);
       }
     });
+  }
+
+  // ---------------------------------------------------------- Clans ----
+  /**
+   * Phase E: tag bang cạnh tên người chơi (header) + pill timer sự kiện
+   * pháo đài. Lắng nghe ClanManager / FortEventManager.
+   */
+  _wireClans() {
+    this._renderClanTag();
+    this._unsubClan = clanManager.onChange(() => this._renderClanTag());
+    this._unsubFort = fortEventManager.onChange((event) => {
+      if (!event) return;
+      if (event.type === 'state' || event.type === 'tick') {
+        this.setFortEvent(event.snapshot || fortEventManager.getSnapshot());
+      } else if (event.type === 'payout') {
+        this.setFortEvent(fortEventManager.getSnapshot());
+      }
+    });
+    this.setFortEvent(fortEventManager.getSnapshot());
+  }
+
+  /** Tag bang nhỏ cạnh tên người chơi trên header (#clan-tag-pill). */
+  _renderClanTag() {
+    const pill = document.getElementById('clan-tag-pill');
+    if (!pill) return;
+    const clan = clanManager.getMyClan();
+    if (!clan) {
+      pill.classList.add('hidden');
+      pill.textContent = '';
+      return;
+    }
+    pill.classList.remove('hidden');
+    pill.textContent = clan.shortName;
+    pill.style.setProperty('--clan-color', clan.color);
+    pill.setAttribute('aria-label', `Bang hoi: ${clan.name}`);
+    pill.title = clan.name;
+  }
+
+  /**
+   * Pill timer sự kiện pháo đài: hiện trong COUNTDOWN/ACTIVE, kèm bang
+   * đang dẫn đầu. Ẩn ở các state còn lại.
+   */
+  setFortEvent(snapshot) {
+    const pill = this._overlay?.querySelector('#fort-event-pill');
+    if (!pill || !snapshot) return;
+    const timerEl = pill.querySelector('#fort-pill-timer');
+    const leaderEl = pill.querySelector('#fort-pill-leader');
+    const active = snapshot.state === FORT_EVENT_STATES.COUNTDOWN
+      || snapshot.state === FORT_EVENT_STATES.ACTIVE;
+    if (!active) {
+      pill.classList.add('hidden');
+      return;
+    }
+    pill.classList.remove('hidden');
+    pill.classList.toggle('is-countdown', snapshot.state === FORT_EVENT_STATES.COUNTDOWN);
+    if (timerEl) {
+      const s = Math.max(0, snapshot.secondsLeft || 0);
+      const mm = String(Math.floor(s / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      timerEl.textContent = `${mm}:${ss}`;
+    }
+    if (leaderEl) {
+      const clan = snapshot.leaderClanId ? getClanById(snapshot.leaderClanId) : null;
+      if (clan) {
+        leaderEl.classList.remove('hidden');
+        leaderEl.textContent = clan.shortName;
+        leaderEl.style.setProperty('--leader-color', clan.color);
+        leaderEl.title = `${clan.name} đang dẫn điểm`;
+      } else {
+        leaderEl.classList.add('hidden');
+        leaderEl.textContent = '';
+      }
+    }
   }
 
   /**
@@ -219,9 +303,16 @@ export class GraalHUD {
         }
         break;
       }
-      case 'guild':
-        toastManager.toast('Bang h\u1ed9i: s\u1eafp ra m\u1eaft \u2014 Phase E');
+      case 'guild': {
+        // Phase E: mở modal Bang Hội & Sự Kiện Pháo Đài thay vì toast.
+        const cm = this.scene?.clanModal;
+        if (cm && typeof cm.toggle === 'function') {
+          cm.toggle();
+        } else {
+          toastManager.toast('Bang h\u1ed9i ch\u01b0a s\u1eb5n s\u00e0ng');
+        }
         break;
+      }
       case 'market':
         toastManager.toast('Ch\u1ee3: s\u1eafp ra m\u1eaft');
         break;
@@ -269,6 +360,14 @@ export class GraalHUD {
     if (this._unsubHealth) {
       this._unsubHealth();
       this._unsubHealth = null;
+    }
+    if (this._unsubClan) {
+      this._unsubClan();
+      this._unsubClan = null;
+    }
+    if (this._unsubFort) {
+      this._unsubFort();
+      this._unsubFort = null;
     }
     if (this._keyHandler) {
       window.removeEventListener('keydown', this._keyHandler);

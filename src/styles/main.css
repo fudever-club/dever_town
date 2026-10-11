@@ -46,6 +46,8 @@
 @import "./jobs.css";
 /* Phase D2: Job câu cá Hồ Vịt + reskin cyber-glass quầy Barista. */
 @import "./jobs-cyberglass.css";
+/* Phase E: Bang hội & sự kiện pháo đài test — ClanModal + HUD pills. */
+@import "./clans.css";
 /* Phase A: cyber-glass HUD adapt — additive reskin, loaded last so Graal
    skin rules win over legacy HUD module styles (existing DOM/IDs untouched). */
 @import "./graal-hud.css";

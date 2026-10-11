@@ -20,6 +20,7 @@ import {
   TouchControls,
   QuestModal,
   JobsModal,
+  ClanModal,
   NetworkStatusOverlay,
   MinimapOverlay,
   RoomBanner,
@@ -36,6 +37,8 @@ import {
 } from '../ui/index.js';
 import { GraalHUD } from '../ui/hud/GraalHUD.js';
 import { healthManager } from '../managers/HealthManager.js';
+import { clanManager } from '../managers/ClanManager.js';
+import { fortEventManager } from '../managers/FortEventManager.js';
 import { COMBAT_CONFIG, DEFAULT_ZONE } from '../config/combatConfig.js';
 import { DAY_NIGHT_CYCLE_ENABLED } from '../config/lightingConfig.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
@@ -1470,6 +1473,21 @@ export class WorldScene extends Phaser.Scene {
     // 3b. Jobs Modal (Phase D1 — Việc làm campus: mở từ dock [2])
     this.jobsModal = new JobsModal({ scene: this });
 
+    // 3c. Clan Modal (Phase E — Bang hội & sự kiện pháo đài: mở từ dock [3])
+    this.clanModal = new ClanModal({ scene: this });
+
+    // 3d. Phase E — Fort test events: hook debug/test + presence của người
+    //     chơi local cho king-of-the-hill (không đụng map/collider).
+    this.fortEventManager = fortEventManager;
+    fortEventManager.setLocalPlayer({
+      id: 'local',
+      name: localStorage.getItem('dever_nickname') || 'Dever Member',
+    });
+    fortEventManager.setPositionProvider(() => {
+      if (!this.player) return null;
+      return { x: this.player.x, y: this.player.y, roomId: this.currentRoomId };
+    });
+
     // 4. Wardrobe Modal
     this.wardrobeModal = new WardrobeModal({
       scene: this,
@@ -1515,6 +1533,12 @@ export class WorldScene extends Phaser.Scene {
         const equippedItem = localStorage.getItem('dever_equipped_item');
         if (equippedItem && this.player && this.player.setEquippedItem) {
           this.player.setEquippedItem(equippedItem);
+        }
+
+        // Phase E: tên hiển thị cho roster bang hội + presence sự kiện.
+        if (name) {
+          clanManager.setPlayerName(name);
+          fortEventManager.setLocalPlayer({ name });
         }
 
         this.updateHeaderProfile(user);
@@ -2216,6 +2240,11 @@ export class WorldScene extends Phaser.Scene {
     if (this.jobsModal) {
       this.jobsModal.update(time, delta);
     }
+
+    // Phase E: máy trạng thái sự kiện pháo đài test (king-of-the-hill).
+    try {
+      fortEventManager.update(delta);
+    } catch (e) { /* event lỗi không được crash game loop */ }
 
     if (this.npcGroup && this.player) {
       this.npcGroup.forEach(npc => {

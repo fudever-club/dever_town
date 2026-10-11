@@ -328,7 +328,7 @@
         </div>
         <div class="user-meta-texts">
           <span id="header-user-role" class="role-tag guest" data-i18n="guestTag">Khách</span>
-          <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span>
+          <span id="header-user-name" class="user-name" data-i18n="guestName">Khách vãng lai</span><span id="clan-tag-pill" class="clan-tag-pill hidden"></span>
         </div>
       </div>
 
@@ -1081,6 +1081,36 @@
 
   <!-- 2c. JOBS STATUS PILL (trạng thái việc đang chạy: túi rác / đồng hồ giao hàng / săn bọ) -->
   <div id="jobs-status-pill" class="jobs-status-pill hidden"></div>
+
+  <!-- 2d. CLAN MODAL (BANG HỘI & SỰ KIỆN PHÁO ĐÀI — Phase E) -->
+  <div id="clan-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-lg clan-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3.5l6.5 2.7v4.6c0 4.6-3.2 7.6-6.5 8.7-3.3-1.1-6.5-4.1-6.5-8.7V6.2L12 3.5z"></path>
+            <path d="M12 8.5v4"></path>
+            <circle cx="12" cy="14.5" r="0.6"></circle>
+          </svg>
+          <div>
+            <h2 class="modal-title clan-modal-title">Bang Hội &amp; Sự Kiện Pháo Đài</h2>
+            <p class="modal-sub">Gia nhập bang, tụ họp tại base và tranh pháo đài Phòng Server cùng đồng đội.</p>
+          </div>
+        </div>
+        <button type="button" id="clan-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div id="clan-status-row" class="clan-status-row"></div>
+      <div id="clan-grid" class="clan-grid"></div>
+      <div class="clan-event-section">
+        <h3 class="clan-event-title">Sự Kiện Pháo Đài (Test)</h3>
+        <p id="clan-event-status" class="clan-event-status"></p>
+        <div id="clan-event-scores" class="clan-event-scores"></div>
+        <button type="button" id="clan-start-event-btn" class="clan-start-event-btn">Tổ chức test event</button>
+        <p class="clan-event-test-note">Nút test — chỉ dành cho kiểm chứng framework, sẽ ẩn khi ra mắt chính thức. Thưởng chia cho mọi người tham gia (luật Graal 2026), không winner-takes-all.</p>
+        <div id="clan-event-report" class="clan-event-report"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- 3. WARDROBE CUSTOMIZER MODAL (TỦ ĐỒ & TRANG PHỤC) -->
   <div id="wardrobe-modal" class="modal-backdrop hidden">
