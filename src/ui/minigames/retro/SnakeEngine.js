@@ -10,6 +10,7 @@
 
 import { SNAKE_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class SnakeEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -17,6 +18,9 @@ export class SnakeEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị: cảm ứng → chạm/vuốt,
+    // desktop → phím. Thêm 2026-10-09 (yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.grid = SNAKE_CONFIG.gridSize || 20;
     this.cols = Math.floor(canvas.width / this.grid);
@@ -74,6 +78,32 @@ export class SnakeEngine {
     this.spawnFood('chili');
 
     this.callbacks.onScoreUpdate?.(0);
+  }
+
+  // Playfield thích ứng hướng màn hình (2026-10-09): tính lại cols/rows
+  // theo kích thước logic mới, kẹp mọi thực thể vào biên mới, giữ nguyên
+  // state (điểm, combo, buff). Grid 20px và tốc độ tick không đổi.
+  resize(w, h) {
+    this.cols = Math.floor(w / this.grid);
+    this.rows = Math.floor(h / this.grid);
+    const clampCell = (p) => ({
+      ...p,
+      x: Math.min(Math.max(p.x, 0), this.cols - 1),
+      y: Math.min(Math.max(p.y, 0), this.rows - 1)
+    });
+    if (Array.isArray(this.snake)) this.snake = this.snake.map(clampCell);
+    if (Array.isArray(this.prevSnake)) this.prevSnake = this.prevSnake.map(clampCell);
+    if (Array.isArray(this.foods)) this.foods = this.foods.map(clampCell);
+    if (Array.isArray(this.portals)) {
+      this.portals = this.portals.map((p) => {
+        const c = clampCell(p);
+        return {
+          ...c,
+          targetX: Math.min(Math.max(p.targetX, 0), this.cols - 1),
+          targetY: Math.min(Math.max(p.targetY, 0), this.rows - 1)
+        };
+      });
+    }
   }
 
   spawnFood(preferredType = null) {
@@ -548,7 +578,7 @@ export class SnakeEngine {
         ctx.stroke();
 
         ctx.fillStyle = '#78350f';
-        ctx.font = '900 11px Outfit, sans-serif';
+        ctx.font = '900 11px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('D', fx, fy + 0.5);
@@ -764,14 +794,14 @@ export class SnakeEngine {
     ctx.save();
     // Điểm số chính
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 17px Outfit, sans-serif';
+    ctx.font = '800 17px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`Điểm Số: ${this.score}`, 18, 28);
 
     // Chuỗi Combo Streak
     if (this.comboTimer > 0 && this.comboMultiplier > 1) {
       ctx.fillStyle = '#facc15';
-      ctx.font = '900 14px Outfit, sans-serif';
+      ctx.font = '900 14px "Be Vietnam Pro", sans-serif';
       const pct = Math.max(0, this.comboTimer / (SNAKE_CONFIG.comboWindowSec || 3.5));
       ctx.fillText(`COMBO x${this.comboMultiplier} (${pct.toFixed(1)}s)`, 18, 48);
 
@@ -786,27 +816,27 @@ export class SnakeEngine {
     let badgeY = 72;
     if (this.speedBuffTimer > 0) {
       ctx.fillStyle = '#ea580c';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`ỚT NITRO: ${this.speedBuffTimer.toFixed(1)}s`, 18, badgeY);
       badgeY += 18;
     }
     if (this.slowBuffTimer > 0) {
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`ĐỒNG HỒ BĂNG: ${this.slowBuffTimer.toFixed(1)}s`, 18, badgeY);
       badgeY += 18;
     }
     if (this.magnetBuffTimer > 0) {
       ctx.fillStyle = '#eab308';
-      ctx.font = '700 12px Outfit, sans-serif';
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`NAM CHÂM: ${this.magnetBuffTimer.toFixed(1)}s`, 18, badgeY);
     }
 
     // Nút gợi ý điều khiển
     ctx.fillStyle = '#64748b';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('WASD / Mũi Tên: Lái Buggy · Shift: Bứt Tốc · R: Chơi Lại', w - 18, 28);
+    ctx.fillText(this.isTouch ? 'Chạm / vuốt để đổi hướng' : 'WASD / Mũi Tên: Lái Buggy · Shift: Bứt Tốc · R: Chơi Lại', w - 18, 28);
 
     // Màn hình Game Over
     if (this.gameOver) {
@@ -815,16 +845,16 @@ export class SnakeEngine {
 
       ctx.textAlign = 'center';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '900 32px Outfit, sans-serif';
+      ctx.font = '900 32px "Be Vietnam Pro", sans-serif';
       ctx.fillText('BUGGY ĐÃ BỊ KẸT!', w / 2, 145);
 
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '800 18px Outfit, sans-serif';
+      ctx.font = '800 18px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Điểm Số Cuối Cùng: ${this.score}`, w / 2, 185);
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = '700 14px Outfit, sans-serif';
-      ctx.fillText('Bấm Phím Cách (Space) hoặc R hoặc Click Chuột để chơi lại', w / 2, 225);
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(this.isTouch ? 'Chạm để chơi lại' : 'Bấm Phím Cách (Space) hoặc R hoặc Click Chuột để chơi lại', w / 2, 225);
     }
 
     ctx.restore();

@@ -1,0 +1,128 @@
+/* --- fortune.css: golden frog daily fortune (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   6. GOLDEN FROG DAILY FORTUNE (CÓC VÀNG TÂM LINH & BÓI QUẺ CODER)
+   ========================================================================== */
+.frog-shrine-workspace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-20px);
+  padding: var(--space-16px-12px);
+}
+
+.frog-shrine-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8px);
+}
+
+.frog-avatar-shrine {
+  font-size: var(--text-52px);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, var(--color-rgba-245-158-11-0-25) 0%, var(--color-rgba-15-23-42-0) 70%);
+  border-radius: var(--radius-full);
+  animation: frogPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes frogPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--color-rgba-245-158-11-0-5)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 24px var(--color-rgba-245-158-11-0-8)); }
+}
+
+.frog-shrine-title {
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-20px);
+  font-weight: 800;
+  color: var(--color-fbbf24);
+  letter-spacing: 0.5px;
+  margin: var(--space-0);
+  text-shadow: 0 0 16px var(--color-rgba-245-158-11-0-3);
+}
+
+.frog-shrine-sub {
+  font-size: var(--text-13px);
+  color: var(--color-94a3b8);
+  max-width: 480px;
+  margin: var(--space-0);
+  line-height: 1.5;
+}
+
+.frog-fortune-box {
+  width: 100%;
+  max-width: 480px;
+}
+
+.frog-oracle-card {
+  background: var(--color-rgba-15-23-42-0-9);
+  border: 1.5px solid var(--color-rgba-245-158-11-0-4);
+  border-radius: var(--radius-16px);
+  padding: var(--space-20px-24px);
+  box-shadow: 0 12px 36px var(--color-rgba-0-0-0-0-6), inset 0 0 20px var(--color-rgba-245-158-11-0-08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12px);
+}
+
+.oracle-grade {
+  font-family: var(--font-mono);
+  font-size: var(--text-11px);
+  font-weight: 800;
+  color: var(--color-fbbf24);
+  background: var(--color-rgba-245-158-11-0-15);
+  border: 1px solid var(--color-rgba-245-158-11-0-4);
+  padding: var(--space-4px-12px);
+  border-radius: var(--radius-20px);
+  letter-spacing: 1px;
+}
+
+.oracle-title {
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-17px);
+  font-weight: 700;
+  color: var(--color-f8fafc);
+  margin: var(--space-0);
+}
+
+.oracle-desc {
+  font-size: var(--text-13-5px);
+  color: var(--color-cbd5e1);
+  line-height: 1.6;
+  margin: var(--space-0);
+}
+
+.oracle-reward {
+  font-family: var(--font-mono);
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  background: var(--color-rgba-56-189-248-0-12);
+  border: 1px solid var(--color-rgba-56-189-248-0-3);
+  padding: var(--space-5px-14px);
+  border-radius: var(--radius-12px);
+}
+
+.btn-draw-fortune {
+  background: linear-gradient(135deg, var(--color-f59e0b), var(--color-d97706));
+  border: 1px solid var(--color-fde68a);
+  color: var(--color-0f172a);
+  font-size: var(--text-14px);
+  font-weight: 800;
+  padding: var(--space-12px-28px);
+  border-radius: var(--radius-14px);
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--color-rgba-245-158-11-0-4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-draw-fortune:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 32px var(--color-rgba-245-158-11-0-7);
+}
+

@@ -1,0 +1,144 @@
+/* --- profile.css: header avatar badge, 360 showcase (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   HEADER AVATAR BADGE & ACTIONS
+   ========================================================================== */
+.user-profile-badge.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-profile-badge.clickable:hover {
+  background: var(--color-rgba-56-189-248-0-18);
+  border-color: var(--color-rgba-56-189-248-0-45);
+  transform: translateY(-1px);
+}
+
+.header-avatar-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1.5px solid var(--color-38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-13px);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.header-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-meta-texts {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6px);
+}
+
+.btn-avatar {
+  background: linear-gradient(135deg, var(--color-4f46e5), var(--color-7c3aed));
+}
+
+.btn-avatar:hover {
+  opacity: 0.92;
+}
+
+/* ==========================================================================
+   360° INTERACTIVE CHARACTER SHOWCASE IN PROFILE
+   ========================================================================== */
+.profile-character-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-rgba-15-23-42-0-75);
+  border: 1px solid var(--color-rgba-56-189-248-0-25);
+  border-radius: var(--radius-14px);
+  padding: var(--space-10px);
+  margin-bottom: var(--space-0px);
+}
+
+.character-preview-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-6px);
+}
+
+#profile-character-canvas {
+  width: 130px;
+  height: 130px;
+  border-radius: var(--radius-12px);
+  background: radial-gradient(circle, var(--color-rgba-56-189-248-0-12) 0%, var(--color-rgba-15-23-42-0-95) 75%);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  box-shadow: inset 0 0 15px var(--color-rgba-0-0-0-0-6), 0 4px 14px var(--color-rgba-0-0-0-0-4);
+  cursor: grab;
+  touch-action: none;
+}
+
+#profile-character-canvas:active {
+  cursor: grabbing;
+}
+
+.character-action-tag {
+  position: absolute;
+  bottom: 8px;
+  font-size: var(--text-9-5px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  background: var(--color-rgba-15-23-42-0-88);
+  padding: var(--space-2px-8px);
+  border-radius: var(--radius-10px);
+  border: 1px solid var(--color-rgba-56-189-248-0-4);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.character-rotation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10px);
+  width: 100%;
+  max-width: 290px;
+  margin-bottom: var(--space-4px);
+}
+
+.btn-rotate {
+  padding: var(--space-5px-10px);
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-cbd5e1);
+  background: var(--color-1e293b);
+  border: 1px solid var(--color-rgba-255-255-255-0-12);
+  border-radius: var(--radius-6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans-outfit);
+}
+
+.btn-rotate:hover {
+  background: var(--color-334155);
+  color: var(--color-ffffff);
+  border-color: var(--color-38bdf8);
+}
+
+.rotate-angle-label {
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-f59e0b);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.rotate-hint-sub {
+  font-size: var(--text-10-5px);
+  color: var(--color-64748b);
+  margin: var(--space-0);
+  text-align: center;
+}
+

@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('DEVER TOWN - Mobile Compatibility & Ergonomics Suite', () => {
   test.beforeEach(async ({ page }) => {
+    // Tắt onboarding guide (overlay toàn màn hình) ngay từ init script để nó không
+    // che tương tác trong test — cùng pattern đã dùng ở retention-loop / ux-enhancements.
+    await page.addInitScript(() => {
+      localStorage.setItem('dever_onboarding_seen', 'true');
+    });
     // Đặt viewport chuẩn mobile (iPhone SE 375x667)
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
@@ -13,13 +18,6 @@ test.describe('DEVER TOWN - Mobile Compatibility & Ergonomics Suite', () => {
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/, { timeout: 10000 });
     await expect(page.locator('#game-loading-screen')).toHaveClass(/hidden/, { timeout: 15000 });
     await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 10000 });
-
-    // Đóng onboarding guide nếu có
-    const onboardingBtn = page.locator('#onboarding-close-btn');
-    if (await onboardingBtn.isVisible()) {
-      await onboardingBtn.click();
-      await page.waitForTimeout(400);
-    }
   });
 
   test('01. Mobile Header fits seamlessly with zero horizontal overflow on 375px', async ({ page }) => {

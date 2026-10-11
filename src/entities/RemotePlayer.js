@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { PERF_CONFIG } from '../config/perfConfig.js';
+import { POSE, isSitPose } from '../config/poseConfig.js';
+import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
   if (!str) return '';
@@ -25,6 +28,8 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     this.id = options.id;
     this.name = options.name || 'Thành viên khác';
     this.avatarId = avatarId;
+    // Tư thế đồng bộ từ playerActivity (xem poseConfig.js)
+    this.pose = POSE.STAND;
     this.role = options.role || 'guest';
     this.equippedItemId = options.equippedItemId || null;
 
@@ -39,6 +44,12 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
 
     this.speechBubble = null;
     this.speechTimer = null;
+
+    // Phase 0 perf: client-side culling of render work when off-camera.
+    // Only rendering visibility is ever touched here — network, interpolation
+    // and state updates keep running untouched. Local player is a different
+    // class (Player) so it can never be culled by this code.
+    this._renderCulled = false;
 
     this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
@@ -81,7 +92,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const displayName = `${rolePrefix}${this.name}`;
 
     const tagText = this.scene.add.text(0, 0, displayName, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '600',
       color: '#ffffff',
@@ -178,7 +189,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     bubbleContainer.setDepth(1000002);
 
     const textObj = this.scene.add.text(0, 0, safeText, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       color: '#0f172a',
       align: 'center',
@@ -235,6 +246,8 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       fire: '🔥',
       clap: '👏',
       dance: '🕺',
+      nod: '👍',
+      power: '💪',
       question: '❓',
       fireworks: '🎉',
       buggy: '🐞'
@@ -281,26 +294,135 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       }
     });
 
-    // If dance, play a fun wiggle bounce animation on sprite
-    if (emoteId === 'dance') {
-      const origY = this.y;
-      this.scene.tweens.add({
-        targets: this,
-        angle: { from: -8, to: 8 },
-        y: origY - 6,
-        yoyo: true,
-        repeat: 5,
-        duration: 120,
-        ease: 'Sine.easeInOut',
-        onComplete: () => {
-          this.setAngle(0);
-          this.y = origY;
-        }
-      });
+    // Body emotes (wave/nod/power/dance): overlay tay pixel + squash/tween
+    if (isBodyEmote(emoteId)) {
+      playBodyEmote(this.scene, this, emoteId);
+    }
+  }
+
+  /**
+   * Đặt trạng thái hoạt động (ví dụ: 'dreaming').
+   * Hiển thị text trạng thái trên đầu nhân vật.
+   */
+  setActivity(activity) {
+    this.activity = activity;
+
+    if (this.activityText) {
+      this.activityText.destroy();
+      this.activityText = null;
+    }
+
+    if (activity === 'dreaming') {
+      this.activityText = this.scene.add.text(0, -52, 'đang mơ  Z', {
+        fontFamily: "'Be Vietnam Pro', sans-serif",
+        fontSize: '11px',
+        color: '#a78bfa',
+        backgroundColor: 'rgba(30, 27, 75, 0.85)',
+        padding: { x: 6, y: 3 },
+      }).setOrigin(0.5, 0.5);
+      if (this.nameTagContainer) {
+        this.nameTagContainer.add(this.activityText);
+        this.activityText.setPosition(0, -24);
+      }
+    }
+  }
+
+  /**
+   * Đặt tư thế ngồi/đứng của người chơi khác (đồng bộ từ 'playerActivity').
+   * @param {string} pose - 'stand' | 'sit_upright' | 'sit_leanback'
+   */
+  setPose(pose) {
+    const validPoses = Object.values(POSE);
+    this.pose = validPoses.includes(pose) ? pose : POSE.STAND;
+    this._applyPoseAnimation();
+  }
+
+  /**
+   * Trả về animation key cho tư thế ngồi, hoặc null nếu:
+   * - pose là 'stand' (render idle/walk bình thường), hoặc
+   * - avatar chưa có sit frames (chỉ Hoodie DEVER có cho đến hiện tại).
+   */
+  _getSitAnimKey() {
+    if (!isSitPose(this.pose)) return null;
+    const key = `${this.pose}_${this.avatarId}`;
+    return this.scene?.anims?.exists(key) ? key : null;
+  }
+
+  /** Áp dụng ngay animation tư thế (không crash khi thiếu frame). */
+  _applyPoseAnimation() {
+    const key = this._getSitAnimKey();
+    if (!key) return;
+    try {
+      this.anims.play(key, true);
+      this.anims.timeScale = 1;
+    } catch (e) {}
+  }
+
+  /**
+   * Client-side render culling: hide all visuals of this RemotePlayer when it
+   * is outside the camera world view (plus a margin so edge players don't pop),
+   * and restore them when it comes back into view.
+   * Pure rendering visibility — position, animation, interpolation, network
+   * state all keep updating in update() regardless of culling.
+   */
+  updateCulling() {
+    if (!PERF_CONFIG.REMOTE_PLAYER_CULL_ENABLED) {
+      if (this._renderCulled) this._applyRenderVisibility(true);
+      return;
+    }
+    const cam = this.scene?.cameras?.main;
+    if (!cam) return;
+    const view = cam.worldView;
+    const m = PERF_CONFIG.REMOTE_PLAYER_CULL_MARGIN;
+    const inView =
+      this.x > view.x - m && this.x < view.right + m &&
+      this.y > view.y - m && this.y < view.bottom + m;
+
+    if (inView !== !this._renderCulled) {
+      // Visibility state must change: inView -> visible, off-view -> hidden.
+      this._applyRenderVisibility(inView);
+    } else if (this._renderCulled) {
+      // Stay culled: transient objects (speech bubbles, emote icons, body-emote
+      // overlays) may have been created while hidden — keep them hidden so the
+      // player can't pop partially visible while off-camera.
+      this._hideTransientRenderObjects();
+    }
+  }
+
+  _applyRenderVisibility(visible) {
+    this._renderCulled = !visible;
+    this.setVisible(visible);
+    if (this.shadowEllipse) this.shadowEllipse.setVisible(visible);
+    if (this.nameTagContainer) this.nameTagContainer.setVisible(visible);
+    this._setTransientRenderObjectsVisible(visible);
+    // No pointer events on a culled (invisible) player; restore on un-cull.
+    if (this.input) this.input.enabled = visible;
+    if (this.nameTagContainer && this.nameTagContainer.list) {
+      for (const child of this.nameTagContainer.list) {
+        if (child && child.input) child.input.enabled = visible;
+      }
+    }
+  }
+
+  _hideTransientRenderObjects() {
+    this._setTransientRenderObjectsVisible(false);
+  }
+
+  _setTransientRenderObjectsVisible(visible) {
+    if (this.speechBubble) this.speechBubble.setVisible(visible);
+    if (this.equippedContainer) this.equippedContainer.setVisible(visible);
+    if (this.emoteContainer) this.emoteContainer.setVisible(visible);
+    if (this._emoteOverlays) {
+      for (const o of this._emoteOverlays) {
+        if (o && o.obj) o.obj.setVisible(visible);
+      }
     }
   }
 
   update(time, delta = 16.67) {
+    syncEmoteOverlays(this);
+    const prevX = this.x;
+    const prevY = this.y;
     const distSq = (this.targetX - this.x) * (this.targetX - this.x) + (this.targetY - this.y) * (this.targetY - this.y);
 
     if (distSq > 10000) {
@@ -325,9 +447,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const isVisiblyMoving = this.targetMoving || distSq > 4;
     const breatheKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
     const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
-    const animKey = isVisiblyMoving
-      ? `walk_${this.currentDirection}_${this.avatarId}`
-      : (this.scene?.anims?.exists(breatheKey) ? breatheKey : defaultIdleKey);
+    // Tư thế ngồi (sync từ playerActivity) ưu tiên hơn walk/idle.
+    // Null khi pose là 'stand' hoặc avatar chưa có sit frames -> fallback idle.
+    const sitAnimKey = this._getSitAnimKey();
+    const animKey = sitAnimKey
+      ?? (isVisiblyMoving
+        ? `walk_${this.currentDirection}_${this.avatarId}`
+        : (this.scene?.anims?.exists(breatheKey) ? breatheKey : defaultIdleKey));
 
     try {
       if (this.scene?.anims?.exists(animKey)) {
@@ -335,8 +461,22 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       }
     } catch (e) {}
 
+    // --- Đồng bộ walk cycle với tốc độ nội suy thực tế (chống trượt chân) ---
+    // Đo quãng đường đã đi trong frame này để ước lượng px/giây.
+    const dtSec = Math.max(delta, 1) / 1000;
+    const movedPx = Math.hypot(this.x - prevX, this.y - prevY);
+    const pxPerSec = movedPx / dtSec;
+    if (isVisiblyMoving && !sitAnimKey) {
+      this.anims.timeScale = Phaser.Math.Clamp(pxPerSec / 160, 0.2, 1.25);
+    } else {
+      this.anims.timeScale = 1;
+    }
+
     if (isVisiblyMoving) {
-      const bob = Math.sin(performance.now() / 85) * 0.05;
+      // Squash & stretch đồng bộ KHUNG HÌNH (2 nhịp/vòng 8 frame), thay cho sin tự do
+      let walkProg = 0;
+      try { walkProg = this.anims.getProgress?.() ?? 0; } catch (e) {}
+      const bob = Math.sin(walkProg * Math.PI * 4) * 0.04;
       this.scaleY = 1.0 + bob;
       this.scaleX = 1.0 - bob * 0.7;
     } else {
@@ -348,8 +488,14 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.shadowEllipse) {
       this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
-      const shadowBob = isVisiblyMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
-      this.shadowEllipse.setScale(shadowBob, 1.0);
+      let shadowScale = 1.0;
+      if (isVisiblyMoving) {
+        try {
+          const p = this.anims.getProgress?.() ?? 0;
+          shadowScale = 0.94 + (0.5 + 0.5 * Math.sin(p * Math.PI * 4)) * 0.06;
+        } catch (e) {}
+      }
+      this.shadowEllipse.setScale(shadowScale, 1.0);
     }
 
     if (this.lastX !== this.x || this.lastY !== this.y) {
@@ -369,6 +515,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
         this.equippedContainer.setPosition(this.x + 14, this.y - 8);
       }
     }
+
+    // Render culling is evaluated last, every frame. All movement/animation/
+    // network state above runs regardless of visibility.
+    this.updateCulling();
   }
 
   destroy(fromScene) {

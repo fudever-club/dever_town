@@ -1,0 +1,277 @@
+/* --- coach-marks.css: first-run coach marks tour + chat tab hint (2026-10-09) ---
+   Onboarding rescue (critique item #3): sequential spotlight tour shown once
+   on first launch, plus a one-time pulsing hint on the collapsed chat tab. */
+
+/* ===== Tour root (covers everything) ===== */
+#coach-marks-root {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  pointer-events: auto;
+}
+
+#coach-marks-root.hidden {
+  display: none;
+}
+
+/* Dim layer is painted by the highlight's giant box-shadow, so the root
+   itself stays transparent and only the card + highlight intercept clicks. */
+#coach-marks-root .coach-dim {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+}
+
+/* ===== Spotlight highlight (box-shadow trick for the cutout) ===== */
+#coach-highlight {
+  position: fixed;
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.72);
+  border: 2px solid var(--color-f26f21, #f26f21);
+  pointer-events: none;
+  transition: left 0.28s ease, top 0.28s ease, width 0.28s ease, height 0.28s ease, opacity 0.2s ease;
+  animation: coach-pulse 1.6s ease-in-out infinite;
+}
+
+#coach-highlight.no-ring {
+  border-color: transparent;
+  animation: none;
+}
+
+@keyframes coach-pulse {
+  0%, 100% { border-color: rgba(242, 111, 33, 0.95); }
+  50% { border-color: rgba(242, 111, 33, 0.45); }
+}
+
+/* ===== Tooltip card ===== */
+#coach-card {
+  position: fixed;
+  width: min(340px, calc(100vw - 32px));
+  background: var(--color-0f172a, #0f172a);
+  border: 1px solid rgba(242, 111, 33, 0.45);
+  border-radius: var(--radius-18px, 18px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 24px rgba(242, 111, 33, 0.18);
+  padding: 18px 18px 16px;
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  transition: left 0.28s ease, top 0.28s ease, opacity 0.2s ease;
+}
+
+#coach-card.centered {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+.coach-step-count {
+  display: inline-block;
+  font-size: var(--text-11px, 11px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-f26f21, #f26f21);
+  background: rgba(242, 111, 33, 0.12);
+  border: 1px solid rgba(242, 111, 33, 0.35);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.coach-title {
+  font-family: var(--font-title);
+  font-size: var(--text-18px, 18px);
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0 0 8px;
+}
+
+.coach-desc {
+  font-size: var(--text-13px, 13px);
+  line-height: 1.55;
+  color: #cbd5e1;
+  margin: 0 0 12px;
+}
+
+.coach-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.coach-keys kbd {
+  font-family: var(--font-sans);
+  font-size: var(--text-12px, 12px);
+  font-weight: 700;
+  color: #f8fafc;
+  background: rgba(148, 163, 184, 0.14);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 3px 9px;
+}
+
+.coach-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.coach-skip {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: var(--font-sans);
+  font-size: var(--text-13px, 13px);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 6px;
+  min-height: 44px;
+}
+
+.coach-skip:hover {
+  color: #e2e8f0;
+  text-decoration: underline;
+}
+
+.coach-next {
+  background: linear-gradient(135deg, #f26f21, #d9541e);
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--text-13px, 13px);
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 20px;
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(242, 111, 33, 0.4);
+}
+
+.coach-next:hover {
+  filter: brightness(1.08);
+}
+
+.coach-next:active {
+  transform: scale(0.97);
+}
+
+/* ===== Chat tab first-run hint (desktop + mobile share the look) ===== */
+.chat-tab-hint {
+  position: fixed;
+  z-index: 150000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f172a;
+  border: 1px solid rgba(242, 111, 33, 0.55);
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  font-size: var(--text-12px, 12px);
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(242, 111, 33, 0.25);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: chat-hint-bob 1.8s ease-in-out infinite;
+}
+
+.chat-tab-hint.hidden {
+  display: none;
+}
+
+.chat-tab-hint kbd {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: #fff;
+}
+
+.chat-tab-hint::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f26f21;
+  animation: chat-hint-dot 1.2s ease-in-out infinite;
+  flex: none;
+}
+
+@keyframes chat-hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes chat-hint-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+
+/* ===== Help overlay: basic tutorial section ===== */
+.help-tutorial-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.help-section-title {
+  font-family: var(--font-title);
+  font-size: var(--text-15px, 15px);
+  font-weight: 400;
+  color: #f8fafc;
+  margin: 0 0 10px;
+}
+
+.help-tutorial-list {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: var(--text-13px, 13px);
+  line-height: 1.55;
+  color: #cbd5e1;
+}
+
+.help-tutorial-list strong {
+  color: #f1f5f9;
+}
+
+/* ===== Welcome card: kbd chips replace emoji icons ===== */
+.onboarding-kbd {
+  display: inline-flex;
+  gap: 4px;
+  flex: none;
+  margin-top: 2px;
+}
+
+.onboarding-kbd kbd {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fdba74;
+  background: rgba(242, 111, 33, 0.12);
+  border: 1px solid rgba(242, 111, 33, 0.4);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+/* ===== Small screens ===== */
+@media (max-width: 480px) {
+  #coach-card {
+    padding: 16px 16px 14px;
+  }
+
+  .coach-title {
+    font-size: 16px;
+  }
+}

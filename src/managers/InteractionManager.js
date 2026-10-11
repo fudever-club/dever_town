@@ -19,6 +19,12 @@ export class InteractionManager {
     this.RADIUS_IN = 52;
     this.RADIUS_OUT = 70;
 
+    // Listener Phaser keydown-E và window keydown fallback bắn cách nhau ~3ms cho
+    // 1 lần nhấn vật lý; 200ms dư an toàn mà không nuốt toggle E ngồi/đứng
+    // có chủ ý của người chơi.
+    this.INTERACT_DEBOUNCE_MS = 200;
+    this._lastInteractAt = 0;
+
     this.createHUD();
     this.bindEvents();
   }
@@ -35,7 +41,7 @@ export class InteractionManager {
     // Text Tooltip
     const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2;
     this.tooltipText = this.scene.add.text(0, 0, '[E] Tương tác', {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '700',
       color: '#ffffff',
@@ -73,6 +79,12 @@ export class InteractionManager {
 
   interactCurrentZone() {
     if (!this.canInteract()) return false;
+
+    // Debounce double-fire: bỏ qua lần gọi thứ 2 trong cửa sổ debounce để 1 lần
+    // nhấn E không vừa sit vừa standUp (xem INTERACT_DEBOUNCE_MS).
+    const now = performance.now();
+    if (now - this._lastInteractAt < this.INTERACT_DEBOUNCE_MS) return false;
+    this._lastInteractAt = now;
 
     // Không kích hoạt zone nếu NPC Dialogue đang mở hoặc có NPC đang trò chuyện
     if (this.scene?.npcDialogueModal?.isOpen) return false;
@@ -186,6 +198,12 @@ export class InteractionManager {
         case 'sports_activity':
           color = 0x22c55e; // Green
           break;
+        case 'sit_chair':
+          color = 0x60a5fa; // Sky — ghế ngồi học
+          break;
+        case 'sit_sofa':
+          color = 0xf472b6; // Pink — sofa thư giãn
+          break;
         default:
           break;
       }
@@ -216,9 +234,11 @@ export class InteractionManager {
       const isStaggered = (zone.tileX + zone.tileY) % 2 === 1;
       const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
+      // Badge dùng Be Vietnam Pro (không dùng Tilt Neon ở cỡ chữ nhỏ — display font
+      // ở 9.5px khó đọc và lệch tông với prompt [E] / nhãn portal).
       const badgeText = this.scene.add.text(0, 0, zoneName, {
-        fontFamily: "'Outfit', sans-serif",
-        fontSize: '9.5px',
+        fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+        fontSize: '11px',
         fontWeight: '700',
         color: '#ffffff',
         stroke: '#0f172a',

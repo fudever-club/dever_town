@@ -557,6 +557,39 @@ echo "Slogan: WORK HARD - PLAY HARD\\n";
       { name: '4. Software Architecture & Design Patterns', desc: 'Layered Architecture, MVC Pattern, Factory & Singleton Pattern.' },
       { name: '5. Software Testing & QA Strategy', desc: 'Unit Test, Integration Test, Black-box & White-box Test Case Matrix.' }
     ]
+  },
+
+  // 10. GIƯỜNG NGHỈ NGƠI KTX — Gather.town style rest spot
+  rest_bed: {
+    title: 'Giường Nghỉ Ngơi KTX FUDA',
+    description: 'Góc nghỉ ngơi ấm cúng của sinh viên FUDA. Nằm xuống thư giãn, hồi phục năng lượng sau giờ code.',
+    tips: [
+      'Nhấn nút "Nằm Nghỉ" để nhân vật nằm xuống giường thư giãn',
+      'Mỗi lần nghỉ ngơi hồi phục năng lượng và tinh thần',
+      'KTX FUDA: nơi nạp lại năng lượng cho dev sau deadline'
+    ]
+  },
+
+  // 11. GHẾ NGỒI HỌC — tư thế ngồi thẳng học tập/làm việc
+  sit_chair: {
+    title: 'Ghế Ngồi Học',
+    description: 'Ghế ngồi thẳng trước bàn học KTX: giữ tư thế nghiêm túc để học bài, ôn thi và code cùng anh em FU-DEVER.',
+    tips: [
+      'Nhấn [E] để ngồi xuống ghế, nhân vật chuyển sang tư thế ngồi thẳng',
+      'Tư thế ngay ngắn giúp tập trung học tập và làm việc hiệu quả',
+      'Nhấn [E] lần nữa để đứng dậy tiếp tục khám phá KTX'
+    ]
+  },
+
+  // 12. SOFA THƯ GIÃN — tư thế ngả lưng nghỉ ngơi
+  sit_sofa: {
+    title: 'Sofa Thư Giãn',
+    description: 'Chiếc sofa êm ái góc KTX FUDA: ngả lưng thư giãn, nghỉ ngơi sau những giờ code căng thẳng.',
+    tips: [
+      'Nhấn [E] để ngồi xuống sofa, nhân vật ngả lưng thư giãn',
+      'Tư thế thoải mái để nghỉ ngơi và trò chuyện cùng bạn bè',
+      'Nhấn [E] lần nữa để đứng dậy'
+    ]
   }
 };
 

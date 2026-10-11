@@ -14,6 +14,7 @@
 
 import { GEOMETRY_DASH_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class GeometryDashEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -21,6 +22,8 @@ export class GeometryDashEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cfg = GEOMETRY_DASH_CONFIG;
     this.w = canvas.width;
@@ -35,8 +38,11 @@ export class GeometryDashEngine {
 
     this.screenX = 110; // Tọa độ X cố định của Cube trên màn hình
     this.size = this.cfg.physics.cubeSize || 28;
-    this.groundY = this.cfg.physics.groundY || 300;
-    this.ceilingY = this.cfg.physics.ceilingY || 52;
+    // Bố cục dọc thích ứng hướng màn hình (2026-10-09): sàn luôn cách đáy
+    // 60px (desktop h=360 → groundY=300, khớp config), trần giữ 52px.
+    // Vật lý (gravity 1950, jumpImpulse -560, baseSpeed 330 px/sec) giữ
+    // nguyên tuyệt đối nên độ khó không đổi.
+    this.layoutVertical(canvas.height);
 
     this.cube = {
       y: this.groundY - this.size,
@@ -56,6 +62,33 @@ export class GeometryDashEngine {
 
     // Tạo các phần tử của màn chơi
     this.initLevel();
+  }
+
+  // Sàn cách đáy 60px, trần 52px — desktop cho đúng 300/52 như config cũ.
+  layoutVertical(h) {
+    this.groundY = h - 60;
+    this.ceilingY = 52;
+  }
+
+  // Playfield thích ứng hướng màn hình (2026-10-09): initLevel() là deterministic
+  // nên chỉ cần dựng lại màn chơi từ groundY/ceilingY mới, giữ nguyên tiến
+  // trình (cameraX), vật lý cube và độ cao tương đối so với sàn.
+  resize(w, h) {
+    const oldGy = this.groundY;
+    const aboveGround = oldGy - this.cube.y;
+    const keepCamX = this.cameraX;
+    const keepVy = this.cube.vy;
+    const keepGrounded = this.cube.isGrounded;
+    this.w = w;
+    this.h = h;
+    this.layoutVertical(h);
+    this.initLevel();
+    this.cameraX = keepCamX;
+    this.cube.y = this.groundY - aboveGround;
+    this.cube.y = Math.min(Math.max(this.cube.y, this.ceilingY), this.groundY - this.size);
+    this.cube.vy = keepVy;
+    this.cube.isGrounded = keepGrounded;
+    this.trail = [];
   }
 
   initLevel() {
@@ -793,13 +826,13 @@ export class GeometryDashEngine {
     // Phần trăm hiển thị
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '900 11px Outfit, sans-serif';
+    ctx.font = '900 11px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#ffffff';
     ctx.fillText(`${this.currentPercent}%`, barX + barW / 2, barY + barH / 2);
 
     // 2. Bộ Đếm Số Lần Thử & Kỷ Lục
     ctx.textAlign = 'left';
-    ctx.font = '800 13px Outfit, sans-serif';
+    ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`LẦN THỬ: ${this.attempts}`, 18, 26);
 
@@ -810,32 +843,32 @@ export class GeometryDashEngine {
     // 3. Màn hình Chờ Bắt Đầu hoặc Hoàn Thành
     if (this.state === 'ready') {
       ctx.textAlign = 'center';
-      ctx.font = '900 24px Outfit, sans-serif';
+      ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = '#a855f7';
       ctx.shadowBlur = 12;
       ctx.fillText('DEVER DASH 3.0', w / 2, 120);
 
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
-      ctx.fillText('BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ BẮT ĐẦU', w / 2, 230);
+      ctx.fillText(this.isTouch ? 'CHẠM ĐỂ BẮT ĐẦU' : 'BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ BẮT ĐẦU', w / 2, 230);
       ctx.globalAlpha = 1.0;
     } else if (this.state === 'complete') {
       ctx.textAlign = 'center';
-      ctx.font = '900 28px Outfit, sans-serif';
+      ctx.font = '900 28px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#4ade80';
       ctx.shadowColor = '#22c55e';
       ctx.shadowBlur = 16;
       ctx.fillText('CHIẾN THẮNG 100%!', w / 2, 140);
 
-      ctx.font = '700 14px Outfit, sans-serif';
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#facc15';
       ctx.fillText(`Hoàn thành sau ${this.attempts} lần thử!`, w / 2, 180);
 
       ctx.fillStyle = '#38bdf8';
-      ctx.fillText('Bấm Phím Cách (Space) để chạy lại từ đầu', w / 2, 220);
+      ctx.fillText(this.isTouch ? 'Chạm để chạy lại từ đầu' : 'Bấm Phím Cách (Space) để chạy lại từ đầu', w / 2, 220);
     }
 
     ctx.restore();

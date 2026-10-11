@@ -42,7 +42,7 @@ export class NPCDialogueModal {
       pointer-events: all;
       transition: bottom 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       box-shadow: 0 0 32px rgba(56,189,248,0.25), 0 8px 40px rgba(0,0,0,0.6);
-      font-family: 'Outfit', system-ui, sans-serif;
+      font-family: 'Be Vietnam Pro', system-ui, sans-serif;
     `;
     
     // Portrait container
@@ -152,14 +152,18 @@ export class NPCDialogueModal {
       const key = e.code || e.key;
       if (key === 'KeyE' || key === 'e' || key === 'E' || key === 'Space' || key === ' ') {
         e.preventDefault();
+        e.stopPropagation();
         this.advance();
       }
       if (key === 'KeyF' || key === 'f' || key === 'F' || key === 'Escape') {
         e.preventDefault();
+        e.stopPropagation();
         this.close();
       }
     };
-    window.addEventListener('keydown', this._handleKey);
+    // Capture phase: chạy trước mọi bubble listener trên window (vd: phím F của
+    // FriendsListModal) để 1 lần nhấn F đóng NPC không vô tình mở Friends.
+    window.addEventListener('keydown', this._handleKey, true);
     
     // Click to advance
     this.modal.addEventListener('click', () => { if (this.isOpen) this.advance(); });
@@ -235,7 +239,7 @@ export class NPCDialogueModal {
       portraitCtx.fillStyle = '#1e293b';
       portraitCtx.fillRect(0, 0, 80, 96);
       portraitCtx.fillStyle = '#38bdf8';
-      portraitCtx.font = 'bold 32px Outfit';
+      portraitCtx.font = 'bold 32px "Be Vietnam Pro", sans-serif';
       portraitCtx.textAlign = 'center';
       portraitCtx.fillText(npc.npcName[0] || '?', 40, 56);
     }
@@ -317,7 +321,7 @@ export class NPCDialogueModal {
   
   destroy() {
     if (this.typewriterTimer) clearInterval(this.typewriterTimer);
-    window.removeEventListener('keydown', this._handleKey);
+    window.removeEventListener('keydown', this._handleKey, true);
     if (this.overlay.parentNode) this.overlay.remove();
     if (this.modal.parentNode) this.modal.remove();
   }

@@ -227,38 +227,6 @@ export const NPC_CONFIG = {
       }
     }
   ],
-  media_hub: [
-    {
-      id: 'npc_media_hai',
-      name: 'Đoàn Phước Trường Hải',
-      role: 'Trưởng Ban Truyền Thông',
-      tileX: 10, tileY: 7,
-      direction: 'down',
-      spriteConfig: {
-        gender: 'male',
-        hairstyle: 'undercut',
-        hairColor: '#92400e',
-        skinTone: 'skin_natural',
-        outfitType: 'polo',
-        hoodieColor: '#1e293b',
-        collarColor: '#0f172a',
-        pantsColor: '#1e293b',
-        accessory: 'none',
-        expression: 'expr_smile'
-      },
-      startDialogue: 'line_1',
-      dialogues: {
-        line_1: {
-          lines: [
-            'Chào bạn! Ban Truyền Thông là nơi phụ trách hình ảnh, video highlight và Fanpage FU-DEVER.',
-            'Mọi bài viết công nghệ, recap sự kiện và poster ấn phẩm đều do tụi mình thực hiện.',
-            'Nhớ theo dõi Fanpage CLB để cập nhật những hoạt động mới nhất nhé!'
-          ],
-          nextDialogue: 'line_1'
-        }
-      }
-    }
-  ],
   memory_room: [
     {
       id: 'npc_historian_duc',
@@ -327,6 +295,36 @@ export const NPC_CONFIG = {
             'Mình đang tối ưu lại kiến trúc backend và cấu trúc database cho toàn hệ thống.',
             'Tụi mình dùng Node.js, API RESTful, WebSocket và PostgreSQL để xử lý đồng thời lượng lớn người chơi.',
             'Hệ thống luôn cần tối ưu hiệu năng và độ trễ, bạn có hứng thú với Backend thì trao đổi cùng mình nhé!'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_media_hai',
+      name: 'Đoàn Phước Trường Hải',
+      role: 'Trưởng Ban Truyền Thông',
+      tileX: 10, tileY: 8,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'male',
+        hairstyle: 'undercut',
+        hairColor: '#92400e',
+        skinTone: 'skin_natural',
+        outfitType: 'polo',
+        hoodieColor: '#1e293b',
+        collarColor: '#0f172a',
+        pantsColor: '#1e293b',
+        accessory: 'none',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào bạn! Ban Truyền Thông là nơi phụ trách hình ảnh, video highlight và Fanpage FU-DEVER.',
+            'Mọi bài viết công nghệ, recap sự kiện và poster ấn phẩm đều do tụi mình thực hiện.',
+            'Nhớ theo dõi Fanpage CLB để cập nhật những hoạt động mới nhất nhé!'
           ],
           nextDialogue: 'line_1'
         }

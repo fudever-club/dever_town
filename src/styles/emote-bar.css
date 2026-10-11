@@ -1,0 +1,56 @@
+/* ==========================================================================
+   EmoteBar styles — extracted from src/styles/main.css (2026-10-05).
+
+   WHY A SEPARATE FILE: main.css is ~220KB, which exceeds the GitHub API
+   push payload limit (~100KB per file). Keeping the EmoteBar CSS here
+   keeps every stylesheet under that limit.
+
+   LOAD ORDER: this file MUST load AFTER main.css (see index.html).
+   It intentionally re-declares emote rules at the same specificity so
+   the cascade orders them later — the rules below win over the legacy
+   emote rules still present in main.css.
+   ========================================================================== */
+
+.emote-icon-img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.emote-icon-fallback {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+/* Mobile: 8 emotes xuống 2 hàng x 4 cột, căn giữa màn hình.
+   Đặt SAU các rule desktop để override đúng thứ tự cascade. */
+@media (max-width: 640px) {
+  .emote-bar-container {
+    left: 50%;
+    bottom: 110px;
+    width: 94vw;
+    max-width: 94vw;
+  }
+  .emote-list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+  .emote-item-btn {
+    flex: 0 0 calc(25% - 7px);
+    min-width: 0;
+    padding: 6px 4px;
+  }
+  .emote-icon-img,
+  .emote-icon-fallback {
+    width: 24px;
+    height: 24px;
+  }
+  .emote-label {
+    font-size: 9px;
+  }
+}

@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { PondArt } from '../utils/pondArt.js';
+import { generateEmoteIcons } from '../utils/emoteIcons.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -11,13 +13,18 @@ export class BootScene extends Phaser.Scene {
     const height = this.cameras.main.height;
 
     this.add.text(width / 2, height / 2, 'Đang tải Dever Town...', {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '16px',
       color: '#60a5fa'
     }).setOrigin(0.5, 0.5);
 
     // 1. Sinh Tileset bản đồ (19 tiles)
     TextureGenerator.generateTileset(this);
+
+    // 1b. Sinh sprite vịt trời + tượng "Nhà Tư Tưởng" + vườn hoa (hồ vườn sân Tòa Alpha)
+    PondArt.generateDuckSprite(this);
+    PondArt.generateThinkerStatue(this);
+    PondArt.generateFlowerGarden(this);
 
     // 2. Preload toàn bộ Spritesheets Gốc Vẽ Tay Sắc Nét (Handcrafted Pixel Art, không bị rách eo)
     // 2A. Phôi thân cơ bản (Modular Bases)
@@ -94,6 +101,12 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
+    // Overlay cánh tay cho emote body-animation (wave / power / dance)
+    TextureGenerator.generateEmoteOverlays(this);
+    TextureGenerator.generateItemIcons(this);
+    TextureGenerator.generateBadgeIcons(this);
+    generateEmoteIcons(this);
+
     // Đăng ký chuỗi hoạt ảnh (animations) cho toàn bộ spritesheet Gather.town mới
     const newAvatars = [
       // Bases
@@ -131,6 +144,32 @@ export class BootScene extends Phaser.Scene {
       } catch (e) {}
     }
 
-    this.scene.start('WorldScene');
+    // Preload webfont (Tilt Neon / Be Vietnam Pro) TRƯỚC KHI WorldScene bake canvas text.
+    // Canvas text của Phaser "dính" font tại thời điểm tạo — nếu font Google chưa tải xong,
+    // nhãn portal / prompt [E] / badge sẽ vĩnh viễn dùng font fallback hệ thống và trông
+    // khác nhau tùy thời điểm mạng. Chờ tối đa 2.5s rồi cho game chạy tiếp kể cả khi lỗi.
+    this._waitForFonts().finally(() => this.scene.start('WorldScene'));
+  }
+
+  _waitForFonts() {
+    try {
+      if (typeof document === 'undefined' || !document.fonts || !document.fonts.load) {
+        return Promise.resolve();
+      }
+      const specs = [
+        '400 16px "Tilt Neon"',
+        '700 16px "Tilt Neon"',
+        '400 16px "Be Vietnam Pro"',
+        '600 16px "Be Vietnam Pro"',
+        '700 16px "Be Vietnam Pro"',
+        '800 16px "Be Vietnam Pro"',
+      ];
+      return Promise.race([
+        Promise.all(specs.map((s) => document.fonts.load(s).catch(() => []))),
+        new Promise((res) => setTimeout(res, 2500)),
+      ]).then(() => undefined);
+    } catch (e) {
+      return Promise.resolve();
+    }
   }
 }

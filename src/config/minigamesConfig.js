@@ -606,6 +606,10 @@ export const FLAPPY_BUG_CONFIG = {
     startY: 160,
     radius: 14
   },
+  // Cột pipe trên màn hình dọc (portrait): biên trên tối đa của khe hở được
+  // tính theo chiều cao mới, giữ khoảng trống tối thiểu này phía trên mặt đất.
+  // (2026-10-09, orientation-aware layout)
+  portraitPipeTopMargin: 80,
   medals: {
     bronze: 10,
     silver: 25,

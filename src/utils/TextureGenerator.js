@@ -1,14 +1,16 @@
 /**
- * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (30 ô) và Spritesheets Nhân vật trên HTML Canvas.
+ * TextureGenerator: Tự sinh toàn bộ Tileset 32x32 (38 ô) và Spritesheets Nhân vật trên HTML Canvas.
  * Tích hợp nhận diện thương hiệu FPT University Đà Nẵng, CLB FU-DEVER, Khu Thể Thao & Tùy chỉnh Tủ Đồ.
  */
+import { PondArt } from './pondArt.js';
+
 export class TextureGenerator {
   /**
    * Tạo Tileset hoàn chỉnh (30 ô 32x32)
    */
   static generateTileset(scene) {
     const tileSize = 32;
-    const numTiles = 32;
+    const numTiles = 43; // 0-42: thêm hồ vườn FUDA (42)
     const canvas = document.createElement('canvas');
     canvas.width = tileSize * numTiles;
     canvas.height = tileSize;
@@ -53,6 +55,25 @@ export class TextureGenerator {
     // 30-31: Căn Tin & Quán Cà Phê FUDA
     this.drawCanteenCounter(ctx, 30 * tileSize, 0, tileSize); // 30: Quầy Cơm Sinh Viên & Bánh Mì FUDA
     this.drawCafeDiningTable(ctx, 31 * tileSize, 0, tileSize); // 31: Bàn Cà Phê Gỗ & Khăn Trải Bàn Chill
+
+    // 32-37: Nội thất Gather.town — Ký túc xá, Lớp học, Phòng PC
+    this.drawBed(ctx, 32 * tileSize, 0, tileSize); // 32: Giường Ngủ KTX (Obstacle)
+    this.drawDesktopPC(ctx, 33 * tileSize, 0, tileSize); // 33: PC Để Bàn Gaming/Dev (Obstacle)
+    this.drawClassroomDesk(ctx, 34 * tileSize, 0, tileSize); // 34: Bàn Ghế Học Sinh (Obstacle)
+    this.drawChalkboard(ctx, 35 * tileSize, 0, tileSize); // 35: Bảng Đen Lớp Học (Obstacle)
+    this.drawSofa(ctx, 36 * tileSize, 0, tileSize); // 36: Sofa Phòng Sinh Hoạt (Obstacle)
+    this.drawWardrobe(ctx, 37 * tileSize, 0, tileSize); // 37: Tủ Quần Áo KTX (Obstacle)
+
+    // 38-39: Nội thất phòng họp Gather.town — Phòng Họp CLB & Lab Code
+    this.drawConferenceTable(ctx, 38 * tileSize, 0, tileSize); // 38: Bàn Họp Hội Nghị Chữ U (Obstacle)
+    this.drawProjectorScreen(ctx, 39 * tileSize, 0, tileSize); // 39: Màn Chiếu Projector (Obstacle)
+
+    // 40-41: Ghế ngồi (walkable — dùng cho sit zones, nhân vật ngồi lên)
+    this.drawSitChair(ctx, 40 * tileSize, 0, tileSize); // 40: Ghế gỗ ngồi học (Walkable)
+    this.drawSitSofa(ctx, 41 * tileSize, 0, tileSize); // 41: Nệm sofa ngồi thư giãn (Walkable)
+
+    // 42: Hồ vườn FUDA (Obstacle — nước tự nhiên, khác hồ bơi tile 28)
+    PondArt.drawPondWater(ctx, 42 * tileSize, 0, tileSize); // 42: Mặt nước hồ vườn & vịt trời
 
     if (scene.textures.exists('town_tileset')) {
       scene.textures.remove('town_tileset');
@@ -578,7 +599,7 @@ export class TextureGenerator {
     ctx.fillText('FUDA', x + 16, y + 18);
 
     ctx.fillStyle = '#f26f21';
-    ctx.font = 'bold 6px "Outfit", sans-serif';
+    ctx.font = 'bold 6px "Be Vietnam Pro", sans-serif';
     ctx.fillText('DEVER', x + 16, y + 26);
   }
 
@@ -808,6 +829,383 @@ export class TextureGenerator {
     // Lọ hoa nhỏ trên bàn
     ctx.fillStyle = '#ec4899';
     ctx.fillRect(x + 14, y + 16, 4, 4);
+  }
+
+  // 32: Giường Ngủ KTX FUDA (Obstacle) — nhìn từ trên xuống
+  static drawBed(ctx, x, y, size) {
+    // Sàn gỗ phòng ngủ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Khung giường gỗ
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 3, y + 2, size - 6, size - 4);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 4, y + 3, size - 8, size - 6);
+
+    // Nệm trắng kem
+    ctx.fillStyle = '#fefce8';
+    ctx.fillRect(x + 5, y + 8, size - 10, size - 14);
+
+    // Gối đầu giường
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 6, y + 4, size - 12, 6);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 6, y + 4, size - 12, 6);
+
+    // Chăn đắp màu cam FPT
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 5, y + 16, size - 10, size - 22);
+    ctx.fillStyle = '#fb923c';
+    ctx.fillRect(x + 5, y + 16, size - 10, 2);
+    // Họa tiết chăn
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillRect(x + 9, y + 20, 4, 4);
+    ctx.fillRect(x + 19, y + 20, 4, 4);
+  }
+
+  // 33: PC Để Bàn Dev/Gaming (Obstacle) — bàn + màn hình + case
+  static drawDesktopPC(ctx, x, y, size) {
+    // Mặt bàn gỗ tối
+    ctx.fillStyle = '#44403c';
+    ctx.fillRect(x + 1, y + 14, size - 2, size - 15);
+    ctx.fillStyle = '#57534e';
+    ctx.fillRect(x + 1, y + 14, size - 2, 2);
+
+    // Case PC đứng bên phải (đèn RGB)
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 24, y + 4, 6, 12);
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillRect(x + 25, y + 5, 4, 2);
+    ctx.fillStyle = '#ec4899';
+    ctx.fillRect(x + 25, y + 8, 4, 2);
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillRect(x + 25, y + 11, 4, 2);
+
+    // Chân đế màn hình
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(x + 11, y + 12, 6, 3);
+
+    // Màn hình (viền đen + nền code xanh)
+    ctx.fillStyle = '#0c0a09';
+    ctx.fillRect(x + 6, y + 2, 16, 11);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 7, y + 3, 14, 9);
+    // Dòng code phát sáng
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 8, y + 4, 8, 1);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 8, y + 6, 10, 1);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 8, y + 8, 6, 1);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 8, y + 10, 9, 1);
+
+    // Bàn phím
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 7, y + 17, 14, 4);
+    ctx.fillStyle = '#44403c';
+    for (let i = 0; i < 4; i++) ctx.fillRect(x + 8 + i * 3, y + 18, 2, 2);
+
+    // Chuột
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x + 23, y + 17, 4, 5);
+  }
+
+  // 34: Bàn Ghế Học Sinh (Obstacle)
+  static drawClassroomDesk(ctx, x, y, size) {
+    // Sàn lớp học
+    ctx.fillStyle = '#e7e5e4';
+    ctx.fillRect(x, y, size, size);
+
+    // Ghế (phía dưới)
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 10, y + 24, 12, 6);
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(x + 10, y + 24, 12, 2);
+
+    // Mặt bàn gỗ sáng
+    ctx.fillStyle = '#d6a05c';
+    ctx.fillRect(x + 4, y + 10, size - 8, 10);
+    ctx.fillStyle = '#e8b96f';
+    ctx.fillRect(x + 4, y + 10, size - 8, 2);
+    ctx.strokeStyle = '#92400e';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 4, y + 10, size - 8, 10);
+
+    // Sách vở trên bàn
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 7, y + 12, 6, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 7, y + 12, 6, 1);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 16, y + 13, 5, 3);
+
+    // Bút chì
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 18, y + 17, 6, 1);
+  }
+
+  // 35: Bảng Đen Lớp Học (Obstacle)
+  static drawChalkboard(ctx, x, y, size) {
+    // Tường phía sau
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(x, y, size, size);
+
+    // Khung gỗ bảng
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 2, y + 6, size - 4, 18);
+    // Mặt bảng xanh đen
+    ctx.fillStyle = '#1e3a2f';
+    ctx.fillRect(x + 4, y + 8, size - 8, 14);
+
+    // Chữ phấn trắng (công thức/code)
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillRect(x + 7, y + 10, 10, 1);
+    ctx.fillRect(x + 7, y + 12, 14, 1);
+    ctx.fillRect(x + 7, y + 14, 8, 1);
+    ctx.fillStyle = 'rgba(252,211,77,0.9)';
+    ctx.fillRect(x + 18, y + 16, 7, 1);
+    ctx.fillRect(x + 7, y + 18, 12, 1);
+
+    // Khay đựng phấn & khăn lau
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 4, y + 24, size - 8, 3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 8, y + 23, 4, 2);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 20, y + 23, 5, 2);
+  }
+
+  // 36: Sofa Phòng Sinh Hoạt (Obstacle)
+  static drawSofa(ctx, x, y, size) {
+    // Sàn
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Thân sofa xanh navy
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(x + 3, y + 10, size - 6, 14);
+    // Tựa lưng
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(x + 3, y + 6, size - 6, 8);
+    // Tay vịn 2 bên
+    ctx.fillStyle = '#172554';
+    ctx.fillRect(x + 3, y + 10, 5, 14);
+    ctx.fillRect(x + size - 8, y + 10, 5, 14);
+
+    // Đệm ngồi
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 9, y + 14, 7, 8);
+    ctx.fillRect(x + 16, y + 14, 7, 8);
+    // Gối tựa màu cam FPT
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 10, y + 8, 5, 5);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(x + 18, y + 8, 5, 5);
+  }
+
+  // 37: Tủ Quần Áo KTX (Obstacle)
+  static drawWardrobe(ctx, x, y, size) {
+    // Sàn gỗ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Thân tủ gỗ nâu
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 4, y + 2, size - 8, size - 4);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 5, y + 3, size - 10, size - 6);
+
+    // 2 cánh tủ
+    ctx.strokeStyle = '#451a03';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 6, y + 5, 9, size - 12);
+    ctx.strokeRect(x + 17, y + 5, 9, size - 12);
+
+    // Tay nắm cửa kim loại
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 13, y + 14, 2, 4);
+    ctx.fillRect(x + 17, y + 14, 2, 4);
+
+    // Họa tiết vân gỗ
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(x + 8, y + 8, 5, 1);
+    ctx.fillRect(x + 19, y + 20, 5, 1);
+  }
+
+  // 40: Ghế gỗ ngồi học (Walkable) — nhìn từ trên, dùng cho sit zones
+  // Thiết kế lại: silhouette mạnh + shadow + chi tiết để đọc rõ là "ghế"
+  static drawSitChair(ctx, x, y, size) {
+    // Sàn gỗ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Bóng đổ (offset xuống-phải, mờ)
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(x + 10, y + 9, 17, 19);
+
+    // 4 chân ghế (ô vuông tối ở 4 góc, ló ra ngoài mặt ghế)
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(x + 6, y + 11, 3, 3);
+    ctx.fillRect(x + 23, y + 11, 3, 3);
+    ctx.fillRect(x + 6, y + 22, 3, 3);
+    ctx.fillRect(x + 23, y + 22, 3, 3);
+
+    // Mặt ghế: hình thang rộng dần về phía trước (phối cảnh)
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 8, y + 12, 16, 10);   // thân ghế
+    ctx.fillRect(x + 7, y + 20, 18, 3);    // mép trước rộng hơn
+    // Highlight mép trước
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x + 7, y + 22, 18, 1);
+    // Highlight mặt ghế (trên)
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x + 9, y + 13, 14, 1);
+    // Vân gỗ
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(x + 10, y + 15, 12, 1);
+    ctx.fillRect(x + 10, y + 17, 12, 1);
+    ctx.fillRect(x + 10, y + 20, 12, 1);
+
+    // Tựa lưng (phía bắc, hướng về bàn học): thanh ngang + 4 nan dọc
+    // Nền tối giữa các nan
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(x + 8, y + 5, 16, 7);
+    // Thanh ngang trên
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 8, y + 5, 16, 3);
+    ctx.fillStyle = '#b45309';  // highlight thanh ngang
+    ctx.fillRect(x + 8, y + 5, 16, 1);
+    // 4 nan dọc (mỗi nan 2px, cách nhau 2px)
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 9, y + 8, 2, 4);
+    ctx.fillRect(x + 13, y + 8, 2, 4);
+    ctx.fillRect(x + 17, y + 8, 2, 4);
+    ctx.fillRect(x + 21, y + 8, 2, 4);
+    // Bóng nan (cạnh trái tối)
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(x + 9, y + 8, 1, 4);
+    ctx.fillRect(x + 13, y + 8, 1, 4);
+    ctx.fillRect(x + 17, y + 8, 1, 4);
+    ctx.fillRect(x + 21, y + 8, 1, 4);
+  }
+
+  // 41: Nệm sofa ngồi thư giãn (Walkable) — dùng cho sit zones
+  // Thiết kế lại: đệm dày + piping + nút bấm + tay vịn + gối rõ ràng
+  static drawSitSofa(ctx, x, y, size) {
+    // Sàn
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Bóng đổ
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(x + 6, y + 12, 24, 17);
+
+    // Đế nệm xanh navy dày
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(x + 4, y + 10, 24, 16);
+    // Piping (viền sáng quanh mép đệm)
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x + 4, y + 10, 24, 1);
+    ctx.fillRect(x + 4, y + 25, 24, 1);
+    ctx.fillRect(x + 4, y + 10, 1, 16);
+    ctx.fillRect(x + 27, y + 10, 1, 16);
+
+    // Tay vịn 2 bên (nhô cao)
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(x + 4, y + 10, 5, 16);
+    ctx.fillRect(x + 23, y + 10, 5, 16);
+    // Highlight tay vịn
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 5, y + 11, 1, 14);
+    ctx.fillRect(x + 25, y + 11, 1, 14);
+
+    // Mặt đệm ngồi
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 9, y + 13, 14, 10);
+    // Bóng dưới đệm
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.fillRect(x + 9, y + 20, 14, 3);
+
+    // Nút bấm đệm (4 nút lưới 2x2)
+    ctx.fillStyle = '#172554';
+    ctx.fillRect(x + 12, y + 15, 2, 2);
+    ctx.fillRect(x + 18, y + 15, 2, 2);
+    ctx.fillRect(x + 12, y + 19, 2, 2);
+    ctx.fillRect(x + 18, y + 19, 2, 2);
+
+    // Gối cam ở tựa lưng (rõ là gối: nếp gấp + highlight)
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 11, y + 5, 10, 6);
+    // Nếp gấp gối
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(x + 11, y + 9, 10, 2);
+    ctx.fillRect(x + 15, y + 5, 1, 6);
+    // Highlight gối
+    ctx.fillStyle = '#fdba74';
+    ctx.fillRect(x + 12, y + 6, 8, 1);
+  }
+
+
+  // 38: Bàn Họp Hội Nghị (Obstacle) — nhìn từ trên xuống, bàn gỗ dài + ghế
+  static drawConferenceTable(ctx, x, y, size) {
+    // Sàn gỗ
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Mặt bàn gỗ dài (ngang)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 4, y + 10, size - 8, 12);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 5, y + 11, size - 10, 10);
+    // Vân gỗ + điểm nhấn giữa (khay tài liệu)
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(x + 8, y + 14, size - 16, 1);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + size / 2 - 3, y + 13, 6, 6); // tập tài liệu trắng
+
+    // Ghế 2 bên (4 ghế)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 6, y + 4, 6, 5);
+    ctx.fillRect(x + size - 12, y + 4, 6, 5);
+    ctx.fillRect(x + 6, y + 23, 6, 5);
+    ctx.fillRect(x + size - 12, y + 23, 6, 5);
+    // Tựa ghế
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 6, y + 2, 6, 2);
+    ctx.fillRect(x + size - 12, y + 2, 6, 2);
+    ctx.fillRect(x + 6, y + 28, 6, 2);
+    ctx.fillRect(x + size - 12, y + 28, 6, 2);
+  }
+
+  // 39: Màn Chiếu Projector (Obstacle) — màn chiếu + chân đứng, có slide
+  static drawProjectorScreen(ctx, x, y, size) {
+    // Sàn
+    this.drawWoodFloor(ctx, x, y, size);
+
+    // Chân đứng 2 bên
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 5, y + 6, 2, size - 10);
+    ctx.fillRect(x + size - 7, y + 6, 2, size - 10);
+
+    // Màn chiếu trắng
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(x + 7, y + 6, size - 14, 16);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 7, y + 6, size - 14, 16);
+
+    // Slide đang chiếu: tiêu đề + biểu đồ cột pixel
+    ctx.fillStyle = '#1d4ed8';
+    ctx.fillRect(x + 10, y + 9, 10, 2); // dòng tiêu đề
+    ctx.fillStyle = '#f26f21';
+    ctx.fillRect(x + 10, y + 13, 3, 6);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 14, y + 15, 3, 4);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 18, y + 12, 3, 7);
+
+    // Đèn projector phía dưới
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + size / 2 - 4, y + 26, 8, 4);
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(x + size / 2 - 2, y + 27, 4, 2); // tia sáng
   }
 
   /**
@@ -1537,133 +1935,280 @@ export class TextureGenerator {
   static drawInHandEquipment(ctx, x, y, direction, frameIndex, itemId, legOffset = 0) {
     if (!itemId || itemId === 'none') return;
 
+    // === BẢNG MÀU CHUNG (palette discipline: da + shadow) ===
+    const SKIN = '#fbd1a2';   // Da tay
+    const SKIN_D = '#e8a06f'; // Da vùng tối (dưới/phải)
+    const SHADOW = 'rgba(2,6,23,0.22)'; // Bóng tiếp xúc mềm
+
+    const R = (rx, ry, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x + rx, y + ry, w, h); };
+    const ellipse = (cx, cy, rx, ry, c) => {
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.ellipse(x + cx, y + cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+    };
+    // Bàn tay mitten đơn giản có rãnh ngón
+    const hand = (hx, hy, w = 3, h = 4) => {
+      R(hx, hy, w, h, SKIN);
+      R(hx, hy + h - 1, w, 1, SKIN_D); // tối dưới
+      R(hx + 1, hy + 1, 1, h - 2, SKIN_D); // rãnh ngón
+    };
+    // Bóng mềm dưới vật phẩm cho cảm giác "cầm" thật
+    const contactShadow = (cx, cy, rx, ry = 2) => ellipse(cx, cy, rx, ry, SHADOW);
+
     ctx.save();
-    // Phù hợp với tỷ lệ Chibi 48x64 px (Tay ở khoảng y + 40..46, x + 10..14 và x + 33..38)
+
+    /* ============ MACBOOK DEV (laptop) — ôm 2 tay ============ */
     if (itemId === 'macbook_dev') {
       if (direction === 'down') {
-        // Laptop mở nằm ngang trước bụng/ngực
-        ctx.fillStyle = '#94a3b8'; // Vỏ nhôm MacBook
-        ctx.fillRect(x + 16, y + 40, 16, 9);
-        ctx.fillStyle = '#38bdf8'; // Màn hình Retina phát sáng
-        ctx.fillRect(x + 17, y + 41, 14, 6);
-        ctx.fillStyle = '#ffffff'; // Logo táo khuyết
-        ctx.fillRect(x + 23, y + 43, 2, 2);
-        // Bàn tay giữ 2 cạnh máy
-        ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(x + 15, y + 43, 2, 3);
-        ctx.fillRect(x + 31, y + 43, 2, 3);
-      } else if (direction === 'left') {
-        // Laptop kẹp bên hông/cầm ngang
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 13, y + 40, 6, 11);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 12, y + 41, 2, 8);
-        ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(x + 15, y + 44, 3, 3);
-      } else if (direction === 'right') {
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(x + 29, y + 40, 6, 11);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x + 34, y + 41, 2, 8);
-        ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(x + 30, y + 44, 3, 3);
-      } else if (direction === 'up') {
-        ctx.fillStyle = '#64748b';
-        ctx.fillRect(x + 16, y + 40, 16, 8);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + 23, y + 43, 2, 2);
-      }
-    } else if (itemId === 'danang_salt_coffee' || itemId === 'thermos_coffee') {
-      const isLeft = direction === 'left';
-      const isRight = direction === 'right';
-      const cupX = isLeft ? x + 13 : (isRight ? x + 29 : x + 33);
-      const cupY = y + 40;
-
-      // Thân ly cà phê nâu đậm
-      ctx.fillStyle = itemId === 'danang_salt_coffee' ? '#78350f' : '#f59e0b';
-      ctx.fillRect(cupX, cupY, 7, 9);
-      // Lớp bọt kem muối trắng mịn bồng bềnh
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(cupX - 1, cupY - 2, 9, 3);
-      // Nắp & ống hút xanh
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(cupX + 2, cupY - 5, 2, 4);
-      // Làn khói / hương thơm cà phê nhẹ
-      if (direction !== 'up') {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx.fillRect(cupX + 1, cupY - 8, 2, 2);
-        ctx.fillRect(cupX + 4, cupY - 10, 2, 2);
-      }
-      // Ngón tay cầm ly
-      ctx.fillStyle = '#fbd1a2';
-      ctx.fillRect(cupX + 4, cupY + 3, 3, 3);
-    } else if (itemId === 'golden_frog_plush') {
-      if (direction !== 'up') {
-        const frogX = direction === 'left' ? x + 14 : (direction === 'right' ? x + 26 : x + 20);
-        const frogY = y + 39;
-        // Thân cóc vàng
-        ctx.fillStyle = '#eab308';
-        ctx.beginPath();
-        ctx.ellipse(frogX + 4, frogY + 4, 5, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Khăn quàng đỏ may mắn
-        ctx.fillStyle = '#dc2626';
-        ctx.fillRect(frogX + 1, frogY + 3, 7, 2);
-        // Mắt cóc
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(frogX + 2, frogY + 1, 2, 2);
-        ctx.fillRect(frogX + 5, frogY + 1, 2, 2);
-        // Tay người chơi ôm cóc
-        ctx.fillStyle = '#fbd1a2';
-        ctx.fillRect(frogX - 1, frogY + 4, 2, 2);
-        ctx.fillRect(frogX + 8, frogY + 4, 2, 2);
-      }
-    } else if (itemId === 'football_ball' || itemId === 'basketball_ball') {
-      const isLeft = direction === 'left';
-      const isRight = direction === 'right';
-      const ballX = isLeft ? x + 12 : (isRight ? x + 31 : x + 33);
-      const ballY = y + 43;
-
-      ctx.fillStyle = itemId === 'basketball_ball' ? '#ea580c' : '#ffffff';
-      ctx.beginPath();
-      ctx.arc(ballX + 4, ballY + 4, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      if (itemId === 'basketball_ball') {
-        // Rãnh bóng rổ
-        ctx.strokeStyle = '#18181b';
-        ctx.beginPath();
-        ctx.moveTo(ballX + 4, ballY - 1);
-        ctx.lineTo(ballX + 4, ballY + 9);
-        ctx.stroke();
+        contactShadow(24, 50, 9);
+        // Viền bezel
+        R(18, 40, 12, 6, '#1e293b');
+        // Màn hình phát sáng (sáng từ trên)
+        R(19, 41, 10, 1, '#7dd3fc');
+        R(19, 42, 10, 1, '#38bdf8');
+        R(19, 43, 10, 1, '#0284c7');
+        R(19, 44, 10, 1, '#0369a1');
+        // Dòng code
+        R(20, 42, 4, 1, '#e0f2fe');
+        R(22, 44, 5, 1, '#bae6fd');
+        // Đế nhôm
+        R(17, 46, 14, 1, '#e2e8f0');
+        R(17, 47, 14, 1, '#94a3b8');
+        // 2 tay giữ cạnh máy
+        hand(14, 43); hand(31, 43);
+      } else if (direction === 'left' || direction === 'right') {
+        const lx = direction === 'left' ? 12 : 31;
+        contactShadow(lx + 3, 50, 5);
+        // Nhìn nghiêng: nắp + mép màn hình
+        R(lx, 40, 5, 9, '#94a3b8');
+        R(lx, 40, 5, 1, '#e2e8f0'); // highlight trên
+        R(lx + (direction === 'left' ? 0 : 4), 41, 1, 7, '#38bdf8'); // mép màn hình
+        R(lx, 48, 5, 1, '#64748b'); // sel-out dưới
+        R(lx + 1, 49, 4, 2, '#cbd5e1'); // đế
+        hand(lx + 1, 43, 3, 4);
       } else {
-        // Họa tiết bóng đá
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(ballX + 3, ballY + 3, 2, 2);
+        contactShadow(24, 49, 8);
+        // Lưng nắp máy
+        R(18, 40, 12, 7, '#cbd5e1');
+        R(18, 40, 12, 1, '#f1f5f9'); // highlight
+        R(18, 46, 12, 1, '#94a3b8'); // sel-out dưới
+        R(18, 40, 1, 7, '#94a3b8'); R(29, 40, 1, 7, '#94a3b8'); // sel-out 2 bên
+        R(23, 42, 2, 2, '#64748b'); // logo
       }
-      // Bàn tay kẹp bóng
-      ctx.fillStyle = '#fbd1a2';
-      ctx.fillRect(ballX + 2, ballY + 1, 3, 2);
-    } else if (itemId === 'dever_flag') {
-      const isLeft = direction === 'left';
-      const flagX = isLeft ? x + 12 : x + 33;
-      // Cán cờ gỗ dài vững chãi
-      ctx.fillStyle = '#78350f';
-      ctx.fillRect(flagX, y + 16, 2, 32);
-      // Lá cờ FU-DEVER xanh rực rỡ
-      ctx.fillStyle = '#0066CC';
-      const flagDir = isLeft ? -13 : 2;
-      ctx.fillRect(flagX + flagDir, y + 16, 13, 9);
-      // Viền cam FPTU
-      ctx.fillStyle = '#f26f21';
-      ctx.fillRect(flagX + flagDir, y + 23, 13, 2);
-      // Tay cầm cán cờ
-      ctx.fillStyle = '#fbd1a2';
-      ctx.fillRect(flagX - 1, y + 43, 4, 3);
     }
+
+    /* ============ KEYCHRON (bàn phím cơ) — ôm 2 tay ============ */
+    else if (itemId === 'keychron_kb') {
+      if (direction === 'down') {
+        contactShadow(24, 50, 9);
+        R(18, 43, 12, 4, '#1e293b'); // khung
+        // 2 hàng phím (5 phím/hàng), sáng từ trên
+        for (let r = 0; r < 2; r++) {
+          for (let c = 0; c < 5; c++) {
+            const kx = 19 + c * 2, ky = 44 + r * 1;
+            R(kx, ky, 2, 1, r === 0 ? '#c084fc' : '#a855f7');
+          }
+        }
+        R(18, 46, 12, 1, '#4c1d95'); // sel-out dưới
+        R(21, 45, 6, 1, '#7c3aed'); // spacebar
+        hand(14, 43); hand(31, 43);
+      } else if (direction === 'left' || direction === 'right') {
+        const lx = direction === 'left' ? 13 : 30;
+        contactShadow(lx + 2, 50, 5);
+        R(lx, 43, 5, 4, '#1e293b');
+        R(lx + 1, 44, 3, 1, '#c084fc');
+        R(lx + 1, 45, 3, 1, '#a855f7');
+        R(lx, 46, 5, 1, '#4c1d95');
+        hand(lx + 1, 42, 3, 3);
+      } else {
+        contactShadow(24, 49, 8);
+        R(18, 43, 12, 4, '#312e81');
+        R(18, 43, 12, 1, '#4c1d95');
+        R(18, 46, 12, 1, '#1e1b4b');
+      }
+    }
+
+    /* ============ CHUỘT GAMING — tay phải ============ */
+    else if (itemId === 'gaming_mouse') {
+      const mx = direction === 'left' ? 11 : 32;
+      const my = 41;
+      if (direction !== 'up') {
+        contactShadow(mx + 3, 50, 5);
+        // Thân chuột bo (vẽ theo hàng)
+        R(mx + 1, my, 4, 1, '#6ee7b7');     // highlight trên
+        R(mx, my + 1, 6, 2, '#10b981');
+        R(mx, my + 3, 6, 2, '#0d9488');
+        R(mx, my + 5, 6, 1, '#047857');     // sel-out dưới
+        R(mx + 5, my + 1, 1, 4, '#065f46'); // tối phải
+        R(mx + 2, my + 1, 1, 2, '#065f46'); // con lăn
+        R(mx + 2, my, 1, 1, '#047857');     // rãnh nút
+        // Ngón tay phủ lên
+        R(mx - 1, my - 2, 7, 2, SKIN);
+        R(mx - 1, my - 1, 7, 1, SKIN_D);
+        R(mx + 1, my - 2, 1, 2, SKIN_D); R(mx + 4, my - 2, 1, 2, SKIN_D);
+      } else {
+        R(mx + 1, my + 1, 4, 4, '#0d9488');
+        R(mx + 1, my + 1, 4, 1, '#6ee7b7');
+      }
+    }
+
+    /* ============ CÓC VÀNG BÔNG — ôm 2 tay ============ */
+    else if (itemId === 'golden_frog_plush') {
+      if (direction !== 'up') {
+        const fx = direction === 'left' ? 13 : (direction === 'right' ? 25 : 19);
+        const fy = 39;
+        contactShadow(fx + 6, fy + 10, 7);
+        // Thân cóc (bo tròn theo hàng, sel-out #a16207 dưới/phải)
+        const rows = [[2, 8], [1, 10], [0, 12], [0, 12], [1, 10], [2, 8]];
+        rows.forEach(([ox, w], i) => {
+          const shade = i === 0 ? '#fde047' : (i >= 4 ? '#ca8a04' : '#eab308');
+          R(fx + ox, fy + i, w, 1, shade);
+        });
+        R(fx + 11, fy + 1, 1, 4, '#a16207'); // sel-out phải
+        // Bụng
+        R(fx + 4, fy + 2, 4, 3, '#fef3c7');
+        // Khăn đỏ may mắn
+        R(fx + 1, fy + 3, 10, 1, '#dc2626');
+        R(fx + 7, fy + 4, 3, 2, '#b91c1c'); // nút thắt
+        // Mắt kawaii: trắng + con ngươi + sparkle
+        R(fx + 2, fy - 1, 3, 2, '#ffffff'); R(fx + 7, fy - 1, 3, 2, '#ffffff');
+        R(fx + 3, fy - 1, 1, 2, '#0f172a'); R(fx + 8, fy - 1, 1, 2, '#0f172a');
+        R(fx + 2, fy - 1, 1, 1, '#ffffff'); R(fx + 7, fy - 1, 1, 1, '#ffffff');
+        // Má hồng
+        R(fx + 1, fy + 2, 1, 1, '#f9a8d4'); R(fx + 10, fy + 2, 1, 1, '#f9a8d4');
+        // 2 tay ôm
+        hand(fx - 2, fy + 4); hand(fx + 11, fy + 4);
+      } else {
+        R(20, 40, 10, 6, '#eab308');
+        R(20, 40, 10, 1, '#fde047');
+        R(20, 45, 10, 1, '#a16207');
+      }
+    }
+
+    /* ============ MÓC KHÓA THẺ SV — tay phải ============ */
+    else if (itemId === 'fptu_keychain') {
+      const kx = direction === 'left' ? 12 : 32;
+      if (direction !== 'up') {
+        // Nắm tay
+        R(kx, 40, 5, 4, SKIN);
+        R(kx, 43, 5, 1, SKIN_D);
+        R(kx + 2, 40, 1, 4, SKIN_D);
+        // Dây đeo cam
+        R(kx + 2, 44, 2, 5, '#f26f21');
+        R(kx + 3, 44, 1, 5, '#c2410c');
+        // Thẻ sinh viên
+        R(kx - 1, 49, 8, 6, '#f8fafc');
+        R(kx - 1, 49, 8, 2, '#f26f21'); // header cam FPT
+        R(kx, 52, 2, 2, '#94a3b8');     // ảnh thẻ
+        R(kx + 3, 52, 3, 1, '#cbd5e1'); // dòng chữ
+        R(kx + 3, 54, 4, 1, '#e2e8f0');
+        R(kx - 1, 54, 8, 1, '#7c2d12'); // sel-out dưới
+        R(kx + 6, 49, 1, 6, '#7c2d12'); // sel-out phải
+      } else {
+        R(kx + 2, 44, 2, 5, '#f26f21');
+        R(kx - 1, 49, 8, 5, '#f8fafc');
+      }
+    }
+
+    /* ============ CÀ PHÊ (thermos / cà phê muối) — tay phải ============ */
+    else if (itemId === 'danang_salt_coffee' || itemId === 'thermos_coffee') {
+      const cx = direction === 'left' ? 12 : 32;
+      const cy = 41;
+      const isSalt = itemId === 'danang_salt_coffee';
+      if (direction !== 'up') {
+        contactShadow(cx + 3, cy + 10, 5);
+        if (isSalt) {
+          // Ly nhựa: highlight trái, tối phải
+          R(cx + 1, cy, 5, 8, '#78350f');
+          R(cx + 1, cy, 1, 8, '#a16207'); // sáng trái
+          R(cx + 5, cy, 1, 8, '#451a03'); // tối phải (sel-out)
+          // Lớp kem muối bồng bềnh
+          R(cx, cy - 2, 7, 2, '#fff7ed');
+          R(cx + 1, cy - 3, 5, 1, '#ffffff');
+          // Ống hút xanh (bậc thang)
+          R(cx + 4, cy - 6, 1, 4, '#0284c7');
+          R(cx + 3, cy - 6, 1, 1, '#0369a1');
+          // Logo giọt cà phê
+          R(cx + 3, cy + 3, 1, 2, '#fcd34d');
+        } else {
+          // Thermos kim loại
+          R(cx + 1, cy, 5, 8, '#f59e0b');
+          R(cx + 1, cy, 1, 8, '#fcd34d'); // highlight trái
+          R(cx + 5, cy, 1, 8, '#b45309'); // tối phải
+          R(cx + 1, cy + 4, 5, 1, '#1e293b'); // đai
+          R(cx, cy - 2, 7, 2, '#1e293b');   // nắp
+          R(cx, cy - 2, 7, 1, '#475569');   // highlight nắp
+        }
+        // Hơi nóng
+        R(cx + 2, cy - 6, 1, 2, 'rgba(255,255,255,0.55)');
+        R(cx + 4, cy - 8, 1, 2, 'rgba(255,255,255,0.35)');
+        // Ngón tay ôm ly
+        R(cx + 5, cy + 2, 2, 4, SKIN);
+        R(cx + 5, cy + 5, 2, 1, SKIN_D);
+      } else {
+        R(cx + 1, cy, 5, 7, isSalt ? '#78350f' : '#f59e0b');
+        R(cx, cy - 2, 7, 2, isSalt ? '#fff7ed' : '#1e293b');
+      }
+    }
+
+    /* ============ BÓNG ĐÁ / BÓNG RỔ — tay phải ============ */
+    else if (itemId === 'football_ball' || itemId === 'basketball_ball') {
+      const bx = direction === 'left' ? 11 : 31;
+      const by = 42;
+      const isBasket = itemId === 'basketball_ball';
+      if (direction !== 'up') {
+        contactShadow(bx + 4, by + 9, 6);
+        // Hình tròn 8x8 theo hàng (sel-out tối dưới/phải)
+        const rows = [[2, 4], [1, 6], [0, 8], [0, 8], [0, 8], [0, 8], [1, 6], [2, 4]];
+        rows.forEach(([ox, w], i) => {
+          let c = isBasket ? '#ea580c' : '#f8fafc';
+          if (i === 0) c = isBasket ? '#fdba74' : '#ffffff'; // highlight trên
+          if (i >= 6) c = isBasket ? '#9a3412' : '#94a3b8';  // sel-out dưới
+          R(bx + ox, by + i, w, 1, c);
+        });
+        if (isBasket) {
+          R(bx + 3, by + 1, 1, 6, '#7c2d12'); // rãnh dọc
+          R(bx + 1, by + 4, 6, 1, '#7c2d12'); // rãnh ngang
+        } else {
+          R(bx + 3, by + 3, 2, 2, '#0f172a'); // ngũ giác giữa
+          R(bx + 1, by + 1, 1, 1, '#0f172a'); R(bx + 6, by + 5, 1, 1, '#0f172a');
+        }
+        // Bàn tay đặt lên bóng
+        R(bx + 1, by - 2, 6, 2, SKIN);
+        R(bx + 1, by - 1, 6, 1, SKIN_D);
+      } else {
+        R(bx + 2, by + 1, 4, 5, isBasket ? '#ea580c' : '#f8fafc');
+      }
+    }
+
+    /* ============ CỜ FU-DEVER ============ */
+    else if (itemId === 'dever_flag') {
+      const px = direction === 'left' ? 12 : 33;
+      if (direction !== 'up') {
+        // Cán cờ gỗ (highlight trái)
+        R(px, 16, 2, 30, '#78350f');
+        R(px, 16, 1, 30, '#a16207');
+        // Lá cờ tung bay (mép dưới bậc thang tạo sóng)
+        const fdx = direction === 'left' ? -12 : 2;
+        R(px + fdx, 16, 12, 6, '#0066CC');
+        R(px + fdx, 16, 12, 1, '#3385d6'); // highlight trên
+        R(px + fdx, 20, 12, 2, '#f26f21');  // sọc cam FPTU
+        R(px + fdx, 21, 12, 1, '#c2410c'); // sel-out dưới sọc
+        // Ngôi sao trắng
+        R(px + fdx + 5, 17, 1, 3, '#ffffff');
+        R(px + fdx + 4, 18, 3, 1, '#ffffff');
+        // Tay nắm cán
+        R(px - 1, 42, 4, 4, SKIN);
+        R(px - 1, 45, 4, 1, SKIN_D);
+        contactShadow(px + 1, 50, 4);
+      } else {
+        R(px, 16, 2, 30, '#78350f');
+        R(px - 8, 16, 8, 6, '#0066CC');
+        R(px - 8, 20, 8, 2, '#f26f21');
+      }
+    }
+
     ctx.restore();
   }
 
@@ -1909,5 +2454,364 @@ export class TextureGenerator {
     if (scene.textures.exists(key)) scene.textures.remove(key);
     scene.textures.addCanvas(key, canvas);
     return key;
+  }
+
+  /**
+   * Sinh overlay cánh tay cho emote body-animation (vẫy tay, power pose, dance).
+   * Palette: da #fbd1a2/#e8a06f, tay áo khoác DEVER #1d4ed8/#3b82f6, sáng từ trên-trái.
+   * Origin xoay quanh vai: (0.5, 0.875).
+   */
+  static generateEmoteOverlays(scene) {
+    const SKIN = '#fbd1a2', SKIN_D = '#e8a06f', SKIN_L = '#ffe3c2';
+    const SLEEVE = '#1d4ed8', SLEEVE_L = '#3b82f6', SLEEVE_D = '#1e3a8a';
+
+    const makeTex = (key, w, h, drawFn) => {
+      if (scene.textures.exists(key)) scene.textures.remove(key);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      drawFn(ctx);
+      scene.textures.addCanvas(key, canvas);
+    };
+
+    // Vẽ 1 cánh tay giơ lên trong khung w×h, gốc vai tại (ox, oy)
+    const drawArm = (ctx, ox, oy) => {
+      // Bàn tay mở (8×8)
+      ctx.fillStyle = SKIN;
+      ctx.fillRect(ox - 4, oy - 23, 8, 8);
+      ctx.fillStyle = SKIN_L; // highlight trên
+      ctx.fillRect(ox - 4, oy - 23, 8, 1);
+      // Rãnh ngón tay
+      ctx.fillStyle = SKIN_D;
+      for (let fx = ox - 2; fx <= ox + 3; fx += 2) ctx.fillRect(fx, oy - 22, 1, 4);
+      // Cổ tay
+      ctx.fillStyle = SKIN;
+      ctx.fillRect(ox - 2, oy - 15, 4, 3);
+      ctx.fillStyle = SKIN_D;
+      ctx.fillRect(ox - 2, oy - 13, 4, 1);
+      // Tay áo khoác DEVER (10×12)
+      ctx.fillStyle = SLEEVE;
+      ctx.fillRect(ox - 5, oy - 12, 10, 12);
+      ctx.fillStyle = SLEEVE_L; // sáng trái
+      ctx.fillRect(ox - 5, oy - 12, 2, 12);
+      ctx.fillStyle = SLEEVE_D; // tối phải (sel-out)
+      ctx.fillRect(ox + 3, oy - 12, 2, 12);
+      ctx.fillRect(ox - 5, oy - 1, 10, 1);
+    };
+
+    // 1 tay vẫy: 16×24, vai tại (8, 21)
+    makeTex('emote_arm_wave', 16, 24, (ctx) => drawArm(ctx, 8, 21));
+
+    // 2 tay chữ V (power pose): 32×24, giữa 2 vai tại (16, 21)
+    makeTex('emote_arms_power', 32, 24, (ctx) => {
+      drawArm(ctx, 8, 21);
+      drawArm(ctx, 24, 21);
+    });
+  }
+
+  /**
+   * Ve hang loat icon 16x16 tu drawers -> texture '<prefix>_<id>'.
+   */
+  static _paintIcons(scene, prefix, drawers) {
+    const R = (ctx, x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+    for (const [id, draw] of Object.entries(drawers)) {
+      const key = `${prefix}_${id}`;
+      if (scene.textures.exists(key)) scene.textures.remove(key);
+      const canvas = document.createElement('canvas');
+      canvas.width = 16; canvas.height = 16;
+      draw(canvas.getContext('2d'), R);
+      scene.textures.addCanvas(key, canvas);
+    }
+  }
+
+  static _iconURLCache = new Map();
+  /**
+   * Lay dataURL cua icon '<prefix>_<id>' cho DOM <img>. Null neu chua sinh.
+   */
+  static _getIconURL(scene, prefix, id) {
+    if (!scene || !id) return null;
+    const cacheKey = `${prefix}_${id}`;
+    const cached = TextureGenerator._iconURLCache.get(cacheKey);
+    if (cached) return cached;
+    if (!scene.textures.exists(cacheKey)) return null;
+    try {
+      const url = scene.textures.get(cacheKey).getSourceImage().toDataURL();
+      TextureGenerator._iconURLCache.set(cacheKey, url);
+      return url;
+    } catch (e) { return null; }
+  }
+
+  /**
+   * Sinh pixel icons 16x16 cho items (dung trong InventoryModal thay emoji tho).
+   * Key: 'itemicon_<itemId>'. Palette nhat quan voi in-hand equipment.
+   */
+  static generateItemIcons(scene) {
+    const R = (ctx, x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+
+    const drawers = {
+      // Laptop mo: man hinh phat sang + dong code
+      macbook_dev(ctx) {
+        R(ctx, 3, 2, 10, 8, '#1e293b');
+        R(ctx, 4, 3, 8, 2, '#7dd3fc');
+        R(ctx, 4, 5, 8, 2, '#38bdf8');
+        R(ctx, 4, 7, 8, 2, '#0284c7');
+        R(ctx, 5, 4, 3, 1, '#e0f2fe');
+        R(ctx, 6, 6, 4, 1, '#bae6fd');
+        R(ctx, 2, 10, 12, 1, '#e2e8f0');
+        R(ctx, 2, 11, 12, 1, '#94a3b8');
+      },
+      // Ban phim co tim
+      keychron_kb(ctx) {
+        R(ctx, 2, 5, 12, 6, '#1e293b');
+        for (let r = 0; r < 2; r++)
+          for (let c = 0; c < 4; c++)
+            R(ctx, 2 + c * 3, 6 + r * 2, 2, 2, r === 0 ? '#c084fc' : '#a855f7');
+        R(ctx, 5, 10, 6, 1, '#7c3aed');
+        R(ctx, 2, 11, 12, 1, '#4c1d95');
+      },
+      // Chuot gaming xanh
+      gaming_mouse(ctx) {
+        R(ctx, 5, 2, 6, 1, '#6ee7b7');
+        R(ctx, 4, 3, 8, 4, '#10b981');
+        R(ctx, 4, 7, 8, 4, '#0d9488');
+        R(ctx, 4, 11, 8, 1, '#047857');
+        R(ctx, 11, 3, 1, 8, '#065f46');
+        R(ctx, 7, 3, 2, 3, '#065f46');
+        R(ctx, 7, 2, 1, 1, '#047857');
+      },
+      // Coc vang kawaii
+      golden_frog_plush(ctx) {
+        R(ctx, 3, 4, 10, 8, '#eab308');
+        R(ctx, 3, 4, 10, 1, '#fde047');
+        R(ctx, 3, 11, 10, 1, '#a16207');
+        R(ctx, 3, 4, 1, 8, '#ca8a04');
+        R(ctx, 12, 4, 1, 8, '#a16207');
+        R(ctx, 4, 2, 3, 3, '#ffffff');
+        R(ctx, 9, 2, 3, 3, '#ffffff');
+        R(ctx, 5, 3, 1, 2, '#0f172a');
+        R(ctx, 10, 3, 1, 2, '#0f172a');
+        R(ctx, 3, 9, 10, 2, '#dc2626');
+        R(ctx, 3, 7, 1, 1, '#f9a8d4');
+        R(ctx, 12, 7, 1, 1, '#f9a8d4');
+      },
+      // Moc khoa the SV
+      fptu_keychain(ctx) {
+        R(ctx, 7, 1, 2, 5, '#f26f21');
+        R(ctx, 8, 1, 1, 5, '#c2410c');
+        R(ctx, 4, 6, 8, 9, '#f8fafc');
+        R(ctx, 4, 6, 8, 3, '#f26f21');
+        R(ctx, 5, 10, 3, 3, '#94a3b8');
+        R(ctx, 9, 10, 2, 1, '#cbd5e1');
+        R(ctx, 9, 12, 2, 1, '#e2e8f0');
+        R(ctx, 4, 14, 8, 1, '#7c2d12');
+        R(ctx, 11, 6, 1, 9, '#7c2d12');
+      },
+      // Thermos cam
+      thermos_coffee(ctx) {
+        R(ctx, 4, 1, 8, 3, '#1e293b');
+        R(ctx, 4, 1, 8, 1, '#475569');
+        R(ctx, 5, 4, 1, 10, '#fcd34d');
+        R(ctx, 6, 4, 4, 10, '#f59e0b');
+        R(ctx, 10, 4, 1, 10, '#b45309');
+        R(ctx, 5, 8, 6, 2, '#1e293b');
+        R(ctx, 5, 13, 6, 1, '#b45309');
+      },
+      // Ca phe muoi Da Nang
+      danang_salt_coffee(ctx) {
+        R(ctx, 10, 1, 2, 4, '#0284c7');
+        R(ctx, 10, 1, 1, 4, '#0369a1');
+        R(ctx, 3, 4, 10, 3, '#fff7ed');
+        R(ctx, 4, 3, 8, 1, '#ffffff');
+        R(ctx, 4, 7, 1, 7, '#a16207');
+        R(ctx, 5, 7, 6, 7, '#78350f');
+        R(ctx, 11, 7, 1, 7, '#451a03');
+        R(ctx, 6, 9, 2, 2, '#fcd34d');
+      },
+      // Banh mi cha canteen
+      fuda_banh_mi(ctx) {
+        R(ctx, 3, 6, 10, 4, '#fbbf24');
+        R(ctx, 3, 6, 10, 1, '#fde68a');
+        R(ctx, 3, 9, 10, 1, '#b45309');
+        R(ctx, 2, 7, 1, 2, '#f59e0b');
+        R(ctx, 13, 7, 1, 2, '#b45309');
+        R(ctx, 5, 7, 2, 1, '#16a34a');
+        R(ctx, 8, 7, 2, 1, '#dc2626');
+        R(ctx, 11, 7, 1, 1, '#f8fafc');
+      },
+      // Cup vo dich hackathon
+      hackathon_trophy(ctx) {
+        R(ctx, 5, 2, 6, 1, '#fde047');
+        R(ctx, 6, 3, 4, 4, '#eab308');
+        R(ctx, 6, 3, 1, 4, '#fde047');
+        R(ctx, 9, 3, 1, 4, '#a16207');
+        R(ctx, 4, 3, 2, 1, '#eab308');
+        R(ctx, 10, 3, 2, 1, '#eab308');
+        R(ctx, 4, 4, 1, 2, '#ca8a04');
+        R(ctx, 11, 4, 1, 2, '#ca8a04');
+        R(ctx, 7, 7, 2, 3, '#a16207');
+        R(ctx, 5, 10, 6, 1, '#ca8a04');
+        R(ctx, 4, 11, 8, 2, '#eab308');
+      },
+      // Bong da
+      football_ball(ctx) {
+        R(ctx, 4, 3, 8, 10, '#f8fafc');
+        R(ctx, 6, 2, 4, 1, '#e2e8f0');
+        R(ctx, 6, 13, 4, 1, '#cbd5e1');
+        R(ctx, 3, 4, 1, 8, '#e2e8f0');
+        R(ctx, 12, 4, 1, 8, '#cbd5e1');
+        R(ctx, 7, 6, 2, 2, '#1e293b');
+        R(ctx, 5, 9, 1, 1, '#1e293b');
+        R(ctx, 10, 9, 1, 1, '#1e293b');
+        R(ctx, 7, 11, 2, 1, '#1e293b');
+      },
+      // Bong ro
+      basketball_ball(ctx) {
+        R(ctx, 4, 3, 8, 10, '#f97316');
+        R(ctx, 6, 2, 4, 1, '#fdba74');
+        R(ctx, 6, 13, 4, 1, '#c2410c');
+        R(ctx, 3, 4, 1, 8, '#fdba74');
+        R(ctx, 12, 4, 1, 8, '#c2410c');
+        R(ctx, 7, 3, 1, 10, '#7c2d12');
+        R(ctx, 4, 7, 8, 1, '#7c2d12');
+        R(ctx, 5, 4, 3, 2, '#7c2d12');
+        R(ctx, 8, 10, 3, 2, '#7c2d12');
+      },
+      // Co hieu CLB
+      dever_flag(ctx) {
+        R(ctx, 3, 2, 1, 12, '#94a3b8');
+        R(ctx, 4, 3, 8, 5, '#1e40af');
+        R(ctx, 4, 3, 8, 1, '#3b82f6');
+        R(ctx, 4, 7, 8, 1, '#f26f21');
+        R(ctx, 6, 4, 2, 2, '#fbbf24');
+      }
+    };
+
+    TextureGenerator._paintIcons(scene, 'itemicon', drawers);
+  }
+
+  /**
+   * Lay dataURL cua item icon cho DOM <img>. Tra ve null neu texture chua sinh.
+   */
+  static getItemIconURL(scene, itemId) {
+    return TextureGenerator._getIconURL(scene, 'itemicon', itemId);
+  }
+
+  /**
+   * Lay dataURL cua badge icon cho DOM <img>. Tra ve null neu texture chua sinh.
+   */
+  static getBadgeIconURL(scene, achievementId) {
+    return TextureGenerator._getIconURL(scene, 'badge', achievementId);
+  }
+
+  /**
+   * Sinh pixel badge icons 16x16 cho achievements (dung trong banner/toast thay emoji).
+   * Key: 'badge_<achievementId>'.
+   */
+  static generateBadgeIcons(scene) {
+    const drawers = {
+      // Sao vang: buoc chan dau tien
+      first_arrival(ctx, R) {
+        R(ctx, 7, 1, 2, 2, '#fef08a');
+        R(ctx, 5, 3, 6, 2, '#facc15');
+        R(ctx, 3, 5, 10, 2, '#facc15');
+        R(ctx, 6, 7, 4, 2, '#eab308');
+        R(ctx, 5, 9, 2, 2, '#eab308');
+        R(ctx, 9, 9, 2, 2, '#eab308');
+        R(ctx, 5, 11, 2, 1, '#a16207');
+        R(ctx, 9, 11, 2, 1, '#a16207');
+      },
+      // Tia set: toc do code
+      speed_coder(ctx, R) {
+        R(ctx, 9, 1, 3, 4, '#fde047');
+        R(ctx, 7, 4, 5, 3, '#facc15');
+        R(ctx, 8, 7, 4, 3, '#facc15');
+        R(ctx, 6, 10, 3, 4, '#eab308');
+        R(ctx, 9, 1, 1, 4, '#fef9c3');
+        R(ctx, 7, 4, 1, 3, '#fef9c3');
+      },
+      // Ly ca phe muoi
+      coffee_salt(ctx, R) {
+        R(ctx, 4, 4, 8, 3, '#fff7ed');
+        R(ctx, 5, 3, 6, 1, '#ffffff');
+        R(ctx, 5, 7, 1, 6, '#a16207');
+        R(ctx, 6, 7, 4, 6, '#78350f');
+        R(ctx, 10, 7, 1, 6, '#451a03');
+        R(ctx, 7, 8, 2, 2, '#fcd34d');
+      },
+      // Coc vang may man
+      golden_frog(ctx, R) {
+        R(ctx, 3, 5, 10, 7, '#eab308');
+        R(ctx, 3, 5, 10, 1, '#fde047');
+        R(ctx, 3, 11, 10, 1, '#a16207');
+        R(ctx, 4, 3, 3, 3, '#ffffff');
+        R(ctx, 9, 3, 3, 3, '#ffffff');
+        R(ctx, 5, 4, 1, 2, '#0f172a');
+        R(ctx, 10, 4, 1, 2, '#0f172a');
+        R(ctx, 3, 9, 10, 2, '#dc2626');
+      },
+      // Bong da: vua pha luoi
+      striker(ctx, R) {
+        R(ctx, 4, 3, 8, 10, '#f8fafc');
+        R(ctx, 6, 2, 4, 1, '#e2e8f0');
+        R(ctx, 6, 13, 4, 1, '#cbd5e1');
+        R(ctx, 3, 4, 1, 8, '#e2e8f0');
+        R(ctx, 12, 4, 1, 8, '#cbd5e1');
+        R(ctx, 7, 7, 2, 2, '#1e293b');
+        R(ctx, 7, 4, 2, 1, '#1e293b');
+        R(ctx, 7, 11, 2, 1, '#1e293b');
+        R(ctx, 4, 7, 1, 2, '#1e293b');
+        R(ctx, 11, 7, 1, 2, '#1e293b');
+      },
+      // Ba lo cong nghe
+      tech_pro(ctx, R) {
+        R(ctx, 4, 2, 2, 5, '#7c2d12');
+        R(ctx, 10, 2, 2, 5, '#7c2d12');
+        R(ctx, 5, 4, 6, 8, '#f26f21');
+        R(ctx, 5, 4, 6, 1, '#fdba74');
+        R(ctx, 5, 11, 6, 1, '#7c2d12');
+        R(ctx, 6, 7, 4, 3, '#c2410c');
+        R(ctx, 6, 7, 4, 1, '#fdba74');
+      },
+      // Not nhac: vu cong san khau
+      stage_dancer(ctx, R) {
+        R(ctx, 3, 10, 4, 3, '#e2e8f0');
+        R(ctx, 3, 10, 4, 1, '#f8fafc');
+        R(ctx, 10, 2, 2, 9, '#e2e8f0');
+        R(ctx, 10, 2, 5, 2, '#f8fafc');
+        R(ctx, 10, 4, 5, 1, '#cbd5e1');
+        R(ctx, 12, 5, 2, 2, '#cbd5e1');
+      },
+      // Giang duong: hoc gia campus
+      campus_scholar(ctx, R) {
+        R(ctx, 3, 4, 10, 2, '#475569');
+        R(ctx, 2, 6, 12, 1, '#64748b');
+        R(ctx, 4, 7, 8, 6, '#94a3b8');
+        R(ctx, 5, 8, 1, 3, '#475569');
+        R(ctx, 7, 8, 2, 5, '#1e293b');
+        R(ctx, 10, 8, 1, 3, '#475569');
+        R(ctx, 4, 13, 8, 1, '#475569');
+      },
+      // Ngon lua: chuoi bestie
+      bestie_streak_3(ctx, R) {
+        R(ctx, 7, 2, 2, 4, '#f97316');
+        R(ctx, 5, 6, 6, 7, '#f97316');
+        R(ctx, 5, 6, 2, 7, '#fdba74');
+        R(ctx, 9, 6, 2, 7, '#c2410c');
+        R(ctx, 6, 8, 4, 4, '#fbbf24');
+        R(ctx, 7, 10, 2, 2, '#fef3c7');
+      },
+      // Hai nguoi ban metaverse
+      metaverse_friends_3(ctx, R) {
+        R(ctx, 3, 2, 4, 4, '#fcd34d');
+        R(ctx, 9, 2, 4, 4, '#fca5a5');
+        R(ctx, 2, 7, 6, 6, '#38bdf8');
+        R(ctx, 8, 7, 6, 6, '#f472b6');
+        R(ctx, 2, 7, 6, 1, '#7dd3fc');
+        R(ctx, 8, 7, 6, 1, '#f9a8d4');
+        R(ctx, 2, 12, 6, 1, '#0369a1');
+        R(ctx, 8, 12, 6, 1, '#be185d');
+      }
+    };
+    TextureGenerator._paintIcons(scene, 'badge', drawers);
   }
 }

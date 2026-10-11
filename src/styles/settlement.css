@@ -1,0 +1,231 @@
+/* --- settlement.css: delverium club settlement (split from main.css 2026-10-07) --- */
+/* --- DELVERIUM CLUB SETTLEMENT SYSTEM --- */
+.club-settlement-overview {
+  background: var(--color-rgba-15-23-42-0-7);
+  border: 1px solid var(--color-rgba-56-189-248-0-25);
+  border-radius: var(--radius-12px);
+  padding: var(--space-14px-16px);
+  margin-top: var(--space-12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12px);
+}
+
+.club-settlement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-8px);
+  border-bottom: 1px solid var(--color-rgba-255-255-255-0-08);
+  padding-bottom: var(--space-10px);
+}
+
+.club-settlement-tier {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-facc15);
+}
+
+.club-settlement-yield-rate {
+  font-size: var(--text-12px);
+  font-weight: 600;
+  color: var(--color-38bdf8);
+  background: var(--color-rgba-56-189-248-0-12);
+  padding: var(--space-4px-10px);
+  border-radius: var(--radius-6px);
+  border: 1px solid var(--color-rgba-56-189-248-0-25);
+}
+
+.club-settlement-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-10px);
+}
+
+.club-settlement-slot-card {
+  background: var(--color-rgba-30-41-59-0-75);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-8px);
+  padding: var(--space-10px-12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8px);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.club-settlement-slot-card:hover {
+  border-color: var(--color-rgba-56-189-248-0-4);
+  background: var(--color-rgba-30-41-59-0-95);
+}
+
+.club-settlement-slot-card.empty-slot {
+  border-style: dashed;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 110px;
+  background: var(--color-rgba-15-23-42-0-4);
+}
+
+.club-slot-member-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10px);
+}
+
+.club-slot-avatar-img {
+  width: 36px;
+  height: 48px;
+  object-fit: cover;
+  object-position: 0 0;
+  border-radius: var(--radius-4px);
+  background: var(--color-020617);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  image-rendering: pixelated;
+}
+
+.club-slot-member-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2px);
+  flex: 1;
+  min-width: 0;
+}
+
+.club-slot-member-name {
+  font-size: var(--text-13px);
+  font-weight: 700;
+  color: var(--color-f8fafc);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.club-slot-member-title {
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.club-slot-affinity-tag {
+  align-self: flex-start;
+  font-size: var(--text-10px);
+  font-weight: 700;
+  color: var(--color-4ade80);
+  background: var(--color-rgba-34-197-94-0-12);
+  border: 1px solid var(--color-rgba-34-197-94-0-3);
+  padding: var(--space-2px-6px);
+  border-radius: var(--radius-4px);
+}
+
+.club-slot-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-4px);
+}
+
+.club-slot-yield-val {
+  font-size: var(--text-11px);
+  color: var(--color-facc15);
+  font-weight: 600;
+}
+
+.btn-unstation-talent {
+  background: transparent;
+  border: 1px solid var(--color-rgba-244-63-94-0-4);
+  color: var(--color-fb7185);
+  font-size: var(--text-11px);
+  padding: var(--space-3px-8px);
+  border-radius: var(--radius-4px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-unstation-talent:hover {
+  background: var(--color-rgba-244-63-94-0-2);
+  color: var(--color-ffffff);
+}
+
+.club-passive-yield-banner {
+  background: linear-gradient(135deg, var(--color-rgba-234-179-8-0-12), var(--color-rgba-56-189-248-0-08));
+  border: 1px solid var(--color-rgba-234-179-8-0-3);
+  border-radius: var(--radius-8px);
+  padding: var(--space-10px-14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-10px);
+  margin-top: var(--space-6px);
+}
+
+.club-passive-yield-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2px);
+}
+
+.club-passive-yield-info span:first-child {
+  font-size: var(--text-12px);
+  font-weight: 700;
+  color: var(--color-fef08a);
+}
+
+.club-passive-yield-info span:last-child {
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+}
+
+.btn-claim-settlement-coins {
+  background: var(--color-eab308);
+  color: var(--color-0f172a);
+  border: none;
+  font-size: var(--text-12px);
+  font-weight: 700;
+  padding: var(--space-8px-16px);
+  border-radius: var(--radius-6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-claim-settlement-coins:hover:not(:disabled) {
+  background: var(--color-facc15);
+  box-shadow: 0 0 12px var(--color-rgba-234-179-8-0-4);
+}
+
+.btn-claim-settlement-coins:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.club-lightbox-footer {
+  padding: var(--space-10px-18px);
+  background: var(--color-rgba-30-41-59-0-8);
+  border-top: 1px solid var(--color-rgba-255-255-255-0-08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.club-lightbox-drive-btn {
+  font-size: var(--text-12px);
+  font-weight: 700;
+  color: var(--color-38bdf8);
+  text-decoration: none;
+  background: var(--color-rgba-56-189-248-0-15);
+  border: 1px solid var(--color-rgba-56-189-248-0-35);
+  padding: var(--space-6px-14px);
+  border-radius: var(--radius-6px);
+  transition: all 0.15s ease;
+}
+
+.club-lightbox-drive-btn:hover {
+  background: var(--color-rgba-56-189-248-0-3);
+  color: var(--color-ffffff);
+}
+

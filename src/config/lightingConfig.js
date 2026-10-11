@@ -4,6 +4,14 @@
  * Tuân thủ Notion Superpowers Framework: Tách rời tham số cân bằng và cấu hình thế giới.
  */
 
+/**
+ * Bật/tắt chu kỳ ngày & đêm.
+ * false = L2: game luôn sáng như gather.town, không có bóng tối theo giờ.
+ * (Quyết định của Hung 2026-10-01: bỏ day/night vì sửa mãi không ổn.)
+ * Đặt true để bật lại chu kỳ ngày/đêm kiểu Stardew (lightmap).
+ */
+export const DAY_NIGHT_CYCLE_ENABLED = false;
+
 export const DAY_NIGHT_PERIODS = {
   DAWN: {
     id: 'dawn',
@@ -122,6 +130,22 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorLightsOn: false,
     allowWeather: false
   },
+  dorm_room: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.12,
+    indoorAmbientColor: 0x1a1410,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x241a12,
+    allowWeather: false
+  },
+  meeting_room: {
+    isOutdoor: false,
+    indoorBaseDarkness: 0.08,
+    indoorAmbientColor: 0x141821,
+    nightIndoorLightsOn: true,
+    nightIndoorAmbientColor: 0x1e2433,
+    allowWeather: false
+  },
   memory_room: {
     isOutdoor: false,
     indoorBaseDarkness: 0.25,
@@ -146,14 +170,6 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorAmbientColor: 0x0e1b33,
     allowWeather: false
   },
-  media_hub: {
-    isOutdoor: false,
-    indoorBaseDarkness: 0.22,
-    indoorAmbientColor: 0x0c0e1a,
-    nightIndoorLightsOn: true,
-    nightIndoorAmbientColor: 0x13162b,
-    allowWeather: false
-  },
   academic_hub: {
     isOutdoor: false,
     indoorBaseDarkness: 0.15,
@@ -170,6 +186,56 @@ export const ROOM_LIGHT_PROPERTIES = {
     nightIndoorAmbientColor: 0x241708,
     allowWeather: false
   }
+};
+
+/**
+ * Cấu hình quầng sáng đèn đường — Sprite-based Soft Glow
+ * Dùng texture radial gradient vẽ sẵn một lần + blend ADD để:
+ *  - Ánh sáng mượt tuyệt đối (GPU nội suy gradient, không còn viền gãy/banding của 28 lớp ellipse)
+ *  - Hòa lẫn vào môi trường (ADD làm sáng xuyên qua lớp bóng tối, chi tiết map vẫn thấy được)
+ *  - Màu ấm dịu, tự pha theo buổi (bình minh ngả hồng, hoàng hôn ngả cam)
+ * Tuân thủ Notion Superpowers Framework: mọi thông số tuning nằm ở config, không hardcode trong update/render.
+ */
+export const LAMP_GLOW_CONFIG = {
+  textures: {
+    warmGlowKey: 'dever_glow_warm', // radial gradient: lõi trắng ấm -> giữa hổ phách -> rìa trong suốt
+    beamKey: 'dever_glow_beam',     // gradient dọc: sáng ở đầu đèn, mờ dần xuống đất + mềm 2 biên ngang
+    size: 256
+  },
+  // Vũng sáng trên mặt đất dưới chân cột đèn.
+  // Kiểu Stardew Valley: HÌNH TRÒN mềm mại, chỉ "sáng lên" nhẹ nhàng chứ không bóp oval.
+  groundPool: {
+    radiusScale: 1.05,  // nhân với light.radius -> bán kính hình tròn
+    baseAlpha: 0.42,     // alpha = min(maxAlpha, baseAlpha * intensity + floor)
+    maxAlpha: 0.6,
+    alphaFloor: 0.05
+  },
+  // Hào quang ngay tại bóng đèn (điểm phát sáng mà mắt người nhận ra "đây là cái đèn")
+  headHalo: {
+    radius: 36,         // bán kính cơ sở (px), co giãn nhẹ theo flicker
+    squashY: 0.85,       // bóp nhẹ theo trục Y cho giống bầu đèn
+    baseAlpha: 0.62,
+    maxAlpha: 0.9,
+    alphaFloor: 0.08,
+    coreTint: 0xfffbeb   // lõi gần như trắng ấm
+  },
+  // Chùm sáng từ bóng đèn rọi xuống đất
+  beam: {
+    widthScale: 0.95,   // nhân với light.radius
+    minWidth: 24,
+    height: 56,
+    baseAlpha: 0.3,
+    maxAlpha: 0.48
+  },
+  // Màu đèn hài hòa theo buổi: lerp(màu đèn gốc, màu ambient hiện tại, blendToAmbient)
+  tintByPeriod: {
+    dawn:     { color: 0xffd9a0, blendToAmbient: 0.38 }, // bình minh: ngả hồng hòa vào trời hồng
+    day:      { color: 0xffd9a0, blendToAmbient: 0.0 },
+    sunset:   { color: 0xffd9a0, blendToAmbient: 0.25 }, // hoàng hôn: ngả cam
+    night:    { color: 0xffd9a0, blendToAmbient: 0.12 }, // đêm: hổ phách ấm dịu
+    midnight: { color: 0xffd2a0, blendToAmbient: 0.15 }
+  },
+  spriteDepth: 999991 // nằm trên lightmap bóng tối (999990)
 };
 
 /**
@@ -268,13 +334,6 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 220, y: 280, radius: 95, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
     { x: 580, y: 280, radius: 95, color: 0x60a5fa, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
     { x: 400, y: 440, radius: 110, color: 0x93c5fd, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
-  ],
-  media_hub: [
-    // Media & Design Studio
-    { x: 400, y: 150, radius: 125, color: 0xa855f7, intensity: 0.95, type: 'neon', flicker: 0.04 },
-    { x: 240, y: 280, radius: 100, color: 0xc084fc, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 560, y: 280, radius: 100, color: 0xf472b6, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 400, y: 440, radius: 110, color: 0xe879f9, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ],
   academic_hub: [
     // Hub Học thuật & Đội tuyển ICPC
