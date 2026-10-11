@@ -67,6 +67,8 @@ class AuthService {
       this.applyUserServerData(user);
     }
     this.touchSession();
+    // Dam bao moi phien dang nhap deu co deviceId, ke ca khi socket server khong kha dung.
+    this.getDeviceId();
   }
 
   touchSession() {
@@ -90,12 +92,15 @@ class AuthService {
       display_name: nickname,
       displayName: nickname,
       role: 'guest',
-      avatar_id: 'dev_hoodie'
+      avatar_id: 'sample_dev_dever'
     };
     localStorage.removeItem('dever_token');
     localStorage.setItem('dever_user', JSON.stringify(this.user));
     localStorage.setItem('dever_nickname', nickname);
     this.touchSession();
+    // Moi phien khach luon co deviceId rieng, khong phu thuoc socket da ket noi hay chua
+    // (standalone mode: SERVER_URL null -> SocketManager.connect() return som).
+    this.getDeviceId();
     return this.user;
   }
 

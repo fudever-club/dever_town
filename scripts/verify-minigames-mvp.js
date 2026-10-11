@@ -191,7 +191,10 @@ async function runVerification() {
   assert(buttonsWithEmoji === 0, '100% nút bấm và tab trong Sports & Arcade tuân thủ nghiêm ngặt Zero-Emoji Rule');
 
   console.log('\n--- 5. KIỂM TRA THẨM MỸ CSS (MAIN.CSS) ---');
-  const cssContent = fs.readFileSync(path.join(rootDir, 'src/styles/main.css'), 'utf8');
+  // CSS is modular since 2026-10-07 (main.css @imports modules): scan all stylesheets.
+  const cssDir = path.join(rootDir, 'src/styles');
+  const cssContent = fs.readdirSync(cssDir).filter(f => f.endsWith('.css'))
+    .map(f => fs.readFileSync(path.join(cssDir, f), 'utf8')).join('\n');
   assert(cssContent.includes('#sports-arcade-canvas'), 'CSS có bộ chọn #sports-arcade-canvas');
   assert(cssContent.includes('image-rendering: auto'), 'Canvas thể thao sử dụng image-rendering: auto (không vỡ răng cưa vector)');
   assert(cssContent.includes('.sports-canvas-wrapper'), 'CSS có .sports-canvas-wrapper viền neon');

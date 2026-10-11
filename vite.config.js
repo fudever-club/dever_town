@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // base tương đối: asset URL dạng ./assets/... để app chạy được cả dưới
+  // file:// (Electron loadFile) lẫn khi serve từ root (Vercel).
+  base: './',
   server: {
     port: 3030,
     open: false,

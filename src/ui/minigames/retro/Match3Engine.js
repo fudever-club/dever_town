@@ -9,6 +9,7 @@
  * - Chống bế tắc tự động (Deadlock Auto-Shuffle) và Tự động gợi ý nước đi (Auto-Hint)
  */
 import { MATCH3_CONFIG } from '../../../config/minigamesConfig.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class Match3Engine {
   constructor(canvas, juiceFX = null, callbacks = {}) {
@@ -16,15 +17,15 @@ export class Match3Engine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
     this.config = MATCH3_CONFIG;
 
     this.state = 'ready'; // 'ready', 'swapping', 'swapping_back', 'clearing', 'dropping', 'game_over', 'game_clear'
     this.rows = this.config.grid.rows;
     this.cols = this.config.grid.cols;
-    this.cellSize = this.config.grid.cellSize;
-    this.cellGap = this.config.grid.cellGap;
-    this.startX = this.config.grid.startX;
-    this.startY = this.config.grid.startY;
+    // Bố cục bàn cờ theo kích thước canvas thực tế (2026-10-09)
+    this.layoutBoard(canvas.width, canvas.height);
 
     this.grid = []; // 2D array [row][col] of Gem objects
     this.selectedCell = null; // { r, c }
@@ -1041,6 +1042,16 @@ export class Match3Engine {
   }
 
   handlePointerUp(x, y) {
+    // Tap-to-restart trên cảm ứng (2026-10-09): chạm vào modal kết thúc chơi lại
+    // ngay — cùng code path với phím R, vì Space/R không tồn tại trên mobile.
+    if (this.isTouch && (this.state === 'game_over' || this.state === 'game_clear')) {
+      const { x: mx, y: my, w: mw, h: mh } = this.getGameOverModalBounds();
+      if (x >= mx && x <= mx + mw && y >= my && y <= my + mh) {
+        this.resetGame();
+      }
+      return;
+    }
+
     if (this.state !== 'ready') return;
 
     if (this.dragStart) {
@@ -1144,10 +1155,13 @@ export class Match3Engine {
     bgGrad.addColorStop(0, this.config.colors.bgTop);
     bgGrad.addColorStop(1, this.config.colors.bgBottom);
     ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 640, 360);
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // 2. Render Cột Trái (HUD: Điểm, Lượt đi, Mục tiêu 3 Sao)
-    this.renderLeftHUD(ctx);
+    // Màn hình dọc hẹp: HUD gọn 2 dải trên/dưới bàn cờ (2026-10-09)
+    const narrowPortrait = this.canvas.width < 560;
+    if (narrowPortrait) this.renderCompactHUDTop(ctx);
+    else this.renderLeftHUD(ctx);
 
     // 3. Render Khung Bàn Cờ 8x8
     this.renderBoard(ctx);
@@ -1159,7 +1173,8 @@ export class Match3Engine {
     this.renderEffects(ctx);
 
     // 6. Render Cột Phải (Bảng Combo, Gợi ý, Hướng dẫn Kẹo)
-    this.renderRightHUD(ctx);
+    if (narrowPortrait) this.renderCompactHUDBottom(ctx);
+    else this.renderRightHUD(ctx);
 
     // 7. Overlay Kết thúc màn chơi (Game Over / Clear)
     if (this.state === 'game_over' || this.state === 'game_clear') {
@@ -1427,6 +1442,112 @@ export class Match3Engine {
     }
   }
 
+  // Bố cục bàn cờ thích ứng hướng màn hình (2026-10-09):
+  // - Desktop 640×360: giữ nguyên config (cellSize 36, startX 170, startY 29).
+  // - Portrait: ô cờ phóng to để lấp đầy chiều dọc (touch target lớn hơn),
+  //   luật 8×8 và tốc độ animation giữ nguyên.
+  // - Landscape: giữ cỡ ô desktop, căn giữa theo chiều ngang.
+  layoutBoard(w, h) {
+    const g = this.config.grid;
+    if (w === 640 && h === 360) {
+      this.cellSize = g.cellSize;
+      this.cellGap = g.cellGap;
+      this.startX = g.startX;
+      this.startY = g.startY;
+      return;
+    }
+    if (h >= w) {
+      // Portrait: dải HUD trên 110px + gợi ý dưới 60px
+      const availW = w - 32;
+      const availH = h - 110 - 60;
+      const cell = Math.floor(Math.min(availW, availH) / this.cols);
+      this.cellGap = g.cellGap;
+      this.cellSize = cell - this.cellGap;
+      const boardPx = this.cols * cell;
+      this.startX = Math.floor((w - boardPx) / 2);
+      this.startY = 110 + Math.floor((availH - boardPx) / 2);
+    } else {
+      // Landscape: cỡ ô như desktop, căn giữa ngang
+      this.cellSize = g.cellSize;
+      this.cellGap = g.cellGap;
+      const boardPx = this.cols * (this.cellSize + this.cellGap);
+      this.startX = Math.floor((w - boardPx) / 2);
+      this.startY = g.startY;
+    }
+  }
+
+  // Playfield thích ứng hướng màn hình: tính lại bố cục, dời mọi viên kẹo
+  // theo đúng ô (r,c) của nó. Hủy animation swap đang bay (tọa độ pixel cũ).
+  resize(w, h) {
+    this.layoutBoard(w, h);
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.cols; c++) {
+        const gem = this.grid[r]?.[c];
+        if (!gem) continue;
+        const p = this.getCellPos(r, c);
+        gem.x = p.x;
+        gem.y = p.y;
+        gem.targetX = p.x;
+        gem.targetY = p.y;
+      }
+    }
+    this.swapAnimation = null;
+    this.dragStart = null;
+    this.selectedCell = null;
+  }
+
+  // HUD gọn cho màn hình dọc: dải trên (lượt/điểm/mục tiêu), dải dưới (gợi ý)
+  renderCompactHUDTop(ctx) {
+    const w = this.canvas.width;
+    ctx.save();
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    ctx.fillText('MOVES LEFT', 16, 30);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = "900 22px 'Be Vietnam Pro', sans-serif";
+    ctx.fillText(this.movesLeft.toString(), 16, 58);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    ctx.fillText('SCORE', w / 2, 30);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = "900 22px 'Be Vietnam Pro', sans-serif";
+    ctx.fillText(this.score.toLocaleString(), w / 2, 58);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "600 10px 'Segoe UI', sans-serif";
+    ctx.fillText(`BEST: ${this.highScore.toLocaleString()}`, w / 2, 76);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "bold 11px 'Segoe UI', sans-serif";
+    ctx.fillText('STAR TARGET', w - 16, 30);
+    ctx.fillStyle = '#facc15';
+    ctx.font = "900 15px 'Be Vietnam Pro', sans-serif";
+    const t = this.config.rules.targetScores;
+    const next = this.score < t.star1 ? t.star1 : this.score < t.star2 ? t.star2 : t.star3;
+    ctx.fillText(next.toLocaleString(), w - 16, 58);
+    ctx.restore();
+  }
+
+  renderCompactHUDBottom(ctx) {
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const boardBottom = this.startY + this.rows * (this.cellSize + this.cellGap);
+    const y = Math.min(h - 18, boardBottom + 34);
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#64748b';
+    ctx.font = "600 11px 'Segoe UI', sans-serif";
+    ctx.fillText(
+      this.isTouch ? 'Kéo để hoán đổi' : '[H] Gợi ý · [R] Chơi lại',
+      w / 2,
+      y
+    );
+    ctx.restore();
+  }
+
   renderLeftHUD(ctx) {
     const px = 18;
     const pw = 138;
@@ -1521,15 +1642,19 @@ export class Match3Engine {
       ctx.fill();
     }
 
-    // Hướng dẫn phím nhanh
+    // Hướng dẫn phím nhanh (cảm ứng: phím H/R không tồn tại → hiện hướng dẫn chạm)
     ctx.fillStyle = '#475569';
     ctx.font = "10px 'Segoe UI', sans-serif";
-    ctx.fillText('[H] Gợi ý', px + pw / 2, 280);
-    ctx.fillText('[R] Chơi lại', px + pw / 2, 298);
+    if (this.isTouch) {
+      ctx.fillText('Kéo để hoán đổi', px + pw / 2, 289);
+    } else {
+      ctx.fillText('[H] Gợi ý', px + pw / 2, 280);
+      ctx.fillText('[R] Chơi lại', px + pw / 2, 298);
+    }
   }
 
   renderRightHUD(ctx) {
-    const px = 484;
+    const px = this.canvas.width - 156; // desktop: 640-156=484, giữ nguyên
     const pw = 138;
 
     // Panel kính mờ
@@ -1592,16 +1717,20 @@ export class Match3Engine {
     ctx.fillText(`STATUS: ${this.state.toUpperCase()}`, px + pw / 2, 298);
   }
 
+  // Bounds modal kết thúc (dùng chung cho render + tap-to-restart trên cảm ứng).
+  getGameOverModalBounds() {
+    const w = 340;
+    const h = 220;
+    return { x: (this.canvas.width - w) / 2, y: (this.canvas.height - h) / 2, w, h };
+  }
+
   renderGameOverModal(ctx) {
     ctx.save();
     ctx.fillStyle = 'rgba(10, 13, 26, 0.85)';
-    ctx.fillRect(0, 0, 640, 360);
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     const isWin = this.state === 'game_clear';
-    const modalW = 340;
-    const modalH = 220;
-    const modalX = (640 - modalW) / 2;
-    const modalY = (360 - modalH) / 2;
+    const { x: modalX, y: modalY, w: modalW, h: modalH } = this.getGameOverModalBounds();
 
     ctx.fillStyle = '#0f172a';
     ctx.strokeStyle = isWin ? '#10b981' : '#ef4444';
@@ -1639,7 +1768,7 @@ export class Match3Engine {
     // Lời nhắc
     ctx.fillStyle = '#94a3b8';
     ctx.font = "12px 'Segoe UI', sans-serif";
-    ctx.fillText('Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
+    ctx.fillText(this.isTouch ? 'Chạm vào đây để chơi lại' : 'Bấm [Space] hoặc [R] để chơi lại', 320, modalY + 185);
 
     ctx.restore();
   }

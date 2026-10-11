@@ -1,0 +1,132 @@
+/* --- stickers.css: chat sticker picker (split from main.css 2026-10-07) --- */
+/* ==========================================================================
+   CHAT STICKER PICKER STYLES
+   ========================================================================== */
+.chat-sticker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.chat-sticker-btn {
+  background: transparent;
+  border: none;
+  font-size: var(--text-18px);
+  cursor: pointer;
+  padding: var(--space-4px-6px);
+  border-radius: var(--radius-6px);
+  transition: all 0.2s;
+}
+
+.chat-sticker-btn:hover {
+  background: var(--color-rgba-255-255-255-0-1);
+  transform: scale(1.1);
+}
+
+.chat-sticker-popover {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  background: var(--color-0f172a);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  border-radius: var(--radius-12px);
+  padding: var(--space-8px-10px-10px-10px);
+  box-shadow: 0 12px 30px var(--color-rgba-0-0-0-0-7);
+  z-index: var(--z-100);
+  width: 252px;
+}
+
+.sticker-tabs-nav {
+  display: flex;
+  gap: var(--space-4px);
+  margin-bottom: var(--space-8px);
+  background: var(--color-rgba-30-41-59-0-7);
+  padding: var(--space-3px);
+  border-radius: var(--radius-8px);
+}
+
+.sticker-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-94a3b8);
+  font-size: var(--text-11px);
+  font-weight: 700;
+  padding: var(--space-5px-6px);
+  border-radius: var(--radius-6px);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.sticker-tab-btn.active {
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  color: var(--color-ffffff);
+  box-shadow: 0 2px 8px var(--color-rgba-242-111-33-0-45);
+}
+
+.sticker-popover-header {
+  font-size: var(--text-11px);
+  font-weight: 700;
+  color: var(--color-94a3b8);
+  margin-bottom: var(--space-8px);
+  text-transform: uppercase;
+}
+
+.sticker-popover-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6px);
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: var(--space-2px);
+}
+
+.sticker-popover-grid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sticker-popover-grid::-webkit-scrollbar-track {
+  background: var(--color-rgba-15-23-42-0-6);
+  border-radius: var(--radius-3px);
+}
+
+.sticker-popover-grid::-webkit-scrollbar-thumb {
+  background: var(--color-rgba-242-111-33-0-4);
+  border-radius: var(--radius-3px);
+}
+
+.sticker-select-item {
+  background: var(--color-rgba-255-255-255-0-05);
+  border: 1px solid transparent;
+  border-radius: var(--radius-8px);
+  padding: var(--space-4px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.sticker-select-item:hover {
+  background: var(--color-rgba-242-111-33-0-2);
+  border-color: var(--color-f26f21);
+  transform: scale(1.08);
+}
+
+.sticker-select-item img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.chat-sticker-img {
+  max-width: 88px;
+  max-height: 88px;
+  object-fit: contain;
+  display: block;
+  margin-top: var(--space-4px);
+  border-radius: var(--radius-6px);
+}
+
+

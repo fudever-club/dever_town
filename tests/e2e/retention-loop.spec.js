@@ -4,6 +4,9 @@ async function enterFreshGuest(page, name = 'Retention Tester') {
   await page.addInitScript(() => {
     if (!sessionStorage.getItem('retention-test-initialized')) {
       localStorage.clear();
+      // Onboarding guide là overlay toàn màn hình (z-index rất cao): tắt hẳn trong test
+      // để không che nút "Thử lại" khi game khởi tạo chậm (tránh flake do dismiss hụt).
+      localStorage.setItem('dever_onboarding_seen', 'true');
       sessionStorage.setItem('retention-test-initialized', 'true');
     }
   });
@@ -109,6 +112,9 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
       localStorage.clear();
       localStorage.setItem('dever_points', '5');
       localStorage.setItem('dever_quest_date', new Date().toDateString());
+      // Tắt onboarding guide (overlay toàn màn hình) để nó không che nút #daily-goal-retry
+      // khi game khởi tạo chậm hơn nhịp dismiss best-effort ở dưới.
+      localStorage.setItem('dever_onboarding_seen', 'true');
     });
     await page.route('**/api/auth/login', route => route.fulfill({
       status: 200,
@@ -158,20 +164,24 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
 
     const syncCountBeforeFailure = syncPayloads.length;
     failSync = true;
+    // Đăng ký waiter TRƯỚC khi unlock để bắt đúng request của batch đồng bộ đầu tiên.
+    const firstBatchInFlight = page.waitForRequest('**/api/auth/sync-profile');
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       scene?.achievementManager?.unlock('golden_frog');
     });
     await expect(page.locator('#daily-goal-sync-status')).toContainText('Đang đồng bộ');
-    // Queue a newer total while the first failed batch is still in flight.
-    // Retry must keep 195, not restore the older 170-point payload.
-    await page.waitForTimeout(450);
+    // Batch đầu tiên đã rời đi và đang bay: route mock giữ nó 650ms rồi mới trả 503,
+    // nên unlock thứ hai ngay lúc này CHẮC CHẮN được queue trong khi batch đầu chưa
+    // hoàn tất (thay sleep 450ms đoán mò). Retry phải giữ 195, không khôi phục payload 170 cũ.
+    await firstBatchInFlight;
     await page.evaluate(() => {
       const scene = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       scene?.achievementManager?.unlock('stage_dancer');
     });
     await expect.poll(() => syncPayloads.length).toBeGreaterThanOrEqual(syncCountBeforeFailure + 2);
-    await page.waitForTimeout(700);
+    // Bỏ sleep 700ms: chính assertion toBeVisible (timeout 5000) đã là wait theo tín
+    // hiệu cho nút retry xuất hiện sau khi các batch thất bại được xử lý xong.
     await expect(page.locator('#daily-goal-retry')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#daily-goal-sync-status')).toContainText('tiến trình vẫn an toàn');
 
@@ -205,7 +215,9 @@ test.describe('DEVER TOWN - Retention Progress Loop', () => {
       const arcade = scene.interactiveModal.sportsArcade;
       arcade.stop();
       arcade.scores.footballStreak = 2;
-      arcade.football.state = 'shooting';
+      // PenaltyShootoutEngine dùng state 'flight' cho quỹ đạo bóng
+      // (state machine cũ 'shooting' đã bị refactor)
+      arcade.football.state = 'flight';
       arcade.football.ball.progress = 0.99;
       arcade.football.ball.startX = 320;
       arcade.football.ball.startY = 305;

@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
-
----
-
 ## [0.7.1] — 2026-09-14
 
 ### Added — Pokémon FireRed/HGSS 48×64 Sprite Engine Overhaul

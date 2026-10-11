@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { ITEMS_DATABASE } from '../config/items.js';
+import { POSE, SIT_ANIM, sitTypeToPose, canTransitionPose, isSitPose, POSE_MOVEMENT } from '../config/poseConfig.js';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { playBodyEmote, syncEmoteOverlays, isBodyEmote } from '../utils/emoteAnimations.js';
 
 function safeUnicodeTruncate(str, maxLen = 45) {
   if (!str) return '';
@@ -28,7 +30,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       }
     }
 
-    let avatarId = options.avatarId || (wardrobeConfig ? (wardrobeConfig.characterId || wardrobeConfig.outfitId || 'hoodie_dever') : 'hoodie_dever');
+    let avatarId = options.avatarId || (wardrobeConfig ? (wardrobeConfig.characterId || wardrobeConfig.outfitId || 'sample_dev_dever') : 'sample_dev_dever');
     let resolvedTextureKey = `char_${avatarId}`;
 
     if (wardrobeConfig && scene) {
@@ -53,13 +55,13 @@ export class Player extends Phaser.GameObjects.Sprite {
       }
     }
 
-    const safeTextureKey = (scene && scene.textures.exists(resolvedTextureKey)) ? resolvedTextureKey : 'char_hoodie_dever';
+    const safeTextureKey = (scene && scene.textures.exists(resolvedTextureKey)) ? resolvedTextureKey : 'char_sample_dev_dever';
     super(scene, x, y, safeTextureKey, 0);
 
     this.name = options.name || 'Dever Member';
     this.avatarId = (scene && scene.textures.exists(safeTextureKey))
       ? safeTextureKey.replace(/^char_/, '')
-      : 'hoodie_dever';
+      : 'sample_dev_dever';
     this.wardrobeConfig = wardrobeConfig;
     this.role = options.role || 'guest';
     this.isCurrentPlayer = options.isCurrentPlayer || false;
@@ -76,6 +78,22 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.currentDirection = 'down';
     this.speechBubble = null;
     this.speechTimer = null;
+
+    // FSM tư thế: 'stand' | 'sit_upright' | 'sit_leanback'
+    // Đồng bộ với multiplayer qua player.pose (worker multiplayer đọc trực tiếp)
+    this.pose = POSE.STAND;
+    // Bộ đếm frame giữ phím di chuyển khi đang ngồi — chống joystick drift (xem POSE_MOVEMENT)
+    this._sitMoveFrames = 0;
+
+    // Trạng thái hoạt động (null = bình thường, 'dreaming' = đang mơ)
+    // Đồng bộ qua multiplayer để người khác thấy ZZZ
+    this.activity = null;
+    this.activityText = null;
+
+    // Bộ đếm animation mượt — khởi tạo 0 để tránh NaN scale ở frame đầu
+    this._turnT = 0;      // tiến trình squash khi đổi hướng
+    this._settleT = 0;    // tiến trình settle khi vừa dừng
+    this._wasMoving = false;
 
     // Shadow ellipse dưới chân — vị trí y+30 tính từ origin sprite (64/2=32, chân tại +32)
     this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
@@ -101,7 +119,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     const displayName = `${rolePrefix}${this.name}`;
 
     const tagText = this.scene.add.text(0, 0, displayName, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '600',
       color: '#ffffff',
@@ -110,6 +128,61 @@ export class Player extends Phaser.GameObjects.Sprite {
     }).setOrigin(0.5, 0.5);
 
     this.nameTagContainer.add(tagText);
+  }
+
+  /**
+   * Đặt trạng thái hoạt động (ví dụ: 'dreaming' khi đang mơ đếm cừu).
+   * Hiển thị chữ trạng thái trên đầu và đồng bộ qua multiplayer.
+   * @param {string|null} activity - 'dreaming' hoặc null để xóa
+   */
+  setActivity(activity) {
+    this.activity = activity;
+
+    // Xóa text cũ
+    if (this.activityText) {
+      this.activityText.destroy();
+      this.activityText = null;
+    }
+
+    if (activity === 'dreaming') {
+      // Hiển thị "đang mơ" + ZZZ trên đầu
+      this.activityText = this.scene.add.text(0, -52, 'đang mơ  Z', {
+        fontFamily: "'Be Vietnam Pro', sans-serif",
+        fontSize: '11px',
+        color: '#a78bfa',
+        backgroundColor: 'rgba(30, 27, 75, 0.85)',
+        padding: { x: 6, y: 3 },
+      }).setOrigin(0.5, 0.5);
+      if (this.nameTagContainer) {
+        this.nameTagContainer.add(this.activityText);
+        this.activityText.setPosition(0, -24);
+      }
+    }
+
+    // Gửi qua socket để người khác thấy (kèm pose hiện tại để đồng bộ tư thế)
+    try {
+      const sm = this.scene?.socketManager || window.__DEVER_SOCKET__;
+      if (sm && sm.socket && sm.socket.connected) {
+        sm.socket.emit('playerActivity', { activity, pose: this.pose || POSE.STAND });
+      }
+    } catch (e) {}
+  }
+
+  /**
+   * Đồng bộ tư thế ngồi/đứng qua multiplayer (dùng chung channel 'playerActivity').
+   * Player worker gọi từ sit()/standUp(), ví dụ: this.setPose('sit_upright').
+   * @param {'stand'|'sit_upright'|'sit_leanback'} pose
+   */
+  setPose(pose) {
+    const validPoses = Object.values(POSE);
+    this.pose = validPoses.includes(pose) ? pose : POSE.STAND;
+
+    try {
+      const sm = this.scene?.socketManager || window.__DEVER_SOCKET__;
+      if (sm && sm.socket && sm.socket.connected) {
+        sm.socket.emit('playerActivity', { activity: this.activity ?? null, pose: this.pose });
+      }
+    } catch (e) {}
   }
 
   createEquippedItemDisplay() {
@@ -227,7 +300,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     bubbleContainer.setDepth(1000002);
 
     const textObj = this.scene.add.text(0, 0, safeText, {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
       color: '#0f172a',
       align: 'center',
@@ -269,6 +342,8 @@ export class Player extends Phaser.GameObjects.Sprite {
       fire: '🔥',
       clap: '👏',
       dance: '🕺',
+      nod: '👍',
+      power: '💪',
       question: '❓',
       fireworks: '🎉',
       buggy: '🐞'
@@ -324,21 +399,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     });
 
     // If dance, play a fun wiggle bounce animation on sprite
-    if (emoteId === 'dance') {
-      const origY = this.y;
-      this.scene.tweens.add({
-        targets: this,
-        angle: { from: -8, to: 8 },
-        y: origY - 6,
-        yoyo: true,
-        repeat: 5,
-        duration: 120,
-        ease: 'Sine.easeInOut',
-        onComplete: () => {
-          this.setAngle(0);
-          this.y = origY;
-        }
-      });
+    // Body emotes (wave/nod/power/dance): overlay tay pixel + squash/tween
+    if (isBodyEmote(emoteId)) {
+      playBodyEmote(this.scene, this, emoteId);
     }
   }
 
@@ -378,15 +441,138 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
   }
 
+  /**
+   * Người chơi ngồi xuống ghế/vật thể.
+   * @param {'upright'|'leanback'} type - 'upright' = ngồi thẳng (học/làm việc),
+   *   'leanback' = ngả lưng thư giãn (nghỉ ngơi/chơi/ăn)
+   * @returns {boolean} true nếu chuyển pose thành công
+   */
+  sit(type) {
+    try {
+      const targetPose = sitTypeToPose(type);
+      if (!targetPose) return false;                       // type không hợp lệ
+      if (!canTransitionPose(this.pose, targetPose)) return false;
+
+      this.setPose(targetPose);   // gán pose + emit 'playerActivity' cho multiplayer
+      this._sitMoveFrames = 0;
+
+      // Dừng hẳn chuyển động khi ngồi
+      if (this.body) this.body.setVelocity(0, 0);
+
+      this._playSitAnimation();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Đứng dậy từ tư thế ngồi: về pose 'stand', phát idle animation,
+   * mở lại input di chuyển (vòng update sau tự xử lý input như bình thường).
+   * @returns {boolean} true nếu chuyển pose thành công
+   */
+  standUp() {
+    try {
+      if (!canTransitionPose(this.pose, POSE.STAND)) return false;
+      if (this.pose === POSE.STAND) return true;           // đã đứng: no-op
+
+      this.setPose(POSE.STAND);   // gán pose + emit 'playerActivity' cho multiplayer
+      this._sitMoveFrames = 0;
+
+      // Về vận tốc 0 + phát idle animation theo hướng hiện tại
+      this.stopMovement();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * @returns {boolean} true nếu đang ngồi (sit_upright hoặc sit_leanback)
+   */
+  isSitting() {
+    return isSitPose(this.pose);
+  }
+
+  /**
+   * Phát animation ngồi cho avatar hiện tại: `${tag}_${avatarId}`
+   * (ví dụ: `sit_upright_hoodie_dever`). Kiểm tra anims tồn tại trước
+   * khi phát theo đúng pattern dùng ở stopMovement().
+   */
+  _playSitAnimation() {
+    try {
+      const tag = SIT_ANIM[this.pose];
+      if (!tag) return;
+      const sitAnimKey = `${tag}_${this.avatarId}`;
+      if (this.scene?.anims?.exists(sitAnimKey)) {
+        this.anims.play(sitAnimKey, true);
+      } else {
+        // Fallback: frame tĩnh facing down (frame 0) nếu sprite pipeline chưa có anim ngồi
+        this.setFrame(0);
+      }
+    } catch (e) {}
+  }
+
   update(inputData) {
     if (!inputData) return;
+    syncEmoteOverlays(this);
+
+    // --- FSM TƯ THẾ: chặn di chuyển khi đang ngồi, tự đứng dậy nếu cố tình di chuyển ---
+    let effectiveInput = inputData;
+    if (this.isSitting()) {
+      const magnitudeSq = inputData.vector?.lengthSq?.() ?? 0;
+      const intendsToMove = inputData.isMoving && magnitudeSq > POSE_MOVEMENT.autoStandUpMinMagnitudeSq;
+      if (intendsToMove) {
+        this._sitMoveFrames += 1;
+      } else {
+        this._sitMoveFrames = 0; // drift nhẹ / thả phím -> reset, không đứng dậy
+      }
+
+      if (this._sitMoveFrames >= POSE_MOVEMENT.autoStandUpFrames) {
+        // Giữ phím di chuyển đủ lâu: tự đứng dậy, frame này xử lý input bình thường
+        this._sitMoveFrames = 0;
+        this.standUp();
+      } else {
+        // Đang ngồi: bỏ qua input di chuyển (giữ nguyên vị trí, chỉ giữ anim ngồi)
+        effectiveInput = {
+          ...inputData,
+          vector: new Phaser.Math.Vector2(0, 0),
+          left: false,
+          right: false,
+          up: false,
+          down: false,
+          isMoving: false
+        };
+      }
+    }
 
     const baseSpeed = 160;
     const speed = baseSpeed * (this.speedMultiplier ?? 1.0);
-    const { vector, left, right, up, down, isMoving } = inputData;
+    const { vector, left, right, up, down, isMoving } = effectiveInput;
 
-    this.body.setVelocity(vector.x * speed, vector.y * speed);
+    // --- Delta time độc lập khung hình (mượt ở mọi FPS) ---
+    const deltaMs = this.scene?.sys?.game?.loop?.delta ?? 16.67;
+    const dt = Math.min(deltaMs, 50) / 1000;
 
+    // --- 1. EASED ACCELERATION / DECELERATION ---
+    // Thay setVelocity tức thì bằng tiệm cận hàm mũ: tăng tốc ~120ms, dừng ~150ms.
+    // Cảm giác: nhân vật có trọng lượng, không còn "teleport" mỗi khi nhấn phím.
+    const targetVx = vector.x * speed;
+    const targetVy = vector.y * speed;
+    const easeRate = isMoving ? 12 : 16;
+    const k = 1 - Math.exp(-easeRate * dt);
+    let vx = Phaser.Math.Linear(this.body.velocity.x, targetVx, k);
+    let vy = Phaser.Math.Linear(this.body.velocity.y, targetVy, k);
+    // Triệt tiêu rung động vi mô khi gần dừng hẳn
+    if (!isMoving && Math.hypot(vx, vy) < 8) { vx = 0; vy = 0; }
+    this.body.setVelocity(vx, vy);
+
+    const actualSpeed = Math.hypot(this.body.velocity.x, this.body.velocity.y);
+    const speedRatio = Phaser.Math.Clamp(actualSpeed / speed, 0, 1.2);
+    const visuallyMoving = actualSpeed > 12;
+
+    // --- 2. TURN ANTICIPATION: "cú nảy" nhẹ khi đổi hướng ---
+    const prevDir = this.currentDirection;
     if (left) {
       this.currentDirection = 'left';
     } else if (right) {
@@ -396,9 +582,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     } else if (down) {
       this.currentDirection = 'down';
     }
+    if (this.currentDirection !== prevDir) {
+      this._turnT = 1; // trigger cú squash 120ms
+    }
+    if (this._turnT > 0) this._turnT = Math.max(0, this._turnT - dt * 8);
+    const turnSquash = Math.sin(this._turnT * Math.PI) * 0.05;
 
     if (isMoving) {
       this._stoppedMovingTime = null;
+      this._wasMoving = true;
       const walkKey = `walk_${this.currentDirection}_${this.avatarId}`;
       try {
         if (this.scene?.anims?.exists(walkKey)) {
@@ -411,10 +603,18 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
       } catch (e) {}
 
-      // Hiệu ứng nhún người (Squash & Stretch) hữu cơ khi di chuyển
-      const bob = Math.sin(performance.now() / 85) * 0.05;
-      this.scaleY = 1.0 + bob;
-      this.scaleX = 1.0 - bob * 0.7;
+      // --- 3. WALK CYCLE ĐỒNG BỘ TỐC ĐỘ (chống trượt chân) ---
+      // timeScale co giãn theo vận tốc thực: tăng tốc/giảm tốc thì chân cũng nhanh/chậm theo.
+      this.anims.timeScale = Phaser.Math.Clamp(speedRatio, 0.15, 1.15);
+
+      // --- 4. SQUASH & STRETCH ĐỒNG BỘ KHUNG HÌNH ---
+      // Dùng tiến trình vòng walk (0..1) thay cho sin(performance.now()) tự do:
+      // nhún người khớp chính xác từng bước chân, 2 nhịp/vòng 8 frame.
+      let walkProg = 0;
+      try { walkProg = this.anims.getProgress?.() ?? 0; } catch (e) {}
+      const bob = Math.sin(walkProg * Math.PI * 4) * 0.04;
+      this.scaleY = 1.0 + bob - turnSquash * 0.6;
+      this.scaleX = 1.0 - bob * 0.7 - turnSquash;
 
       // Xác định chất liệu mặt sàn dưới chân (cỏ, gỗ, đá, cyber)
       const tileX = Math.floor(this.x / 32);
@@ -445,10 +645,26 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.scene.audioManager.playFootstep(surface);
       }
+    } else if (this.isSitting()) {
+      // Đang ngồi: giữ nguyên animation ngồi, không chơi idle/breathe.
+      // Scale giữ 1.0 (tư thế ngồi không nhún nhịp thở như đứng).
+      this._playSitAnimation();
+      this.anims.timeScale = 1; // reset nếu sit() gọi khi đang đi (walk timeScale != 1)
+      this.scaleX = 1.0;
+      this.scaleY = 1.0;
     } else {
       if (!this._stoppedMovingTime) {
         this._stoppedMovingTime = performance.now();
       }
+      // --- 5. SETTLE KHI VỪA DỪNG: lún nhẹ rồi nảy lại trong ~180ms ---
+      if (this._wasMoving) {
+        this._wasMoving = false;
+        this._settleT = 1;
+      }
+      if (this._settleT > 0) this._settleT = Math.max(0, this._settleT - dt * 5.5);
+      const settleDip = Math.sin(this._settleT * Math.PI) * 0.05;
+
+      this.anims.timeScale = 1; // idle luôn chạy đúng nhịp thở gốc
       const idleElapsed = performance.now() - this._stoppedMovingTime;
       const breatheAnimKey = `idle_breathe_${this.currentDirection}_${this.avatarId}`;
       const defaultIdleKey = `idle_${this.currentDirection}_${this.avatarId}`;
@@ -465,18 +681,24 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
       } catch (e) {}
 
-      // Nhịp thở ngực hữu cơ (Micro Organic Breathing Pulse ±1.8%)
+      // Nhịp thở ngực hữu cơ (Micro Organic Breathing Pulse ±1.8%) + settle
       const breathe = Math.sin(performance.now() / 650) * 0.018;
-      this.scaleY = 1.0 + breathe;
-      this.scaleX = 1.0 - breathe * 0.4;
+      this.scaleY = 1.0 + breathe - settleDip;
+      this.scaleX = 1.0 - breathe * 0.4 + settleDip * 0.6;
     }
 
-    // Cập nhật vị trí bóng chân và độ co giãn nhẹ theo nhịp bước
+    // Bóng chân đồng bộ nhịp bước (co lại khi nhân vật nhún lên)
     if (this.shadowEllipse) {
       this.shadowEllipse.setPosition(this.x, this.y + 30);
       this.shadowEllipse.setDepth(this.y - 0.1);
-      const shadowBob = isMoving ? (0.92 + Math.sin(performance.now() / 85) * 0.08) : 1.0;
-      this.shadowEllipse.setScale(shadowBob, 1.0);
+      let shadowScale = 1.0;
+      if (visuallyMoving) {
+        try {
+          const p = this.anims.getProgress?.() ?? 0;
+          shadowScale = 0.94 + (0.5 + 0.5 * Math.sin(p * Math.PI * 4)) * 0.06;
+        } catch (e) {}
+      }
+      this.shadowEllipse.setScale(shadowScale, 1.0);
     }
 
     // Hiệu ứng LED Breathing cho Cyber Mecha & Sparkling Eye Glint cho Cóc Vàng FUDA

@@ -6,7 +6,9 @@
  * 8: Server Rack, 9: Sàn Cyan Cyber, 10: Cổng Portal, 11: Thảm đỏ, 12: Bảng trắng, 13: Cây cảnh, 14: Quầy cà phê, 15: Vách kính
  * 16: Khung tranh kỷ niệm, 17: Bục cúp vàng, 18: Sàn lưới Cyber Web, 19: Cóc Vàng FUDA, 20: Biển hiệu FUDA,
  * 21: Neon DEVER Club, 22: Cột cờ FPT, 23: Sàn gạch Alpha FUDA, 24: Cỏ sân bóng, 25: Khung thành, 26: Rổ bóng rổ,
- * 27: Lưới bóng chuyền, 28: Hồ bơi FUDA, 29: Màn hình LED Media Hub
+ * 27: Lưới bóng chuyền, 28: Hồ bơi FUDA, 29: Màn hình LED Media Hub, 30: Quầy Căn Tin, 31: Bàn Cà Phê
+ * 32: Giường Ngủ KTX, 33: PC Để Bàn, 34: Bàn Ghế Học Sinh, 35: Bảng Đen Lớp Học, 36: Sofa, 37: Tủ Quần Áo
+ * 38: Bàn Họp, 39: Màn Chiếu, 40: Ghế Ngồi, 41: Sofa Ngồi, 42: Hồ Vườn FUDA (nước tự nhiên, chặn đi bộ)
  */
 
 export const MAPS_CONFIG = {
@@ -17,7 +19,7 @@ export const MAPS_CONFIG = {
     spawnPoint: { x: 400, y: 350 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-      [  2,  2,  2, 10,  2,  2,  2,  2,  2, 20, 20,  2, 21, 21,  2, 20, 20,  2,  2,  2, 10,  2,  2,  0,  0 ],
+      [  2,  2,  2, 10, 10, 10,  2, 10,  2, 20, 20,  2, 21, 21, 10, 20, 20,  2, 10,  2, 10,  2,  2,  0,  0 ],
       [  2, 13, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13,  0,  7 ],
       [  2, 23, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23, 23, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  0,  5 ],
       [  2, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5,  5 ],
@@ -33,19 +35,20 @@ export const MAPS_CONFIG = {
       [ 10, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5, 10 ],
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  5,  0 ],
       [  0,  0,  7,  0, 22, 22,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0, 22, 22,  0,  7,  5,  0 ],
-      [  0,  7,  0,  0,  0,  0,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
-      [  0,  0,  0,  7,  0,  0,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  7,  0,  0,  5,  0 ],
-      [  0,  7,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
+      [  0, 42, 42, 42, 42, 42,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
+      [  0, 42, 42, 42, 42, 42,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  7,  0,  0,  5,  0 ],
+      [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
       { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
       { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
       { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
-      { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
       { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
       { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' }
+      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+      { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
+      { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
     ],
     zones: [
       { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -55,6 +58,14 @@ export const MAPS_CONFIG = {
       { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
       { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
     ],
+    decorations: [
+      // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
+      { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
+      { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
+      { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
+      { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
+      { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
+    ],
     floors: [
       {
         floorIndex: 0,
@@ -62,7 +73,7 @@ export const MAPS_CONFIG = {
         description: 'Hội trường trung tâm FUDA, tượng Cóc Vàng và kết nối 6 phân khu chức năng.',
         spawnPoint: { x: 400, y: 350 },
         layout: [
-          [  2,  2,  2, 10,  2,  2,  2,  2,  2, 20, 20,  2, 21, 21,  2, 20, 20,  2,  2,  2, 10,  2,  2,  0,  0 ],
+          [  2,  2,  2, 10, 10, 10,  2, 10,  2, 20, 20,  2, 21, 21, 10, 20, 20,  2, 10,  2, 10,  2,  2,  0,  0 ],
           [  2, 13, 11, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13,  0,  7 ],
           [  2, 23, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23, 23, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  0,  5 ],
           [  2, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5,  5 ],
@@ -78,19 +89,20 @@ export const MAPS_CONFIG = {
           [ 10, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,  5, 10 ],
           [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  5,  0 ],
           [  0,  0,  7,  0, 22, 22,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0, 22, 22,  0,  7,  5,  0 ],
-          [  0,  7,  0,  0,  0,  0,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
-          [  0,  0,  0,  7,  0,  0,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  7,  0,  0,  5,  0 ],
-          [  0,  7,  0,  0,  0,  7,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
+          [  0, 42, 42, 42, 42, 42,  0,  5,  0,  0,  0,  7,  0,  0,  0,  7,  0,  5,  0,  0,  0,  0,  0,  5,  0 ],
+          [  0, 42, 42, 42, 42, 42,  0,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  0,  0,  7,  0,  0,  5,  0 ],
+          [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
         ],
         portals: [
           { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
           { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
           { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Không Gian Web' },
-          { tileX: 0, tileY: 13, targetRoomId: 'media_hub', targetSpawn: { x: 360, y: 240 }, label: 'Media Hub' },
+          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
           { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
           { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-          { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' }
+          { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+          { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
+          { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
         ],
         zones: [
           { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
@@ -99,6 +111,14 @@ export const MAPS_CONFIG = {
           { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
           { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
           { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
+        ],
+        decorations: [
+          // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
+          { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
+          { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
+          { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
+          { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
+          { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
         ]
       },
       {
@@ -399,8 +419,8 @@ export const MAPS_CONFIG = {
 
   web_room: {
     id: 'web_room',
-    name: 'Không Gian Web & IT Helpdesk FPTU',
-    description: 'Không gian số nhúng Cổng thông tin, Landing Page chính thức và Bàn hỗ trợ IT Helpdesk trường.',
+    name: 'Web & Media Hub FU-DEVER',
+    description: 'Trung tâm số của CLB: cổng học vụ FPTU, IT helpdesk, landing page, mạng xã hội và kho dự án FU-DEVER.',
     spawnPoint: { x: 380, y: 280 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
@@ -472,6 +492,42 @@ export const MAPS_CONFIG = {
         }
       },
       {
+        id: 'zone_web_facebook',
+        type: 'club_website',
+        tileX: 11,
+        tileY: 3,
+        name: 'Trạm Fanpage Facebook FU-DEVER',
+        label: 'Xem Fanpage',
+        metadata: {
+          url: 'https://www.facebook.com/FPTUDever',
+          title: 'FANPAGE CHÍNH THỨC FU-DEVER'
+        }
+      },
+      {
+        id: 'zone_web_tiktok',
+        type: 'club_website',
+        tileX: 15,
+        tileY: 3,
+        name: 'Trạm TikTok & Media FUDA',
+        label: 'Kênh TikTok',
+        metadata: {
+          url: 'https://www.tiktok.com/@daihocfptdanang',
+          title: 'KÊNH TIKTOK FUDA'
+        }
+      },
+      {
+        id: 'zone_web_github',
+        type: 'club_website',
+        tileX: 22,
+        tileY: 3,
+        name: 'Trạm GitHub Organization FU-DEVER',
+        label: 'Kho GitHub',
+        metadata: {
+          url: 'https://github.com/fudever-club',
+          title: 'GITHUB ORGANIZATION FU-DEVER'
+        }
+      },
+      {
         id: 'zone_web_recruitment',
         type: 'club_website',
         tileX: 11,
@@ -481,95 +537,6 @@ export const MAPS_CONFIG = {
         metadata: {
           url: 'https://forms.gle/2us1yB5Qp2HYejj28',
           title: 'ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER'
-        }
-      }
-    ]
-  },
-
-  media_hub: {
-    id: 'media_hub',
-    name: 'Cổng Thông Tin Học Vụ & Media Hub',
-    description: 'Không gian tích hợp toàn bộ các cổng thông tin FAP, FLM, LMS, phần mềm thi và mạng xã hội CLB.',
-    spawnPoint: { x: 260, y: 220 },
-    layout: [
-      [ 15, 15, 15, 15, 15, 29, 29, 15, 15, 20, 20, 15, 15, 21, 21, 15, 15, 29, 29, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 19, 19, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 23, 15 ],
-      [ 15, 23, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 23, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4,  4, 23, 23,  4, 23, 15 ],
-      [ 15, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 15 ],
-      [ 15, 13, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13, 23, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
-    ],
-    portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 100, y: 420 }, label: 'Về Sảnh Chính' }
-    ],
-    zones: [
-      {
-        id: 'zone_media_portal',
-        type: 'fptu_student_portal',
-        tileX: 11,
-        tileY: 2,
-        name: 'Cổng Tiện Ích Học Vụ & Phần Mềm Thi',
-        label: 'Cổng FPTU & Thi'
-      },
-      {
-        id: 'zone_media_facebook',
-        type: 'club_website',
-        tileX: 3,
-        tileY: 2,
-        name: 'Trạm Fanpage Facebook FU-DEVER',
-        label: 'Xem Fanpage',
-        metadata: {
-          url: 'https://www.facebook.com/FPTUDever',
-          title: 'FANPAGE CHÍNH THỨC FU-DEVER'
-        }
-      },
-      {
-        id: 'zone_media_tiktok',
-        type: 'club_website',
-        tileX: 7,
-        tileY: 2,
-        name: 'Trạm TikTok & Media FUDA',
-        label: 'Kênh TikTok',
-        metadata: {
-          url: 'https://www.tiktok.com/@daihocfptdanang',
-          title: 'KÊNH TIKTOK FUDA'
-        }
-      },
-      {
-        id: 'zone_media_github',
-        type: 'club_website',
-        tileX: 15,
-        tileY: 2,
-        name: 'Trạm GitHub Organization FU-DEVER',
-        label: 'Kho GitHub',
-        metadata: {
-          url: 'https://github.com/fudever-club',
-          title: 'GITHUB ORGANIZATION FU-DEVER'
-        }
-      },
-      {
-        id: 'zone_media_recruitment',
-        type: 'club_website',
-        tileX: 19,
-        tileY: 2,
-        name: 'Trạm Tuyển Quân Thành Viên FU-DEVER',
-        label: 'Đăng Ký Gia Nhập',
-        metadata: {
-          url: 'https://forms.gle/2us1yB5Qp2HYejj28',
-          title: 'ĐƠN TUYỂN QUÂN FU-DEVER'
         }
       }
     ]
@@ -808,6 +775,85 @@ export const MAPS_CONFIG = {
         }
       }
     ]
-  }
+  },
+
+  // ===== 3 PHÒNG MỚI KIỂU GATHER.TOWN =====
+  dorm_room: {
+    id: 'dorm_room',
+    name: 'Ký Túc Xá FUDA - Phòng Sinh Hoạt Chung',
+    description: 'Không gian nghỉ ngơi ấm cúng: giường ngủ, tủ đồ cá nhân, bàn học và góc sofa thư giãn.',
+    spawnPoint: { x: 400, y: 336 },
+    layout: [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2, 32, 32,  1, 37,  1,  1, 32, 32,  1,  1,  1, 32, 32,  1,  1, 37,  1, 32, 32,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1, 40,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  6, 36, 36,  6,  6, 41,  6,  6,  6,  6, 36, 36,  6,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2, 37,  1,  1, 32, 32,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 32, 32,  1,  1,  1,  1, 37,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
+    ],
+    portals: [
+      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 144, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 144, y: 80 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      { id: 'zone_dorm_rest', type: 'rest_bed', tileX: 2, tileY: 2, name: 'Giường Ngủ KTX FUDA', label: 'Nghỉ Ngơi' },
+      { id: 'zone_dorm_study', type: 'code_editor', tileX: 7, tileY: 4, name: 'Bàn Học Cá Nhân KTX', label: 'Học Bài & Code' },
+      { id: 'zone_dorm_lounge', type: 'coffee_lofi', tileX: 11, tileY: 6, name: 'Góc Sofa Thư Giãn KTX', label: 'Thư Giãn' },
+      // NOTE: (7,3) là ô bàn học (tile 4, solid) nên đặt ghế ở (8,4): ô sàn (tile 1),
+      // kề bàn học (8,3) và kề zone bàn học (7,4), không đè zone nào
+      { id: 'zone_dorm_sit_desk', type: 'sit_chair', tileX: 8, tileY: 4, name: 'Ghế Bàn Học KTX', label: 'Ngồi Học' },
+      { id: 'zone_dorm_sit_sofa', type: 'sit_sofa', tileX: 10, tileY: 6, name: 'Sofa KTX FUDA', label: 'Ngồi Thư Giãn' }
+    ]
+  },
+
+  meeting_room: {
+    id: 'meeting_room',
+    name: 'Phòng Họp & Lớp Học CLB FU-DEVER',
+    description: 'Không gian họp và dạy học kiểu Gather.town: bàn hội nghị chữ U, màn chiếu projector, bảng trắng cho buổi họp và lớp học CLB.',
+    spawnPoint: { x: 400, y: 336 },
+    layout: [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2, 35,  1,  1,  1,  1,  1,  1,  1,  1, 39, 39, 39,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1, 36,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 36,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
+    ],
+    portals: [
+      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 176, y: 96 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 176, y: 96 }, label: 'Về Sảnh Chính' }
+    ],
+    zones: [
+      { id: 'zone_meet_screen', type: 'whiteboard_slides', tileX: 11, tileY: 1, name: 'Màn Chiếu Phòng Họp CLB', label: 'Slide Họp CLB' },
+      { id: 'zone_meet_stage', type: 'meeting_stage', tileX: 10, tileY: 6, name: 'Bàn Họp Chữ U FU-DEVER', label: 'Họp Video' },
+      { id: 'zone_meet_board', type: 'whiteboard_slides', tileX: 1, tileY: 1, name: 'Bảng Trắng Phòng Họp', label: 'Ghi Chú Họp' }
+    ]
+  },
 };
 

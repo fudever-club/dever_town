@@ -10,6 +10,7 @@
 
 import { FLAPPY_BUG_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class FlappyBugEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -17,6 +18,8 @@ export class FlappyBugEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.cfg = FLAPPY_BUG_CONFIG;
     this.w = canvas.width;
@@ -77,6 +80,37 @@ export class FlappyBugEngine {
     this.pipeTimer = 0.5; // Đợi một chút trước khi cột đầu tiên xuất hiện
 
     this.callbacks.onScoreUpdate?.(0);
+  }
+
+  // Playfield thích ứng hướng màn hình (2026-10-09): cập nhật w/h, kẹp chú bọ
+  // vào biên mới, co giãn các cột hiện có theo tỉ lệ mặt đất mới, rải lại sao.
+  // Vật lý (gravity 920, flapForce -310, pipeSpeed 140) giữ nguyên.
+  resize(w, h) {
+    const phys = this.cfg.physics;
+    const groundH = phys.groundHeight || 44;
+    const oldGroundY = this.h - groundH;
+    this.w = w;
+    this.h = h;
+    const groundY = h - groundH;
+
+    const r = this.buggy.radius || 14;
+    this.buggy.y = Math.min(Math.max(this.buggy.y, r), groundY - r);
+
+    const gap = phys.pipeGap || 116;
+    const oldSpan = Math.max(1, oldGroundY - gap);
+    const newSpan = Math.max(1, groundY - gap);
+    for (const p of this.pipes) {
+      p.x = Math.min(p.x, w + 10);
+      const ratio = p.topH / oldSpan;
+      p.topH = Math.floor(ratio * newSpan);
+      p.bottomY = p.topH + gap;
+      p.bottomH = groundY - p.bottomY;
+    }
+
+    for (const s of this.stars) {
+      s.x = Math.random() * w;
+      s.y = Math.random() * Math.max(60, h - 90);
+    }
   }
 
   flap() {
@@ -239,9 +273,13 @@ export class FlappyBugEngine {
     const phys = this.cfg.physics;
     const groundY = this.h - (phys.groundHeight || 44);
     const minTop = 45;
-    const maxTop = 185;
-    const topH = Math.floor(minTop + Math.random() * (maxTop - minTop));
+    // Màn hình dọc: khe hở phân bố trên toàn chiều cao mới thay vì chỉ 185px
+    // trên cùng (2026-10-09). Desktop (h<=400) giữ nguyên để không đổi độ khó.
     const gap = phys.pipeGap || 116;
+    const maxTop = this.h > 400
+      ? Math.floor(groundY - gap - (this.cfg.portraitPipeTopMargin || 80))
+      : 185;
+    const topH = Math.floor(minTop + Math.random() * Math.max(20, maxTop - minTop));
 
     this.pipes.push({
       x: this.w + 10,
@@ -345,6 +383,12 @@ export class FlappyBugEngine {
     ctx.fillStyle = '#111827';
     ctx.globalAlpha = 0.55;
 
+    // Lát (tile) skyline theo chiều ngang để phủ màn hình rộng (landscape 2:1).
+    // (2026-10-09, orientation-aware layout)
+    for (let ox = 0; ox < this.w; ox += 640) {
+      ctx.save();
+      ctx.translate(ox, 0);
+
     // Vòm Cầu Rồng uốn lượn xa xăm
     ctx.beginPath();
     ctx.moveTo(30, groundY);
@@ -363,6 +407,9 @@ export class FlappyBugEngine {
     ctx.lineTo(605, groundY - 60);
     ctx.lineTo(605, groundY);
     ctx.fill();
+
+      ctx.restore();
+    }
 
     ctx.restore();
   }
@@ -598,21 +645,21 @@ export class FlappyBugEngine {
       // Dòng chữ hướng dẫn nhấp nháy
       ctx.textAlign = 'center';
       ctx.fillStyle = '#f8fafc';
-      ctx.font = '900 24px Outfit, sans-serif';
+      ctx.font = '900 24px "Be Vietnam Pro", sans-serif';
       ctx.shadowColor = '#06b6d4';
       ctx.shadowBlur = 10;
       ctx.fillText('FLAPPY BUGGY', w / 2, 110);
 
-      ctx.font = '700 14px Outfit, sans-serif';
+      ctx.font = '700 14px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#38bdf8';
       const pulse = Math.sin(this.animTimer * 6) * 0.3 + 0.7;
       ctx.globalAlpha = pulse;
-      ctx.fillText('BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ VỖ CÁNH', w / 2, 230);
+      ctx.fillText(this.isTouch ? 'CHẠM ĐỂ VỖ CÁNH' : 'BẤM PHÍM CÁCH (SPACE) HOẶC CLICK ĐỂ VỖ CÁNH', w / 2, 230);
       ctx.globalAlpha = 1.0;
     } else if (this.state === 'playing') {
       // Điểm số lớn sắc nét trên đỉnh màn hình
       ctx.textAlign = 'center';
-      ctx.font = '900 38px Outfit, sans-serif';
+      ctx.font = '900 38px "Be Vietnam Pro", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
       ctx.shadowBlur = 8;
@@ -636,7 +683,7 @@ export class FlappyBugEngine {
       // Tiêu đề Game Over
       ctx.textAlign = 'center';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '900 22px Outfit, sans-serif';
+      ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
       ctx.fillText('BUGGY ĐÃ VA CHẠM!', w / 2, my + 38);
 
       // Huy chương (Medal)
@@ -645,29 +692,29 @@ export class FlappyBugEngine {
       // Điểm số hiện tại & Kỷ lục
       ctx.textAlign = 'right';
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText('ĐIỂM SỐ', mx + mw - 35, my + 82);
       ctx.fillStyle = '#ffffff';
-      ctx.font = '900 26px Outfit, sans-serif';
+      ctx.font = '900 26px "Be Vietnam Pro", sans-serif';
       ctx.fillText(this.score.toString(), mx + mw - 35, my + 112);
 
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '700 13px Outfit, sans-serif';
+      ctx.font = '700 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText('KỶ LỤC TỐT NHẤT', mx + mw - 35, my + 140);
       ctx.fillStyle = '#fbbf24';
-      ctx.font = '900 22px Outfit, sans-serif';
+      ctx.font = '900 22px "Be Vietnam Pro", sans-serif';
       ctx.fillText(this.highScore.toString(), mx + mw - 35, my + 166);
 
       if (this.newBest) {
         ctx.fillStyle = '#f43f5e';
-        ctx.font = '800 12px Outfit, sans-serif';
+        ctx.font = '800 12px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('★ KỶ LỤC MỚI ĐƯỢC THIẾT LẬP! ★', w / 2, my + mh - 26);
       } else {
         ctx.fillStyle = '#38bdf8';
-        ctx.font = '600 12px Outfit, sans-serif';
+        ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Bấm Space hoặc Click Chuột để bay tiếp', w / 2, my + mh - 26);
+        ctx.fillText(this.isTouch ? 'Chạm để bay tiếp' : 'Bấm Space hoặc Click Chuột để bay tiếp', w / 2, my + mh - 26);
       }
     }
 
@@ -713,14 +760,14 @@ export class FlappyBugEngine {
 
     // Ngôi sao ở giữa
     ctx.fillStyle = ringColor;
-    ctx.font = '900 18px Outfit, sans-serif';
+    ctx.font = '900 18px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('★', cx, cy + 1);
 
     // Tên huy chương
     ctx.fillStyle = ringColor;
-    ctx.font = '800 11px Outfit, sans-serif';
+    ctx.font = '800 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText(medalName, cx, cy + 38);
     ctx.restore();
   }

@@ -29,11 +29,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Tech Lab',
       library_lounge: 'Thư Viện FUDA',
       memory_room: 'Phòng Kỷ Niệm',
-      web_room: 'Không Gian Web',
-      media_hub: 'Media & MXH',
+      web_room: 'Web & Media Hub',
       sports_complex: 'Khu Thể Thao',
       canteen_cafe: 'Căn Tin & Cafe',
-      game_arcade: 'Arcade & Robot'
+      game_arcade: 'Arcade & Robot',
+      dorm_room: 'Ký Túc Xá',
+      meeting_room: 'Phòng Họp & Lớp Học',
     },
 
     // Portals (Cổng dịch chuyển trên mặt sàn)
@@ -42,11 +43,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Sang Tech Lab',
       library_lounge: 'Sang Thư Viện',
       memory_room: 'Sang Phòng Kỷ Niệm',
-      web_room: 'Sang Không Gian Web',
-      media_hub: 'Sang Media Hub',
+      web_room: 'Sang Web & Media Hub',
       sports_complex: 'Sang Khu Thể Thao',
       canteen_cafe: 'Sang Căn Tin & Cafe',
-      game_arcade: 'Sang Arcade & Robot'
+      game_arcade: 'Sang Arcade & Robot',
+      dorm_room: 'Sang Ký Túc Xá',
+      meeting_room: 'Sang Phòng Họp & Lớp Học',
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -114,6 +116,16 @@ export const TRANSLATIONS = {
       zone_arcade_geometrydash: 'Máy Game: Dever Dash 3.0',
       zone_arcade_match3: 'Máy Game: Cyber Candy Match',
       zone_arcade_pacman: 'Máy Game: Cyber Pac-Man',
+
+      // Phòng mới kiểu Gather.town
+      zone_dorm_rest: 'Giường Nghỉ Ngơi KTX',
+      zone_dorm_study: 'Bàn Học Cá Nhân KTX',
+      zone_dorm_lounge: 'Góc Sofa Thư Giãn KTX',
+      zone_class_board: 'Bảng Đen Giảng Đường',
+      zone_class_workshop: 'Bục Giảng Workshop CLB',
+      zone_pc_code1: 'Trạm PC Dev 01',
+      zone_pc_code2: 'Trạm PC Dev 02',
+      zone_pc_server: 'Tủ Server DEVER',
       zone_arcade_robot_hub: 'Trạm Tải Game Robot',
       zone_arcade_meeting: 'Bàn Game & Livestream',
 
@@ -155,7 +167,7 @@ export const TRANSLATIONS = {
 
     // Onboarding Guide
     onboardingBadge: 'HƯỚNG DẪN TÂN THỦ',
-    onboardingTitle: 'Chào mừng bạn đến với DEVER TOWN! 🎮',
+    onboardingTitle: 'Chào mừng bạn đến với DEVER TOWN!',
     onboardingStep1Title: 'Di chuyển 4 hướng',
     onboardingStep1Desc: 'Dùng phím Mũi tên hoặc W A S D (Điện thoại có D-Pad ảo).',
     onboardingStep2Title: 'Tương tác phím [E]',
@@ -164,7 +176,7 @@ export const TRANSLATIONS = {
     onboardingStep3Desc: 'Nhặt vật phẩm rơi trên sàn, trang bị và cầm trên tay.',
     onboardingStep4Title: 'Khám phá 9 Phân Khu',
     onboardingStep4Desc: 'Bước qua các cổng dịch chuyển màu tím để sang phòng khác.',
-    onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay 🚀',
+    onboardingDismissBtn: 'Đã Hiểu, Bắt Đầu Chơi Ngay',
 
     // Chat Box
     chatTitle: 'Kênh Chat FUDA & DEVER',
@@ -191,7 +203,9 @@ export const TRANSLATIONS = {
     settingsFootsteps: 'Bật Tiếng Bước Chân Khi Di Chuyển',
     settingsSfx: 'Bật Hiệu Ứng Âm Thanh (Click, Portal, Nhặt Đồ)',
     settingsControlsTitle: 'Phím Tắt Điều Khiển:',
-    settingsControlsDesc: 'W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ'
+    settingsControlsDesc: 'W, A, S, D hoặc Phím Mũi Tên: Di chuyển • [E]: Tương tác • [I]: Mở túi đồ • [ESC]: Đóng cửa sổ',
+    settingsMoveModeLabel: 'Chế Độ Di Chuyển (Mobile):',
+    settingsAnalogVisible: 'Hiện cần analog (tắt: vuốt để di chuyển, không hiện cần)'
   },
 
   en: {
@@ -221,11 +235,12 @@ export const TRANSLATIONS = {
       dever_lab: 'Tech Lab',
       library_lounge: 'FUDA Library',
       memory_room: 'Memory Gallery',
-      web_room: 'Web Showroom',
-      media_hub: 'Media & Social',
+      web_room: 'Web & Media Hub',
       sports_complex: 'Sports Complex',
       canteen_cafe: 'Canteen & Cafe',
-      game_arcade: 'Arcade & Robot'
+      game_arcade: 'Arcade & Robot',
+      dorm_room: 'Dormitory',
+      meeting_room: 'Club Meeting & Class Room',
     },
 
     // Portals (Ground portals)
@@ -234,11 +249,12 @@ export const TRANSLATIONS = {
       dever_lab: 'To Tech Lab',
       library_lounge: 'To Library',
       memory_room: 'To Memory Gallery',
-      web_room: 'To Web Showroom',
-      media_hub: 'To Media Hub',
+      web_room: 'To Web & Media Hub',
       sports_complex: 'To Sports Complex',
       canteen_cafe: 'To Canteen & Cafe',
-      game_arcade: 'To Arcade & Robot'
+      game_arcade: 'To Arcade & Robot',
+      dorm_room: 'To Dormitory',
+      meeting_room: 'To Club Meeting & Class Room',
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)
@@ -309,6 +325,16 @@ export const TRANSLATIONS = {
       zone_arcade_robot_hub: 'Club Robot Games Download',
       zone_arcade_meeting: 'Game Match & Livestream Desk',
 
+      // New Gather.town-style rooms
+      zone_dorm_rest: 'KTX Rest Bed',
+      zone_dorm_study: 'KTX Personal Study Desk',
+      zone_dorm_lounge: 'KTX Sofa Lounge',
+      zone_class_board: 'Lecture Hall Chalkboard',
+      zone_class_workshop: 'Club Workshop Podium',
+      zone_pc_code1: 'PC Dev Station 01',
+      zone_pc_code2: 'PC Dev Station 02',
+      zone_pc_server: 'DEVER Server Rack',
+
       // Fallback Generic Zones
       zone_whiteboard: 'Slide Presentation',
       zone_meeting: 'Meeting Stage',
@@ -347,7 +373,7 @@ export const TRANSLATIONS = {
 
     // Onboarding Guide
     onboardingBadge: 'BEGINNER GUIDE',
-    onboardingTitle: 'Welcome to DEVER TOWN! 🎮',
+    onboardingTitle: 'Welcome to DEVER TOWN!',
     onboardingStep1Title: '4-Direction Movement',
     onboardingStep1Desc: 'Use Arrow keys or W A S D (Virtual D-Pad on mobile).',
     onboardingStep2Title: 'Interact with [E]',
@@ -356,7 +382,7 @@ export const TRANSLATIONS = {
     onboardingStep3Desc: 'Pick up items on the floor, equip and hold in hand.',
     onboardingStep4Title: 'Explore 9 Zones',
     onboardingStep4Desc: 'Walk through purple portals to teleport to other rooms.',
-    onboardingDismissBtn: 'Got it, Let\'s Play Now 🚀',
+    onboardingDismissBtn: 'Got it, Let\'s Play Now',
 
     // Chat Box
     chatTitle: 'FUDA & DEVER Live Chat',
@@ -383,7 +409,9 @@ export const TRANSLATIONS = {
     settingsFootsteps: 'Enable Footstep Sounds While Walking',
     settingsSfx: 'Enable Sound Effects (Click, Portal, Pickups)',
     settingsControlsTitle: 'Controls Cheatsheet:',
-    settingsControlsDesc: 'W, A, S, D or Arrow Keys: Move | [E]: Interact | [I]: Open Inventory | [ESC]: Close Dialogs'
+    settingsControlsDesc: 'W, A, S, D or Arrow Keys: Move • [E]: Interact • [I]: Open Inventory • [ESC]: Close Dialogs',
+    settingsMoveModeLabel: 'Movement Mode (Mobile):',
+    settingsAnalogVisible: 'Show analog stick (off: swipe to move, stick hidden)'
   }
 };
 
@@ -459,7 +487,6 @@ class I18nManager {
     if (roomSelect) {
       const roomKeys = [
         'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
-        'web_room', 'media_hub', 'sports_complex', 'canteen_cafe', 'game_arcade'
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);

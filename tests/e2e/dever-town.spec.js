@@ -2,6 +2,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () => {
 
+  test.beforeEach(async ({ page }) => {
+    // Tắt tour coach-marks (2026-10-09) để nó không che màn hình và chặn click trong test
+    await page.addInitScript(() => {
+      localStorage.setItem('dever_onboarded_v1', '1');
+      localStorage.setItem('dever_chat_hint_seen', '1');
+    });
+  });
+
   test('01. Welcome Gate loads with authentic branding & tabs', async ({ page }) => {
     await page.goto('/');
 
@@ -57,6 +65,12 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
     await page.locator('#gate-guest-name').fill('HotKeyTester');
     await page.locator('#gate-form-guest button[type="submit"]').click();
     await expect(page.locator('#welcome-gate')).toHaveClass(/hidden/);
+    // Đợi game khởi tạo xong (WorldScene tạo InventoryModal + đăng ký phím tắt)
+    await expect(page.locator('#game-container canvas')).toBeVisible({ timeout: 15000 });
+    await page.waitForFunction(
+      () => !!window.__DEVER_GAME__?.scene?.keys?.WorldScene?.inventoryModal,
+      null, { timeout: 15000 }
+    );
 
     // 1. Kiểm tra mở Túi đồ qua phím 'I'
     await page.keyboard.press('KeyI');
@@ -110,6 +124,10 @@ test.describe('DEVER TOWN - End-to-End System Integrity & Gameplay Suite', () =>
       const touchChatBtn = page.locator('#touch-btn-chat');
       await touchChatBtn.click();
       await expect(page.locator('#chat-wrapper')).toHaveClass(/mobile-open/);
+    } else {
+      // Desktop: chat mặc định thu gọn (2026-10-09) -> mở bằng phím C
+      await page.keyboard.press('c');
+      await expect(page.locator('#main-content')).not.toHaveClass(/chat-collapsed/);
     }
 
     // Kiểm tra Chat input form

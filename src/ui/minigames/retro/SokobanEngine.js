@@ -11,6 +11,7 @@
 import { SOKOBAN_LEVELS } from '../../../config/sokobanLevels.js';
 import { SOKOBAN_CONFIG } from '../../../config/minigamesConfig.js';
 import { audioManager } from '../../../utils/AudioManager.js';
+import { isTouchDevice } from '../common/touchHints.js';
 
 export class SokobanEngine {
   constructor(canvas, juiceFX, callbacks = {}) {
@@ -18,6 +19,8 @@ export class SokobanEngine {
     this.ctx = canvas.getContext('2d');
     this.juiceFX = juiceFX;
     this.callbacks = callbacks;
+    // Hint điều khiển in-canvas phải đúng thiết bị (2026-10-09, yêu cầu của Hưng).
+    this.isTouch = isTouchDevice();
 
     this.tileSize = SOKOBAN_CONFIG.tileSize || 38;
     this.currentLevelIndex = 0;
@@ -67,12 +70,39 @@ export class SokobanEngine {
     this.playerVisual = { x: this.player.x, y: this.player.y };
     this.facingDir = { dx: 0, dy: 1 };
 
-    // Căn giữa canvas
-    this.offsetX = Math.floor((this.canvas.width - this.cols * this.tileSize) / 2);
-    this.offsetY = Math.floor((this.canvas.height - this.rows * this.tileSize) / 2) + 12;
+    // Căn giữa canvas theo kích thước thực tế (2026-10-09, orientation-aware)
+    this.layoutTiles();
 
     this.checkDeadlocks();
     this.callbacks.onScoreUpdate?.(this.currentLevelIndex + 1);
+  }
+
+  // Bố cục ô cờ thích ứng hướng màn hình (2026-10-09):
+  // - Desktop 640×360: tileSize 38 như config, căn giữa.
+  // - Portrait: phóng to ô cờ để lấp đầy chiều dọc (tap target lớn hơn).
+  // - Landscape: giữ 38, căn giữa theo chiều ngang mới.
+  // Mọi thực thể dùng tọa độ tile nên tự đúng, không đổi logic game.
+  layoutTiles() {
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const base = SOKOBAN_CONFIG.tileSize || 38;
+    if (w === 640 && h === 360) {
+      this.tileSize = base;
+    } else if (h >= w) {
+      const availW = w - 32;
+      const availH = h - 170; // chừa HUD trên + gợi ý dưới
+      this.tileSize = Math.max(24, Math.floor(Math.min(availW / this.cols, availH / this.rows)));
+    } else {
+      this.tileSize = base;
+    }
+    this.offsetX = Math.floor((w - this.cols * this.tileSize) / 2);
+    this.offsetY = Math.floor((h - this.rows * this.tileSize) / 2) + 12;
+  }
+
+  // Playfield thích ứng hướng màn hình: chỉ tính lại tileSize/offset,
+  // thực thể tile-based giữ nguyên.
+  resize() {
+    this.layoutTiles();
   }
 
   restartLevel() {
@@ -167,21 +197,14 @@ export class SokobanEngine {
       return;
     }
 
-    // 2. Các nút điều khiển trên thanh HUD
-    // Nút Hoàn Tác [U] (x: 430, y: 15, w: 85, h: 26)
-    if (x >= 420 && x <= 505 && y >= 12 && y <= 40) {
-      this.undo();
-      return;
-    }
-    // Nút Chơi Lại [R] (x: 515, y: 15, w: 85, h: 26)
-    if (x >= 510 && x <= 585 && y >= 12 && y <= 40) {
-      this.restartLevel();
-      return;
-    }
-    // Nút Chọn Màn [L] (x: 590, y: 15, w: 40, h: 26)
-    if (x >= 590 && x <= 630 && y >= 12 && y <= 40) {
-      this.toggleLevelSelect();
-      return;
+    // 2. Các nút điều khiển trên thanh HUD (vị trí tính từ getHUDButtonRects — canh phải theo chiều rộng canvas)
+    for (const b of this.getHUDButtonRects()) {
+      if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
+        if (b.id === 'undo') this.undo();
+        else if (b.id === 'restart') this.restartLevel();
+        else if (b.id === 'levels') this.toggleLevelSelect();
+        return;
+      }
     }
 
     // 3. Nếu màn hình Thắng: click bất kỳ đâu để sang màn tiếp theo
@@ -452,7 +475,7 @@ export class SokobanEngine {
       ctx.fillStyle = '#ef4444';
       ctx.shadowColor = '#ef4444';
       ctx.shadowBlur = 6;
-      ctx.font = '900 16px Outfit, sans-serif';
+      ctx.font = '900 16px "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('!', x, y);
@@ -657,70 +680,81 @@ export class SokobanEngine {
     ctx.restore();
   }
 
+  // Vị trí các nút HUD — canh phải theo chiều rộng canvas để không tràn ở portrait.
+  // Dùng chung cho render và hit-test click/tap.
+  getHUDButtonRects() {
+    const w = this.canvas.width;
+    const y = 12, h = 26, gap = 8, margin = 8;
+    const defs = [
+      { id: 'levels', label: this.isTouch ? 'Màn' : 'Màn (L)', bw: this.isTouch ? 38 : 50, color: '#a855f7' },
+      { id: 'restart', label: this.isTouch ? 'Chơi Lại' : 'Chơi Lại (R)', bw: 72, color: '#f59e0b' },
+      { id: 'undo', label: this.isTouch ? 'Hoàn Tác' : 'Hoàn Tác (U)', bw: 85, color: '#38bdf8' },
+    ];
+    let x = w - margin;
+    return defs.map(d => {
+      x -= d.bw;
+      const r = { ...d, x, y, h, w: d.bw };
+      x -= gap;
+      return r;
+    });
+  }
+
+  // Cắt chữ có dấu "…" khi vượt quá maxWidth
+  fitText(ctx, text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    let t = text;
+    while (t.length > 1 && ctx.measureText(t + '…').width > maxWidth) t = t.slice(0, -1);
+    return t + '…';
+  }
+
   renderHUD(ctx) {
     const w = this.canvas.width;
+    const btns = this.getHUDButtonRects();
 
     ctx.save();
-    // Thông tin Màn chơi
+    // Thông tin Màn chơi — cắt gọn nếu không đủ chỗ trước nút đầu tiên
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 15px Outfit, sans-serif';
+    ctx.font = '800 15px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(`${this.levelData.name} (${this.currentLevelIndex + 1}/15)`, 18, 26);
+    const nameMax = Math.max(80, btns[btns.length - 1].x - 30);
+    ctx.fillText(this.fitText(ctx, `${this.levelData.name} (${this.currentLevelIndex + 1}/15)`, nameMax), 18, 26);
 
-    ctx.font = '600 13px Outfit, sans-serif';
+    ctx.font = '600 13px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText(`Số Bước: ${this.moves} · Chuẩn Par: ${this.levelData.parMoves}`, 18, 44);
 
-    // Nút [Hoàn Tác (U)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(420, 12, 85, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = '700 12px Outfit, sans-serif';
+    // Các nút HUD canh phải
+    ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Hoàn Tác (U)', 462, 29);
-
-    // Nút [Chơi Lại (R)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(512, 12, 72, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#f59e0b';
-    ctx.stroke();
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillText('Chơi Lại (R)', 548, 29);
-
-    // Nút [Màn (L)]
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(590, 12, 38, 26, 4);
-    ctx.fill();
-    ctx.strokeStyle = '#a855f7';
-    ctx.stroke();
-    ctx.fillStyle = '#a855f7';
-    ctx.fillText('Màn (L)', 609, 29);
+    for (const b of btns) {
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.roundRect(b.x, b.y, b.w, b.h, 4);
+      ctx.fill();
+      ctx.strokeStyle = b.color;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = b.color;
+      ctx.fillText(b.label, b.x + b.w / 2, b.y + 17);
+    }
 
     // Cảnh báo Deadlock góc chết
     if (this.deadlockedBoxes.length > 0 && !this.won) {
       ctx.textAlign = 'left';
       ctx.fillStyle = '#ef4444';
-      ctx.font = '700 12px Outfit, sans-serif';
-      ctx.fillText('CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm Hoàn Tác (U)', 18, 62);
+      ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(this.isTouch ? 'CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm nút Hoàn Tác' : 'CẢNH BÁO: Có hộp bị kẹt góc chết! Bấm Hoàn Tác (U)', 18, 62);
     }
 
     // Gợi ý điều khiển phía dưới
     ctx.textAlign = 'center';
-    ctx.font = '600 12px Outfit, sans-serif';
+    ctx.font = '600 12px "Be Vietnam Pro", sans-serif';
     if (this.won) {
       ctx.fillStyle = '#4ade80';
-      ctx.fillText('CHIẾN THẮNG! Bấm Phím Cách (Space) hoặc Click để sang Màn Tiếp Theo', w / 2, this.canvas.height - 12);
+      ctx.fillText(this.isTouch ? 'CHIẾN THẮNG! Chạm để sang Màn Tiếp Theo' : 'CHIẾN THẮNG! Bấm Phím Cách (Space) hoặc Click để sang Màn Tiếp Theo', w / 2, this.canvas.height - 12);
     } else {
       ctx.fillStyle = '#64748b';
-      ctx.fillText('Dùng WASD / Mũi Tên: Di chuyển · U: Hoàn tác · R: Chơi lại · L: Chọn màn', w / 2, this.canvas.height - 12);
+      ctx.fillText(this.isTouch ? 'Chạm để di chuyển • nút trên màn hình để hoàn tác' : 'Dùng WASD / Mũi Tên: Di chuyển · U: Hoàn tác · R: Chơi lại · L: Chọn màn', w / 2, this.canvas.height - 12);
     }
 
     ctx.restore();
@@ -750,13 +784,13 @@ export class SokobanEngine {
 
     // Tiêu đề modal
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('CHỌN MÀN CHƠI SOKOBAN (15 MÀN)', mx + 24, my + 32);
 
     // Nút đóng [X]
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '800 16px Outfit, sans-serif';
+    ctx.font = '800 16px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText('✕', mx + modalW - 20, my + 32);
 
@@ -786,11 +820,11 @@ export class SokobanEngine {
 
       ctx.textAlign = 'center';
       ctx.fillStyle = isCur ? '#ffffff' : '#f1f5f9';
-      ctx.font = '800 13px Outfit, sans-serif';
+      ctx.font = '800 13px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Màn ${i + 1}`, bx + btnW / 2, by + 22);
 
       ctx.fillStyle = isCur ? '#bae6fd' : '#94a3b8';
-      ctx.font = '600 10px Outfit, sans-serif';
+      ctx.font = '600 10px "Be Vietnam Pro", sans-serif';
       ctx.fillText(`Par: ${SOKOBAN_LEVELS[i].parMoves}`, bx + btnW / 2, by + 38);
     }
 

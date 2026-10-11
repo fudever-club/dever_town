@@ -1,0 +1,545 @@
+/* --- arcade.css: arcade & robot styles (split from main.css 2026-10-07) --- */
+/* --- ARCADE & ROBOT STYLES --- */
+.arcade-workspace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  gap: var(--space-12px);
+  padding: var(--space-12px);
+}
+
+.arcade-header-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8px);
+  width: 100%;
+}
+
+.arcade-badge-row {
+  display: flex;
+  gap: var(--space-10px);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.arcade-tabs {
+  display: flex;
+  gap: var(--space-8px);
+  background: var(--color-rgba-15-23-42-0-7);
+  padding: var(--space-4px);
+  border-radius: var(--radius-10px);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+}
+
+.arcade-tab {
+  background: transparent;
+  color: var(--color-94a3b8);
+  border: 1px solid transparent;
+  padding: var(--space-7px-16px);
+  border-radius: var(--radius-8px);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-13px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arcade-tab:hover {
+  color: var(--color-ffffff);
+  background: var(--color-rgba-255-255-255-0-05);
+}
+
+.arcade-tab.active {
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  color: var(--color-ffffff);
+  border-color: var(--color-f26f21);
+  box-shadow: 0 2px 10px var(--color-rgba-242-111-33-0-35);
+}
+
+.arcade-arena {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: var(--space-12px);
+}
+
+.arcade-canvas-wrapper {
+  width: 100%;
+  max-width: 640px;
+  background: var(--color-020617);
+  border: 2px solid var(--color-rgba-242-111-33-0-35);
+  border-radius: var(--radius-14px);
+  overflow: hidden;
+  box-shadow: 0 10px 30px var(--color-rgba-0-0-0-0-8), 0 0 25px var(--color-rgba-242-111-33-0-15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#retro-arcade-canvas {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  background: var(--color-000000);
+  cursor: pointer;
+}
+
+.arcade-touch-controls {
+  display: flex;
+  gap: var(--space-16px);
+  width: 100%;
+  max-width: 520px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.arcade-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(2, 40px);
+  gap: var(--space-6px);
+}
+
+.arcade-dpad .dpad-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.arcade-dpad .dpad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.arcade-dpad .dpad-down {
+  grid-column: 2;
+  grid-row: 2;
+}
+.arcade-dpad .dpad-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.arcade-actions {
+  display: flex;
+  gap: var(--space-8px);
+  align-items: center;
+}
+
+.arcade-touch-btn {
+  background: var(--color-rgba-30-41-59-0-9);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-f8fafc);
+  font-family: var(--font-sans-outfit);
+  font-size: var(--text-11px);
+  font-weight: 700;
+  padding: var(--space-8px-12px);
+  border-radius: var(--radius-8px);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  user-select: none;
+}
+
+.arcade-touch-btn:hover, .arcade-touch-btn:active {
+  background: var(--color-rgba-56-189-248-0-25);
+  border-color: var(--color-38bdf8);
+  transform: scale(0.96);
+}
+
+.arcade-touch-btn.action-btn {
+  background: linear-gradient(135deg, var(--color-f26f21), var(--color-ea580c));
+  border: none;
+  color: white;
+  padding: var(--space-10px-20px);
+  font-size: var(--text-13px);
+  font-weight: 800;
+  box-shadow: var(--shadow-4);
+}
+
+.arcade-touch-btn.undo-btn {
+  background: var(--color-rgba-14-165-233-0-2);
+  border-color: var(--color-0ea5e9);
+  color: var(--color-bae6fd);
+}
+
+.robot-workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-20px);
+}
+
+.robot-header {
+  text-align: center;
+  margin-bottom: var(--space-20px);
+}
+
+.robot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-20px);
+}
+
+.robot-card {
+  background: var(--color-rgba-15-23-42-0-9);
+  border: 1px solid var(--color-rgba-56-189-248-0-3);
+  border-radius: var(--radius-12px);
+  padding: var(--space-16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12px);
+}
+
+.robot-card-img {
+  width: 100%;
+  height: 150px;
+  background: var(--color-000000);
+  border-radius: var(--radius-8px);
+  object-fit: cover;
+}
+
+.robot-card-title {
+  font-size: var(--text-16px);
+  font-weight: bold;
+  color: var(--color-38bdf8);
+}
+
+.robot-card-desc {
+  font-size: var(--text-12px);
+  color: var(--color-94a3b8);
+  flex: 1;
+}
+
+.robot-card-btn {
+  background: linear-gradient(135deg, var(--color-06b6d4), var(--color-0284c7));
+  color: white;
+  padding: var(--space-8px);
+  border: none;
+  border-radius: var(--radius-6px);
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+/* Mobile QA 2026-10-09: keep arcade touch controls visible without scrolling.
+   The action button was below the fold (cut off) on 375px viewports. */
+@media (max-width: 640px) {
+  .arcade-touch-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: linear-gradient(to top, var(--color-0f172a) 70%, transparent);
+    padding-bottom: var(--space-8px);
+    margin-bottom: calc(var(--space-8px) * -1);
+  }
+}
+
+/* ==========================================================================
+   GAME SELECT + SLIM GAMEPLAY TOPBAR (2026-10-09 redesign)
+   Tab bars removed. E opens a game-select grid; gameplay gets a slim topbar
+   (back + title + score) and maximum canvas area. Shared by arcade & sports.
+   ========================================================================== */
+.game-select-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-16px);
+  overflow-y: auto;
+}
+
+.game-select-title {
+  font-family: var(--font-display);
+  font-size: var(--text-22px);
+  color: var(--color-ffffff);
+  margin: 0 0 var(--space-4px);
+  letter-spacing: 0.5px;
+}
+
+.game-select-sub {
+  font-family: var(--font-sans);
+  font-size: var(--text-13px);
+  color: var(--color-94a3b8);
+  margin: 0 0 var(--space-16px);
+}
+
+.game-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-12px);
+  width: 100%;
+  max-width: 720px;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6px);
+  padding: var(--space-16px) var(--space-12px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-1);
+  border-radius: var(--radius-14px);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--font-sans);
+}
+
+.game-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-f26f21);
+  box-shadow: 0 8px 24px var(--color-rgba-242-111-33-0-25);
+}
+
+.game-card:active {
+  transform: translateY(0);
+}
+
+.game-card:focus-visible {
+  outline: 2px solid var(--color-f26f21);
+  outline-offset: 2px;
+}
+
+.game-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-12px);
+  background: var(--color-rgba-255-255-255-0-05);
+}
+
+.game-card-name {
+  font-family: var(--font-display);
+  font-size: var(--text-15px);
+  color: var(--color-ffffff);
+  text-align: center;
+  line-height: 1.25;
+}
+
+.game-card-high {
+  font-size: var(--text-12px);
+  font-weight: 700;
+  color: var(--color-fbbf24);
+}
+
+.game-card-controls {
+  font-size: var(--text-11px);
+  color: var(--color-94a3b8);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.game-play-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: var(--space-8px);
+}
+
+.game-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10px);
+  width: 100%;
+  max-width: 720px;
+  padding: var(--space-4px) var(--space-8px);
+  flex-wrap: wrap;
+}
+
+.game-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--radius-10px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-ffffff);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.game-back-btn:hover {
+  background: var(--color-rgba-242-111-33-0-25);
+  border-color: var(--color-f26f21);
+}
+
+.game-back-btn:active {
+  transform: scale(0.95);
+}
+
+.game-topbar .sports-badge {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .game-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10px);
+  }
+  .game-card {
+    padding: var(--space-12px) var(--space-8px);
+  }
+  .game-card-icon {
+    width: 48px;
+    height: 48px;
+  }
+  .game-topbar {
+    gap: var(--space-8px);
+  }
+}
+
+/* ==========================================================================
+   MINIGAME MOBILE TOUCH-NATIVE + DESKTOP ENLARGEMENT (2026-10-09, Hưng)
+   - Mobile (pointer: coarse): mọi game arcade/sports đều chơi được bằng cảm
+     ứng trên canvas (tap / vuốt / kéo) -> ẩn toàn bộ nút DOM thừa, ẩn modal
+     header khi đang chơi, topbar gọn lại. Canvas portrait giữ 16:9 full-width;
+     landscape thì canvas ăn theo chiều cao để to nhất có thể.
+   - Desktop: canvas hiển thị 640 -> 960px (diện tích x2.25). Backing store vẫn
+     640x360 nên mọi logic/cơ chế game giữ nguyên 100%; retro dùng
+     image-rendering: pixelated để pixel-art nét căng khi phóng to.
+   ========================================================================== */
+
+/* Nút đóng trong topbar — chỉ hiện trên mobile (khi modal header bị ẩn) */
+.game-close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  margin-left: auto;
+  border-radius: var(--radius-10px);
+  background: var(--color-rgba-15-23-42-0-85);
+  border: 1px solid var(--color-rgba-255-255-255-0-15);
+  color: var(--color-ffffff);
+  cursor: pointer;
+}
+.game-close-btn:active { transform: scale(0.95); }
+
+/* Pixel-art nét khi phóng to bằng CSS (desktop 1.5x, mobile scale) */
+#retro-arcade-canvas {
+  image-rendering: pixelated;
+}
+
+/* ---------- Desktop: phóng to canvas 640 -> 960px ---------- */
+@media (min-width: 1024px) {
+  .arcade-canvas-wrapper {
+    max-width: 960px;
+  }
+  #retro-arcade-canvas {
+    max-width: 960px;
+  }
+  .game-topbar {
+    max-width: 960px;
+  }
+  .arcade-touch-controls {
+    max-width: 640px;
+  }
+}
+
+/* ---------- Mobile cảm ứng: tối đa diện tích canvas ---------- */
+@media (pointer: coarse) {
+  /* Ẩn modal header (title + slogan) khi đang chơi game; nút X nằm ở topbar */
+  #interactive-modal.playing-minigame .modal-header {
+    display: none;
+  }
+  #interactive-modal.playing-minigame .game-close-btn {
+    display: inline-flex;
+  }
+  /* Mọi game arcade đã chơi được bằng tap/vuốt trên canvas -> ẩn cụm nút DOM */
+  #interactive-modal.playing-minigame #arcade-touch-controls {
+    display: none;
+  }
+  /* Sports: football/basketball/barista/volleyball đều có điều khiển cảm ứng
+     trên canvas (hoặc cụm nút gọn của volleyball) -> ẩn nút hành động lớn */
+  #interactive-modal.playing-minigame #sports-action-btn {
+    display: none;
+  }
+  /* Topbar gọn trên mobile */
+  #interactive-modal.playing-minigame .game-topbar {
+    gap: var(--space-6px);
+    padding: var(--space-2px) var(--space-4px);
+  }
+  #interactive-modal.playing-minigame .game-back-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    font-size: var(--text-10px);
+    padding: var(--space-3px-8px);
+  }
+  /* Topbar 2 hàng có chủ đích trên mobile: hàng 1 = back + đóng (căn 2 đầu),
+     hàng 2 = các badge điểm. Tránh nút X bị rớt xuống hàng một mình trông dở. */
+  #interactive-modal.playing-minigame .game-topbar {
+    row-gap: var(--space-6px);
+  }
+  #interactive-modal.playing-minigame .game-back-btn {
+    order: 1;
+  }
+  #interactive-modal.playing-minigame .game-close-btn {
+    order: 2;
+  }
+  /* Flex line-break: ép mọi badge xuống hàng 2 */
+  #interactive-modal.playing-minigame .game-topbar::after {
+    content: '';
+    order: 3;
+    flex-basis: 100%;
+    height: 0;
+    margin: 0;
+  }
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    order: 4;
+  }
+  /* Modal đỡ padding để canvas rộng thêm vài px */
+  #interactive-modal.playing-minigame .modal-card-xl {
+    padding: var(--space-12px) !important;
+  }
+}
+
+/* Landscape mobile: canvas ăn theo chiều cao viewport (to hơn hẳn portrait).
+   Dùng vh trực tiếp thay vì flex-chain vì chuỗi height:100% resolve không ổn
+   định trên một số trình duyệt (canvas bị tràn khỏi modal). */
+@media (pointer: coarse) and (orientation: landscape) {
+  /* Du cho 1 hang: bo line-break, tra order ve mac dinh */
+  #interactive-modal.playing-minigame .game-topbar::after {
+    display: none;
+  }
+  #interactive-modal.playing-minigame .game-back-btn,
+  #interactive-modal.playing-minigame .game-close-btn,
+  #interactive-modal.playing-minigame .game-topbar .sports-badge {
+    order: 0;
+  }
+  #interactive-modal.playing-minigame #retro-arcade-canvas,
+  #interactive-modal.playing-minigame #sports-arcade-canvas {
+    width: auto;
+    height: calc(100vh - 124px); /* trừ modal padding + topbar 1 hàng + gaps */
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  /* Volleyball hiện hàng nút cảm ứng dưới canvas -> trừ thêm chiều cao của nó,
+     không thì nút bị cắt ở đáy modal (landscape 375px cao). */
+  #interactive-modal.playing-minigame:has(.sports-touch-controls:not(.hidden)) #sports-arcade-canvas {
+    height: calc(100vh - 178px);
+  }
+}

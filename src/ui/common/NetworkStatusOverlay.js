@@ -1,4 +1,8 @@
+import { toastManager } from './ToastManager.js';
+
 export class NetworkStatusOverlay {
+  /** Stable id for the lag/reconnect status pill in the toast queue. */
+  static STATUS_ID = 'lag-status';
   constructor({ socketManager } = {}) {
     this.socketManager = socketManager;
     this.overlayEl = document.getElementById('lag-spinner-overlay');
@@ -56,18 +60,18 @@ export class NetworkStatusOverlay {
 
     socket.on('disconnect', () => {
       this.updateStatus(false, 0);
-      this.scheduleDisconnectWarning('⚠️ Mất kết nối tới máy chủ', 'Đang tự động kết nối lại trong nền (bạn vẫn có thể chơi bình thường)...');
+      this.scheduleDisconnectWarning('Mất kết nối tới máy chủ', 'Đang tự động kết nối lại trong nền (bạn vẫn có thể chơi bình thường)...');
     });
 
     socket.on('connect_error', () => {
       this.updateStatus(false, 0);
-      this.scheduleDisconnectWarning('🔄 Máy chủ đang bận hoặc đang khởi động', 'Đang tự động kết nối lại... Bạn có thể tiếp tục di chuyển và khám phá.');
+      this.scheduleDisconnectWarning('Máy chủ đang bận hoặc đang khởi động', 'Đang tự động kết nối lại... Bạn có thể tiếp tục di chuyển và khám phá.');
     });
 
     socket.on('reconnect_attempt', (attempt) => {
       this.updateStatus(false, 0);
       if (attempt > 3) {
-        this.scheduleDisconnectWarning(`🔄 Đang thử kết nối lại (Lần ${attempt})...`, 'Hệ thống đang tìm kiếm đường truyền ổn định nhất...');
+        this.scheduleDisconnectWarning(`Đang thử kết nối lại (Lần ${attempt})...`, 'Hệ thống đang tìm kiếm đường truyền ổn định nhất...');
       }
     });
 
@@ -132,7 +136,7 @@ export class NetworkStatusOverlay {
       this.consecutiveHighPing++;
       if (this.consecutiveHighPing >= 2 && !this.isManuallyDismissed) {
         this.showLagSpinner(
-          `⚠️ Đường truyền đang giật lag (${ping}ms)`,
+          `Đường truyền đang giật lag (${ping}ms)`,
           'Máy chủ đang tối ưu hóa và nội suy lại dữ liệu chuyển động...'
         );
       }
@@ -181,13 +185,16 @@ export class NetworkStatusOverlay {
     if (this.spinnerTextEl) this.spinnerTextEl.textContent = title;
     if (this.spinnerSubEl) this.spinnerSubEl.textContent = sub;
 
-    this.overlayEl.classList.remove('hidden');
+    // Compact single-line pill in the global toast queue (max 2 visible).
+    // The #lag-spinner-overlay element is adopted into the stack while shown
+    // and restored to its original parent on dismiss — id/classes preserved.
+    toastManager.status(NetworkStatusOverlay.STATUS_ID, this.overlayEl);
   }
 
   hideLagSpinner() {
     this.isLagging = false;
     if (!this.overlayEl) return;
-    this.overlayEl.classList.add('hidden');
+    toastManager.dismiss(NetworkStatusOverlay.STATUS_ID);
   }
 
   destroy() {

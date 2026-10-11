@@ -35,6 +35,8 @@ export class SocketManager {
     if (!GAME_CONFIG.NETWORK.SERVER_URL) {
       this.isStandalone = true;
       this.isConnected = false;
+      // Van dam bao phien co deviceId ke ca o standalone mode (khong doi socket connect).
+      authService.getDeviceId();
       console.log('🎮 [Network] Chế độ Khám Phá Campus (Standalone Mode) kích hoạt — Tối ưu hóa mượt mà cho Vercel.');
       this.updateConnectionStatus(true, 'standalone');
       if (this.scene.networkStatusOverlay) {
@@ -158,6 +160,11 @@ export class SocketManager {
     // 7b. Nhận biểu cảm Emote từ người chơi khác
     this.socket.on('playerEmote', (data) => {
       this.scene.handleRemoteEmote(data);
+    });
+
+    // 7b2. Đồng bộ trạng thái hoạt động (dreaming...)
+    this.socket.on('playerActivity', (data) => {
+      this.scene.handleRemoteActivity?.(data);
     });
 
     // 8. Cập nhật số lượng người chơi theo từng phòng
@@ -351,33 +358,38 @@ export class SocketManager {
   }
 
   updateConnectionStatus(online, mode = 'multiplayer') {
-    const statusText = document.querySelector('.status-text');
-    const dot = document.querySelector('.dot');
-    if (statusText && dot) {
-      if (mode === 'standalone') {
-        statusText.textContent = 'Khám Phá Campus';
-        dot.className = 'dot online';
-      } else if (online) {
-        statusText.textContent = 'Online';
-        dot.className = 'dot online';
-      } else {
-        statusText.textContent = 'Mất kết nối...';
-        dot.className = 'dot offline';
-      }
+    // State-aware player pill (2026-10-09): the pill must NEVER show a player
+    // count when the socket is down — a stale number is contradictory.
+    // Online  -> "N / Online" (green, real count)
+    // Offline -> "Ngoại tuyến" (grey, no count)
+    this._badgeOnline = online !== false;
+    this._renderOnlineBadge();
+  }
+
+  /**
+   * Render the player-count pill from connection state + last known count.
+   * Never shows a count while offline.
+   */
+  _renderOnlineBadge() {
+    const el = document.getElementById('online-count-badge');
+    if (!el) return;
+    const online = this._badgeOnline !== false;
+    el.classList.toggle('is-offline', !online);
+    if (online) {
+      const total = this._lastPlayerTotal ?? 1;
+      el.innerHTML = `<span class="online-num">${total}</span><span class="online-label">Online</span>`;
+    } else {
+      el.innerHTML = `<span class="online-label offline-label">Ngoại tuyến</span>`;
     }
   }
 
   updateRoomCountsUI(counts) {
-    // Cập nhật tổng online
-    const onlineEl = document.getElementById('online-count-badge');
-    if (onlineEl && counts.total !== undefined) {
-      const numEl = onlineEl.querySelector('.online-num');
-      if (numEl) {
-        numEl.textContent = counts.total;
-      } else {
-        onlineEl.innerHTML = `<span class="online-num">${counts.total}</span><span class="online-label">Online</span>`;
-      }
+    // Cập nhật tổng online (stash the count; render only when online)
+    if (counts.total !== undefined) {
+      const n = Math.max(0, parseInt(counts.total, 10) || 0);
+      this._lastPlayerTotal = n;
     }
+    this._renderOnlineBadge();
 
     // Cập nhật số lượng 8 phòng
     const optMain = document.getElementById('opt-main_hall');
@@ -385,7 +397,6 @@ export class SocketManager {
     const optLib = document.getElementById('opt-library_lounge');
     const optMem = document.getElementById('opt-memory_room');
     const optWeb = document.getElementById('opt-web_room');
-    const optMedia = document.getElementById('opt-media_hub');
     const optSports = document.getElementById('opt-sports_complex');
     const optCafe = document.getElementById('opt-canteen_cafe');
 
@@ -394,7 +405,6 @@ export class SocketManager {
     if (optLib) optLib.textContent = `Thư Viện FUDA (${counts.library_lounge || 0})`;
     if (optMem) optMem.textContent = `Phòng Kỷ Niệm (${counts.memory_room || 0})`;
     if (optWeb) optWeb.textContent = `Không Gian Web (${counts.web_room || 0})`;
-    if (optMedia) optMedia.textContent = `Media & MXH (${counts.media_hub || 0})`;
     if (optSports) optSports.textContent = `Khu Thể Thao (${counts.sports_complex || 0})`;
     if (optCafe) optCafe.textContent = `Căn Tin & Cafe (${counts.canteen_cafe || 0})`;
   }

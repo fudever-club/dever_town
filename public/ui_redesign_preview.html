@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DEVER TOWN — Redesign Gameplay Demo & GraalOnline Era Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #060a14;
+      --bg-panel: rgba(10, 18, 36, 0.82);
+      --bg-panel-solid: #0d1a33;
+      --bg-card: rgba(18, 30, 58, 0.75);
+      --bg-card-hover: rgba(28, 48, 92, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      --border-neon: rgba(56, 189, 248, 0.45);
+      --border-accent: rgba(242, 111, 33, 0.5);
+      --cyan-glow: #38bdf8;
+      --fpt-orange: #f26f21;
+      --fpt-gold: #fbbf24;
+      --safe-green: #10b981;
+      --danger-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-ui: 'Be Vietnam Pro', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow-hud: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--border-subtle);
+      --shadow-neon: 0 0 24px rgba(56, 189, 248, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 80% 90%, rgba(242, 111, 33, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #060a14 0%, #0a1329 100%);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ĐÃ LOẠI BỎ HOÀN TOÀN SCANLINES (KHÔNG CÒN GẠCH NGANG LỖI) */
+
+    /* --------------------------------------------------------------------------
+       TOP NAVIGATION BAR
+       -------------------------------------------------------------------------- */
+    .top-nav-bar {
+      position: sticky;
+      top: 10px;
+      margin: 0 auto;
+      width: calc(100% - 24px);
+      max-width: 1420px;
+      height: 62px;
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-neon);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-hud);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo-symbol {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0ea5e9, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      font-weight: 900;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .logo-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-name {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fff;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--fpt-orange);
+      font-weight: 700;
+    }
+
+    .nav-mode-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 3px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      gap: 4px;
+    }
+
+    .mode-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 13px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: var(--font-ui);
+    }
+
+    .mode-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .mode-tab-btn.active {
+      background: var(--cyan-glow);
+      color: #040814;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+    }
+
+    .nav-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quick-ctrl-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      transition: all 0.2s ease;
+    }
+
+    .quick-ctrl-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan-glow);
+      color: #fff;
+    }
+
+    /* --------------------------------------------------------------------------
+       MAIN CONTAINER
+       -------------------------------------------------------------------------- */
+    .app-main-content {
+      width: calc(100% - 24px);
+      max-width: 1420px;
+      margin: 14px auto 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB 1: LIVE GAMEPLAY VIEWPORT
+       -------------------------------------------------------------------------- */
+    #tab-content-gameplay {
+      display: block;
+      width: 100%;
+    }
+
+    .gameplay-viewport-card {
+      position: relative;
+      width: 100%;
+      height: 720px;
+      max-height: 82vh;
+      background: #040711;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-neon);
+      box-shadow: var(--shadow-hud), 0 0 40px rgba(56, 189, 248, 0.15);
+      overflow: hidden;
+    }
+
+    /* Canvas */
+    #dever-game-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      cursor: crosshair;
+    }
+
+    /* --------------------------------------------------------------------------
+       FLOATING IN-GAME HUD
+       -------------------------------------------------------------------------- */
+    .in-game-hud-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+      z-index: 20;
+    }
+
+    /* Top Strip */
+    .ingame-top-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .hud-glass-badge {
+      background: rgba(8, 14, 28, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 14px;
+      padding: 8px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .hud-avatar-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan-glow);
+      background: #1e293b;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hud-avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hud-player-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .hud-player-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-player-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .hud-level-pill {
+      font-size: 9px;
+      background: rgba(251, 191, 36, 0.2);
+      border: 1px solid #fbbf24;
+      color: #fbbf24;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+    }
+
+    /* Health (50 HP - GraalOnline Standard) & XP Bars */
+    .bars-dual-strip {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .hp-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hp-label {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: #ef4444;
+      font-weight: 800;
+    }
+
+    .hp-track {
+      width: 65px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .hp-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .xp-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .xp-track {
+      width: 55px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .xp-fill {
+      width: 68%;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+    }
+
+    /* SAFE ZONE & CLOCK PILL (CENTER) */
+    .hud-center-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-safe-zone-pill {
+      background: rgba(6, 78, 59, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--safe-green);
+      border-radius: 20px;
+      padding: 4px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+      pointer-events: auto;
+    }
+
+    .safe-dot-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: safePulse 2s infinite;
+    }
+
+    @keyframes safePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .safe-zone-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #a7f3d0;
+      letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+    }
+
+    .hud-zone-clock-pill {
+      background: rgba(8, 14, 28, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      pointer-events: auto;
+    }
+
+    /* Wallet & Radar Box (Top Right) */
+    .hud-top-right-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hud-dcoin-box {
+      background: rgba(8, 14, 28, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 12px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.15);
+    }
+
+    .coin-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: #451a03;
+      font-size: 10px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .dcoin-val {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 13px;
+      color: #fbbf24;
+    }
+
+    /* Circular Radar */
+    .hud-radar-disc {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(6, 12, 24, 0.92);
+      border: 1.5px solid var(--cyan-glow);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      position: relative;
+      overflow: hidden;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .radar-sweep-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      transform-origin: 0% 0%;
+      background: conic-gradient(from 0deg at 0% 0%, rgba(56, 189, 248, 0.5) 0deg, transparent 60deg);
+      animation: radarRotate 3s linear infinite;
+    }
+
+    @keyframes radarRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .radar-player-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: #38bdf8;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px #38bdf8;
+    }
+
+    /* Floating In-World Interaction Tooltip */
+    #inworld-interact-card {
+      position: absolute;
+      display: none;
+      transform: translate(-50%, -100%);
+      margin-top: -14px;
+      background: rgba(8, 14, 28, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1.5px solid var(--cyan-glow);
+      border-radius: 10px;
+      padding: 7px 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+      pointer-events: auto;
+      cursor: pointer;
+      white-space: nowrap;
+      animation: floatBadge 1.8s ease-in-out infinite;
+      z-index: 50;
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+      50% { transform: translate(-50%, -100%) translateY(-5px); }
+    }
+
+    .key-badge-e {
+      background: var(--cyan-glow);
+      color: #040814;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 900;
+      margin-right: 6px;
+      font-family: var(--font-mono);
+      display: inline-block;
+    }
+
+    /* Right Quest Log Panel */
+    .hud-quest-panel {
+      position: absolute;
+      top: 92px;
+      right: 14px;
+      width: 260px;
+      background: rgba(8, 14, 28, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
+
+    .quest-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 6px;
+    }
+
+    .quest-title-txt {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--cyan-glow);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .quest-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quest-item-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1.35;
+    }
+
+    .quest-item-line.completed {
+      color: #10b981;
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+
+    .quest-chk {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .quest-item-line.completed .quest-chk {
+      background: #10b981;
+      border-color: #10b981;
+      color: #040814;
+      font-weight: 900;
+    }
+
+    /* Bottom Action Hotbar (6 Phím Tắt Chuẩn GraalOnline & Gather) */
+    .ingame-bottom-dock {
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(8, 14, 28, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border-neon);
+      border-radius: 20px;
+      padding: 6px 14px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+      pointer-events: auto;
+    }
+
+    .dock-action-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid transparent;
+      color: var(--text-main);
+      padding: 7px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: var(--font-ui);
+    }
+
+    .dock-action-btn:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--cyan-glow);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .hotkey-badge {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.12);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--cyan-glow);
+    }
+
+    /* Speech Bubble */
+    #player-speech-bubble {
+      position: absolute;
+      display: none;
+      transform: translate(-50%, -100%);
+      margin-top: -55px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      z-index: 60;
+      max-width: 220px;
+      text-align: center;
+    }
+
+    #player-speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #ffffff transparent transparent transparent;
+    }
+
+    /* Floating Gain Coin */
+    .floating-gain-text {
+      position: absolute;
+      color: #fbbf24;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      font-size: 16px;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+      pointer-events: none;
+      animation: gainFloat 1.2s ease-out forwards;
+      z-index: 100;
+    }
+
+    @keyframes gainFloat {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.8); }
+      20% { opacity: 1; transform: translate(-50%, -15px) scale(1.1); }
+      100% { opacity: 0; transform: translate(-50%, -45px) scale(0.9); }
+    }
+
+    /* --------------------------------------------------------------------------
+       CONTROLS HINT FOOTER
+       -------------------------------------------------------------------------- */
+    .controls-hint-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .key-hint-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .key-badge-inline {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* --------------------------------------------------------------------------
+       TABS 2, 3, 4: MASTERPLAN, CONCEPT MAP, ARCADE HUB
+       -------------------------------------------------------------------------- */
+    #tab-content-plan, #tab-content-concept, #tab-content-modal {
+      display: none;
+      width: 100%;
+    }
+
+    .doc-section-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-neon);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-hud);
+      line-height: 1.6;
+    }
+
+    .doc-section-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--cyan-glow);
+      margin-bottom: 12px;
+    }
+
+    .doc-section-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin: 18px 0 8px;
+      border-left: 3px solid var(--fpt-orange);
+      padding-left: 10px;
+    }
+
+    .doc-section-card p, .doc-section-card li {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .concept-art-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-neon);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-hud);
+      text-align: center;
+    }
+
+    .concept-art-container img {
+      width: 100%;
+      max-height: 750px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    /* --------------------------------------------------------------------------
+       MODALS: JOBS, CLANS, INVENTORY, TRADE, HOUSING, DIALOGUE
+       -------------------------------------------------------------------------- */
+    .modal-overlay-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 16px;
+    }
+
+    .cyber-modal-window {
+      background: var(--bg-panel-solid);
+      border: 1.5px solid var(--border-neon);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), var(--shadow-neon);
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header-cyber {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .modal-title-txt {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close-icon-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close-icon-btn:hover {
+      background: #ef4444;
+    }
+
+    .modal-body-pad {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    /* Jobs Cards Grid */
+    .jobs-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .job-item-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .job-item-card:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--cyan-glow);
+    }
+
+    .job-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .job-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .job-wage {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .job-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Clan Base Cards Grid */
+    .clan-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .clan-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .clan-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .clan-base-status {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #34d399;
+    }
+
+    /* Inventory Grid */
+    .inventory-grid-7 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .inv-item-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .inv-item-card:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Emote Radial Overlay */
+    #radial-emote-overlay {
+      position: absolute;
+      display: none;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .emote-circle-btn {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(8, 14, 28, 0.95);
+      border: 1.5px solid var(--cyan-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+      transition: all 0.2s;
+    }
+
+    .emote-circle-btn:hover {
+      transform: scale(1.2);
+      border-color: #fbbf24;
+    }
+
+    /* Chat Input Bar */
+    #chat-input-bar-container {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 380px;
+      display: none;
+      background: rgba(8, 14, 28, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid var(--cyan-glow);
+      border-radius: 14px;
+      padding: 6px 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      z-index: 150;
+    }
+
+    #chat-input-field {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      padding: 4px 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== -->
+  <header class="top-nav-bar">
+    <div class="nav-left">
+      <div class="nav-logo-badge" onclick="switchTab('gameplay')">
+        <div class="logo-symbol">FD</div>
+        <div class="logo-titles">
+          <span class="logo-name">DEVER TOWN</span>
+          <span class="logo-sub">REDESIGN V2 • SÂN ALPHA</span>
+        </div>
+      </div>
+
+      <nav class="nav-mode-tabs">
+        <button class="mode-tab-btn active" id="tab-btn-gameplay" onclick="switchTab('gameplay')">
+          <span>🎮 Game Playable Demo</span>
+        </button>
+        <button class="mode-tab-btn" id="tab-btn-plan" onclick="switchTab('plan')">
+          <span>📑 Master Plan GraalOnline</span>
+        </button>
+        <button class="mode-tab-btn" id="tab-btn-concept" onclick="switchTab('concept')">
+          <span>🎨 Bản Phác Thảo Map V2</span>
+        </button>
+        <button class="mode-tab-btn" id="tab-btn-modal" onclick="switchTab('modal')">
+          <span>🕹️ Menu & Arcade Hub</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="nav-right-controls">
+      <!-- Lighting Preset Toggle -->
+      <button class="quick-ctrl-btn" onclick="cycleLightingMode()" id="btn-lighting-mode" title="Chuyển đổi thời gian trong game">
+        <span id="lighting-mode-icon">🌅</span>
+        <span id="lighting-mode-label">Hoàng Hôn</span>
+      </button>
+
+      <!-- Sound FX Toggle -->
+      <button class="quick-ctrl-btn" onclick="toggleAudio()" id="btn-audio-toggle" title="Bật/Tắt âm thanh hiệu ứng">
+        <span id="audio-icon">🔊</span>
+        <span>Âm Thanh</span>
+      </button>
+
+      <!-- Reset Pos Button -->
+      <button class="quick-ctrl-btn" onclick="resetPlayerPosition()" title="Đặt lại vị trí nhân vật">
+        <span>🔄 Đặt Lại</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================== -->
+  <main class="app-main-content">
+
+    <!-- ------------------------------------------------------------------------
+         TAB 1: LIVE GAMEPLAY PROTOTYPE VIEWPORT
+         ------------------------------------------------------------------------ -->
+    <section id="tab-content-gameplay">
+      <div class="gameplay-viewport-card" id="gameplay-viewport">
+        <!-- Canvas Rendering The Entire Game Stage (Không còn lỗi sọc ngang) -->
+        <canvas id="dever-game-canvas" width="1376" height="768"></canvas>
+
+        <!-- In-World Interaction Floating Tooltip Badge -->
+        <div id="inworld-interact-card" onclick="triggerActiveInteraction()">
+          <span class="key-badge-e">[E]</span>
+          <span id="interact-action-text">Tương tác</span>
+        </div>
+
+        <!-- Speech Bubble over player -->
+        <div id="player-speech-bubble">Xin chào FU-DEVER!</div>
+
+        <!-- Radial Emote Wheel (Pop on G) -->
+        <div id="radial-emote-overlay">
+          <div class="emote-circle-btn" style="top: 0; left: 51px;" onclick="selectEmote('🔥')">🔥</div>
+          <div class="emote-circle-btn" style="top: 25px; left: 95px;" onclick="selectEmote('❤️')">❤️</div>
+          <div class="emote-circle-btn" style="top: 75px; left: 95px;" onclick="selectEmote('⚡')">⚡</div>
+          <div class="emote-circle-btn" style="top: 100px; left: 51px;" onclick="selectEmote('👑')">👑</div>
+          <div class="emote-circle-btn" style="top: 75px; left: 7px;" onclick="selectEmote('🐞')">🐞</div>
+          <div class="emote-circle-btn" style="top: 25px; left: 7px;" onclick="selectEmote('💻')">💻</div>
+        </div>
+
+        <!-- Chat Input Bar (Press T or Enter) -->
+        <div id="chat-input-bar-container">
+          <input type="text" id="chat-input-field" placeholder="Nhập tin nhắn tiếng Việt rồi bấm Enter..." maxlength="60" />
+        </div>
+
+        <!-- FLOATING IN-GAME HUD -->
+        <div class="in-game-hud-overlay">
+          <!-- Top Strip -->
+          <div class="ingame-top-strip">
+            <!-- Left: Player Profile & 50 HP (GraalOnline Style) -->
+            <div class="hud-glass-badge">
+              <div class="hud-avatar-circle">
+                <img src="./assets/characters/portraits/npc_chunhiem_nhat.png" alt="Avatar" onerror="this.src='./assets/logos/dever_logo_nontext.png'" />
+              </div>
+              <div class="hud-player-info">
+                <div class="hud-player-name-row">
+                  <span class="hud-player-name">Khang_FU</span>
+                  <span class="hud-level-pill">Lv.12 Builder</span>
+                </div>
+                <div class="bars-dual-strip">
+                  <div class="hp-bar-wrap" title="Thể Lực HP (Chuẩn GraalOnline 50 HP)">
+                    <span class="hp-label">HP</span>
+                    <div class="hp-track"><div class="hp-fill"></div></div>
+                  </div>
+                  <div class="xp-bar-wrap" title="Điểm Kinh Nghiệm Builder">
+                    <span style="font-size: 8px; color: #38bdf8; font-family: var(--font-mono); font-weight: 800;">XP</span>
+                    <div class="xp-track"><div class="xp-fill"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center: Safe Zone Indicator (GraalOnline Style) & Clock -->
+            <div class="hud-center-group">
+              <div class="hud-safe-zone-pill" title="Khu vực An Toàn: Không thể bị tấn công hay mất HP">
+                <span class="safe-dot-pulse"></span>
+                <span class="safe-zone-title">VÙNG AN TOÀN (SAFE ZONE)</span>
+              </div>
+              <div class="hud-zone-clock-pill">
+                <span>FU-DEVER • SÂN TÒA ALPHA</span>
+                <span style="color: var(--fpt-orange); margin-left: 6px;" id="live-game-clock">17:45 Đà Nẵng</span>
+              </div>
+            </div>
+
+            <!-- Right: D-Coin Wallet & Circular Radar -->
+            <div class="hud-top-right-group">
+              <div class="hud-dcoin-box">
+                <div class="coin-badge">D</div>
+                <span class="dcoin-val" id="dcoin-counter">1,250</span>
+              </div>
+              <div class="hud-radar-disc" title="Radar Quét Vùng Xung Quanh">
+                <div class="radar-sweep-line"></div>
+                <div class="radar-player-dot"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quest Log Panel (Right side) -->
+          <div class="hud-quest-panel">
+            <div class="quest-header-row">
+              <span class="quest-title-txt">Nhiệm Vụ Tân Sinh Viên</span>
+              <span style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono);" id="quest-prog-txt">1/3</span>
+            </div>
+            <div class="quest-items-list">
+              <div class="quest-item-line completed">
+                <div class="quest-chk">✓</div>
+                <span>Check-in Sân Tòa Alpha</span>
+              </div>
+              <div class="quest-item-line" id="quest-duck-line" onclick="guideTo('duck')">
+                <div class="quest-chk" id="quest-duck-chk"></div>
+                <span>Thả mồi cho Đàn Vịt (+50 DC)</span>
+              </div>
+              <div class="quest-item-line" id="quest-statue-line" onclick="guideTo('statue')">
+                <div class="quest-chk" id="quest-statue-chk"></div>
+                <span>Chiêm bái Tượng Tư Tưởng (+30 DC)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Dock (Đầy đủ hệ thống tính năng GraalOnline) -->
+          <div class="ingame-bottom-dock">
+            <button class="dock-action-btn" onclick="openInventoryModal()">
+              <span class="hotkey-badge">[1]</span>
+              <span>Balo Túi Đồ</span>
+            </button>
+            <button class="dock-action-btn" onclick="openJobsModal()">
+              <span class="hotkey-badge">[2]</span>
+              <span>Việc Làm Cày Tiền</span>
+            </button>
+            <button class="dock-action-btn" onclick="openClansModal()">
+              <span class="hotkey-badge">[3]</span>
+              <span>Bang Hội & Căn Cứ</span>
+            </button>
+            <button class="dock-action-btn" onclick="openArcadeModal()">
+              <span class="hotkey-badge">[4]</span>
+              <span>Phòng Máy Arcade</span>
+            </button>
+            <button class="dock-action-btn" onclick="openTradeModal()">
+              <span class="hotkey-badge">[5]</span>
+              <span>Chợ Trao Đổi</span>
+            </button>
+            <button class="dock-action-btn" onclick="openHousingModal()">
+              <span class="hotkey-badge">[6]</span>
+              <span>Phòng KTX</span>
+            </button>
+            <button class="dock-action-btn" onclick="toggleEmoteWheel()">
+              <span class="hotkey-badge">[G]</span>
+              <span>Biểu Cảm</span>
+            </button>
+            <button class="dock-action-btn" onclick="openChatInput()">
+              <span class="hotkey-badge">[Enter]</span>
+              <span>Chat</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Hint Bar -->
+      <div class="controls-hint-bar" style="margin-top: 10px;">
+        <div class="key-hint-group">
+          <span>Di chuyển:</span>
+          <span class="key-badge-inline">W</span>
+          <span class="key-badge-inline">A</span>
+          <span class="key-badge-inline">S</span>
+          <span class="key-badge-inline">D</span>
+          <span>hoặc Mũi Tên</span>
+        </div>
+        <div class="key-hint-group">
+          <span>Tương tác:</span>
+          <span class="key-badge-inline">E</span>
+          <span>Balo:</span>
+          <span class="key-badge-inline">1</span>
+          <span>Việc làm:</span>
+          <span class="key-badge-inline">2</span>
+          <span>Bang hội:</span>
+          <span class="key-badge-inline">3</span>
+          <span>Arcade:</span>
+          <span class="key-badge-inline">4</span>
+          <span>Đổi giờ:</span>
+          <span class="key-badge-inline">L</span>
+        </div>
+        <div>
+          <span style="color: var(--cyan-glow); font-weight: 700;">Đến gần Hồ Vịt, Tượng Tư Tưởng hoặc Rác rơi trên sân để bấm [E]!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 2: MASTER PLAN BUILD LẠI ĐỒ HỌA & LOGIC THEO GRAALONLINE ERA
+         ------------------------------------------------------------------------ -->
+    <section id="tab-content-plan">
+      <div class="doc-section-card">
+        <h2>Kế Hoạch Master Plan: Tái Thiết Kế Đồ Họa & Hệ Thống DEVER TOWN Dựa Trên GraalOnline Era</h2>
+        <p style="color: #94a3b8; font-style: italic;">
+          Phân tích các cơ chế "bánh cuốn" của tựa game 2D Pixel MMO kinh điển GraalOnline Era (2010 – 2026) và chuyển thể sang hệ sinh thái Đại Học FPT Đà Nẵng & CLB FU-DEVER.
+        </p>
+
+        <h3>1. Kiến Trúc Bản Đồ & Vùng Chiến Đấu (World Map, Safe Zones & Var Zones)</h3>
+        <ul>
+          <li><strong>Hệ thống Phân Vùng An Toàn (Safe Zones):</strong> Thư viện Tầng 3, Giảng đường thi PE Exam, Văn phòng CLB FU-DEVER được định danh là Safe Zone (bảo vệ tuyệt đối, hồi máu 100%, không bị thách đấu).</li>
+          <li><strong>Vùng Thách Đấu / Var Nhau Lành Mạnh (Challenge Zones):</strong> Sân Cỏ Thể Thao (Bắn súng nước Water Gun / Sút bóng đá 2D), Phòng Lab Alpha (Đấu trường Hackathon gõ code ICPC Speed Duel 1v1).</li>
+          <li><strong>Cơ Chế 50 HP & Bệnh Viện Trạm Y Tế:</strong> Giữ nguyên chuẩn 50 HP của GraalOnline. Khi hết HP trong trận bắn súng nước hoặc bị quật bởi deadline, người chơi hồi sinh tại Trạm Y Tế FPTU (Tòa Alpha) với NPC Y tá phát Vitamin C, không làm rơi rớt đồ đạc cá nhân.</li>
+        </ul>
+
+        <h3>2. Hệ Thống Nghề Nghiệp Sinh Viên Cày Tiền (Campus Jobs Economy)</h3>
+        <ul>
+          <li><strong>Lao Công Sân Trường (Campus Cleaner):</strong> Nhặt ly trà sữa, chai nhựa quanh Sân Alpha và Hồ Vịt bỏ vào thùng rác phân loại (Nhận +15 D-Coin/lần).</li>
+          <li><strong>Barista Căn Tin FPT:</strong> Nhận đơn pha chế cà phê muối, bạc xỉu, trà đào cam sả theo công thức mini-game bấm đúng nhịp (Nhận +25 D-Coin/cốc).</li>
+          <li><strong>Shipper Giao Cơm KTX (Campus Delivery):</strong> Chạy bộ giao cơm trưa từ Căn tin sang KTX trong vòng 60 giây (Nhận +35 D-Coin).</li>
+          <li><strong>Bug Hunter (Bắt Bọ & Fix Bug):</strong> Bắt các chú bọ Buggy phát sáng quanh bồn hoa giấy hoặc giải đố nhanh các đoạn code lỗi tại Tech Lab (Nhận +40 D-Coin).</li>
+        </ul>
+
+        <h3>3. Bang Hội & Chiếm Giữ Căn Cứ (Clans & Base Forts)</h3>
+        <ul>
+          <li><strong>4 Đại Clan Chuyên Môn FU-DEVER:</strong> Clan Web Dev, Clan AI Core, Clan Mobile, Clan Game Dev.</li>
+          <li><strong>Chiếm Căn Cứ Server Room & Sân Khấu:</strong> Hàng tuần tổ chức trận chiến giành quyền kiểm soát "Phòng Server Tech Lab" hoặc "Bàn Đội Trưởng". Đội giữ được căn cứ sẽ nhận Huy hiệu Áo Choàng Bang Hội và D-Coin thưởng cho toàn bộ thành viên.</li>
+        </ul>
+
+        <h3>4. Chợ Trao Đổi (Player-to-Player Trade) & Tùy Biến Skin (UGC)</h3>
+        <ul>
+          <li><strong>Sàn Trao Đổi Hàng Hóa:</strong> Sinh viên được tự do đổi đồ với nhau (Giáo trình PE, Linh kiện phím cơ, Cốc cà phê, Bánh mì, Sticker hiếm).</li>
+          <li><strong>Custom Skin UGC:</strong> Tương tự GraalOnline, cho phép sinh viên tự vẽ file spritesheet PNG 48×64 px của riêng mình và tải lên để mặc trong game (tiêu tốn một lượng D-Coin nhỏ kiểm duyệt).</li>
+        </ul>
+
+        <h3>5. Phòng KTX & Nhà Ở Cá Nhân (Dormitory Housing)</h3>
+        <ul>
+          <li>Mỗi người chơi sở hữu một phòng KTX riêng có thể mua sắm bàn học gỗ, dàn PC 3 màn hình, ghế gaming công thái học, poster anime/tech.</li>
+          <li>Bạn bè có thể vào thăm và bấm Upvote. Bảng xếp hạng "Phòng KTX Đẹp Nhất Tuần" sẽ nhận thưởng D-Coin và cờ vinh danh.</li>
+        </ul>
+
+        <h3>6. Lễ Hội Theo Mùa (Campus Seasonal Festivals)</h3>
+        <ul>
+          <li>Sự kiện Trick or Code (Halloween), Lễ hội Tết FPTU, DevDay Hackathon thức trắng đêm, Club Day tuyển thành viên.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 3: FULL CONCEPT ART MAP SCREENSHOT V2
+         ------------------------------------------------------------------------ -->
+    <section id="tab-content-concept">
+      <div class="concept-art-container">
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Gameplay Toàn Cảnh Sân Alpha V2 (Pristine Pixel Art 1376x768)</h3>
+        <img src="./devertown_map_clean_alpha_courtyard.jpg" alt="DEVER TOWN Gameplay Redesign V2" />
+        <p style="margin-top: 14px; font-size: 13px; color: var(--text-muted); font-family: var(--font-mono);">
+          File chất lượng gốc trên máy: <strong>D:\THStudy\FU_DEVER\DEVER_TOWN\public\devertown_map_clean_alpha_courtyard.jpg</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 4: MENU & ARCADE HUB MODAL SHOWCASE
+         ------------------------------------------------------------------------ -->
+    <section id="tab-content-modal">
+      <div class="concept-art-container">
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Hệ Thống Giao Diện Menu & Arcade Hub</h3>
+        <img src="./devertown_ui_redesign.jpg" alt="DEVER TOWN UI Redesign" />
+        <p style="margin-top: 14px; font-size: 13px; color: var(--text-muted); font-family: var(--font-mono);">
+          File chất lượng gốc trên máy: <strong>D:\THStudy\DeverClub\devertown_ui_redesign.jpg</strong>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODAL: CAMPUS JOBS (VIỆC LÀM SINH VIÊN - GRAALONLINE STYLE)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-jobs" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>💼</span>
+          <span>Trung Tâm Việc Làm Sinh Viên — Campus Jobs FPTU</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div class="jobs-cards-grid">
+          <!-- Job 1 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🧹 Lao Công Sân Alpha</span>
+              <span class="job-wage">+15 D-Coin / Rác</span>
+            </div>
+            <p class="job-desc">Thu gom ly trà sữa và vỏ lon rơi trên sân cỏ và quanh bờ hồ để giữ khuôn viên xanh sạch đẹp.</p>
+            <button class="quick-ctrl-btn" onclick="startLitterJob()" style="background: var(--cyan-glow); color: #040814; font-weight: 800; align-self: flex-start;">
+              Bắt Đầu Nhặt Rác
+            </button>
+          </div>
+          <!-- Job 2 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">☕ Barista Căn Tin FPT</span>
+              <span class="job-wage">+25 D-Coin / Ly</span>
+            </div>
+            <p class="job-desc">Pha cà phê muối và trà đào cam sả theo yêu cầu của sinh viên và giảng viên giờ giải lao.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Pha Cà Phê Barista', 25)" style="align-self: flex-start;">
+              Pha Cà Phê Ngay
+            </button>
+          </div>
+          <!-- Job 3 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🛵 Shipper Cơm Trưa KTX</span>
+              <span class="job-wage">+35 D-Coin / Đơn</span>
+            </div>
+            <p class="job-desc">Giao cơm hộp nóng hổi từ Căn tin Tòa Alpha sang các phòng KTX sinh viên đúng giờ.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Giao Cơm KTX', 35)" style="align-self: flex-start;">
+              Nhận Chuyến Giao
+            </button>
+          </div>
+          <!-- Job 4 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🐞 Bug Hunter Sân Trường</span>
+              <span class="job-wage">+40 D-Coin / Con</span>
+            </div>
+            <p class="job-desc">Dùng vợt bắt những chú bọ Buggy phát sáng quanh bồn hoa giấy và giải câu đố code logic.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Săn Bọ Buggy', 40)" style="align-self: flex-start;">
+              Cầm Vợt Săn Bọ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: CLANS & BASE FORTS (BANG HỘI & CĂN CỨ - GRAALONLINE STYLE)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-clans" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🏰</span>
+          <span>Hệ Thống Bang Hội & Chiếm Giữ Căn Cứ (Clan Bases)</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          Tham gia vào 4 phân ban chuyên môn của CLB FU-DEVER để cùng cố thủ hoặc tấn công đánh chiếm căn cứ Server Room và Sân Khấu Sự Kiện!
+        </p>
+        <div class="clan-cards-grid">
+          <div class="clan-card">
+            <div class="clan-name">🌐 Clan Web Builders</div>
+            <div class="clan-base-status">Căn cứ: Phòng Lab Alpha (Đang Cố Thủ)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Trấn giữ dàn máy Server Rack Tầng 2, điểm thưởng: +500 DC/giờ.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">🤖 Clan AI & Data Core</div>
+            <div class="clan-base-status">Căn cứ: Thư Viện Tầng 3 (Safe Base)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Nghiên cứu mô hình ngôn ngữ và thuật toán thị giác máy tính.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">📱 Clan Mobile Masters</div>
+            <div class="clan-base-status">Căn cứ: Bàn Tròn Căn Tin (Đang Tranh Chấp)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Flutter & React Native chiến binh ứng dụng di động.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">🎮 Clan Game Developers</div>
+            <div class="clan-base-status">Căn cứ: Đấu Trường Arcade Hub</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Phụ trách phát triển DEVER TOWN và các minigames 2D pixel.</p>
+          </div>
+        </div>
+        <button class="quick-ctrl-btn" onclick="claimJobReward('Chiếm Căn Cứ Server', 100)" style="background: var(--cyan-glow); color: #040814; font-weight: 800; align-self: center; margin-top: 6px;">
+          Tham Gia Trận Đánh Chiếm Căn Cứ (+100 D-Coin)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: TRADE MARKET (CHỢ TRAO ĐỔI HÀNG HÓA)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-trade" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>📊</span>
+          <span>Chợ Sinh Viên Trao Đổi (Trade Market FPTU)</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="color: #fff; font-size: 13px;">Giáo Trình Cấu Trúc Dữ Liệu & Giải Thuật</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Người bán: Nam_K18 • Giá thị trường đang Stonk 📈</div>
+            </div>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Mua Giáo Trình DSA', -50)">Mua (50 DC)</button>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="color: #fff; font-size: 13px;">Sticker Linh Vật Buggy Hologram Giới Hạn</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Người bán: An_Designer • Đổi lấy Cà Phê Muối hoặc D-Coin</div>
+            </div>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Đổi Sticker Buggy', -30)">Đổi (30 DC)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: DORMITORY HOUSING (PHÒNG KTX CÁ NHÂN)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-housing" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🏠</span>
+          <span>Phòng KTX & Bàn Học Cá Nhân — Dormitory Housing</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad" style="text-align: center;">
+        <p style="font-size: 13px; color: #e2e8f0; line-height: 1.6;">
+          Phòng KTX Số 402 — Tòa Dom A FPT Đà Nẵng của Khang_FU.<br />
+          Trang bị: Bàn công thái học, Màn hình cong 144Hz, Ghế Secretlab, Tủ sách thuật toán.
+        </p>
+        <div style="margin: 14px 0; display: flex; justify-content: center; gap: 12px;">
+          <button class="quick-ctrl-btn" onclick="upvoteDorm()" style="background: #ec4899; color: #fff; font-weight: 800;">
+            ❤️ Upvote Phòng Đẹp (+1 Bình Chọn)
+          </button>
+          <button class="quick-ctrl-btn" onclick="closeAllModals()">Ghé Thăm Phòng Khác</button>
+        </div>
+        <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);" id="dorm-upvote-counter">
+          Lượt Upvote Tuần Này: 84 ❤️ (Hạng 3 Toàn Trường)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: INVENTORY (BALO CƯ DÂN)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-inventory" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🎒</span>
+          <span>Balo Cư Dân — Túi Trang Bị FU-DEVER</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div class="inventory-grid-7">
+          <div class="inv-item-card" onclick="useItem('Thẻ Cư Dân FUDA')">
+            <span style="font-size: 26px;">🪪</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Thẻ Cư Dân</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Gen 10</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Cà Phê Muối Barista')">
+            <span style="font-size: 26px;">☕</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Cà Phê Muối</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x3 Ly</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Bàn Phím Cơ Custom')">
+            <span style="font-size: 26px;">⌨️</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Phím Cơ RGB</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Tốc độ +20%</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Bánh Mì Cho Vịt')">
+            <span style="font-size: 26px;">🥖</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Bánh Mì Vịt</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x12 Mẩu</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Sticker Bọ Buggy')">
+            <span style="font-size: 26px;">🐞</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Sticker Buggy</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x5 Tem</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('MacBook Dev M4 Pro')">
+            <span style="font-size: 26px;">💻</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">MacBook Dev</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">M4 Pro</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Áo Hoodie FUDA')">
+            <span style="font-size: 26px;">🧥</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Hoodie Dever</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Đang Mặc</span>
+          </div>
+          <div class="inv-item-card" onclick="useItem('Vợt Bắt Bọ')">
+            <span style="font-size: 26px;">🎾</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Vợt Bắt Bọ</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Đồ Nghề</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: ARCADE HUB (TRUNG TÂM MINIGAMES)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-arcade" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()" style="max-width: 720px;">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🕹️</span>
+          <span>Trung Tâm Minigames — Arcade Hub FU-DEVER</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Pac-Man 3.0</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Ăn hạt năng lượng trong mê cung vi mạch neon, né virus ma máy.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 12,450đ</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Pac-Man')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Dever Dash 3.0</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Nhảy hình học né chông nhọn, đệm bật nảy và đảo trọng lực cực cuốn.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 86%</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Dever Dash')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Flappy Buggy Pro</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Lái chú bọ Buggy vỗ cánh lướt qua dàn cột Server Rack công nghệ.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 48 Cột</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Flappy Buggy')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Candy Match-3</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Xếp ngọc vi mạch 8x8, kích nổ Laser Kẹo Sọc và Cyber Color Bomb.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 18,200đ</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Candy Match-3')">Chơi Ngay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: DIALOGUE BOX (TƯỢNG TƯ TƯỞNG / NPC)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-dialogue" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()" style="max-width: 600px;">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt" id="dialogue-header-title">
+          <span>🏛️</span>
+          <span>Tượng Nhà Tư Tưởng — Đại Học FPT Đà Nẵng</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad" style="flex-direction: row; gap: 18px; align-items: flex-start;">
+        <div style="width: 80px; height: 80px; border-radius: 14px; background: #1e293b; border: 1.5px solid var(--cyan-glow); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+          <img id="dialogue-portrait-img" src="./assets/characters/portraits/npc_chunhiem_nhat.png" alt="Portrait" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='./assets/logos/dever_logo_nontext.png'" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
+          <div style="font-size: 13px; font-weight: 800; color: #fff;" id="dialogue-speaker-name">Triết Lý Lập Trình Viên FU-DEVER</div>
+          <p style="font-size: 13px; line-height: 1.6; color: #e2e8f0;" id="dialogue-speech-content">
+            "First, solve the problem. Then, write the code. Code chạy ngon trên localhost chưa chắc chạy được trên production nếu thiếu CI/CD và Unit Test!"
+          </p>
+          <div style="display: flex; gap: 8px; margin-top: 6px;">
+            <button class="quick-ctrl-btn" onclick="nextDialogueQuote()" style="background: var(--cyan-glow); color: #040814; font-weight: 800;">
+              <span>Câu Nói Khác [Space]</span>
+            </button>
+            <button class="quick-ctrl-btn" onclick="closeAllModals()">
+              <span>Đã Hiểu [Esc]</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT GAME ENGINE
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. WEB AUDIO API SYNTHESIZER
+       -------------------------------------------------------------------------- */
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const soundEngine = {
+      footstep() {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(80 + Math.random() * 30, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.04);
+          gain.gain.setValueAtTime(0.04, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.04);
+        } catch(e) {}
+      },
+
+      quack() {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(340, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.18);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.18);
+        } catch(e) {}
+      },
+
+      coin() {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          const now = ctx.currentTime;
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(987.77, now);
+          osc2.frequency.setValueAtTime(1318.51, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.08);
+          osc2.start(now + 0.08);
+          osc2.stop(now + 0.35);
+        } catch(e) {}
+      },
+
+      chime() {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          const now = ctx.currentTime;
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.05);
+            gain.gain.setValueAtTime(0.08, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.3);
+          });
+        } catch(e) {}
+      },
+
+      splash() {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.2);
+        } catch(e) {}
+      }
+    };
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audio-icon').textContent = audioEnabled ? '🔊' : '🔇';
+      document.getElementById('btn-audio-toggle').style.color = audioEnabled ? 'var(--text-main)' : 'var(--text-dim)';
+      if (audioEnabled) soundEngine.coin();
+    }
+
+    /* --------------------------------------------------------------------------
+       2. TAB NAVIGATION
+       -------------------------------------------------------------------------- */
+    function switchTab(tabId) {
+      document.querySelectorAll('.mode-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('tab-content-gameplay').style.display = (tabId === 'gameplay') ? 'block' : 'none';
+      document.getElementById('tab-content-plan').style.display = (tabId === 'plan') ? 'block' : 'none';
+      document.getElementById('tab-content-concept').style.display = (tabId === 'concept') ? 'block' : 'none';
+      document.getElementById('tab-content-modal').style.display = (tabId === 'modal') ? 'block' : 'none';
+
+      soundEngine.footstep();
+    }
+
+    /* --------------------------------------------------------------------------
+       3. LIGHTING TIME ENGINE (SUNSET / NIGHT / DAY)
+       -------------------------------------------------------------------------- */
+    const lightingModes = [
+      { id: 'sunset', icon: '🌅', label: 'Hoàng Hôn', clock: '17:45 Đà Nẵng', ambient: 'rgba(251, 146, 60, 0.1)', lanternIntensity: 0.95 },
+      { id: 'night', icon: '🌙', label: 'Đêm Cyber', clock: '21:30 Đà Nẵng', ambient: 'rgba(6, 12, 28, 0.72)', lanternIntensity: 1.35 },
+      { id: 'day', icon: '☀️', label: 'Ban Ngày', clock: '11:15 Đà Nẵng', ambient: 'rgba(255, 255, 255, 0.02)', lanternIntensity: 0.2 }
+    ];
+    let currentLightingIdx = 0;
+
+    function cycleLightingMode() {
+      currentLightingIdx = (currentLightingIdx + 1) % lightingModes.length;
+      const m = lightingModes[currentLightingIdx];
+      document.getElementById('lighting-mode-icon').textContent = m.icon;
+      document.getElementById('lighting-mode-label').textContent = m.label;
+      document.getElementById('live-game-clock').textContent = m.clock;
+      soundEngine.coin();
+    }
+
+    /* --------------------------------------------------------------------------
+       4. GAME STATE & MAP LOGIC
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById('dever-game-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Nạp phôi map V2 sạch sẽ, không lỗi sọc ngang
+    const mapBgImg = new Image();
+    mapBgImg.src = './devertown_map_clean_alpha_courtyard.jpg';
+    let mapLoaded = false;
+    mapBgImg.onload = () => { mapLoaded = true; };
+
+    // Nạp Spritesheet nhân vật chính thức
+    const playerSpriteImg = new Image();
+    playerSpriteImg.src = './assets/characters/outfits/full_hoodie_dever.png';
+    let spriteLoaded = false;
+    playerSpriteImg.onload = () => { spriteLoaded = true; };
+
+    // Player Object (Start tại sân trung tâm V2)
+    const player = {
+      x: 520,
+      y: 440,
+      targetX: 520,
+      targetY: 440,
+      speed: 3.6,
+      dir: 'down',
+      frame: 0,
+      animTimer: 0,
+      isMoving: false,
+      stepAudioTimer: 0
+    };
+
+    // Vịt trong hồ nước bên trái (Tọa độ mới: tâm ~175, 550)
+    const ducks = [
+      { x: 140, y: 520, vx: 0.3, vy: 0.2, color: '#fef08a', size: 12, bob: 0 },
+      { x: 210, y: 560, vx: -0.25, vy: -0.15, color: '#ffffff', size: 14, bob: 1.5 },
+      { x: 175, y: 490, vx: 0.2, vy: -0.3, color: '#fef08a', size: 10, bob: 3.2 }
+    ];
+
+    // Đèn lồng sân trường (Map V2: các vị trí đèn đối xứng tuyệt đẹp)
+    const lanterns = [
+      { x: 345, y: 330, r: 110 },
+      { x: 690, y: 330, r: 110 },
+      { x: 520, y: 560, r: 130 }, // Đài phun nước
+      { x: 775, y: 400, r: 115 },
+      { x: 935, y: 400, r: 115 },
+      { x: 775, y: 610, r: 120 },
+      { x: 935, y: 610, r: 120 }
+    ];
+
+    // Đom đóm ban đêm
+    const fireflies = [];
+    for (let i = 0; i < 20; i++) {
+      fireflies.push({
+        x: 100 + Math.random() * 1176,
+        y: 260 + Math.random() * 450,
+        speedX: (Math.random() - 0.5) * 0.4,
+        speedY: (Math.random() - 0.5) * 0.4,
+        phase: Math.random() * Math.PI * 2,
+        r: 1.5 + Math.random() * 2
+      });
+    }
+
+    // Các rác rơi trên sân phục vụ nghề Lao Công
+    let litterItems = [
+      { id: 1, x: 420, y: 410, type: '🥤', label: 'Ly Trà Sữa' },
+      { id: 2, x: 620, y: 430, type: '🥫', label: 'Vỏ Lon Nước' },
+      { id: 3, x: 520, y: 680, type: '🧃', label: 'Hộp Sữa FPT' }
+    ];
+
+    // Các điểm tương tác POI trên Map V2
+    const POIs = {
+      pond: { x: 175, y: 550, radius: 160, label: 'Thả Mồi Cho Vịt (+50 DC)', key: 'E' },
+      statue: { x: 850, y: 540, radius: 130, label: 'Chiêm Bái Tượng Tư Tưởng (+30 DC)', key: 'E' },
+      alpha: { x: 520, y: 340, radius: 90, label: 'Vào Sảnh Tòa Alpha', key: 'E' },
+      fountain: { x: 520, y: 560, radius: 75, label: 'Tung Đồng Xu Ước Nguyện (+10 DC)', key: 'E' }
+    };
+
+    let activePOI = null;
+    let dcoinBalance = 1250;
+    let dormUpvotes = 84;
+    let questsState = { duck: false, statue: false };
+
+    // Keyboard Listener
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.key.toLowerCase()] = true;
+
+      if (e.key === 'e' || e.key === 'E') triggerActiveInteraction();
+      else if (e.key === '1') openInventoryModal();
+      else if (e.key === '2') openJobsModal();
+      else if (e.key === '3') openClansModal();
+      else if (e.key === '4') openArcadeModal();
+      else if (e.key === '5') openTradeModal();
+      else if (e.key === '6') openHousingModal();
+      else if (e.key === 'g' || e.key === 'G') toggleEmoteWheel();
+      else if (e.key === 'l' || e.key === 'L') cycleLightingMode();
+      else if (e.key === 't' || e.key === 'T' || e.key === 'Enter') openChatInput();
+      else if (e.key === 'Escape') closeAllModals();
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys[e.key.toLowerCase()] = false;
+    });
+
+    function resetPlayerPosition() {
+      player.x = 520;
+      player.y = 440;
+      soundEngine.coin();
+    }
+
+    /* --------------------------------------------------------------------------
+       5. MAIN GAME LOOP
+       -------------------------------------------------------------------------- */
+    let lastTime = performance.now();
+
+    function gameLoop(time) {
+      const dt = (time - lastTime) / 1000;
+      lastTime = time;
+
+      update(dt);
+      render(time);
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function update(dt) {
+      let dx = 0;
+      let dy = 0;
+
+      if (keys['w'] || keys['arrowup']) { dy -= 1; player.dir = 'up'; }
+      if (keys['s'] || keys['arrowdown']) { dy += 1; player.dir = 'down'; }
+      if (keys['a'] || keys['arrowleft']) { dx -= 1; player.dir = 'left'; }
+      if (keys['d'] || keys['arrowright']) { dx += 1; player.dir = 'right'; }
+
+      player.isMoving = (dx !== 0 || dy !== 0);
+
+      if (player.isMoving) {
+        const len = Math.hypot(dx, dy);
+        dx = (dx / len) * player.speed;
+        dy = (dy / len) * player.speed;
+
+        const nextX = player.x + dx;
+        const nextY = player.y + dy;
+
+        // Bounded boundaries
+        if (nextY >= 320 && nextY <= 730 && nextX >= 50 && nextX <= 1320) {
+          // Hồ vịt collision (không rơi xuống giữa hồ)
+          const distPond = Math.hypot(nextX - 175, nextY - 550);
+          if (distPond > 110) {
+            // Đài phun nước collision
+            const distFountain = Math.hypot(nextX - 520, nextY - 560);
+            if (distFountain > 40) {
+              // Tượng tư tưởng collision
+              const distStatue = Math.hypot(nextX - 850, nextY - 540);
+              if (distStatue > 40) {
+                player.x = nextX;
+                player.y = nextY;
+              }
+            }
+          }
+        }
+
+        player.animTimer += dt * 10;
+        player.frame = Math.floor(player.animTimer) % 4;
+
+        player.stepAudioTimer += dt;
+        if (player.stepAudioTimer > 0.28) {
+          player.stepAudioTimer = 0;
+          soundEngine.footstep();
+        }
+      } else {
+        player.frame = 0;
+      }
+
+      // Update Ducks
+      ducks.forEach(d => {
+        d.x += d.vx;
+        d.y += d.vy;
+        d.bob += dt * 2.5;
+
+        const distFromCenter = Math.hypot(d.x - 175, d.y - 550);
+        if (distFromCenter > 85) {
+          d.vx *= -1;
+          d.vy *= -1;
+        }
+      });
+
+      // Update Fireflies
+      fireflies.forEach(f => {
+        f.x += f.speedX;
+        f.y += f.speedY;
+        f.phase += dt * 3;
+        if (f.x < 50 || f.x > 1320) f.speedX *= -1;
+        if (f.y < 250 || f.y > 720) f.speedY *= -1;
+      });
+
+      // Check Active Interaction POI
+      activePOI = null;
+      let minDis = 9999;
+      for (const key in POIs) {
+        const poi = POIs[key];
+        const dis = Math.hypot(player.x - poi.x, player.y - poi.y);
+        if (dis < poi.radius && dis < minDis) {
+          minDis = dis;
+          activePOI = { ...poi, id: key };
+        }
+      }
+
+      // Check nearby litter for Lao Công Job
+      litterItems.forEach((l, idx) => {
+        const disLitter = Math.hypot(player.x - l.x, player.y - l.y);
+        if (disLitter < 50) {
+          activePOI = {
+            id: 'litter',
+            litterIdx: idx,
+            x: l.x,
+            y: l.y,
+            label: `Nhặt ${l.label} (+15 DC)`
+          };
+        }
+      });
+
+      // Update Tooltip DOM
+      const tooltip = document.getElementById('inworld-interact-card');
+      const actionText = document.getElementById('interact-action-text');
+      if (activePOI) {
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${(activePOI.x / canvas.width) * 100}%`;
+        tooltip.style.top = `${(activePOI.y / canvas.height) * 100}%`;
+        actionText.textContent = activePOI.label;
+      } else {
+        tooltip.style.display = 'none';
+      }
+
+      // Speech bubble pos
+      const bubble = document.getElementById('player-speech-bubble');
+      if (bubble.style.display === 'block') {
+        bubble.style.left = `${(player.x / canvas.width) * 100}%`;
+        bubble.style.top = `${(player.y / canvas.height) * 100}%`;
+      }
+    }
+
+    function render(time) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. Phôi nền Pixel Art Map V2 (Không tì vết, không sọc ngang)
+      if (mapLoaded) {
+        ctx.drawImage(mapBgImg, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = '#0a1628';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '16px monospace';
+        ctx.fillText('Đang tải bản đồ Sân Alpha V2...', canvas.width / 2 - 140, canvas.height / 2);
+      }
+
+      // 2. Animated Water Ripple / Shimmer on Pond (Hồ bên trái)
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      ctx.strokeStyle = '#bae6fd';
+      ctx.lineWidth = 1.2;
+      const t = time / 1000;
+      for (let r = 0; r < 3; r++) {
+        const rad = 20 + ((t * 12 + r * 25) % 60);
+        ctx.beginPath();
+        ctx.ellipse(175, 550, rad * 1.4, rad * 0.85, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 3. Swimming Ducks
+      ducks.forEach(d => {
+        ctx.save();
+        const bobY = Math.sin(d.bob) * 2;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.beginPath();
+        ctx.ellipse(d.x, d.y + 4, d.size, d.size * 0.45, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = d.color;
+        ctx.beginPath();
+        ctx.ellipse(d.x, d.y + bobY, d.size * 0.7, d.size * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const facing = (d.vx >= 0) ? 1 : -1;
+        ctx.beginPath();
+        ctx.arc(d.x + facing * (d.size * 0.5), d.y + bobY - 4, d.size * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.ellipse(d.x + facing * (d.size * 0.8), d.y + bobY - 3, 3, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // 4. Render Litter Items (Nghề Lao Công)
+      litterItems.forEach(l => {
+        ctx.save();
+        ctx.font = '16px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(l.type, l.x, l.y);
+        ctx.restore();
+      });
+
+      // 5. Draw Player Character
+      drawPlayerCharacter();
+
+      // 6. Dynamic Stardew Valley Lighting Overlay
+      const mode = lightingModes[currentLightingIdx];
+      renderLightingEngine(mode, time);
+    }
+
+    function drawPlayerCharacter() {
+      ctx.save();
+
+      // Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(player.x, player.y + 12, 14, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      let dirRow = 0;
+      if (player.dir === 'left') dirRow = 1;
+      else if (player.dir === 'right') dirRow = 2;
+      else if (player.dir === 'up') dirRow = 3;
+
+      if (spriteLoaded) {
+        const frameW = 48;
+        const frameH = 64;
+        const sx = player.frame * frameW;
+        const sy = dirRow * frameH;
+        const dw = 48;
+        const dh = 64;
+        ctx.drawImage(
+          playerSpriteImg,
+          sx, sy, frameW, frameH,
+          player.x - dw / 2, player.y - dh + 14, dw, dh
+        );
+      } else {
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(player.x - 12, player.y - 30, 24, 30);
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y - 36, 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Nameplate Tag
+      ctx.font = 'bold 11px var(--font-ui)';
+      ctx.textAlign = 'center';
+      const nameTxt = 'Khang_FU';
+      const textMetrics = ctx.measureText(nameTxt);
+      const bgW = textMetrics.width + 16;
+      ctx.fillStyle = 'rgba(8, 14, 28, 0.88)';
+      ctx.roundRect(player.x - bgW / 2, player.y - 68, bgW, 18, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText(nameTxt, player.x, player.y - 55);
+
+      ctx.restore();
+    }
+
+    function renderLightingEngine(mode, time) {
+      const t = time / 1000;
+
+      ctx.save();
+      ctx.fillStyle = mode.ambient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.globalCompositeOperation = 'screen';
+      lanterns.forEach((l, idx) => {
+        const pulse = 1 + 0.05 * Math.sin(t * 3.5 + idx);
+        const radius = l.r * pulse * mode.lanternIntensity;
+
+        const grad = ctx.createRadialGradient(l.x, l.y, 4, l.x, l.y, radius);
+        grad.addColorStop(0, 'rgba(255, 230, 140, 0.85)');
+        grad.addColorStop(0.35, 'rgba(251, 146, 60, 0.35)');
+        grad.addColorStop(1, 'rgba(251, 146, 60, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(l.x, l.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Player lantern halo
+      const pGrad = ctx.createRadialGradient(player.x, player.y - 15, 2, player.x, player.y - 15, 65);
+      pGrad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+      pGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = pGrad;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y - 15, 65, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Fireflies in Night Mode
+      if (mode.id === 'night') {
+        fireflies.forEach(f => {
+          const glow = 0.5 + 0.5 * Math.sin(f.phase);
+          ctx.fillStyle = `rgba(163, 230, 53, ${glow})`;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      ctx.restore();
+    }
+
+    /* --------------------------------------------------------------------------
+       6. INTERACTION TRIGGERS & MODALS
+       -------------------------------------------------------------------------- */
+    function triggerActiveInteraction() {
+      if (!activePOI) return;
+
+      if (activePOI.id === 'pond') {
+        soundEngine.splash();
+        soundEngine.quack();
+        setTimeout(() => soundEngine.coin(), 300);
+
+        ducks.forEach(d => {
+          d.vx = (player.x - d.x) * 0.015;
+          d.vy = (player.y - d.y) * 0.015;
+        });
+
+        spawnGainText('+50 D-Coin', player.x, player.y);
+        dcoinBalance += 50;
+        document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+
+        if (!questsState.duck) {
+          questsState.duck = true;
+          const line = document.getElementById('quest-duck-line');
+          line.classList.add('completed');
+          document.getElementById('quest-duck-chk').textContent = '✓';
+          updateQuestProgress();
+        }
+
+      } else if (activePOI.id === 'statue') {
+        soundEngine.chime();
+        openDialogueModal('Tượng Nhà Tư Tưởng', 'Triết Lý Lập Trình Viên FU-DEVER', quotes[0]);
+
+        if (!questsState.statue) {
+          questsState.statue = true;
+          spawnGainText('+30 D-Coin', player.x, player.y);
+          dcoinBalance += 30;
+          document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+          const line = document.getElementById('quest-statue-line');
+          line.classList.add('completed');
+          document.getElementById('quest-statue-chk').textContent = '✓';
+          updateQuestProgress();
+        }
+
+      } else if (activePOI.id === 'litter') {
+        // Nhặt rác
+        soundEngine.coin();
+        spawnGainText('+15 D-Coin Sạch Campus!', player.x, player.y);
+        dcoinBalance += 15;
+        document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+        litterItems.splice(activePOI.litterIdx, 1);
+        activePOI = null;
+
+      } else if (activePOI.id === 'alpha') {
+        soundEngine.chime();
+        openDialogueModal('Tòa Nhà Alpha', 'Sảnh Lễ Tân FPT University', 'Chào mừng bạn đến với Tòa Nhà Alpha! Bạn có thể đi thang máy lên Tầng 2 để ghé thăm Tech Lab và Phòng Game Arcade.');
+      } else if (activePOI.id === 'fountain') {
+        soundEngine.splash();
+        spawnGainText('+10 D-Coin May Mắn', player.x, player.y);
+        dcoinBalance += 10;
+        document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+      }
+    }
+
+    function spawnGainText(text, x, y) {
+      const div = document.createElement('div');
+      div.className = 'floating-gain-text';
+      div.textContent = text;
+      div.style.left = `${(x / canvas.width) * 100}%`;
+      div.style.top = `${(y / canvas.height) * 100}%`;
+      document.getElementById('gameplay-viewport').appendChild(div);
+      setTimeout(() => div.remove(), 1200);
+    }
+
+    function updateQuestProgress() {
+      let count = 1;
+      if (questsState.duck) count++;
+      if (questsState.statue) count++;
+      document.getElementById('quest-prog-txt').textContent = `${count}/3`;
+      if (count === 3) {
+        soundEngine.chime();
+        spawnGainText('🎉 Hoàn Thành Tất Cả Nhiệm Vụ!', canvas.width / 2, canvas.height / 2);
+      }
+    }
+
+    const quotes = [
+      '"First, solve the problem. Then, write the code. Code chạy ngon trên localhost chưa chắc chạy được trên production nếu thiếu CI/CD và Unit Test!"',
+      '"Đừng sợ bug. Bug là dấu hiệu duy nhất chứng minh bạn đang thực sự viết code và sáng tạo những điều mới!"',
+      '"Kiến trúc tốt giống như nền móng của Tòa Alpha — vững chãi trước mọi đợt traffic đột biến trong ngày DevDay!"',
+      '"Trong vũ trụ FU-DEVER, không có lập trình viên nào bị bỏ lại phía sau. Luôn có mentor 1:1 đồng hành cùng bạn."'
+    ];
+    let quoteIdx = 0;
+
+    function openDialogueModal(title, speaker, content) {
+      document.getElementById('dialogue-header-title').querySelector('span:last-child').textContent = title;
+      document.getElementById('dialogue-speaker-name').textContent = speaker;
+      document.getElementById('dialogue-speech-content').textContent = content;
+      document.getElementById('modal-dialogue').style.display = 'flex';
+    }
+
+    function nextDialogueQuote() {
+      quoteIdx = (quoteIdx + 1) % quotes.length;
+      document.getElementById('dialogue-speech-content').textContent = quotes[quoteIdx];
+      soundEngine.coin();
+    }
+
+    /* Modal Openers */
+    function openInventoryModal() { soundEngine.chime(); document.getElementById('modal-inventory').style.display = 'flex'; }
+    function openJobsModal() { soundEngine.chime(); document.getElementById('modal-jobs').style.display = 'flex'; }
+    function openClansModal() { soundEngine.chime(); document.getElementById('modal-clans').style.display = 'flex'; }
+    function openArcadeModal() { soundEngine.chime(); document.getElementById('modal-arcade').style.display = 'flex'; }
+    function openTradeModal() { soundEngine.chime(); document.getElementById('modal-trade').style.display = 'flex'; }
+    function openHousingModal() { soundEngine.chime(); document.getElementById('modal-housing').style.display = 'flex'; }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal-overlay-backdrop').forEach(m => m.style.display = 'none');
+      document.getElementById('radial-emote-overlay').style.display = 'none';
+      document.getElementById('chat-input-bar-container').style.display = 'none';
+    }
+
+    function claimJobReward(jobName, amount) {
+      soundEngine.coin();
+      dcoinBalance += amount;
+      document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+      spawnGainText(`${amount > 0 ? '+' : ''}${amount} D-Coin (${jobName})`, player.x, player.y);
+      closeAllModals();
+    }
+
+    function startLitterJob() {
+      soundEngine.coin();
+      spawnGainText('Đã xuất hiện rác trên sân! Hãy đi nhặt bằng phím [E]', player.x, player.y);
+      litterItems = [
+        { id: 1, x: 420, y: 410, type: '🥤', label: 'Ly Trà Sữa' },
+        { id: 2, x: 620, y: 430, type: '🥫', label: 'Vỏ Lon Nước' },
+        { id: 3, x: 520, y: 680, type: '🧃', label: 'Hộp Sữa FPT' }
+      ];
+      closeAllModals();
+    }
+
+    function upvoteDorm() {
+      soundEngine.coin();
+      dormUpvotes++;
+      document.getElementById('dorm-upvote-counter').textContent = `Lượt Upvote Tuần Này: ${dormUpvotes} ❤️ (Hạng 3 Toàn Trường)`;
+      spawnGainText('+1 Upvote ❤️', player.x, player.y);
+    }
+
+    function useItem(itemName) {
+      soundEngine.coin();
+      spawnGainText(`Sử dụng ${itemName}!`, player.x, player.y);
+      closeAllModals();
+    }
+
+    function playGameDirect(gameName) {
+      soundEngine.coin();
+      spawnGainText(`Đang khởi động ${gameName}...`, player.x, player.y);
+      closeAllModals();
+    }
+
+    /* Emote Wheel System */
+    function toggleEmoteWheel() {
+      const wheel = document.getElementById('radial-emote-overlay');
+      if (wheel.style.display === 'block') {
+        wheel.style.display = 'none';
+      } else {
+        wheel.style.display = 'block';
+        wheel.style.left = `${(player.x / canvas.width) * 100}%`;
+        wheel.style.top = `${((player.y - 40) / canvas.height) * 100}%`;
+        soundEngine.footstep();
+      }
+    }
+
+    function selectEmote(emoji) {
+      soundEngine.coin();
+      document.getElementById('radial-emote-overlay').style.display = 'none';
+      showSpeechBubble(emoji);
+    }
+
+    /* Speech Bubble */
+    let bubbleTimeout = null;
+    function showSpeechBubble(text) {
+      const bubble = document.getElementById('player-speech-bubble');
+      bubble.textContent = text;
+      bubble.style.display = 'block';
+      bubble.style.left = `${(player.x / canvas.width) * 100}%`;
+      bubble.style.top = `${(player.y / canvas.height) * 100}%`;
+
+      if (bubbleTimeout) clearTimeout(bubbleTimeout);
+      bubbleTimeout = setTimeout(() => {
+        bubble.style.display = 'none';
+      }, 3500);
+    }
+
+    /* Chat Input */
+    function openChatInput() {
+      const container = document.getElementById('chat-input-bar-container');
+      const input = document.getElementById('chat-input-field');
+      container.style.display = 'block';
+      input.focus();
+
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          const msg = input.value.trim();
+          if (msg) {
+            showSpeechBubble(msg);
+            soundEngine.coin();
+          }
+          input.value = '';
+          container.style.display = 'none';
+        } else if (e.key === 'Escape') {
+          container.style.display = 'none';
+        }
+      };
+    }
+
+    function guideTo(target) {
+      soundEngine.footstep();
+      if (target === 'duck') {
+        player.x = 260;
+        player.y = 550;
+      } else if (target === 'statue') {
+        player.x = 780;
+        player.y = 540;
+      }
+    }
+
+    // Start Main Loop
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>

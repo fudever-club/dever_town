@@ -1,5 +1,11 @@
 import Phaser from 'phaser';
 
+// Analog stick tuning (mobile). Đặt ở config theo quy chuẩn project.
+export const ANALOG_DEADZONE = 0.15;      // Bỏ qua rung tay nhẹ quanh tâm
+export const ANALOG_DIR_THRESHOLD = 0.3;  // Ngưỡng suy ra hướng sprite từ analog
+export const MOVE_MODE_KEY = 'dever_move_mode';         // 'dpad' | 'analog'
+export const ANALOG_VISIBLE_KEY = 'dever_analog_visible'; // '1' | '0'
+
 export class InputController {
   constructor(scene) {
     this.scene = scene;
@@ -29,7 +35,11 @@ export class InputController {
       down: false,
       left: false,
       right: false,
-      interactE: false
+      interactE: false,
+      // Analog stick (360°): vector -1..1, magnitude = tốc độ (0 = đứng yên).
+      // Khi magnitude > ANALOG_DEADZONE thì analog được ưu tiên hơn D-pad số.
+      analogX: 0,
+      analogY: 0
     };
 
     if (scene.input && scene.input.keyboard) {
@@ -187,20 +197,44 @@ export class InputController {
     let vx = 0;
     let vy = 0;
 
-    const left = this.cursors.left.isDown || this.wasd.left.isDown || this.touchInput.left;
-    const right = this.cursors.right.isDown || this.wasd.right.isDown || this.touchInput.right;
-    const up = this.cursors.up.isDown || this.wasd.up.isDown || this.touchInput.up;
-    const down = this.cursors.down.isDown || this.wasd.down.isDown || this.touchInput.down;
+    // Analog stick (mobile) được ưu tiên khi vượt deadzone.
+    // Giữ nguyên magnitude để tốc độ di chuyển tỉ lệ với lực đẩy cần.
+    const ax = this.touchInput.analogX || 0;
+    const ay = this.touchInput.analogY || 0;
+    const aMag = Math.hypot(ax, ay);
 
-    if (left) vx -= 1;
-    if (right) vx += 1;
-    if (up) vy -= 1;
-    if (down) vy += 1;
+    let left, right, up, down;
+
+    if (aMag > ANALOG_DEADZONE) {
+      const mag = Math.min(aMag, 1);
+      vx = (ax / aMag) * mag;
+      vy = (ay / aMag) * mag;
+      // Suy ra hướng sprite từ trục chiếm ưu thế (giữ nguyên logic animation).
+      left = ax < -ANALOG_DIR_THRESHOLD;
+      right = ax > ANALOG_DIR_THRESHOLD;
+      up = ay < -ANALOG_DIR_THRESHOLD;
+      down = ay > ANALOG_DIR_THRESHOLD;
+    } else {
+      left = this.cursors.left.isDown || this.wasd.left.isDown || this.touchInput.left;
+      right = this.cursors.right.isDown || this.wasd.right.isDown || this.touchInput.right;
+      up = this.cursors.up.isDown || this.wasd.up.isDown || this.touchInput.up;
+      down = this.cursors.down.isDown || this.wasd.down.isDown || this.touchInput.down;
+
+      if (left) vx -= 1;
+      if (right) vx += 1;
+      if (up) vy -= 1;
+      if (down) vy += 1;
+
+      // Digital: chuẩn hoá về độ dài 1 (chéo 2 phím vẫn cùng tốc độ).
+      const len = Math.hypot(vx, vy);
+      if (len > 0) {
+        vx /= len;
+        vy /= len;
+      }
+    }
 
     const vector = new Phaser.Math.Vector2(vx, vy);
-    if (vector.lengthSq() > 0) {
-      vector.normalize();
-    }
+    // Digital: chuẩn hoá về độ dài 1. Analog: giữ magnitude (đã clamp ≤ 1 ở trên).
 
     return {
       vector,

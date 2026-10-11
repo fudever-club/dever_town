@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
+import { PondArt } from '../utils/pondArt.js';
+import { generateEmoteIcons } from '../utils/emoteIcons.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -11,7 +13,7 @@ export class BootScene extends Phaser.Scene {
     const height = this.cameras.main.height;
 
     this.add.text(width / 2, height / 2, 'Đang tải Dever Town...', {
-      fontFamily: "'Outfit', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '16px',
       color: '#60a5fa'
     }).setOrigin(0.5, 0.5);
@@ -19,38 +21,71 @@ export class BootScene extends Phaser.Scene {
     // 1. Sinh Tileset bản đồ (19 tiles)
     TextureGenerator.generateTileset(this);
 
-    // 2. Preload toàn bộ Spritesheets & JSON Atlas Aseprite 2D Pixel 60FPS (8-Frame Walk & 4-Frame Breathing)
-    const allAsepriteCharacters = [
-      // 2A. Phôi thân cơ bản (Modular Bases)
-      'char_base_male', 'char_base_female',
+    // 1b. Sinh sprite vịt trời + tượng "Nhà Tư Tưởng" + vườn hoa (hồ vườn sân Tòa Alpha)
+    PondArt.generateDuckSprite(this);
+    PondArt.generateThinkerStatue(this);
+    PondArt.generateFlowerGarden(this);
 
-      // 2B. Bộ Trang phục Đời Thường & Sinh Viên FPTU (12 trang phục)
-      'char_hoodie_fuda', 'char_polo_fuda', 'char_aodai_white', 'char_aodai_fuda',
-      'char_hoodie_dever', 'char_polo_dever', 'char_suit_formal', 'char_jersey_sport',
-      'char_hoodie_gaming', 'char_hoodie_terminal', 'char_apron_barista', 'char_tee_dev_black',
+    // 2. Preload toàn bộ Spritesheets Gốc Vẽ Tay Sắc Nét (Handcrafted Pixel Art, không bị rách eo)
+    // 2A. Phôi thân cơ bản (Modular Bases)
+    this.load.spritesheet('char_base_male', 'assets/characters/bases/base_male.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_base_female', 'assets/characters/bases/base_female.png', { frameWidth: 48, frameHeight: 64 });
 
-      // 2C. Bộ Trang Phục Đặc Biệt & Mascot (6 trang phục)
-      'char_frog_mascot', 'char_buggy_mascot', 'char_mecha_suit', 'char_wizard_robe',
-      'char_vovinam_suit', 'char_leather_biker',
+    // 2B. Bộ Trang phục Đời Thường & Sinh Viên FPTU
+    this.load.spritesheet('char_hoodie_fuda', 'assets/characters/outfits/full_hoodie_fuda.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_polo_fuda', 'assets/characters/outfits/full_polo_fuda.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_aodai_white', 'assets/characters/outfits/full_aodai_white.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_aodai_fuda', 'assets/characters/outfits/full_aodai_fuda.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_hoodie_dever', 'assets/characters/outfits/full_hoodie_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_polo_dever', 'assets/characters/outfits/full_polo_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_suit_formal', 'assets/characters/outfits/full_suit_formal.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_jersey_sport', 'assets/characters/outfits/full_jersey_sport.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_hoodie_gaming', 'assets/characters/outfits/full_hoodie_gaming.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_hoodie_terminal', 'assets/characters/outfits/full_hoodie_terminal.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_apron_barista', 'assets/characters/outfits/full_apron_barista.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_tee_dev_black', 'assets/characters/outfits/full_tee_dev_black.png', { frameWidth: 48, frameHeight: 64 });
 
-      // 2D. Toàn bộ 11 NPC Ban Quản Trị & Cố Vấn CLB FU-DEVER
-      'char_npc_chunhiem_nhat', 'char_npc_pho_hung', 'char_npc_thuky_anh', 'char_npc_barista_an',
-      'char_npc_hocthu_kiet', 'char_npc_game_lead_thanh', 'char_npc_sukien_thang', 'char_npc_media_hai',
-      'char_npc_historian_duc', 'char_npc_backend_khoa', 'char_npc_algo_truyen',
+    // 2C. Bộ Trang Phục Đặc Biệt & Mascot
+    this.load.spritesheet('char_frog_mascot', 'assets/characters/special_outfits/special_frog_mascot.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_buggy_mascot', 'assets/characters/special_outfits/special_buggy_mascot.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_mecha_suit', 'assets/characters/special_outfits/special_mecha_suit.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_wizard_robe', 'assets/characters/special_outfits/special_wizard_robe.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_vovinam_suit', 'assets/characters/special_outfits/special_vovinam_suit.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_leather_biker', 'assets/characters/special_outfits/special_leather_biker.png', { frameWidth: 48, frameHeight: 64 });
 
-      // 2E. 6 Mẫu Gather.town v2 Polish
-      'char_sample_dev_dever', 'char_sample_fptu_female', 'char_sample_cyber_hacker',
-      'char_sample_wizard_sorceress', 'char_sample_biker_rocker', 'char_sample_barista_an',
+    // 2D. Toàn bộ 11 NPC Ban Quản Trị & Cố Vấn CLB FU-DEVER
+    this.load.spritesheet('char_npc_chunhiem_nhat', 'assets/characters/npcs/npc_chunhiem_nhat.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_pho_hung', 'assets/characters/npcs/npc_pho_hung.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_thuky_anh', 'assets/characters/npcs/npc_thuky_anh.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_barista_an', 'assets/characters/npcs/npc_barista_an.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_hocthu_kiet', 'assets/characters/npcs/npc_hocthu_kiet.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_game_lead_thanh', 'assets/characters/npcs/npc_game_lead_thanh.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_sukien_thang', 'assets/characters/npcs/npc_sukien_thang.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_media_hai', 'assets/characters/npcs/npc_media_hai.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_historian_duc', 'assets/characters/npcs/npc_historian_duc.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_backend_khoa', 'assets/characters/npcs/npc_backend_khoa.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_npc_algo_truyen', 'assets/characters/npcs/npc_algo_truyen.png', { frameWidth: 48, frameHeight: 64 });
 
-      // 2F. 10 Mẫu Pro Aseprite Độc Quyền
-      'char_dev_gen10', 'char_buggy_pro', 'char_frog_pro', 'char_vovinam_pro',
-      'char_mecha_pro', 'char_wizard_pro', 'char_biker_pro', 'char_aodai_pro',
-      'char_cyber_pro', 'char_barista_pro'
-    ];
+    // 2E. 6 Mẫu Gather.town v2 Polish
+    this.load.spritesheet('char_sample_dev_dever', 'assets/characters/samples_v2/sample_dev_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_fptu_female', 'assets/characters/samples_v2/sample_fptu_female.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_cyber_hacker', 'assets/characters/samples_v2/sample_cyber_hacker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_wizard_sorceress', 'assets/characters/samples_v2/sample_wizard_sorceress.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_biker_rocker', 'assets/characters/samples_v2/sample_biker_rocker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_sample_barista_an', 'assets/characters/samples_v2/sample_barista_an.png', { frameWidth: 48, frameHeight: 64 });
 
-    allAsepriteCharacters.forEach(key => {
-      this.load.aseprite(key, `assets/characters/aseprite/${key}.png`, `assets/characters/aseprite/${key}.json`);
-    });
+    // 2F. 10 Mẫu Pro Ánh Xạ Thẳng Tới Sprite Gốc Liền Khối Sắc Nét (Tuyệt đối không dùng bản rách eo)
+    this.load.spritesheet('char_dev_hoodie', 'assets/characters/samples_v2/sample_dev_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_dev_gen10', 'assets/characters/samples_v2/sample_dev_dever.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_buggy_pro', 'assets/characters/special_outfits/special_buggy_mascot.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_frog_pro', 'assets/characters/special_outfits/special_frog_mascot.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_vovinam_pro', 'assets/characters/special_outfits/special_vovinam_suit.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_mecha_pro', 'assets/characters/special_outfits/special_mecha_suit.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_wizard_pro', 'assets/characters/special_outfits/special_wizard_robe.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_biker_pro', 'assets/characters/special_outfits/special_leather_biker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_aodai_pro', 'assets/characters/samples_v2/sample_fptu_female.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_cyber_pro', 'assets/characters/samples_v2/sample_cyber_hacker.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_barista_pro', 'assets/characters/samples_v2/sample_barista_an.png', { frameWidth: 48, frameHeight: 64 });
 
     // 2G. Ảnh Chân Dung Chất Lượng Cao cho 11 NPC (Bust Portraits)
     const npcsList = [
@@ -62,12 +97,16 @@ export class BootScene extends Phaser.Scene {
       this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
     });
 
-    // 3. Sinh các bộ Spritesheet Avatar Pixel Art cũ làm fallback
-    TextureGenerator.generateAllCharacterSpritesheets(this);
 
   }
 
   create() {
+    // Overlay cánh tay cho emote body-animation (wave / power / dance)
+    TextureGenerator.generateEmoteOverlays(this);
+    TextureGenerator.generateItemIcons(this);
+    TextureGenerator.generateBadgeIcons(this);
+    generateEmoteIcons(this);
+
     // Đăng ký chuỗi hoạt ảnh (animations) cho toàn bộ spritesheet Gather.town mới
     const newAvatars = [
       // Bases
@@ -86,7 +125,7 @@ export class BootScene extends Phaser.Scene {
       'sample_dev_dever', 'sample_fptu_female', 'sample_cyber_hacker',
       'sample_wizard_sorceress', 'sample_biker_rocker', 'sample_barista_an',
       // Aseprite 2D Pixel 60FPS (10 Nhân vật)
-      'dev_gen10', 'buggy_pro', 'frog_pro', 'vovinam_pro',
+      'dev_hoodie', 'dev_gen10', 'buggy_pro', 'frog_pro', 'vovinam_pro',
       'mecha_pro', 'wizard_pro', 'biker_pro', 'aodai_pro',
       'cyber_pro', 'barista_pro'
     ];
@@ -105,6 +144,32 @@ export class BootScene extends Phaser.Scene {
       } catch (e) {}
     }
 
-    this.scene.start('WorldScene');
+    // Preload webfont (Tilt Neon / Be Vietnam Pro) TRƯỚC KHI WorldScene bake canvas text.
+    // Canvas text của Phaser "dính" font tại thời điểm tạo — nếu font Google chưa tải xong,
+    // nhãn portal / prompt [E] / badge sẽ vĩnh viễn dùng font fallback hệ thống và trông
+    // khác nhau tùy thời điểm mạng. Chờ tối đa 2.5s rồi cho game chạy tiếp kể cả khi lỗi.
+    this._waitForFonts().finally(() => this.scene.start('WorldScene'));
+  }
+
+  _waitForFonts() {
+    try {
+      if (typeof document === 'undefined' || !document.fonts || !document.fonts.load) {
+        return Promise.resolve();
+      }
+      const specs = [
+        '400 16px "Tilt Neon"',
+        '700 16px "Tilt Neon"',
+        '400 16px "Be Vietnam Pro"',
+        '600 16px "Be Vietnam Pro"',
+        '700 16px "Be Vietnam Pro"',
+        '800 16px "Be Vietnam Pro"',
+      ];
+      return Promise.race([
+        Promise.all(specs.map((s) => document.fonts.load(s).catch(() => []))),
+        new Promise((res) => setTimeout(res, 2500)),
+      ]).then(() => undefined);
+    } catch (e) {
+      return Promise.resolve();
+    }
   }
 }

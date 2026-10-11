@@ -6,12 +6,12 @@
   <title>DEVER TOWN - FU-DEVER • FUDA</title>
 
   <!-- Favicon / Domain & Search Bar Icon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48x48.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+  <link rel="manifest" href="./site.webmanifest" />
   <meta name="theme-color" content="#0d172e" />
 
   <!-- Open Graph / Meta for Social & Search Engine Domain Preview -->
@@ -26,8 +26,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/styles/emote-bar.css" />
+  <link rel="stylesheet" href="/src/styles/quiz-contrast.css" />
+  <link rel="stylesheet" href="/src/styles/zoom-controls.css" />
+  <link rel="stylesheet" href="/src/styles/hybrid-font.css" />
+  <link rel="stylesheet" href="/src/styles/logo-font-fix.css" />
 </head>
 <body>
   <!-- ==========================================================================
@@ -296,7 +301,7 @@
         <span class="brand-badge">FUDA</span>
       </div>
 
-      <!-- Quick Room Selector (7 Rooms) -->
+      <!-- Quick Room Selector (14 Rooms) -->
       <div class="room-nav-container">
         <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -307,11 +312,12 @@
           <option id="opt-dever_lab" value="dever_lab">Tech Lab (0)</option>
           <option id="opt-library_lounge" value="library_lounge">Thư Viện FUDA (0)</option>
           <option id="opt-memory_room" value="memory_room">Phòng Kỷ Niệm (0)</option>
-          <option id="opt-web_room" value="web_room">Không Gian Web (0)</option>
-          <option id="opt-media_hub" value="media_hub">Media & MXH (0)</option>
+          <option id="opt-web_room" value="web_room">Web & Media Hub (0)</option>
           <option id="opt-sports_complex" value="sports_complex">Khu Thể Thao (0)</option>
           <option id="opt-canteen_cafe" value="canteen_cafe">Căn Tin & Cafe (0)</option>
           <option id="opt-game_arcade" value="game_arcade">Arcade & Robot (0)</option>
+          <option id="opt-dorm_room" value="dorm_room">Ký Túc Xá (0)</option>
+          <option id="opt-meeting_room" value="meeting_room">Phòng Họp & Lớp Học (0)</option>
         </select>
       </div>
 
@@ -348,14 +354,6 @@
           <span data-i18n="inventoryBtn">Túi Đồ</span>
         </button>
 
-        <!-- Nút Tủ Đồ Tùy Chỉnh -->
-        <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
-          </svg>
-          <span data-i18n="wardrobeBtn">Tủ Đồ</span>
-        </button>
-
         <!-- Nút Bạn Bè & Kết Bạn [Phím F] -->
         <button id="header-friends-btn" class="btn-primary-sm btn-friends" title="Danh Sách Bạn Bè & Kết Bạn [Phím F]">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -368,48 +366,6 @@
           <span id="friends-badge-count" class="friends-badge-count hidden">0</span>
         </button>
 
-        <!-- Nút Cổng Tiện Ích FPTU & Tải Phần Mềm Thi -->
-        <button id="header-fptu-portal-btn" class="btn-primary-sm btn-fptu-portal" title="Cổng Thông Tin FPTU & Kho Phần Mềm Thi">
-          <span class="portal-icon">🏛️</span>
-          <span data-i18n="fptuPortalBtn">Cổng FPTU</span>
-        </button>
-
-        <!-- Nút Nhiệm Vụ Hằng Ngày & Tích Điểm -->
-        <button id="header-quests-btn" class="btn-primary-sm btn-quests" title="Nhiệm Vụ Hằng Ngày & Điểm Thưởng">
-          <span class="quest-coin-icon">🪙</span>
-          <span id="header-points-display" class="header-points-text">0</span>
-          <span data-i18n="questsBtn">Nhiệm Vụ</span>
-        </button>
-
-        <!-- Nút Biểu Cảm Nhanh [G] -->
-        <button id="header-emote-btn" class="btn-primary-sm btn-emote" title="Biểu Cảm & Nhảy Múa [Phím G]">
-          <span class="emote-btn-icon">✨</span>
-          <span data-i18n="emoteBtn">Biểu Cảm</span>
-        </button>
-
-        <!-- Nút Đấu Trí Siêu Tốc -->
-        <button id="header-speed-duel-btn" class="btn-primary-sm btn-speed-duel" title="Đấu Trí Lập Trình Siêu Tốc [Phím Z]">
-          <span class="duel-btn-icon">⚡</span>
-          <span data-i18n="speedDuelBtn">Đấu Trí</span>
-        </button>
-
-        <!-- Nút Bật/Tắt Nhạc Nền 8-Bit BGM -->
-        <button id="header-bgm-btn" class="btn-icon-square btn-bgm" title="Bật / Tắt Nhạc Nền 8-Bit Vui Nhộn">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18V5l12-2v13"></path>
-            <circle cx="6" cy="18" r="3"></circle>
-            <circle cx="18" cy="16" r="3"></circle>
-          </svg>
-        </button>
-
-        <button id="header-auth-btn" class="btn-primary-sm" title="Tài khoản & Đổi Avatar">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span id="auth-btn-text" data-i18n="profileBtn">Hồ Sơ</span>
-        </button>
-
         <!-- Nút Cài Đặt Hệ Thống (Âm Thanh & Ngôn Ngữ) -->
         <button id="header-settings-btn" class="btn-primary-sm btn-settings" title="Cài Đặt Hệ Thống & Ngôn Ngữ">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -419,23 +375,28 @@
           <span data-i18n="settingsBtn">Cài Đặt</span>
         </button>
 
-        <button id="header-logout-btn" class="btn-ghost hidden" title="Đăng xuất tài khoản" data-i18n="logoutBtn">Đăng xuất</button>
+        <!-- Nút menu "⋯" gom các chức năng phụ (Tủ Đồ, Cổng FPTU, Nhiệm Vụ, Biểu Cảm, Đấu Trí, Nhạc, Hồ Sơ, Đăng xuất, Toàn màn hình) -->
+        <div class="header-overflow-wrap">
+          <button id="header-overflow-btn" class="btn-icon-square" title="Thêm chức năng" aria-haspopup="true" aria-expanded="false" aria-controls="header-overflow-menu">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.8"></circle>
+              <circle cx="12" cy="12" r="1.8"></circle>
+              <circle cx="19" cy="12" r="1.8"></circle>
+            </svg>
+          </button>
+        </div>
 
-        <!-- Fullscreen Toggle -->
-        <button id="fullscreen-btn" class="btn-icon-square" title="Chuyển chế độ Toàn màn hình">
-          <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <polyline points="9 21 3 21 3 15"></polyline>
-            <line x1="21" y1="3" x2="14" y2="10"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-          <svg id="fullscreen-icon-compress" class="btn-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 14 10 14 10 20"></polyline>
-            <polyline points="20 10 14 10 14 4"></polyline>
-            <line x1="14" y1="10" x2="21" y2="3"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-        </button>
+        <!-- Nút Thông Báo (thay thế ticker footer) -->
+        <div class="header-bell-wrap">
+          <button id="header-bell-btn" class="btn-icon-square btn-bell" title="Thông báo & Tin tức">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="bell-unread-dot" class="bell-unread-dot hidden"></span>
+          </button>
+        </div>
+
         <!-- Network Latency / Ping Indicator -->
         <span id="network-ping-badge" class="network-ping-badge good" title="Độ trễ máy chủ Realtime (Ping)">
           <span class="ping-dot green"></span> 35ms
@@ -445,12 +406,104 @@
           <span class="online-num">1</span>
           <span class="online-label">Online</span>
         </span>
-        <div class="status-indicator">
-          <span class="dot online"></span>
-          <span class="status-text" data-i18n="onlineText">Online</span>
-        </div>
       </div>
+
+
     </header>
+
+      <!-- Overflow menu "⋯": các nút phụ đã gom (giữ nguyên DOM ID, emoji thay bằng SVG theo rule 5) -->
+    <div id="header-overflow-menu" class="header-overflow-menu hidden" role="menu" aria-hidden="true">
+      <button id="header-wardrobe-btn" class="btn-primary-sm btn-wardrobe" role="menuitem" title="Tủ Đồ & Tùy Chỉnh Nhân Vật">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+        </svg>
+        <span data-i18n="wardrobeBtn">Tủ Đồ</span>
+      </button>
+
+      <button id="header-fptu-portal-btn" class="btn-primary-sm btn-fptu-portal" role="menuitem" title="Cổng Thông Tin FPTU & Kho Phần Mềm Thi">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" x2="21" y1="22" y2="22"></line>
+          <line x1="6" x2="6" y1="18" y2="11"></line>
+          <line x1="10" x2="10" y1="18" y2="11"></line>
+          <line x1="14" x2="14" y1="18" y2="11"></line>
+          <line x1="18" x2="18" y1="18" y2="11"></line>
+          <polygon points="12 2 20 7 4 7"></polygon>
+        </svg>
+        <span data-i18n="fptuPortalBtn">Cổng FPTU</span>
+      </button>
+
+      <button id="header-quests-btn" class="btn-primary-sm btn-quests" role="menuitem" title="Nhiệm Vụ Hằng Ngày & Điểm Thưởng">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M10 8.5v7M10 8.5h2.5a3.5 3.5 0 0 1 0 7H10"></path>
+        </svg>
+        <span data-i18n="questsBtn">Nhiệm Vụ</span>
+        <span id="header-points-display" class="header-points-text">0</span>
+      </button>
+
+      <button id="header-emote-btn" class="btn-primary-sm btn-emote" role="menuitem" title="Biểu Cảm & Nhảy Múa [Phím G]">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 3l1.9 5.7 5.7 1.9-5.7 1.9L12 18.2l-1.9-5.7-5.7-1.9 5.7-1.9z"></path>
+          <path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path>
+        </svg>
+        <span data-i18n="emoteBtn">Biểu Cảm</span>
+      </button>
+
+      <button id="header-speed-duel-btn" class="btn-primary-sm btn-speed-duel" role="menuitem" title="Đấu Trí Lập Trình Siêu Tốc [Phím Z]">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span data-i18n="speedDuelBtn">Đấu Trí</span>
+      </button>
+
+      <button id="header-bgm-btn" class="btn-icon-square btn-bgm" role="menuitem" title="Bật / Tắt Nhạc Nền 8-Bit Vui Nhộn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        <span>Nhạc Nền</span>
+      </button>
+
+      <button id="header-auth-btn" class="btn-primary-sm" role="menuitem" title="Tài khoản & Đổi Avatar">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span id="auth-btn-text" data-i18n="profileBtn">Hồ Sơ</span>
+      </button>
+
+      <button id="header-logout-btn" class="btn-ghost hidden" role="menuitem" title="Đăng xuất tài khoản">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span data-i18n="logoutBtn">Đăng xuất</span>
+      </button>
+
+      <button id="fullscreen-btn" class="btn-icon-square" role="menuitem" title="Chuyển chế độ Toàn màn hình">
+        <svg id="fullscreen-icon-expand" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <svg id="fullscreen-icon-compress" class="btn-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="4 14 10 14 10 20"></polyline>
+          <polyline points="20 10 14 10 14 4"></polyline>
+          <line x1="14" y1="10" x2="21" y2="3"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <span>Toàn Màn Hình</span>
+      </button>
+    </div>
+
+    <!-- Bell dropdown: tách ra body để thoát overflow của header trên mobile -->
+    <div id="bell-dropdown" class="bell-dropdown hidden">
+      <div class="bell-dropdown-header">Thông báo</div>
+      <div id="bell-dropdown-list" class="bell-dropdown-list"></div>
+    </div>
 
     <!-- Main Workspace (800x600 Game Canvas + 344px Live Chat = 1160px) -->
     <main id="main-content">
@@ -460,39 +513,39 @@
           <div class="onboarding-card">
             <div class="onboarding-header">
               <span class="onboarding-badge" data-i18n="onboardingBadge">HƯỚNG DẪN TÂN THỦ</span>
-              <h3 class="onboarding-title" data-i18n="onboardingTitle">Chào mừng bạn đến với DEVER TOWN! 🎮</h3>
+              <h3 class="onboarding-title" data-i18n="onboardingTitle">Chào mừng bạn đến với DEVER TOWN!</h3>
             </div>
             <div class="onboarding-grid">
               <div class="onboarding-item">
-                <span class="onboarding-icon">🕹️</span>
+                <span class="onboarding-kbd"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep1Title">Di Chuyển</h4>
                   <p data-i18n="onboardingStep1Desc">Dùng phím <strong>W, A, S, D</strong> hoặc <strong>Phím Mũi Tên</strong> để điều khiển nhân vật.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">⚡</span>
+                <span class="onboarding-kbd"><kbd>E</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep2Title">Tương Tác Sự Kiện</h4>
                   <p data-i18n="onboardingStep2Desc">Bước vào vòng sáng quanh đồ vật và nhấn phím <strong>[E]</strong> để mở Slide, Code, Lofi, Web, Thể thao.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">🎒</span>
+                <span class="onboarding-kbd"><kbd>I</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep3Title">Túi Đồ FPTU</h4>
                   <p data-i18n="onboardingStep3Desc">Nhấn phím <strong>[I]</strong> để mở Túi đồ, nhặt đồ rơi và cầm MacBook, Cóc Vàng, Bàn phím trên tay.</p>
                 </div>
               </div>
               <div class="onboarding-item">
-                <span class="onboarding-icon">🚪</span>
+                <span class="onboarding-kbd"><kbd>Portal</kbd></span>
                 <div>
                   <h4 data-i18n="onboardingStep4Title">9 Phân Khu Chức Năng</h4>
                   <p data-i18n="onboardingStep4Desc">Bước qua cổng <strong>Portal màu tím</strong> hoặc dùng Menu đổi phòng trên thanh điều hướng.</p>
                 </div>
               </div>
             </div>
-            <button type="button" id="onboarding-close-btn" class="onboarding-btn" data-i18n="onboardingDismissBtn">🚀 ĐÃ HIỂU & BẮT ĐẦU KHÁM PHÁ</button>
+            <button type="button" id="onboarding-close-btn" class="onboarding-btn" data-i18n="onboardingDismissBtn">Đã Hiểu & Bắt Đầu Khám Phá</button>
           </div>
         </div>
 
@@ -553,7 +606,7 @@
             <div class="touch-actions-sub-row">
               <button type="button" id="touch-btn-speed-duel" class="touch-action-btn duel" title="Đấu Trí Siêu Tốc">⚡</button>
               <button type="button" id="touch-btn-emote" class="touch-action-btn emote" title="Biểu Cảm [G]">✨</button>
-              <button type="button" id="touch-btn-chat" class="touch-action-btn chat" title="Mở Chat">💬</button>
+              <button type="button" id="touch-btn-chat" class="touch-action-btn chat" title="Mở Chat">💬<span id="touch-chat-unread" class="touch-chat-unread hidden">0</span></button>
             </div>
             <div class="touch-actions-main-row">
               <button type="button" id="touch-btn-inventory" class="touch-action-btn inv" title="Túi Đồ [I]">🎒</button>
@@ -586,6 +639,13 @@
 
       <!-- Live Chat Box -->
       <section id="chat-wrapper">
+        <!-- Collapsed tab (desktop): shown when chat panel is collapsed -->
+        <button type="button" id="chat-tab-toggle" class="chat-tab-toggle" title="Mở Chat [C]" aria-label="Mở Chat">
+          <svg class="chat-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span id="chat-tab-unread" class="chat-tab-unread hidden">0</span>
+        </button>
         <div class="chat-header">
           <div class="chat-header-title">
             <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -661,58 +721,6 @@
       </section>
     </main>
 
-    <!-- Footer Status & Controls Guide -->
-    <footer id="main-footer" class="cyber-footer">
-      <div class="footer-left">
-        <div class="footer-brand-badge">
-          <span class="brand-glow-dot"></span>
-          <span class="brand-tag" data-i18n="footerBrand">FU-DEVER • METAVERSE</span>
-        </div>
-        <span class="footer-divider">|</span>
-        <span class="version-tag" data-i18n="footerSlogan">DEVER TOWN v0.4.2</span>
-      </div>
-
-      <div class="footer-center-controls" id="footer-controls-guide">
-        <div class="control-pill">
-          <div class="key-group">
-            <kbd class="key-badge">W</kbd>
-            <kbd class="key-badge">A</kbd>
-            <kbd class="key-badge">S</kbd>
-            <kbd class="key-badge">D</kbd>
-          </div>
-          <span class="control-label">Di chuyển</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge key-highlight">E</kbd>
-          <span class="control-label">Tương tác</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">Tab</kbd>
-          <span class="control-label">Biểu cảm</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">M</kbd>
-          <span class="control-label">Bản đồ</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">I</kbd>
-          <span class="control-label">Tủ đồ</span>
-        </div>
-
-        <div class="control-pill">
-          <kbd class="key-badge">ESC</kbd>
-          <span class="control-label">Đóng</span>
-        </div>
-      </div>
-
-      <div class="footer-right">
-        <span class="footer-motto">WORK HARD • PLAY HARD</span>
-      </div>
-    </footer>
   </div>
 
   <!-- ==========================================================================
@@ -1170,6 +1178,9 @@
               <a id="gmeet-open-btn" href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" class="btn-sm-action accent" style="padding: 4px 10px; font-size: 11px;">
                 Mở Google Meet ngoài
               </a>
+              <button type="button" id="quiz-open-btn" class="btn-sm-action" style="padding: 4px 10px; font-size: 11px;">
+                Quiz Đồng Đội
+              </button>
             </div>
           </div>
 
@@ -1263,6 +1274,12 @@
                 <span class="btn-text">Chia Sẻ</span>
               </button>
               <div class="voice-btn-divider"></div>
+              <button type="button" id="btn-raise-hand" class="voice-btn" title="Giơ tay xin phát biểu">
+                <span class="btn-icon" id="hand-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                </span>
+                <span class="btn-text" id="hand-text">Giơ Tay</span>
+              </button>
               <button type="button" id="btn-leave-voice" class="voice-btn voice-btn-leave" title="Rời khỏi phòng đàm thoại">
                 <span class="btn-icon">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
@@ -1406,33 +1423,31 @@
       <!-- View 7: Sports Mini-Game View (HTML5 Canvas Arcade Engine) -->
       <div id="pane-sports" class="interactive-pane hidden">
         <div class="sports-mini-workspace">
-          <div class="sports-header-box">
-            <div class="sports-badge-row">
+          <div id="sports-select-screen" class="game-select-screen">
+            <h2 class="game-select-title">Thể Thao</h2>
+            <p class="game-select-sub">Chọn môn để chơi</p>
+            <div class="game-card-grid" id="sports-game-grid"></div>
+          </div>
+          <div id="sports-play-screen" class="game-play-screen hidden">
+            <div class="game-topbar">
+              <button type="button" id="sports-back-btn" class="game-back-btn" aria-label="Về danh sách game"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
               <span id="sports-type-badge" class="sports-badge">Sút Phạt Đền 11M</span>
               <span id="sports-streak-badge" class="sports-badge streak">Chuỗi: 0</span>
               <span id="sports-high-badge" class="sports-badge high">Kỷ lục: 0</span>
+              <button type="button" id="sports-close-btn" class="game-close-btn" aria-label="Đóng"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
-            <div class="sports-nav-tabs" id="sports-nav-tabs">
-              <button type="button" class="sports-nav-tab active" data-sport="football">Sút Phạt Đền 11M</button>
-              <button type="button" class="sports-nav-tab" data-sport="basketball">Bóng Rổ Flappy</button>
-              <button type="button" class="sports-nav-tab" data-sport="volleyball">Bóng Chuyền Spike</button>
-              <button type="button" class="sports-nav-tab" data-sport="barista">Quầy Barista</button>
-            </div>
-            <p id="sports-game-desc" class="sports-desc">Canh hướng sút qua lại và bấm nút (hoặc phím Space) để đánh bại thủ môn.</p>
-          </div>
-
-          <div class="sports-arena">
-            <div class="sports-canvas-wrapper">
-              <canvas id="sports-arcade-canvas" width="640" height="360"></canvas>
-            </div>
-
-            <div class="sports-controls-row">
-              <div id="sports-touch-controls" class="sports-touch-controls hidden">
-                <button type="button" id="sports-btn-left" class="sports-touch-btn">Trái (A)</button>
-                <button type="button" id="sports-btn-jump" class="sports-touch-btn accent">Nhảy & Đập (Space)</button>
-                <button type="button" id="sports-btn-right" class="sports-touch-btn">Phải (D)</button>
+            <div class="sports-arena">
+              <div class="sports-canvas-wrapper">
+                <canvas id="sports-arcade-canvas" width="640" height="360"></canvas>
               </div>
-              <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE)</button>
+              <div class="sports-controls-row">
+                <div id="sports-touch-controls" class="sports-touch-controls hidden">
+                  <button type="button" id="sports-btn-left" class="sports-touch-btn">Trái (A)</button>
+                  <button type="button" id="sports-btn-jump" class="sports-touch-btn accent">Nhảy &amp; Đập (Space)</button>
+                  <button type="button" id="sports-btn-right" class="sports-touch-btn">Phải (D)</button>
+                </div>
+                <button type="button" id="sports-action-btn" class="sports-btn-action">SÚT BÓNG (SPACE)</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1441,37 +1456,34 @@
       <!-- View Arcade: Retro Arcade & Minigames -->
       <div id="pane-arcade-games" class="interactive-pane hidden">
         <div class="arcade-workspace">
-          <div class="arcade-header-box">
-            <div class="arcade-badge-row">
-              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE</span>
+          <div id="arcade-select-screen" class="game-select-screen">
+            <h2 class="game-select-title">Retro Arcade</h2>
+            <p class="game-select-sub">Chọn game để chơi</p>
+            <div class="game-card-grid" id="arcade-game-grid"></div>
+          </div>
+          <div id="arcade-play-screen" class="game-play-screen hidden">
+            <div class="game-topbar">
+              <button type="button" id="arcade-back-btn" class="game-back-btn" aria-label="Về danh sách game"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <span id="arcade-type-badge" class="sports-badge">CYBER SNAKE 60FPS</span>
               <span id="arcade-score-badge" class="sports-badge streak">Điểm: 0</span>
               <span id="arcade-high-badge" class="sports-badge high">Kỷ lục: 0</span>
+              <button type="button" id="arcade-close-btn" class="game-close-btn" aria-label="Đóng"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
-            <div class="arcade-tabs" id="arcade-nav-tabs">
-              <button type="button" class="arcade-tab active" data-game="snake">Cyber Snake</button>
-              <button type="button" class="arcade-tab" data-game="sokoban">Buggy Sokoban</button>
-              <button type="button" class="arcade-tab" data-game="goldminer">FPTU Gold Miner</button>
-              <button type="button" class="arcade-tab" data-game="flappybug">Flappy Bug</button>
-              <button type="button" class="arcade-tab" data-game="geometrydash">Dever Dash</button>
-              <button type="button" class="arcade-tab" data-game="match3">Cyber Match</button>
-              <button type="button" class="arcade-tab" data-game="pacman">Cyber Pac-Man</button>
-            </div>
-            <p id="arcade-game-desc" class="sports-desc">Dùng phím mũi tên hoặc W/A/S/D để điều khiển rắn ăn táo và né va chạm. Phím SPACE để bứt tốc.</p>
-          </div>
-          <div class="arcade-arena">
-            <div class="arcade-canvas-wrapper">
-              <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
-            </div>
-            <div id="arcade-touch-controls" class="arcade-touch-controls">
-              <div class="arcade-dpad">
-                <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
-                <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
-                <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
-                <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+            <div class="arcade-arena">
+              <div class="arcade-canvas-wrapper">
+                <canvas id="retro-arcade-canvas" width="640" height="360"></canvas>
               </div>
-              <div class="arcade-actions">
-                <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
-                <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+              <div id="arcade-touch-controls" class="arcade-touch-controls">
+                <div class="arcade-dpad">
+                  <button type="button" id="arcade-btn-up" class="arcade-touch-btn dpad-up">LÊN (W)</button>
+                  <button type="button" id="arcade-btn-left" class="arcade-touch-btn dpad-left">TRÁI (A)</button>
+                  <button type="button" id="arcade-btn-down" class="arcade-touch-btn dpad-down">XUỐNG (S)</button>
+                  <button type="button" id="arcade-btn-right" class="arcade-touch-btn dpad-right">PHẢI (D)</button>
+                </div>
+                <div class="arcade-actions">
+                  <button type="button" id="arcade-btn-undo" class="arcade-touch-btn undo-btn hidden">HOÀN TÁC (U)</button>
+                  <button type="button" id="arcade-btn-action" class="arcade-touch-btn action-btn">THAO TÁC (SPACE)</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1569,6 +1581,24 @@
       </div>
 
       <!-- View 12: Linh Vật Cóc Vàng - Bói Quẻ Coder Mỗi Ngày -->
+      <div id="pane-rest" class="interactive-pane hidden">
+        <div class="rest-workspace" style="text-align:center;padding:24px">
+          <div style="font-size:48px;margin-bottom:12px">🛏️</div>
+          <h3 id="rest-title" style="color:#f8fafc;font-size:1.25rem;font-weight:800;margin:0 0 8px">Giường Nghỉ Ngơi KTX FUDA</h3>
+          <p id="rest-desc" style="color:#94a3b8;font-size:0.9rem;margin:0 0 16px"></p>
+          <div id="rest-status" style="color:#fbbf24;font-size:0.95rem;font-weight:700;min-height:28px;margin-bottom:12px"></div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <button type="button" id="rest-btn" class="fpt-btn" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-weight:700;cursor:pointer">Nằm Nghỉ Ngơi</button>
+            <button type="button" id="dream-btn" class="fpt-btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:10px;padding:10px 28px;font-weight:700;cursor:pointer">Vào Giấc Mơ Đếm Cừu</button>
+          </div>
+          <div id="rest-tips" style="margin-top:16px;text-align:left;display:grid;gap:8px"></div>
+        </div>
+        <div id="dream-workspace" class="hidden" style="text-align:center;padding:16px">
+          <canvas id="sheep-dream-canvas" width="640" height="400" style="max-width:100%;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.4)"></canvas>
+          <div id="dream-result" style="margin-top:12px;color:#e2e8f0;font-size:0.95rem;min-height:24px"></div>
+          <button type="button" id="dream-close-btn" class="fpt-btn hidden" style="margin-top:8px;background:#475569;color:#fff;border:none;border-radius:8px;padding:8px 24px;font-weight:600;cursor:pointer">Đóng</button>
+        </div>
+      </div>
       <div id="pane-golden-frog" class="interactive-pane hidden">
         <div class="frog-shrine-workspace">
           <div class="frog-shrine-header">
@@ -1707,7 +1737,26 @@
         <!-- Cheatsheet điều khiển -->
         <div class="settings-section controls-guide">
           <label class="settings-label" data-i18n="settingsControlsTitle">Phím Tắt Điều Khiển:</label>
-          <p class="settings-hint" data-i18n="settingsControlsDesc">W, A, S, D hoặc Phím Mũi Tên: Di chuyển | [E]: Tương tác | [I]: Mở túi đồ | [ESC]: Đóng cửa sổ</p>
+          <p class="settings-hint" data-i18n="settingsControlsDesc">W, A, S, D hoặc Phím Mũi Tên: Di chuyển • [E]: Tương tác • [I]: Mở túi đồ • [ESC]: Đóng cửa sổ</p>
+        </div>
+
+        <!-- Chế độ di chuyển trên mobile -->
+        <div class="settings-section">
+          <label class="settings-label" data-i18n="settingsMoveModeLabel">Chế Độ Di Chuyển (Mobile):</label>
+          <div class="settings-lang-row">
+            <button type="button" id="setting-move-dpad" class="settings-lang-btn active">
+              <span>D-pad 4 Hướng</span>
+            </button>
+            <button type="button" id="setting-move-analog" class="settings-lang-btn">
+              <span>Cần Analog</span>
+            </button>
+          </div>
+          <div class="settings-row" id="setting-analog-visible-row">
+            <label class="settings-toggle-label">
+              <input type="checkbox" id="setting-analog-visible" checked />
+              <span data-i18n="settingsAnalogVisible">Hiện cần analog (tắt: vuốt để di chuyển, không hiện cần)</span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -1809,6 +1858,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Focus mode exit hint -->
+  <div id="focus-mode-hint">Nhấn H hoặc Esc để hiện giao diện</div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

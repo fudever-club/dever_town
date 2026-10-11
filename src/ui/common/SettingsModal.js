@@ -84,9 +84,39 @@ export class SettingsModal {
       });
     }
 
+    // Chế độ di chuyển mobile: D-pad | Analog
+    const dpadBtn = document.getElementById('setting-move-dpad');
+    const analogBtn = document.getElementById('setting-move-analog');
+    const analogVisibleRow = document.getElementById('setting-analog-visible-row');
+    const analogVisibleToggle = document.getElementById('setting-analog-visible');
+
+    const getTouchControls = () => this.scene?.touchControls || null;
+
+    if (dpadBtn && analogBtn) {
+      dpadBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        getTouchControls()?.setMoveMode('dpad');
+        this.updateMoveModeUI();
+      });
+      analogBtn.addEventListener('click', () => {
+        audioManager.playClick();
+        getTouchControls()?.setMoveMode('analog');
+        this.updateMoveModeUI();
+      });
+    }
+
+    if (analogVisibleToggle) {
+      analogVisibleToggle.addEventListener('change', (e) => {
+        audioManager.playClick();
+        getTouchControls()?.setAnalogVisible(e.target.checked);
+      });
+    }
+
+    // Đồng bộ khi TouchControls đổi chế độ từ nơi khác.
+    window.addEventListener('dever:move-mode-changed', () => this.updateMoveModeUI());
+
     // Header & Welcome Gate Settings Triggers
-    const headerSettingsBtn = document.getElementById('header-settings-btn');
-    if (headerSettingsBtn) {
+    const headerSettingsBtn = document.getElementById('header-settings-btn');    if (headerSettingsBtn) {
       headerSettingsBtn.addEventListener('click', () => {
         audioManager.playClick();
         this.show();
@@ -151,5 +181,29 @@ export class SettingsModal {
 
     const sfxToggle = document.getElementById('setting-audio-sfx');
     if (sfxToggle) sfxToggle.checked = audioManager.sfxEnabled;
+
+    this.updateMoveModeUI();
+  }
+
+  updateMoveModeUI() {
+    const tc = this.scene?.touchControls || null;
+    const mode = tc ? tc.getMoveMode() : 'dpad';
+
+    const dpadBtn = document.getElementById('setting-move-dpad');
+    const analogBtn = document.getElementById('setting-move-analog');
+    if (dpadBtn && analogBtn) {
+      dpadBtn.classList.toggle('active', mode === 'dpad');
+      analogBtn.classList.toggle('active', mode === 'analog');
+    }
+
+    const analogVisibleRow = document.getElementById('setting-analog-visible-row');
+    const analogVisibleToggle = document.getElementById('setting-analog-visible');
+    if (analogVisibleRow) {
+      // Chỉ hiện toggle "hiện cần" khi đang ở chế độ analog.
+      analogVisibleRow.style.display = mode === 'analog' ? '' : 'none';
+    }
+    if (analogVisibleToggle) {
+      analogVisibleToggle.checked = tc ? tc.isAnalogVisible() : true;
+    }
   }
 }
