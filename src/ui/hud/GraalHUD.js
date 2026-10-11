@@ -8,7 +8,7 @@
  *   - D-coin wallet pill — LIVE, wired to walletManager.onChange()
  *   - Action dock: 6 buttons + hotkey badges 1-6
  *       1 Balo    -> existing InventoryModal.toggle()
- *       2 Viec lam-> toast "sap ra mat — Phase D" (Phase D builds it)
+ *       2 Viec lam-> JobsModal Phase D1 (cleaner/delivery/bugHunter + barista/fishing sibling)
  *       3 Bang hoi -> toast "sap ra mat — Phase E" (Phase E builds it)
  *       4 Arcade  -> existing minigame select (interactiveModal arcade_games)
  *       5 Cho     -> toast "sap ra mat"
@@ -209,9 +209,16 @@ export class GraalHUD {
         }
         break;
       }
-      case 'jobs':
-        toastManager.toast('Vi\u1ec7c l\u00e0m: s\u1eafp ra m\u1eaft \u2014 Phase D');
+      case 'jobs': {
+        // Phase D1: mở modal Việc làm campus thay vì toast "sắp ra mắt".
+        const jm = this.scene?.jobsModal;
+        if (jm && typeof jm.toggle === 'function') {
+          jm.toggle();
+        } else {
+          toastManager.toast('Việc làm chưa sẵn sàng');
+        }
         break;
+      }
       case 'guild':
         toastManager.toast('Bang h\u1ed9i: s\u1eafp ra m\u1eaft \u2014 Phase E');
         break;

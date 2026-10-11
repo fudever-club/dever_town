@@ -42,5 +42,9 @@ export { FriendsListModal } from './gameplay/FriendsListModal.js';
 export { AvatarSelectorModal, UNLOCKABLE_AVATARS } from './gameplay/AvatarSelectorModal.js';
 export { RadialEmoteWheel } from './gameplay/RadialEmoteWheel.js';
 export { CampusTimeHUD } from './common/CampusTimeHUD.js';
+export { JobsModal } from './jobs/JobsModal.js';
+export { CleanerJob, CLEANER_STATES } from './jobs/CleanerJob.js';
+export { DeliveryJob, DELIVERY_STATES } from './jobs/DeliveryJob.js';
+export { BugHunterJob, BUG_HUNTER_STATES } from './jobs/BugHunterJob.js';
 
 

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { TextureGenerator } from '../utils/TextureGenerator.js';
 import { PondArt } from '../utils/pondArt.js';
 import { generateEmoteIcons } from '../utils/emoteIcons.js';
+import { JobsArt } from '../utils/jobsArt.js';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -25,6 +26,9 @@ export class BootScene extends Phaser.Scene {
     PondArt.generateDuckSprite(this);
     PondArt.generateThinkerStatue(this);
     PondArt.generateFlowerGarden(this);
+
+    // 1c. Sinh sprite việc làm campus Phase D1 (rác, thùng phân loại, bọ, vợt)
+    JobsArt.generateJobSprites(this);
 
     // 2. Preload toàn bộ Spritesheets Gốc Vẽ Tay Sắc Nét (Handcrafted Pixel Art, không bị rách eo)
     // 2A. Phôi thân cơ bản (Modular Bases)

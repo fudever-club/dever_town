@@ -19,6 +19,7 @@ import {
   CoachMarks,
   TouchControls,
   QuestModal,
+  JobsModal,
   NetworkStatusOverlay,
   MinimapOverlay,
   RoomBanner,
@@ -1466,6 +1467,9 @@ export class WorldScene extends Phaser.Scene {
       scene: this
     });
 
+    // 3b. Jobs Modal (Phase D1 — Việc làm campus: mở từ dock [2])
+    this.jobsModal = new JobsModal({ scene: this });
+
     // 4. Wardrobe Modal
     this.wardrobeModal = new WardrobeModal({
       scene: this,
@@ -2206,6 +2210,11 @@ export class WorldScene extends Phaser.Scene {
 
     if (this.interactionManager && this.player) {
       this.interactionManager.update(this.player);
+    }
+
+    // Phase D1: việc làm campus đang chạy (Cleaner / Delivery / Bug Hunter).
+    if (this.jobsModal) {
+      this.jobsModal.update(time, delta);
     }
 
     if (this.npcGroup && this.player) {
