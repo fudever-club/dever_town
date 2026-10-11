@@ -1,0 +1,259 @@
+/* ==========================================================================
+   DEVER TOWN — JOBS CYBER-GLASS THEME (Phase D2)
+   Vỏ cyber-glass cho các job campus (Câu Cá Hồ Vịt) + reskin quầy Barista.
+   Palette (khớp src/styles/graal-hud.css): cyan #38bdf8, cam FPT #f26f21,
+   vàng #fbbf24, xanh an toàn #10b981, đỏ #ef4444, chữ #f8fafc.
+   Fonts (house rule): Tilt Neon cho tiêu đề, Be Vietnam Pro cho nội dung.
+   Không emoji. Không scanlines.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Overlay + khung modal cyber-glass dùng chung cho job
+   -------------------------------------------------------------------------- */
+.graal-job-overlay {
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(4, 10, 22, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.graal-job-modal {
+  width: min(720px, 96vw);
+  background: rgba(10, 18, 36, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 24px rgba(56, 189, 248, 0.10);
+  overflow: hidden;
+  font-family: 'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #f8fafc;
+}
+
+.graal-job-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+}
+
+.graal-job-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.graal-job-title {
+  font-family: 'Tilt Neon', 'Be Vietnam Pro', sans-serif;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.55);
+  white-space: nowrap;
+}
+
+.graal-job-wage {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fbbf24;
+  white-space: nowrap;
+}
+
+.graal-job-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(56, 189, 248, 0.08);
+  color: #f8fafc;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.graal-job-close:hover {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+.graal-job-close:active {
+  transform: scale(0.94);
+}
+
+.graal-job-canvas-wrap {
+  position: relative;
+  margin: 12px 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.12), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  background: #06283d;
+}
+
+.graal-job-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.graal-job-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 16px;
+}
+
+.graal-job-action {
+  flex: 1;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.28), rgba(56, 189, 248, 0.12));
+  color: #f8fafc;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.graal-job-action:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.graal-job-action.urgent {
+  border-color: rgba(251, 191, 36, 0.8);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.4), rgba(251, 191, 36, 0.18));
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+  animation: graal-job-pulse 0.5s ease-in-out infinite alternate;
+}
+
+.graal-job-action:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+@keyframes graal-job-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.03); }
+}
+
+.graal-job-hint {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .graal-job-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .graal-job-action {
+    min-height: 60px;
+    font-size: 16px;
+  }
+  .graal-job-hint {
+    text-align: center;
+    white-space: normal;
+  }
+  .graal-job-wage {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. BARISTA RESKIN — bọc cyber-glass quanh canvas quầy barista.
+   Chỉ đổi chrome DOM (không động vào BaristaSimulatorEngine / mechanics).
+   Kích hoạt bằng class .sport-barista trên #interactive-modal.
+   -------------------------------------------------------------------------- */
+#interactive-modal.sport-barista #sports-play-screen .game-topbar {
+  background: rgba(10, 18, 36, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(56, 189, 248, 0.10);
+  padding: 8px 12px;
+}
+
+#interactive-modal.sport-barista #sports-type-badge {
+  font-family: 'Tilt Neon', 'Be Vietnam Pro', sans-serif;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.55);
+}
+
+#interactive-modal.sport-barista #sports-high-badge {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+#interactive-modal.sport-barista .sports-canvas-wrapper {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.12);
+  overflow: hidden;
+}
+
+#interactive-modal.sport-barista #sports-action-btn {
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.28), rgba(56, 189, 248, 0.12));
+  color: #f8fafc;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-radius: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+#interactive-modal.sport-barista #sports-action-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.45);
+}
+
+/* Card chọn môn Barista trên màn hình "Chọn game": nhãn vàng lương job. */
+#sports-select-screen .game-card[data-sport="barista"] {
+  position: relative;
+}
+
+#sports-select-screen .game-card[data-sport="barista"]::after {
+  content: '+25 D-Coin / ly';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 8px;
+  padding: 2px 8px;
+}

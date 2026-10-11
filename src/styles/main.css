@@ -42,6 +42,10 @@
 @import "./emote-wheel.css";
 @import "./time-hud.css";
 @import "./quiz-voice.css";
+/* Phase D1: Việc làm campus — cyber-glass jobs modal + quiz popup + status pill. */
+@import "./jobs.css";
+/* Phase D2: Job câu cá Hồ Vịt + reskin cyber-glass quầy Barista. */
+@import "./jobs-cyberglass.css";
 /* Phase A: cyber-glass HUD adapt — additive reskin, loaded last so Graal
    skin rules win over legacy HUD module styles (existing DOM/IDs untouched). */
 @import "./graal-hud.css";

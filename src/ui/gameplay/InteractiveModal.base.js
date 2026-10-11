@@ -195,6 +195,8 @@ export class InteractiveModal {
 
   show(zoneData) {
     if (!this.modalEl) return;
+    // Phase D2: job tự quản lý overlay riêng (FishingJob) thì không hiện modal gốc.
+    this._jobDelegated = false;
     this.currentZone = zoneData;
     this.currentRoomId = zoneData.roomId || zoneData.room || window.__DEVER_GAME__?.scene?.keys?.WorldScene?.currentRoomId || 'main_hall';
 
@@ -270,6 +272,15 @@ export class InteractiveModal {
         case 'bug_dungeon_hunt':
           this.setupBugDungeonView(zoneData);
           break;
+        case 'job_fishing':
+          // Phase D2: Job câu cá Hồ Vịt tự quản lý overlay riêng (FishingJob),
+          // không dùng pane của InteractiveModal. Guard đồng bộ chống mở 2 lần
+          // (Phaser keydown-E + window keydown cùng fire).
+          this._jobDelegated = true;
+          import('../../ui/jobs/FishingJob.js').then((m) => {
+            if (!m.FishingJob.isOpen()) m.FishingJob.open(zoneData);
+          }).catch((err) => console.error('[Job] Khong the mo FishingJob:', err));
+          break;
         default:
           break;
       }
@@ -277,7 +288,9 @@ export class InteractiveModal {
       console.error('⚠️ Lỗi khi khởi tạo giao diện tương tác:', err);
     }
 
-    this.modalEl.classList.remove('hidden');
+    if (!this._jobDelegated) {
+      this.modalEl.classList.remove('hidden');
+    }
 
     if (this.onOpen) {
       this.onOpen();
@@ -296,6 +309,8 @@ export class InteractiveModal {
     this.modalEl.classList.add('hidden');
     // Thoát chế độ gameplay minigame (hiện lại modal header trên mobile)
     this.modalEl.classList.remove('playing-minigame');
+    // Gỡ reskin cyber-glass của quầy Barista (Phase D2)
+    this.modalEl.classList.remove('sport-barista');
 
     const panes = this.modalEl.querySelectorAll('.interactive-pane');
     panes.forEach(p => p.classList.add('hidden'));

@@ -15,6 +15,10 @@ import { BasketballShootoutEngine } from './sports/BasketballShootoutEngine.js';
 import { VolleyballRallyEngine } from './sports/VolleyballRallyEngine.js';
 import { BaristaSimulatorEngine } from './sports/BaristaSimulatorEngine.js';
 import { isTouchDevice } from './common/touchHints.js';
+import { walletManager } from '../../managers/WalletManager.js';
+// Phase D2: lương job Barista qua ví trung tâm. BARISTA_WAGE dẫn xuất từ
+// JOBS_CONFIG.wages.barista (jobsConfig.js, sibling sở hữu) — không hardcode.
+import { BARISTA_WAGE } from '../../config/fishingConfig.js';
 
 export class SportsArcade {
   constructor(canvasEl, options = {}) {
@@ -124,6 +128,13 @@ export class SportsArcade {
           const rewardPts = Math.max(5, Math.min(30, earnedTips));
           questManager.addPoints?.(rewardPts, 'Phục vụ đồ uống Barista');
         } catch (_) {}
+        // Phase D2: lương job Barista — +25 D-Coin mỗi ly phục vụ thành công,
+        // đi qua ví trung tâm WalletManager (giữ nguyên tip/quest cũ).
+        try {
+          walletManager.earn(BARISTA_WAGE, 'job_barista');
+        } catch (err) {
+          console.error('[Barista] walletManager.earn that bai:', err);
+        }
         this.updateHUD();
       }
     });

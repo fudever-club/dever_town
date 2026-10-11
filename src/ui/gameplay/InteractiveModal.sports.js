@@ -182,8 +182,9 @@ InteractiveModal.prototype.showSportsSelect = function() {
   const play = document.getElementById('sports-play-screen');
   if (sel) sel.classList.remove('hidden');
   if (play) play.classList.add('hidden');
-  // Rời gameplay -> hiện lại modal header (mobile)
+  // Rời gameplay -> hiện lại modal header (mobile), gỡ reskin barista
   document.getElementById('interactive-modal')?.classList.remove('playing-minigame');
+  document.getElementById('interactive-modal')?.classList.remove('sport-barista');
   // Màn hình chọn game: title "Chọn game" (2026-10-09, theo yêu cầu của Hưng)
   const titleEl = document.getElementById('interactive-modal-title');
   if (titleEl) titleEl.textContent = 'Chọn game';
@@ -221,6 +222,9 @@ InteractiveModal.prototype.getSportsGameMeta = function(sportId) {
 };
 
 InteractiveModal.prototype.syncSportsPlayUI = function(sport) {
+  // Phase D2: reskin cyber-glass cho quầy Barista (chỉ đổi chrome DOM,
+  // mechanics trong BaristaSimulatorEngine giữ nguyên).
+  document.getElementById('interactive-modal')?.classList.toggle('sport-barista', sport === 'barista');
   const meta = this.getSportsGameMeta(sport);
   const typeBadge = document.getElementById('sports-type-badge');
   const actionBtn = document.getElementById('sports-action-btn');

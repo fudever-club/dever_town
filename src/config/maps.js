@@ -61,7 +61,8 @@ export const MAPS_CONFIG = {
       { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
       { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
       { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-      { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
+      { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' },
+      { id: 'zone_main_fishing', type: 'job_fishing', tileX: 6, tileY: 17, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
     ],
     decorations: [
       // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
@@ -115,7 +116,8 @@ export const MAPS_CONFIG = {
           { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
           { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
           { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-          { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' }
+          { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' },
+      { id: 'zone_main_fishing', type: 'job_fishing', tileX: 6, tileY: 17, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
         ],
         decorations: [
           // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js

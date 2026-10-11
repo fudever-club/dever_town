@@ -128,6 +128,9 @@ export class InputController {
     const wardrobeModal = document.getElementById('wardrobe-modal');
     const settingsModal = document.getElementById('settings-modal');
     const questModal = document.getElementById('quest-modal');
+    // Phase D2: overlay job câu cá tự quản lý (FishingJob) — chặn di chuyển
+    // nhân vật khi đang mở, giống các modal khác.
+    const fishingJobOverlay = document.getElementById('fishing-job-overlay');
 
     if (welcomeGate && !welcomeGate.classList.contains('hidden') && !welcomeGate.classList.contains('fade-out')) return true;
     if (gameLoading && !gameLoading.classList.contains('hidden') && !gameLoading.classList.contains('fade-out')) return true;
@@ -137,6 +140,7 @@ export class InputController {
     if (wardrobeModal && !wardrobeModal.classList.contains('hidden')) return true;
     if (settingsModal && !settingsModal.classList.contains('hidden')) return true;
     if (questModal && !questModal.classList.contains('hidden')) return true;
+    if (fishingJobOverlay && !fishingJobOverlay.classList.contains('hidden')) return true;
 
     // NPC Dialogue Modal — khi player đang hội thoại với NPC
     const npcDialogueModal = document.getElementById('npc-dialogue-modal');
