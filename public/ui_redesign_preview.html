@@ -871,21 +871,49 @@
         <span>Bản Thiết Kế Mẫu UI/UX V2 Cho DEVER TOWN (Cyber-Glass & Pixel Tech)</span>
       </div>
       <div class="banner-actions">
-        <button class="theme-btn" onclick="toggleConceptArt()" style="border-color: var(--cyan-glow); color: var(--cyan-glow);">Xem Ảnh Phác Thảo AI</button>
+        <button class="theme-btn" id="btn-view-map-gameplay" onclick="showConceptArt('map')" style="border-color: var(--cyan-glow); color: var(--cyan-glow); font-weight: 700;">Xem Map Gameplay (Ảnh Render)</button>
+        <button class="theme-btn" id="btn-view-ui-modal" onclick="showConceptArt('modal')">Xem UI Menu & Modal</button>
+        <button class="theme-btn" id="btn-play-live-map" onclick="toggleLiveMap()" style="border-color: #10b981; color: #10b981; font-weight: 700;">🎮 Chơi Thử Map Live</button>
         <button class="theme-btn active" onclick="switchTheme('cyber')">Cyber Neon</button>
         <button class="theme-btn" onclick="switchTheme('fpt')">FPT Orange</button>
         <button class="theme-btn" onclick="switchTheme('slate')">Slate Minimal</button>
       </div>
     </div>
 
-    <!-- Collapsible Concept Art Showcase -->
-    <div id="concept-art-section" style="display: none; background: var(--bg-panel); border: 1px solid var(--border-neon); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-hud); text-align: center;">
+    <!-- Collapsible Concept Art Showcase (Both Map Gameplay & UI Modal) -->
+    <div id="concept-art-section" style="display: block; background: var(--bg-panel); border: 1px solid var(--border-neon); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-hud); text-align: center;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Bản Phác Thảo Ý Tưởng Toàn Màn Hình (Generated Concept Art)</h3>
-        <button onclick="toggleConceptArt()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Đóng</button>
+        <h3 id="concept-title" style="font-size: 15px; font-weight: 700; color: #fff;">Bản Phác Thảo Gameplay Bản Đồ Sân Alpha (In-Game Screen)</h3>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="showConceptArt('map')" id="tab-btn-map" style="background: var(--cyan-glow); border: none; color: #040814; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700;">Map Sân Alpha</button>
+          <button onclick="showConceptArt('modal')" id="tab-btn-modal" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">Menu Arcade</button>
+          <button onclick="toggleConceptArt()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Thu Gọn</button>
+        </div>
       </div>
-      <img src="/devertown_ui_redesign.jpg" alt="DEVER TOWN UI Redesign Concept" style="width: 100%; max-height: 650px; object-fit: contain; border-radius: 12px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
-      <p style="margin-top: 10px; font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">Đường dẫn tệp gốc trên máy: D:\THStudy\DeverClub\devertown_ui_redesign.jpg</p>
+      <img id="concept-img-display" src="/devertown_map_gameplay_redesign.jpg" alt="DEVER TOWN Map Gameplay Concept" style="width: 100%; max-height: 700px; object-fit: contain; border-radius: 12px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
+      <p id="concept-path-hint" style="margin-top: 10px; font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">File gốc trên Windows: D:\THStudy\DeverClub\devertown_map_gameplay_redesign.jpg</p>
+    </div>
+
+    <!-- Interactive Live Map Simulator Canvas -->
+    <div id="live-map-section" style="display: none; background: var(--bg-panel); border: 2px solid var(--cyan-glow); border-radius: var(--radius-lg); padding: 18px; box-shadow: 0 0 30px rgba(56, 189, 248, 0.25); position: relative; overflow: hidden;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="background: #10b981; color: #040814; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px;">PLAYABLE</span>
+          <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Sân Alpha Trực Quan — Điều Khiển Phím WASD / Mũi Tên Đi Dạo</h3>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);" id="map-coord-display">Tọa độ: (X: 12, Y: 16)</span>
+          <button onclick="toggleLiveMap()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Đóng</button>
+        </div>
+      </div>
+      <div style="position: relative; width: 100%; height: 500px; background: #0b1329; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-subtle);">
+        <canvas id="interactive-map-canvas" width="1024" height="500" style="width: 100%; height: 100%; display: block; image-rendering: pixelated;"></canvas>
+        <div id="in-world-tooltip" style="position: absolute; display: none; transform: translate(-50%, -100%); margin-top: -12px; background: rgba(10, 18, 36, 0.95); border: 1.5px solid var(--cyan-glow); border-radius: 8px; padding: 6px 12px; color: #fff; font-size: 12px; font-weight: 700; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); pointer-events: none; white-space: nowrap; font-family: var(--font-ui);">
+          <span style="background: var(--cyan-glow); color: #040814; padding: 2px 5px; border-radius: 4px; font-size: 10px; margin-right: 6px;">[E]</span>
+          <span id="tooltip-text">Tương tác</span>
+        </div>
+      </div>
+      <p style="margin-top: 10px; font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); text-align: center;">Dùng các phím WASD hoặc Mũi Tên để di chuyển nhân vật đến gần Hồ Vịt, Tượng Nhà Tư Tưởng hoặc Ghế đá để kích hoạt tương tác!</p>
     </div>
 
     <!-- Redesigned In-Game Modal Showcase (Arcade Center) -->
@@ -1060,15 +1088,323 @@
       }
     }
 
-    // Toggle Concept Art Section
+    // Concept Art Switcher
+    function showConceptArt(mode) {
+      const sec = document.getElementById('concept-art-section');
+      const img = document.getElementById('concept-img-display');
+      const title = document.getElementById('concept-title');
+      const hint = document.getElementById('concept-path-hint');
+      const tabMap = document.getElementById('tab-btn-map');
+      const tabModal = document.getElementById('tab-btn-modal');
+
+      if (sec) sec.style.display = 'block';
+
+      if (mode === 'modal') {
+        img.src = '/devertown_ui_redesign.jpg';
+        title.textContent = 'Bản Phác Thảo Giao Diện Menu & Modal Arcade (In-Game Hub)';
+        hint.textContent = 'File gốc trên Windows: D:\\THStudy\\DeverClub\\devertown_ui_redesign.jpg';
+        tabModal.style.background = 'var(--cyan-glow)';
+        tabModal.style.color = '#040814';
+        tabMap.style.background = 'rgba(255,255,255,0.1)';
+        tabMap.style.color = '#fff';
+      } else {
+        img.src = '/devertown_map_gameplay_redesign.jpg';
+        title.textContent = 'Bản Phác Thảo Gameplay Bản Đồ Sân Alpha (In-Game Screen)';
+        hint.textContent = 'File gốc trên Windows: D:\\THStudy\\DeverClub\\devertown_map_gameplay_redesign.jpg';
+        tabMap.style.background = 'var(--cyan-glow)';
+        tabMap.style.color = '#040814';
+        tabModal.style.background = 'rgba(255,255,255,0.1)';
+        tabModal.style.color = '#fff';
+      }
+      sec.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function toggleConceptArt() {
       const sec = document.getElementById('concept-art-section');
       if (sec) {
-        sec.style.display = (sec.style.display === 'none' || sec.style.display === '') ? 'block' : 'none';
-        if (sec.style.display === 'block') {
-          sec.scrollIntoView({ behavior: 'smooth' });
+        sec.style.display = (sec.style.display === 'none') ? 'block' : 'none';
+      }
+    }
+
+    // Interactive Map Simulator Engine
+    let mapInitialized = false;
+    let mapRunning = false;
+    const player = { x: 500, y: 320, vx: 0, vy: 0, speed: 3.5, size: 24, dir: 'down', animTimer: 0 };
+    const keys = { w: false, a: false, s: false, d: false, ArrowUp: false, ArrowLeft: false, ArrowDown: false, ArrowRight: false };
+
+    function toggleLiveMap() {
+      const sec = document.getElementById('live-map-section');
+      if (!sec) return;
+      const isOpen = sec.style.display === 'block';
+      sec.style.display = isOpen ? 'none' : 'block';
+      mapRunning = !isOpen;
+
+      if (!isOpen) {
+        sec.scrollIntoView({ behavior: 'smooth' });
+        if (!mapInitialized) {
+          initInteractiveMap();
+          mapInitialized = true;
         }
       }
+    }
+
+    function initInteractiveMap() {
+      const canvas = document.getElementById('interactive-map-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const tooltip = document.getElementById('in-world-tooltip');
+      const tooltipText = document.getElementById('tooltip-text');
+      const coordDisplay = document.getElementById('map-coord-display');
+
+      window.addEventListener('keydown', (e) => {
+        if (keys.hasOwnProperty(e.key)) {
+          keys[e.key] = true;
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (keys.hasOwnProperty(e.key)) {
+          keys[e.key] = false;
+        }
+      });
+
+      let duckTimer = 0;
+
+      function loop() {
+        if (!mapRunning) {
+          requestAnimationFrame(loop);
+          return;
+        }
+
+        // 1. Movement Logic
+        let dx = 0, dy = 0;
+        if (keys.w || keys.ArrowUp) dy -= 1;
+        if (keys.s || keys.ArrowDown) dy += 1;
+        if (keys.a || keys.ArrowLeft) dx -= 1;
+        if (keys.d || keys.ArrowRight) dx += 1;
+
+        if (dx !== 0 && dy !== 0) {
+          dx *= 0.7071;
+          dy *= 0.7071;
+        }
+
+        player.x += dx * player.speed;
+        player.y += dy * player.speed;
+
+        // Clamp
+        player.x = Math.max(30, Math.min(canvas.width - 30, player.x));
+        player.y = Math.max(140, Math.min(canvas.height - 30, player.y));
+
+        duckTimer += 0.03;
+
+        // 2. Render Scene
+        // Sky / Evening Gradient
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Alpha Building Facade in background
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(40, 20, canvas.width - 80, 110);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(40, 20, canvas.width - 80, 110);
+
+        // Building Windows & Banner
+        ctx.fillStyle = '#f26f21';
+        ctx.fillRect(canvas.width / 2 - 160, 25, 320, 26);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 13px "Be Vietnam Pro"';
+        ctx.textAlign = 'center';
+        ctx.fillText('TRƯỜNG ĐẠI HỌC FPT • TÒA ALPHA', canvas.width / 2, 42);
+
+        // Entrance Doors
+        ctx.fillStyle = '#090d16';
+        ctx.fillRect(canvas.width / 2 - 50, 75, 100, 55);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.strokeRect(canvas.width / 2 - 50, 75, 100, 55);
+
+        // Ground Courtyard (Alpha Plaza Grass & Pavement)
+        ctx.fillStyle = '#152438';
+        ctx.fillRect(0, 130, canvas.width, canvas.height - 130);
+
+        // Main Walkway (Smooth Paved Stone)
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(canvas.width / 2 - 90, 130, 180, canvas.height - 130);
+        ctx.strokeStyle = '#475569';
+        ctx.strokeRect(canvas.width / 2 - 90, 130, 180, canvas.height - 130);
+
+        // Horizontal connecting paths
+        ctx.fillRect(100, 280, canvas.width - 200, 48);
+
+        // Duck Pond (Left Courtyard: x=60, y=200, w=260, h=190)
+        ctx.fillStyle = '#0284c7';
+        ctx.beginPath();
+        ctx.ellipse(190, 320, 140, 85, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#0369a1';
+        ctx.stroke();
+
+        // Water Ripples
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        ctx.lineWidth = 1.5;
+        for (let r = 0; r < 3; r++) {
+          const ripR = (30 + r * 30 + Math.sin(duckTimer + r) * 10);
+          ctx.beginPath();
+          ctx.arc(190, 320, ripR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Swimming Ducks (3 white ducks)
+        const ducks = [
+          { x: 160 + Math.cos(duckTimer) * 20, y: 300 + Math.sin(duckTimer * 1.2) * 10 },
+          { x: 220 + Math.sin(duckTimer * 0.8) * 25, y: 330 + Math.cos(duckTimer * 0.8) * 15 },
+          { x: 190 + Math.cos(duckTimer * 1.5) * 15, y: 350 + Math.sin(duckTimer) * 8 }
+        ];
+        ducks.forEach(d => {
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, 8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(d.x + 6, d.y - 1, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Thinker Statue & Courtyard Garden (Right Courtyard: x=780, y=320)
+        // Marble Pedestal
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(750, 270, 70, 70);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(750, 270, 70, 70);
+
+        // Statue Icon / Silhouette
+        ctx.fillStyle = '#475569';
+        ctx.font = '32px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🗿', 785, 295);
+
+        // Flower Garden Beds (Bougainvillea Pink Bushes)
+        ctx.fillStyle = '#db2777';
+        ctx.beginPath();
+        ctx.arc(720, 240, 16, 0, Math.PI * 2);
+        ctx.arc(750, 230, 20, 0, Math.PI * 2);
+        ctx.arc(820, 235, 18, 0, Math.PI * 2);
+        ctx.arc(850, 250, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(710, 370, 18, 0, Math.PI * 2);
+        ctx.arc(750, 385, 22, 0, Math.PI * 2);
+        ctx.arc(820, 380, 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Park Bench with Student NPC (Tuấn_Code)
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(860, 310, 60, 20);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '16px sans-serif';
+        ctx.fillText('🧑‍💻', 890, 318);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 10px "Be Vietnam Pro"';
+        ctx.fillText('Tuấn_Code', 890, 300);
+
+        // Streetlamp with soft warm Stardew Valley glow
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2 + 105, 260, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.15)';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2 + 105, 260, 55, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Player Character (Khang_FU in blue hoodie)
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.beginPath();
+        ctx.ellipse(player.x, player.y + 12, 14, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body / Chibi Sprite
+        ctx.fillStyle = '#0284c7'; // Blue Hoodie
+        ctx.fillRect(player.x - 10, player.y - 8, 20, 18);
+        // Head
+        ctx.fillStyle = '#fed7aa'; // Skin
+        ctx.beginPath();
+        ctx.arc(player.x, player.y - 14, 11, 0, Math.PI * 2);
+        ctx.fill();
+        // Hair (Undercut Dark Brown)
+        ctx.fillStyle = '#3e2723';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y - 18, 12, Math.PI, Math.PI * 2);
+        ctx.fill();
+
+        // Player Name Tag & Level
+        ctx.fillStyle = 'rgba(10, 18, 36, 0.85)';
+        ctx.fillRect(player.x - 38, player.y - 42, 76, 16);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(player.x - 38, player.y - 42, 76, 16);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 10px "Be Vietnam Pro"';
+        ctx.textAlign = 'center';
+        ctx.fillText('Khang_FU [Lv.14]', player.x, player.y - 30);
+
+        // 3. Proximity Interaction Checks
+        let activePrompt = null;
+        let promptPos = { x: 0, y: 0 };
+
+        // Check near Duck Pond (center: 190, 320)
+        const distPond = Math.hypot(player.x - 190, player.y - 320);
+        if (distPond < 135) {
+          activePrompt = 'Tham Quan Hồ Vịt (5 Chú Vịt Trắng)';
+          promptPos = { x: 190, y: 240 };
+        }
+
+        // Check near Thinker Statue (center: 785, 305)
+        const distStatue = Math.hypot(player.x - 785, player.y - 305);
+        if (distStatue < 90) {
+          activePrompt = 'Tượng Nhà Tư Tưởng (Cảm Hứng Code)';
+          promptPos = { x: 785, y: 220 };
+        }
+
+        // Check near Tuấn_Code (center: 890, 310)
+        const distNPC = Math.hypot(player.x - 890, player.y - 310);
+        if (distNPC < 70) {
+          activePrompt = 'Trò Chuyện Cùng Tuấn_Code';
+          promptPos = { x: 890, y: 260 };
+        }
+
+        // Check near Alpha Doors (center: canvas.width/2, 130)
+        const distDoors = Math.hypot(player.x - canvas.width / 2, player.y - 130);
+        if (distDoors < 70) {
+          activePrompt = 'Vào Sảnh Alpha (Hội Trường FPTU)';
+          promptPos = { x: canvas.width / 2, y: 95 };
+        }
+
+        // Update Tooltip DOM
+        if (activePrompt && tooltip) {
+          tooltip.style.display = 'block';
+          tooltip.style.left = `${(promptPos.x / canvas.width) * 100}%`;
+          tooltip.style.top = `${(promptPos.y / canvas.height) * 100}%`;
+          tooltipText.textContent = activePrompt;
+        } else if (tooltip) {
+          tooltip.style.display = 'none';
+        }
+
+        // Update Coordinates
+        if (coordDisplay) {
+          coordDisplay.textContent = `Tọa độ: (X: ${Math.round(player.x / 32)}, Y: ${Math.round(player.y / 32)})`;
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      loop();
     }
   </script>
 </body>
