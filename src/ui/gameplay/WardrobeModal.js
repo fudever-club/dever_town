@@ -1,4 +1,5 @@
 import { WARDROBE_CONFIG, CHARACTER_PRESETS } from '../../config/wardrobe.js';
+import { walletManager } from '../../managers/WalletManager.js';
 import { TextureGenerator } from '../../utils/TextureGenerator.js';
 import { authService } from '../../services/AuthService.js';
 
@@ -145,11 +146,10 @@ export class WardrobeModal {
     const coinEl = document.getElementById('wardrobe-dcoins-val');
     if (!coinEl) return;
     try {
-      const user = authService?.getUser();
-      const points = user?.dever_points ?? parseInt(localStorage.getItem('dever_points') || '1250', 10);
-      coinEl.textContent = points.toLocaleString('vi-VN');
+      // Phase B: số dư D-Coin hiển thị từ ví trung tâm (WalletManager).
+      coinEl.textContent = walletManager.getBalance().toLocaleString('vi-VN');
     } catch (e) {
-      coinEl.textContent = '1,250';
+      coinEl.textContent = '0';
     }
   }
 

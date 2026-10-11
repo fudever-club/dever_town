@@ -9,6 +9,7 @@
  */
 
 import { SNAKE_CONFIG } from '../../../config/minigamesConfig.js';
+import { walletManager } from '../../../managers/WalletManager.js';
 import { audioManager } from '../../../utils/AudioManager.js';
 import { isTouchDevice } from '../common/touchHints.js';
 
@@ -412,6 +413,12 @@ export class SnakeEngine {
         audioManager.playScorePopup();
         this.juiceFX.spawnSparkles(headPxX, headPxY, 14, '#facc15');
         this.juiceFX.shake(3, 0.1);
+        // Phase B: Đồng D-Coin ăn được cộng vào ví trung tâm (giá trị từ config).
+        try {
+          walletManager.earn(SNAKE_CONFIG.items.dcoin.pts, 'snake');
+        } catch (e) {
+          console.warn('[Snake] Loi cong D-Coin vao vi:', e);
+        }
         break;
 
       case 'chili':

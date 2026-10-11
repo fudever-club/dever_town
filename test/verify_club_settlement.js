@@ -10,6 +10,8 @@
  */
 
 import { ClubSettlementManager, TALENT_ROSTER_DEF } from '../src/managers/ClubSettlementManager.js';
+import { ECONOMY_CONFIG } from '../src/config/economyConfig.js';
+import { walletManager } from '../src/managers/WalletManager.js';
 
 let passedTests = 0;
 let totalTests = 0;
@@ -102,12 +104,18 @@ manager.lastClaimTimestamp = Date.now() - (60 * 60 * 1000);
 const accumulated = manager.getAccumulatedCoins();
 assert(accumulated > 0, `Đã tích lũy ${accumulated} D-Coin sau 60 phút`);
 
-// Khởi tạo ví người chơi
-localStorage.setItem('dever_points', '1000');
+// Khởi tạo ví người chơi — Phase B: thu hoạch D-Coin đi qua WalletManager
+localStorage.clear();
+const walletBefore = walletManager.getBalance();
 const claimResult = manager.claimPassiveCoins();
 assert(claimResult.success === true, 'Thu hoạch D-Coin thành công');
 assert(claimResult.amount === accumulated, 'Số lượng D-Coin nhận được đúng bằng số tích lũy');
-assert(parseInt(localStorage.getItem('dever_points'), 10) === 1000 + accumulated, 'Số dư ví được cộng chính xác');
+assert(claimResult.newBalance === walletBefore + accumulated, 'Số dư ví được cộng chính xác');
+assert(walletManager.getBalance() === walletBefore + accumulated, 'Ví trung tâm phản ánh đúng số dư sau thu hoạch');
+assert(
+  localStorage.getItem(ECONOMY_CONFIG.walletStorageKey) === String(walletBefore + accumulated),
+  'Số dư ví lưu vào localStorage đúng key devertown_wallet_v1'
+);
 
 console.log(`\n========================================`);
 console.log(`KẾT QUẢ: ${passedTests}/${totalTests} TESTS PASSED!`);

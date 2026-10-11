@@ -12,6 +12,7 @@ import { questManager } from '../../managers/QuestManager.js';
 import { audioManager } from '../../utils/AudioManager.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { clubSettlementManager, TALENT_ROSTER_DEF } from '../../managers/ClubSettlementManager.js';
+import { walletManager } from '../../managers/WalletManager.js';
 import { DUNGEON_BALANCE, getDungeonCooldownRemainingMs, setDungeonCooldown, getDungeonDailyRemaining, addDungeonDailyEarn } from '../../config/dungeonConfig.js';
 
 /**
@@ -81,12 +82,13 @@ InteractiveModal.prototype.setupBugDungeonView = function(zoneData) {
           // Áp trần ngày: chỉ thưởng phần còn lại trong hạn mức.
           const grant = Math.min(reward, getDungeonDailyRemaining());
           questManager.addPoints(grant, 'Săn Bug Hầm Ngục');
+          // Phase B: D-Coin thưởng vào ví trung tâm (số lượng giữ nguyên).
+          const newBalance = walletManager.earn(grant, 'bug_dungeon');
           addDungeonDailyEarn(grant);
           setDungeonCooldown(zoneKey);
 
-          const currentPoints = parseInt(localStorage.getItem('dever_points') || '1250', 10);
           const coinEl = document.getElementById('wardrobe-dcoins-val');
-          if (coinEl) coinEl.textContent = currentPoints.toLocaleString('vi-VN');
+          if (coinEl) coinEl.textContent = newBalance.toLocaleString('vi-VN');
 
           // Kiểm tra giải cứu tài năng mới từ Bug Dungeon
           const lockedTalents = TALENT_ROSTER_DEF.filter(t => {
@@ -108,7 +110,7 @@ InteractiveModal.prototype.setupBugDungeonView = function(zoneData) {
           if (feedbackEl) {
             feedbackEl.style.display = 'block';
             feedbackEl.className = 'bug-action-feedback success';
-            feedbackEl.innerHTML = `Khắc phục lỗi thành công! Bạn nhận được +${grant} D-Coin. Số dư hiện tại: ${currentPoints.toLocaleString('vi-VN')} D-Coin.${rescueText}`;
+            feedbackEl.innerHTML = `Khắc phục lỗi thành công! Bạn nhận được +${grant} D-Coin. Số dư hiện tại: ${newBalance.toLocaleString('vi-VN')} D-Coin.${rescueText}`;
           }
 
           fixBtn.textContent = 'Đã Khắc Phục Thành Công';

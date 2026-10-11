@@ -5,6 +5,7 @@
  */
 import { InteractiveModal } from './InteractiveModal.js';
 import { SheepDreamEngine } from '../minigames/dream/SheepDreamEngine.js';
+import { walletManager } from '../../managers/WalletManager.js';
 
 /**
  * Bắt đầu mini-game "Đếm Cừu Trong Mơ" khi người chơi ngủ.
@@ -45,11 +46,11 @@ InteractiveModal.prototype.startSheepDream = function() {
         ? `Hoàn hảo! Đếm đủ ${result.counted} con, không sót con nào! +${result.dcoin} D-Coin`
         : `Đã đếm ${result.counted} con cừu! +${result.dcoin} D-Coin`;
       if (resultEl) resultEl.textContent = msg;
-      // Thưởng D-Coin và achievement
+      // Thưởng D-Coin vào ví trung tâm (Phase B: WalletManager) và achievement
       try {
         const ws = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
         ws?.achievementManager?.unlock('sheep_dreamer');
-        if (ws?.player?.addDCoin) ws.player.addDCoin(result.dcoin);
+        walletManager.earn(result.dcoin, 'sheep_dream');
       } catch (e) {}
     },
     onWake: () => {

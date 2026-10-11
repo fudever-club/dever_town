@@ -8,6 +8,7 @@
  */
 
 import { FPTU_CLUBS } from '../config/fptuClubs.js';
+import { walletManager } from './WalletManager.js';
 import { audioManager } from '../utils/AudioManager.js';
 
 const STORAGE_KEY = 'dever_club_settlements';
@@ -336,14 +337,13 @@ export class ClubSettlementManager {
     this.lastClaimTimestamp = Date.now();
     this.saveState();
 
-    // Thưởng trực tiếp vào số dư ví của người chơi
+    // Phase B: thưởng D-Coin thụ động vào ví trung tâm (WalletManager),
+    // không cộng trực tiếp vào localStorage dever_points nữa.
     try {
-      const currentPts = parseInt(localStorage.getItem('dever_points') || '1250', 10);
-      const newPts = currentPts + amount;
-      localStorage.setItem('dever_points', newPts.toString());
+      const newBalance = walletManager.earn(amount, 'club_settlement');
 
       const coinEl = document.getElementById('wardrobe-dcoins-val');
-      if (coinEl) coinEl.textContent = newPts.toLocaleString('vi-VN');
+      if (coinEl) coinEl.textContent = newBalance.toLocaleString('vi-VN');
 
       if (audioManager) {
         audioManager.playCoinDrop?.();
@@ -352,7 +352,7 @@ export class ClubSettlementManager {
       return {
         success: true,
         amount,
-        newBalance: newPts,
+        newBalance,
         message: `Thu hoạch thành công +${amount.toLocaleString('vi-VN')} D-Coin thụ động!`
       };
     } catch (e) {
