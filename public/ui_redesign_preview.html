@@ -871,10 +871,21 @@
         <span>Bản Thiết Kế Mẫu UI/UX V2 Cho DEVER TOWN (Cyber-Glass & Pixel Tech)</span>
       </div>
       <div class="banner-actions">
+        <button class="theme-btn" onclick="toggleConceptArt()" style="border-color: var(--cyan-glow); color: var(--cyan-glow);">Xem Ảnh Phác Thảo AI</button>
         <button class="theme-btn active" onclick="switchTheme('cyber')">Cyber Neon</button>
         <button class="theme-btn" onclick="switchTheme('fpt')">FPT Orange</button>
         <button class="theme-btn" onclick="switchTheme('slate')">Slate Minimal</button>
       </div>
+    </div>
+
+    <!-- Collapsible Concept Art Showcase -->
+    <div id="concept-art-section" style="display: none; background: var(--bg-panel); border: 1px solid var(--border-neon); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-hud); text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Bản Phác Thảo Ý Tưởng Toàn Màn Hình (Generated Concept Art)</h3>
+        <button onclick="toggleConceptArt()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Đóng</button>
+      </div>
+      <img src="/devertown_ui_redesign.jpg" alt="DEVER TOWN UI Redesign Concept" style="width: 100%; max-height: 650px; object-fit: contain; border-radius: 12px; border: 1px solid var(--border-subtle); box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
+      <p style="margin-top: 10px; font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">Đường dẫn tệp gốc trên máy: D:\THStudy\DeverClub\devertown_ui_redesign.jpg</p>
     </div>
 
     <!-- Redesigned In-Game Modal Showcase (Arcade Center) -->
@@ -1046,6 +1057,17 @@
         root.style.setProperty('--border-neon', 'rgba(56, 189, 248, 0.35)');
         root.style.setProperty('--cyan-glow', '#38bdf8');
         root.style.setProperty('--bg-panel', 'rgba(10, 18, 36, 0.75)');
+      }
+    }
+
+    // Toggle Concept Art Section
+    function toggleConceptArt() {
+      const sec = document.getElementById('concept-art-section');
+      if (sec) {
+        sec.style.display = (sec.style.display === 'none' || sec.style.display === '') ? 'block' : 'none';
+        if (sec.style.display === 'block') {
+          sec.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
   </script>
