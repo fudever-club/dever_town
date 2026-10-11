@@ -97,6 +97,44 @@ export const NPC_CONFIG = {
           nextDialogue: 'line_1'
         }
       }
+    },
+    {
+      // Phase C — Trạm Y Tế FPTU tại Tòa Alpha: hồi sinh khi KO, phát Vitamin C.
+      id: 'npc_yta_clinic',
+      name: 'Cô Y Tá',
+      role: 'Trạm Y Tế FPTU • Tòa Alpha',
+      tileX: 15, tileY: 11,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'female',
+        hairstyle: 'bun',
+        hairColor: '#0f172a',
+        skinTone: 'skin_natural',
+        outfitType: 'polo',
+        hoodieColor: '#f8fafc',
+        collarColor: '#0ea5e9',
+        pantsColor: '#1e293b',
+        accessory: 'none',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào em, cô là Y tá của Trạm Y Tế FPTU tại Tòa Alpha.',
+            'Em vừa được hồi sinh ở đây với đầy 50/50 HP. Đây, cô cho em viên Vitamin C nè.',
+            'Nhớ giữ gìn sức khỏe, đừng để deadline dí đến kiệt sức nữa nhé.'
+          ],
+          nextDialogue: 'line_2'
+        },
+        line_2: {
+          lines: [
+            'Trong Vùng An Toàn, em sẽ tự hồi phục đầy HP, cứ yên tâm nghỉ ngơi.',
+            'Cần sơ cứu hay tư vấn sức khỏe thì ghé qua cô nhé.'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
     }
   ],
   canteen_cafe: [

@@ -131,6 +131,16 @@
   animation: graal-pulse-dot 1.8s ease-in-out infinite;
 }
 
+/* Vùng thách đấu: huy hiệu chuyển sang đỏ (Phase C) */
+.hud-safe-zone-pill.is-challenge {
+  color: #fecaca;
+}
+
+.hud-safe-zone-pill.is-challenge .hud-safe-zone-dot {
+  background: var(--graal-red);
+  box-shadow: 0 0 10px var(--graal-red);
+}
+
 @keyframes graal-pulse-dot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.5); opacity: 0.55; }

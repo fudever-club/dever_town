@@ -34,6 +34,8 @@ import {
   CampusTimeHUD
 } from '../ui/index.js';
 import { GraalHUD } from '../ui/hud/GraalHUD.js';
+import { healthManager } from '../managers/HealthManager.js';
+import { COMBAT_CONFIG, DEFAULT_ZONE } from '../config/combatConfig.js';
 import { DAY_NIGHT_CYCLE_ENABLED } from '../config/lightingConfig.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -932,6 +934,11 @@ export class WorldScene extends Phaser.Scene {
     this.currentRoomId = roomId;
     this.mapData = mapData;
     questManager.recordRoomVisit(roomId);
+
+    // Phase C — Cập nhật huy hiệu vùng + hồi đầy HP nếu vào vùng an toàn.
+    // (GraalHUD chưa tồn tại trong lần loadRoom đầu của create(); updateZoneState
+    //  tự bảo vệ, và initUI gọi lại sau khi mount HUD.)
+    this.updateZoneState();
 
     if (this.hudText) {
       const roomName = this.i18n ? (this.i18n.get(`rooms.${roomId}`) || mapData.name) : mapData.name;
@@ -1872,6 +1879,67 @@ export class WorldScene extends Phaser.Scene {
     //     D-coin wallet pill + 6-button action dock + radar reskin.
     //     Mounted ALONGSIDE existing HUD; nothing existing is replaced.
     this.graalHUD = new GraalHUD({ scene: this });
+
+    // 16. Phase C — Hệ thống thể lực 50 HP + vùng an toàn: kết nối
+    //     HealthManager với HUD và cờ vùng của phòng hiện tại.
+    this._wireHealthSystem();
+    this.updateZoneState();
+  }
+
+  // ------------------------------------------------- Phase C: Health ---
+  /**
+   * Đăng ký zone provider cho HealthManager và lắng nghe sự kiện KO để
+   * hồi sinh tại Trạm Y Tế FPTU (Tòa Alpha).
+   */
+  _wireHealthSystem() {
+    healthManager.setZoneProvider(() => this.getCurrentZone());
+    if (this._unsubHealthKO) {
+      this._unsubHealthKO();
+    }
+    this._unsubHealthKO = healthManager.onChange((event) => {
+      if (event && event.type === 'ko') {
+        this.handleKnockout();
+      }
+    });
+  }
+
+  /** Cờ vùng của phòng hiện tại ('safe' | 'challenge'); mặc định 'safe'. */
+  getCurrentZone() {
+    const cfg = MAPS_CONFIG[this.currentRoomId];
+    return (cfg && cfg.zone) || DEFAULT_ZONE;
+  }
+
+  /**
+   * Cập nhật trạng thái vùng khi đổi phòng: huy hiệu VÙNG AN TOÀN /
+   * VÙNG THÁCH ĐẤU trên GraalHUD và hồi đầy HP khi vào vùng an toàn.
+   */
+  updateZoneState() {
+    const isSafe = this.getCurrentZone() !== 'challenge';
+    if (this.graalHUD && typeof this.graalHUD.setSafeZone === 'function') {
+      this.graalHUD.setSafeZone(isSafe);
+    }
+    if (isSafe && COMBAT_CONFIG.healOnSafeZoneEnter) {
+      healthManager.healToFull('safe_zone');
+    }
+  }
+
+  /**
+   * Hồi sinh sau KO: đưa người chơi về Trạm Y Tế FPTU (Tòa Alpha) —
+   * giữ nguyên 100% vật phẩm và D-Coin (không rơi đồ). Sau đó tự mở
+   * lời thoại của Cô Y Tá (Vitamin C).
+   */
+  handleKnockout() {
+    const r = COMBAT_CONFIG.respawn;
+    this.loadRoom(r.roomId, r.x, r.y, true);
+    // Mở lời thoại Cô Y Tá (nếu NPC đã spawn tại phòng hồi sinh).
+    try {
+      const nurse = (this.npcGroup || []).find((n) => n && n.npcId === 'npc_yta_clinic');
+      if (nurse && this.npcDialogueModal && !this.npcDialogueModal.isOpen) {
+        this.npcDialogueModal.show(nurse);
+      }
+    } catch (e) {
+      console.warn('[WorldScene] Khong mo duoc hoi thoai Co Y Ta sau KO:', e);
+    }
   }
 
   activatePlayerSession() {
@@ -2249,6 +2317,11 @@ export class WorldScene extends Phaser.Scene {
     if (this.npcDialogueModal) {
       this.npcDialogueModal.destroy();
       this.npcDialogueModal = null;
+    }
+    // Phase C — Hủy đăng ký sự kiện KO của HealthManager.
+    if (this._unsubHealthKO) {
+      this._unsubHealthKO();
+      this._unsubHealthKO = null;
     }
   }
 }

@@ -3,8 +3,8 @@
  *
  * ADAPT layer: cyber-glass styling ported onto the EXISTING HUD.
  * Mounted ALONGSIDE existing components — nothing existing is replaced:
- *   - 50 HP bar (visual only; Phase C wires the logic) — shows 50/50
- *   - Safe-zone badge "VÙNG AN TOÀN" (visual only)
+ *   - 50 HP bar — LIVE, wired to healthManager.onChange() (Phase C)
+ *   - Safe-zone badge "VÙNG AN TOÀN" — state set via setSafeZone(isSafe)
  *   - D-coin wallet pill — LIVE, wired to walletManager.onChange()
  *   - Action dock: 6 buttons + hotkey badges 1-6
  *       1 Balo    -> existing InventoryModal.toggle()
@@ -20,6 +20,8 @@
  * or behavior are modified. Additive DOM + CSS only. No emoji anywhere.
  */
 import { walletManager } from '../../managers/WalletManager.js';
+import { healthManager } from '../../managers/HealthManager.js';
+import { COMBAT_CONFIG } from '../../config/combatConfig.js';
 import { toastManager } from '../common/ToastManager.js';
 
 const ICONS = {
@@ -45,9 +47,11 @@ export class GraalHUD {
    */
   constructor({ scene } = {}) {
     this.scene = scene || null;
-    this.hpCurrent = 50; // visual only until Phase C
-    this.hpMax = 50;
+    // Phase C: HP thật từ HealthManager (persisted, chuẩn 50 HP).
+    this.hpCurrent = healthManager.getHP();
+    this.hpMax = COMBAT_CONFIG.maxHP;
     this._unsubWallet = null;
+    this._unsubHealth = null;
     this._keyHandler = null;
     this._overlay = null;
 
@@ -55,6 +59,7 @@ export class GraalHUD {
     this._renderHP();
     this._renderWallet(walletManager.getBalance());
     this._wireWallet();
+    this._wireHealth();
     this._wireKeyboard();
     this._reskinRadar();
   }
@@ -112,7 +117,7 @@ export class GraalHUD {
   }
 
   // -------------------------------------------------------------- HP ----
-  /** Phase C will call this when HP logic lands; visual-only for now. */
+  /** Cập nhật thanh HP (được HealthManager gọi qua _wireHealth). */
   setHP(current, max) {
     if (Number.isFinite(current)) this.hpCurrent = Math.max(0, current);
     if (Number.isFinite(max) && max > 0) this.hpMax = max;
@@ -141,6 +146,35 @@ export class GraalHUD {
     this._unsubWallet = walletManager.onChange((event) => {
       this._renderWallet(event?.balance ?? walletManager.getBalance());
     });
+  }
+
+  // --------------------------------------------------------- Health ----
+  /** Phase C: thanh HP phản ánh HP thật từ HealthManager. */
+  _wireHealth() {
+    this._unsubHealth = healthManager.onChange((event) => {
+      if (event && typeof event.hp === 'number') {
+        this.setHP(event.hp, event.maxHP ?? COMBAT_CONFIG.maxHP);
+      }
+    });
+  }
+
+  /**
+   * Đặt trạng thái huy hiệu vùng: true = VÙNG AN TOÀN (xanh ngọc),
+   * false = VÙNG THÁCH ĐẤU (đỏ). DOM ID #graal-safe-zone được giữ nguyên.
+   */
+  setSafeZone(isSafe) {
+    const badge = this._overlay?.querySelector('#graal-safe-zone');
+    if (!badge) return;
+    const label = badge.querySelector('span:last-child');
+    if (isSafe) {
+      badge.classList.remove('is-challenge');
+      badge.setAttribute('aria-label', 'Vung an toan: khong the nhan sat thuong');
+      if (label) label.textContent = 'VÙNG AN TOÀN';
+    } else {
+      badge.classList.add('is-challenge');
+      badge.setAttribute('aria-label', 'Vung thach dau: co the nhan sat thuong');
+      if (label) label.textContent = 'VÙNG THÁCH ĐẤU';
+    }
   }
 
   // -------------------------------------------------------- Dock acts --
@@ -224,6 +258,10 @@ export class GraalHUD {
     if (this._unsubWallet) {
       this._unsubWallet();
       this._unsubWallet = null;
+    }
+    if (this._unsubHealth) {
+      this._unsubHealth();
+      this._unsubHealth = null;
     }
     if (this._keyHandler) {
       window.removeEventListener('keydown', this._keyHandler);

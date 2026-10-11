@@ -16,6 +16,11 @@ export const MAPS_CONFIG = {
     id: 'main_hall',
     name: 'Tòa Alpha - Sảnh Chính & Hội Trường FPTU',
     description: 'Hội trường trung tâm FUDA, tượng Cóc Vàng và kết nối 6 phân khu chức năng.',
+    // Phase C — Cờ vùng (Masterplan Trụ cột 1): 'safe' = vùng an toàn tuyệt
+    // đối (không nhận sát thương, hồi đầy HP khi vào). Phòng không khai báo
+    // cờ mặc định 'safe' (xem DEFAULT_ZONE trong src/config/combatConfig.js).
+    // Ánh xạ masterplan: main_hall = Sảnh Lễ Tân Tòa Alpha.
+    zone: 'safe',
     spawnPoint: { x: 400, y: 350 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
@@ -293,6 +298,8 @@ export const MAPS_CONFIG = {
     id: 'library_lounge',
     name: 'Tòa Beta - Thư Viện Tri Thức & Phòng Tự Học',
     description: 'Không gian tự học yên tĩnh, tài liệu ôn thi SWE201c, quy chế CLB và quầy cà phê giao lưu.',
+    // Phase C — Vùng an toàn (Masterplan: Thư Viện Tầng 3).
+    zone: 'safe',
     spawnPoint: { x: 400, y: 350 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
@@ -545,6 +552,9 @@ export const MAPS_CONFIG = {
   sports_complex: {
     id: 'sports_complex',
     name: 'Khu Phức Hợp Thể Thao & Nhà Võ Vovinam',
+    // Phase C — Vùng an toàn (Masterplan: Giảng Đường Thi PE Exam).
+    // Phase E sẽ định nghĩa vùng thách đấu (súng nước, bóng đá 3v3) tại đây.
+    zone: 'safe',
     description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông, nhà võ Vovinam và hồ bơi sinh viên FUDA.',
     spawnPoint: { x: 400, y: 336 },
     layout: [
@@ -822,6 +832,8 @@ export const MAPS_CONFIG = {
   meeting_room: {
     id: 'meeting_room',
     name: 'Phòng Họp & Lớp Học CLB FU-DEVER',
+    // Phase C — Vùng an toàn (Masterplan: Văn phòng CLB FU-DEVER).
+    zone: 'safe',
     description: 'Không gian họp và dạy học kiểu Gather.town: bàn hội nghị chữ U, màn chiếu projector, bảng trắng cho buổi họp và lớp học CLB.',
     spawnPoint: { x: 400, y: 336 },
     layout: [
