@@ -42,3 +42,6 @@
 @import "./emote-wheel.css";
 @import "./time-hud.css";
 @import "./quiz-voice.css";
+/* Phase A: cyber-glass HUD adapt — additive reskin, loaded last so Graal
+   skin rules win over legacy HUD module styles (existing DOM/IDs untouched). */
+@import "./graal-hud.css";

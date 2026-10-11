@@ -1,0 +1,431 @@
+/* ==========================================================================
+   DEVER TOWN — GRAAL CYBER-GLASS HUD THEME (Phase A)
+   ADAPTED styling over the EXISTING HUD — additive + reskin only.
+   Palette: cyan glow #38bdf8, FPT orange #f26f21, gold #fbbf24,
+   safe green #10b981, danger red #ef4444, text #f8fafc.
+   Glass: rgba(10,18,36,.82) + 20px blur + 1px cyan border.
+   Fonts (house rule): Tilt Neon for titles, Be Vietnam Pro for body.
+   NO scanlines. NO emoji anywhere.
+   ========================================================================== */
+
+:root {
+  --graal-cyan: #38bdf8;
+  --graal-cyan-dim: rgba(56, 189, 248, 0.35);
+  --graal-orange: #f26f21;
+  --graal-gold: #fbbf24;
+  --graal-green: #10b981;
+  --graal-red: #ef4444;
+  --graal-text: #f8fafc;
+  --graal-text-dim: #94a3b8;
+  --graal-glass: rgba(10, 18, 36, 0.82);
+  --graal-title-font: 'Tilt Neon', 'Be Vietnam Pro', sans-serif;
+  --graal-body-font: 'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   1. Root overlay — pointer-events passthrough; children opt-in
+   -------------------------------------------------------------------------- */
+.in-game-hud-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  font-family: var(--graal-body-font);
+  color: var(--graal-text);
+}
+
+.in-game-hud-overlay button {
+  font-family: var(--graal-body-font);
+  color: var(--graal-text);
+}
+
+.graal-glass {
+  background: var(--graal-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--graal-cyan-dim);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(56, 189, 248, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   2. Top-left vitals cluster: HP bar + safe-zone badge + D-coin wallet pill
+   -------------------------------------------------------------------------- */
+.graal-vitals {
+  position: absolute;
+  top: 66px; /* below the ~58px header bar + gap */
+  left: 12px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.graal-vital-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 12px;
+}
+
+.graal-vital-label {
+  font-family: var(--graal-title-font);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--graal-cyan);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+/* HP bar */
+.hp-track {
+  position: relative;
+  width: 120px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #b91c1c, var(--graal-red), #f87171);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+  transition: width 0.35s ease;
+}
+
+.hp-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--graal-text);
+  min-width: 44px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Safe-zone badge */
+.hud-safe-zone-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #a7f3d0;
+  white-space: nowrap;
+}
+
+.hud-safe-zone-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--graal-green);
+  box-shadow: 0 0 10px var(--graal-green);
+  animation: graal-pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes graal-pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.55; }
+}
+
+/* D-coin wallet pill */
+.hud-dcoin-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border-color: rgba(251, 191, 36, 0.45);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 16px rgba(251, 191, 36, 0.15);
+}
+
+.hud-dcoin-coin {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.7));
+}
+
+.hud-dcoin-amount {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--graal-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-dcoin-unit {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--graal-text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   3. Bottom action dock — 6 buttons with hotkey badges
+   -------------------------------------------------------------------------- */
+.graal-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  pointer-events: auto;
+}
+
+.dock-action-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 64px;
+  height: 58px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.dock-action-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--graal-cyan);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dock-action-btn .dock-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--graal-text-dim);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dock-action-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--graal-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+
+.dock-action-btn:hover .dock-label {
+  color: var(--graal-text);
+}
+
+.dock-action-btn:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
+.dock-action-btn:focus-visible {
+  outline: 2px solid var(--graal-cyan);
+  outline-offset: 2px;
+}
+
+.hotkey-badge {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  border: 1px solid var(--graal-cyan);
+  color: var(--graal-cyan);
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--graal-title-font);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   4. Radar reskin — circular cyber-glass disc, CSS sweep line.
+   LOGIC of MinimapOverlay is untouched; this is pure styling.
+   -------------------------------------------------------------------------- */
+.graal-radar-skin {
+  background: var(--graal-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 22px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 24px rgba(56, 189, 248, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.graal-radar-skin .minimap-header {
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.graal-radar-skin .minimap-title {
+  font-family: var(--graal-title-font);
+  letter-spacing: 0.12em;
+  color: var(--graal-cyan);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.graal-radar-skin .minimap-body {
+  position: relative;
+}
+
+.hud-radar-disc {
+  /* marker class from the cyber-glass preview spec; no layout of its own */
+}
+
+/* Rotating sweep line over the radar canvas (CSS only) */
+.graal-radar-skin .minimap-body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    rgba(56, 189, 248, 0.55) 0deg,
+    rgba(56, 189, 248, 0.12) 18deg,
+    transparent 40deg,
+    transparent 360deg
+  );
+  animation: graal-radar-sweep 4s linear infinite;
+}
+
+@keyframes graal-radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion: keep the skin, drop the animation */
+@media (prefers-reduced-motion: reduce) {
+  .graal-radar-skin .minimap-body::after {
+    animation: none;
+  }
+  .hud-safe-zone-dot {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Mobile adaptations — HUD must not block the play area
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .graal-vitals {
+    top: 60px;
+    left: 8px;
+    gap: 6px;
+  }
+
+  .graal-vital-card {
+    padding: 5px 9px;
+    border-radius: 10px;
+    gap: 6px;
+  }
+
+  .hp-track {
+    width: 72px;
+    height: 10px;
+  }
+
+  .hp-value {
+    font-size: 10px;
+    min-width: 36px;
+  }
+
+  .hud-safe-zone-pill {
+    padding: 5px 9px;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+
+  .hud-dcoin-box {
+    padding: 5px 9px;
+  }
+
+  .hud-dcoin-amount {
+    font-size: 11px;
+  }
+
+  /* Dock: right-edge vertical column so it never blocks bottom touch controls */
+  .graal-dock {
+    left: auto;
+    right: 8px;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 5px;
+    padding: 7px;
+    border-radius: 16px;
+  }
+
+  .dock-action-btn {
+    width: 52px;
+    height: 50px;
+  }
+
+  .dock-action-btn svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .dock-action-btn .dock-label {
+    font-size: 8px;
+  }
+}
+
+/* Short landscape screens: compact the vertical dock */
+@media (max-width: 768px) and (max-height: 420px) {
+  .dock-action-btn {
+    width: 46px;
+    height: 44px;
+    gap: 2px;
+  }
+
+  .dock-action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dock-action-btn .dock-label {
+    display: none;
+  }
+
+  .hotkey-badge {
+    min-width: 16px;
+    height: 16px;
+    font-size: 9px;
+    top: -6px;
+    left: -6px;
+  }
+
+  .graal-vitals {
+    top: 56px;
+  }
+
+  .hud-safe-zone-pill {
+    display: none; /* reclaim horizontal room on tiny landscape */
+  }
+}

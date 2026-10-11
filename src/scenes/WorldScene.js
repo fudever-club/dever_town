@@ -33,6 +33,7 @@ import {
   UNLOCKABLE_AVATARS,
   CampusTimeHUD
 } from '../ui/index.js';
+import { GraalHUD } from '../ui/hud/GraalHUD.js';
 import { DAY_NIGHT_CYCLE_ENABLED } from '../config/lightingConfig.js';
 import { BestiePetFollower } from '../entities/BestiePetFollower.js';
 import { friendManager } from '../managers/FriendManager.js';
@@ -1866,6 +1867,11 @@ export class WorldScene extends Phaser.Scene {
 
     const currentUser = authService.getUser();
     this.updateHeaderProfile(currentUser);
+
+    // 15. Cyber-glass HUD (Phase A — ADAPT): HP bar + safe-zone badge +
+    //     D-coin wallet pill + 6-button action dock + radar reskin.
+    //     Mounted ALONGSIDE existing HUD; nothing existing is replaced.
+    this.graalHUD = new GraalHUD({ scene: this });
   }
 
   activatePlayerSession() {
