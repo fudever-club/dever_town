@@ -3,23 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DEVER TOWN — Live Redesign Gameplay Prototype (Sân Tòa Alpha)</title>
+  <title>DEVER TOWN — Redesign Gameplay Demo & GraalOnline Era Systems</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-deep: #060a14;
-      --bg-panel: rgba(10, 18, 36, 0.78);
+      --bg-panel: rgba(10, 18, 36, 0.82);
       --bg-panel-solid: #0d1a33;
-      --bg-card: rgba(18, 30, 58, 0.7);
-      --bg-card-hover: rgba(28, 48, 92, 0.85);
+      --bg-card: rgba(18, 30, 58, 0.75);
+      --bg-card-hover: rgba(28, 48, 92, 0.9);
       --border-subtle: rgba(255, 255, 255, 0.1);
-      --border-neon: rgba(56, 189, 248, 0.4);
-      --border-accent: rgba(242, 111, 33, 0.45);
+      --border-neon: rgba(56, 189, 248, 0.45);
+      --border-accent: rgba(242, 111, 33, 0.5);
       --cyan-glow: #38bdf8;
       --fpt-orange: #f26f21;
       --fpt-gold: #fbbf24;
+      --safe-green: #10b981;
+      --danger-red: #ef4444;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -28,8 +30,8 @@
       --radius-lg: 20px;
       --font-ui: 'Be Vietnam Pro', -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
-      --shadow-hud: 0 12px 36px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-subtle);
-      --shadow-neon: 0 0 24px rgba(56, 189, 248, 0.25);
+      --shadow-hud: 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--border-subtle);
+      --shadow-neon: 0 0 24px rgba(56, 189, 248, 0.3);
     }
 
     * {
@@ -42,8 +44,8 @@
     body {
       background-color: var(--bg-deep);
       background-image: 
-        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.1) 0%, transparent 60%),
-        radial-gradient(circle at 80% 90%, rgba(242, 111, 33, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 80% 90%, rgba(242, 111, 33, 0.06) 0%, transparent 50%),
         linear-gradient(180deg, #060a14 0%, #0a1329 100%);
       color: var(--text-main);
       font-family: var(--font-ui);
@@ -54,17 +56,7 @@
       position: relative;
     }
 
-    /* Scanline Subtle Effect */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.015), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.015));
-      background-size: 100% 4px, 6px 100%;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.5;
-    }
+    /* ĐÃ LOẠI BỎ HOÀN TOÀN SCANLINES (KHÔNG CÒN GẠCH NGANG LỖI) */
 
     /* --------------------------------------------------------------------------
        TOP NAVIGATION BAR
@@ -75,7 +67,7 @@
       margin: 0 auto;
       width: calc(100% - 24px);
       max-width: 1420px;
-      height: 60px;
+      height: 62px;
       background: var(--bg-panel);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -104,14 +96,14 @@
     }
 
     .logo-symbol {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #0ea5e9, #f97316);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
       font-weight: 900;
       font-size: 14px;
       color: #fff;
@@ -138,7 +130,7 @@
 
     .nav-mode-tabs {
       display: flex;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       padding: 3px;
       border-radius: 12px;
       border: 1px solid var(--border-subtle);
@@ -149,7 +141,7 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 6px 14px;
+      padding: 6px 13px;
       border-radius: 9px;
       font-size: 12px;
       font-weight: 700;
@@ -163,13 +155,13 @@
 
     .mode-tab-btn:hover {
       color: #fff;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .mode-tab-btn.active {
       background: var(--cyan-glow);
       color: #040814;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
     }
 
     .nav-right-controls {
@@ -233,7 +225,7 @@
       overflow: hidden;
     }
 
-    /* The canvas fills the container */
+    /* Canvas */
     #dever-game-canvas {
       position: absolute;
       inset: 0;
@@ -245,7 +237,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       FLOATING IN-GAME HUD (OVERLAYED ON CANVAS)
+       FLOATING IN-GAME HUD
        -------------------------------------------------------------------------- */
     .in-game-hud-overlay {
       position: absolute;
@@ -258,7 +250,7 @@
       z-index: 20;
     }
 
-    /* Top HUD Strip */
+    /* Top Strip */
     .ingame-top-strip {
       display: flex;
       justify-content: space-between;
@@ -267,22 +259,22 @@
     }
 
     .hud-glass-badge {
-      background: rgba(8, 14, 28, 0.82);
+      background: rgba(8, 14, 28, 0.88);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 12px;
-      padding: 7px 14px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 14px;
+      padding: 8px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       pointer-events: auto;
     }
 
     .hud-avatar-circle {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       border: 2px solid var(--cyan-glow);
       background: #1e293b;
@@ -301,15 +293,19 @@
     .hud-player-info {
       display: flex;
       flex-direction: column;
+      gap: 3px;
+    }
+
+    .hud-player-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .hud-player-name {
       font-size: 13px;
       font-weight: 800;
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .hud-level-pill {
@@ -317,64 +313,120 @@
       background: rgba(251, 191, 36, 0.2);
       border: 1px solid #fbbf24;
       color: #fbbf24;
-      padding: 1px 5px;
+      padding: 1px 6px;
       border-radius: 4px;
       font-family: var(--font-mono);
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .hud-xp-track {
-      width: 110px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 2px;
-      margin-top: 4px;
+    /* Health (50 HP - GraalOnline Standard) & XP Bars */
+    .bars-dual-strip {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .hp-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hp-label {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: #ef4444;
+      font-weight: 800;
+    }
+
+    .hp-track {
+      width: 65px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
       overflow: hidden;
     }
 
-    .hud-xp-fill {
+    .hp-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .xp-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .xp-track {
+      width: 55px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .xp-fill {
       width: 68%;
       height: 100%;
       background: linear-gradient(90deg, #38bdf8, #818cf8);
     }
 
-    /* Zone & Time Pill (Center) */
-    .hud-zone-pill {
-      background: rgba(8, 14, 28, 0.85);
+    /* SAFE ZONE & CLOCK PILL (CENTER) */
+    .hud-center-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-safe-zone-pill {
+      background: rgba(6, 78, 59, 0.85);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--safe-green);
       border-radius: 20px;
-      padding: 6px 18px;
+      padding: 4px 14px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-family: var(--font-mono);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      gap: 8px;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
       pointer-events: auto;
     }
 
-    .zone-indicator-dot {
-      width: 8px;
-      height: 8px;
+    .safe-dot-pulse {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: safePulse 2s infinite;
     }
 
-    .zone-name-txt {
-      font-size: 12px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.05em;
+    @keyframes safePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
 
-    .zone-clock-txt {
+    .safe-zone-title {
       font-size: 11px;
-      color: var(--fpt-orange);
-      font-weight: 600;
-      border-left: 1px solid rgba(255, 255, 255, 0.15);
-      padding-left: 10px;
+      font-weight: 800;
+      color: #a7f3d0;
+      letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+    }
+
+    .hud-zone-clock-pill {
+      background: rgba(8, 14, 28, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      pointer-events: auto;
     }
 
     /* Wallet & Radar Box (Top Right) */
@@ -385,10 +437,9 @@
     }
 
     .hud-dcoin-box {
-      background: rgba(8, 14, 28, 0.82);
+      background: rgba(8, 14, 28, 0.88);
       backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(251, 191, 36, 0.4);
+      border: 1px solid rgba(251, 191, 36, 0.45);
       border-radius: 12px;
       padding: 6px 14px;
       display: flex;
@@ -419,12 +470,12 @@
       color: #fbbf24;
     }
 
-    /* Circular Radar Overlay */
+    /* Circular Radar */
     .hud-radar-disc {
       width: 64px;
       height: 64px;
       border-radius: 50%;
-      background: rgba(6, 12, 24, 0.9);
+      background: rgba(6, 12, 24, 0.92);
       border: 1.5px solid var(--cyan-glow);
       box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
       position: relative;
@@ -461,7 +512,7 @@
       box-shadow: 0 0 6px #38bdf8;
     }
 
-    /* Floating In-World Interaction Tooltip Badge */
+    /* Floating In-World Interaction Tooltip */
     #inworld-interact-card {
       position: absolute;
       display: none;
@@ -504,18 +555,16 @@
     /* Right Quest Log Panel */
     .hud-quest-panel {
       position: absolute;
-      top: 86px;
+      top: 92px;
       right: 14px;
-      width: 250px;
-      background: rgba(8, 14, 28, 0.85);
+      width: 260px;
+      background: rgba(8, 14, 28, 0.88);
       backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border-subtle);
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       pointer-events: auto;
-      transition: all 0.3s ease;
     }
 
     .quest-header-row {
@@ -577,19 +626,18 @@
       font-weight: 900;
     }
 
-    /* Bottom Floating Action Hotbar */
+    /* Bottom Action Hotbar (6 Phím Tắt Chuẩn GraalOnline & Gather) */
     .ingame-bottom-dock {
       margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(8, 14, 28, 0.88);
+      gap: 6px;
+      background: rgba(8, 14, 28, 0.92);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border-neon);
       border-radius: 20px;
       padding: 6px 14px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
       pointer-events: auto;
     }
 
@@ -597,20 +645,20 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       color: var(--text-main);
-      padding: 7px 14px;
+      padding: 7px 12px;
       border-radius: 12px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       transition: all 0.2s ease;
       font-family: var(--font-ui);
     }
 
     .dock-action-btn:hover {
-      background: rgba(56, 189, 248, 0.15);
+      background: rgba(56, 189, 248, 0.18);
       border-color: var(--cyan-glow);
       color: #fff;
       transform: translateY(-2px);
@@ -625,7 +673,7 @@
       color: var(--cyan-glow);
     }
 
-    /* Floating Speech Bubble Above Player */
+    /* Speech Bubble */
     #player-speech-bubble {
       position: absolute;
       display: none;
@@ -640,7 +688,7 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       pointer-events: none;
       z-index: 60;
-      max-width: 200px;
+      max-width: 220px;
       text-align: center;
     }
 
@@ -655,7 +703,7 @@
       border-color: #ffffff transparent transparent transparent;
     }
 
-    /* Floating Floating Notification Coin (+50 DC) */
+    /* Floating Gain Coin */
     .floating-gain-text {
       position: absolute;
       color: #fbbf24;
@@ -675,7 +723,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       CONTROLS FOOTER / TIP BAR
+       CONTROLS HINT FOOTER
        -------------------------------------------------------------------------- */
     .controls-hint-bar {
       display: flex;
@@ -692,7 +740,7 @@
 
     .key-hint-group {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
@@ -708,11 +756,42 @@
     }
 
     /* --------------------------------------------------------------------------
-       TAB 2 & 3: CONCEPT ART & MODAL VIEWS
+       TABS 2, 3, 4: MASTERPLAN, CONCEPT MAP, ARCADE HUB
        -------------------------------------------------------------------------- */
-    #tab-content-concept, #tab-content-modal {
+    #tab-content-plan, #tab-content-concept, #tab-content-modal {
       display: none;
       width: 100%;
+    }
+
+    .doc-section-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-neon);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-hud);
+      line-height: 1.6;
+    }
+
+    .doc-section-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--cyan-glow);
+      margin-bottom: 12px;
+    }
+
+    .doc-section-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin: 18px 0 8px;
+      border-left: 3px solid var(--fpt-orange);
+      padding-left: 10px;
+    }
+
+    .doc-section-card p, .doc-section-card li {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
     }
 
     .concept-art-container {
@@ -733,12 +812,12 @@
     }
 
     /* --------------------------------------------------------------------------
-       IN-GAME MODALS (INVENTORY, DIALOGUE, ARCADE)
+       MODALS: JOBS, CLANS, INVENTORY, TRADE, HOUSING, DIALOGUE
        -------------------------------------------------------------------------- */
     .modal-overlay-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(4, 8, 18, 0.75);
+      background: rgba(4, 8, 18, 0.78);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: none;
@@ -752,7 +831,7 @@
       background: var(--bg-panel-solid);
       border: 1.5px solid var(--border-neon);
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), var(--shadow-neon);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), var(--shadow-neon);
       width: 100%;
       max-width: 680px;
       overflow: hidden;
@@ -808,6 +887,85 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    /* Jobs Cards Grid */
+    .jobs-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .job-item-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .job-item-card:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--cyan-glow);
+    }
+
+    .job-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .job-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .job-wage {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .job-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Clan Base Cards Grid */
+    .clan-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .clan-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .clan-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .clan-base-status {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #34d399;
     }
 
     /* Inventory Grid */
@@ -835,22 +993,6 @@
       background: rgba(56, 189, 248, 0.15);
       border-color: var(--cyan-glow);
       transform: translateY(-2px);
-    }
-
-    .inv-item-icon {
-      font-size: 26px;
-    }
-
-    .inv-item-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .inv-item-qty {
-      font-size: 9px;
-      font-family: var(--font-mono);
-      color: var(--cyan-glow);
     }
 
     /* Emote Radial Overlay */
@@ -891,13 +1033,13 @@
       bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
-      width: 360px;
+      width: 380px;
       display: none;
       background: rgba(8, 14, 28, 0.95);
       backdrop-filter: blur(16px);
       border: 1.5px solid var(--cyan-glow);
       border-radius: 14px;
-      padding: 6px 10px;
+      padding: 6px 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
       z-index: 150;
     }
@@ -933,8 +1075,11 @@
         <button class="mode-tab-btn active" id="tab-btn-gameplay" onclick="switchTab('gameplay')">
           <span>🎮 Game Playable Demo</span>
         </button>
+        <button class="mode-tab-btn" id="tab-btn-plan" onclick="switchTab('plan')">
+          <span>📑 Master Plan GraalOnline</span>
+        </button>
         <button class="mode-tab-btn" id="tab-btn-concept" onclick="switchTab('concept')">
-          <span>🎨 Bản Phác Thảo Map</span>
+          <span>🎨 Bản Phác Thảo Map V2</span>
         </button>
         <button class="mode-tab-btn" id="tab-btn-modal" onclick="switchTab('modal')">
           <span>🕹️ Menu & Arcade Hub</span>
@@ -943,7 +1088,7 @@
     </div>
 
     <div class="nav-right-controls">
-      <!-- Lighting Time Preset Toggle -->
+      <!-- Lighting Preset Toggle -->
       <button class="quick-ctrl-btn" onclick="cycleLightingMode()" id="btn-lighting-mode" title="Chuyển đổi thời gian trong game">
         <span id="lighting-mode-icon">🌅</span>
         <span id="lighting-mode-label">Hoàng Hôn</span>
@@ -972,7 +1117,7 @@
          ------------------------------------------------------------------------ -->
     <section id="tab-content-gameplay">
       <div class="gameplay-viewport-card" id="gameplay-viewport">
-        <!-- Canvas Rendering The Entire Game Stage -->
+        <!-- Canvas Rendering The Entire Game Stage (Không còn lỗi sọc ngang) -->
         <canvas id="dever-game-canvas" width="1376" height="768"></canvas>
 
         <!-- In-World Interaction Floating Tooltip Badge -->
@@ -996,43 +1141,55 @@
 
         <!-- Chat Input Bar (Press T or Enter) -->
         <div id="chat-input-bar-container">
-          <input type="text" id="chat-input-field" placeholder="Nhập tin nhắn rồi bấm Enter để chat..." maxlength="60" />
+          <input type="text" id="chat-input-field" placeholder="Nhập tin nhắn tiếng Việt rồi bấm Enter..." maxlength="60" />
         </div>
 
         <!-- FLOATING IN-GAME HUD -->
         <div class="in-game-hud-overlay">
           <!-- Top Strip -->
           <div class="ingame-top-strip">
-            <!-- Left: Player Profile Pill -->
+            <!-- Left: Player Profile & 50 HP (GraalOnline Style) -->
             <div class="hud-glass-badge">
               <div class="hud-avatar-circle">
                 <img src="./assets/characters/portraits/npc_chunhiem_nhat.png" alt="Avatar" onerror="this.src='./assets/logos/dever_logo_nontext.png'" />
               </div>
               <div class="hud-player-info">
-                <div class="hud-player-name">
-                  <span>Khang_FU</span>
+                <div class="hud-player-name-row">
+                  <span class="hud-player-name">Khang_FU</span>
                   <span class="hud-level-pill">Lv.12 Builder</span>
                 </div>
-                <div class="hud-xp-track">
-                  <div class="hud-xp-fill"></div>
+                <div class="bars-dual-strip">
+                  <div class="hp-bar-wrap" title="Thể Lực HP (Chuẩn GraalOnline 50 HP)">
+                    <span class="hp-label">HP</span>
+                    <div class="hp-track"><div class="hp-fill"></div></div>
+                  </div>
+                  <div class="xp-bar-wrap" title="Điểm Kinh Nghiệm Builder">
+                    <span style="font-size: 8px; color: #38bdf8; font-family: var(--font-mono); font-weight: 800;">XP</span>
+                    <div class="xp-track"><div class="xp-fill"></div></div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Center: Zone Breadcrumb & Clock -->
-            <div class="hud-zone-pill">
-              <span class="zone-indicator-dot"></span>
-              <span class="zone-name-txt">FU-DEVER • SÂN TÒA ALPHA</span>
-              <span class="zone-clock-txt" id="live-game-clock">17:45 Đà Nẵng</span>
+            <!-- Center: Safe Zone Indicator (GraalOnline Style) & Clock -->
+            <div class="hud-center-group">
+              <div class="hud-safe-zone-pill" title="Khu vực An Toàn: Không thể bị tấn công hay mất HP">
+                <span class="safe-dot-pulse"></span>
+                <span class="safe-zone-title">VÙNG AN TOÀN (SAFE ZONE)</span>
+              </div>
+              <div class="hud-zone-clock-pill">
+                <span>FU-DEVER • SÂN TÒA ALPHA</span>
+                <span style="color: var(--fpt-orange); margin-left: 6px;" id="live-game-clock">17:45 Đà Nẵng</span>
+              </div>
             </div>
 
-            <!-- Right: D-Coin Wallet & Radar -->
+            <!-- Right: D-Coin Wallet & Circular Radar -->
             <div class="hud-top-right-group">
               <div class="hud-dcoin-box">
                 <div class="coin-badge">D</div>
                 <span class="dcoin-val" id="dcoin-counter">1,250</span>
               </div>
-              <div class="hud-radar-disc" title="Radar Quét Bản Đồ">
+              <div class="hud-radar-disc" title="Radar Quét Vùng Xung Quanh">
                 <div class="radar-sweep-line"></div>
                 <div class="radar-player-dot"></div>
               </div>
@@ -1042,7 +1199,7 @@
           <!-- Quest Log Panel (Right side) -->
           <div class="hud-quest-panel">
             <div class="quest-header-row">
-              <span class="quest-title-txt">Nhiệm Vụ Khám Phá</span>
+              <span class="quest-title-txt">Nhiệm Vụ Tân Sinh Viên</span>
               <span style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono);" id="quest-prog-txt">1/3</span>
             </div>
             <div class="quest-items-list">
@@ -1061,27 +1218,39 @@
             </div>
           </div>
 
-          <!-- Bottom Action Dock -->
+          <!-- Bottom Action Dock (Đầy đủ hệ thống tính năng GraalOnline) -->
           <div class="ingame-bottom-dock">
             <button class="dock-action-btn" onclick="openInventoryModal()">
               <span class="hotkey-badge">[1]</span>
               <span>Balo Túi Đồ</span>
             </button>
-            <button class="dock-action-btn" onclick="openArcadeModal()">
+            <button class="dock-action-btn" onclick="openJobsModal()">
+              <span class="hotkey-badge">[2]</span>
+              <span>Việc Làm Cày Tiền</span>
+            </button>
+            <button class="dock-action-btn" onclick="openClansModal()">
               <span class="hotkey-badge">[3]</span>
+              <span>Bang Hội & Căn Cứ</span>
+            </button>
+            <button class="dock-action-btn" onclick="openArcadeModal()">
+              <span class="hotkey-badge">[4]</span>
               <span>Phòng Máy Arcade</span>
+            </button>
+            <button class="dock-action-btn" onclick="openTradeModal()">
+              <span class="hotkey-badge">[5]</span>
+              <span>Chợ Trao Đổi</span>
+            </button>
+            <button class="dock-action-btn" onclick="openHousingModal()">
+              <span class="hotkey-badge">[6]</span>
+              <span>Phòng KTX</span>
             </button>
             <button class="dock-action-btn" onclick="toggleEmoteWheel()">
               <span class="hotkey-badge">[G]</span>
               <span>Biểu Cảm</span>
             </button>
             <button class="dock-action-btn" onclick="openChatInput()">
-              <span class="hotkey-badge">[T]</span>
-              <span>Trò Chuyện</span>
-            </button>
-            <button class="dock-action-btn" onclick="cycleLightingMode()">
-              <span class="hotkey-badge">[L]</span>
-              <span>Đổi Giờ</span>
+              <span class="hotkey-badge">[Enter]</span>
+              <span>Chat</span>
             </button>
           </div>
         </div>
@@ -1095,45 +1264,97 @@
           <span class="key-badge-inline">A</span>
           <span class="key-badge-inline">S</span>
           <span class="key-badge-inline">D</span>
-          <span>hoặc Phím Mũi Tên</span>
+          <span>hoặc Mũi Tên</span>
         </div>
         <div class="key-hint-group">
           <span>Tương tác:</span>
           <span class="key-badge-inline">E</span>
           <span>Balo:</span>
           <span class="key-badge-inline">1</span>
-          <span>Arcade:</span>
+          <span>Việc làm:</span>
+          <span class="key-badge-inline">2</span>
+          <span>Bang hội:</span>
           <span class="key-badge-inline">3</span>
-          <span>Biểu cảm:</span>
-          <span class="key-badge-inline">G</span>
-          <span>Nhắn tin:</span>
-          <span class="key-badge-inline">Enter</span>
+          <span>Arcade:</span>
+          <span class="key-badge-inline">4</span>
+          <span>Đổi giờ:</span>
+          <span class="key-badge-inline">L</span>
         </div>
         <div>
-          <span style="color: var(--cyan-glow); font-weight: 700;">Nhấn [E] khi đến gần Hồ Vịt hoặc Tượng Tư Tưởng để khám phá!</span>
+          <span style="color: var(--cyan-glow); font-weight: 700;">Đến gần Hồ Vịt, Tượng Tư Tưởng hoặc Rác rơi trên sân để bấm [E]!</span>
         </div>
       </div>
     </section>
 
     <!-- ------------------------------------------------------------------------
-         TAB 2: FULL CONCEPT ART MAP SCREENSHOT
+         TAB 2: MASTER PLAN BUILD LẠI ĐỒ HỌA & LOGIC THEO GRAALONLINE ERA
+         ------------------------------------------------------------------------ -->
+    <section id="tab-content-plan">
+      <div class="doc-section-card">
+        <h2>Kế Hoạch Master Plan: Tái Thiết Kế Đồ Họa & Hệ Thống DEVER TOWN Dựa Trên GraalOnline Era</h2>
+        <p style="color: #94a3b8; font-style: italic;">
+          Phân tích các cơ chế "bánh cuốn" của tựa game 2D Pixel MMO kinh điển GraalOnline Era (2010 – 2026) và chuyển thể sang hệ sinh thái Đại Học FPT Đà Nẵng & CLB FU-DEVER.
+        </p>
+
+        <h3>1. Kiến Trúc Bản Đồ & Vùng Chiến Đấu (World Map, Safe Zones & Var Zones)</h3>
+        <ul>
+          <li><strong>Hệ thống Phân Vùng An Toàn (Safe Zones):</strong> Thư viện Tầng 3, Giảng đường thi PE Exam, Văn phòng CLB FU-DEVER được định danh là Safe Zone (bảo vệ tuyệt đối, hồi máu 100%, không bị thách đấu).</li>
+          <li><strong>Vùng Thách Đấu / Var Nhau Lành Mạnh (Challenge Zones):</strong> Sân Cỏ Thể Thao (Bắn súng nước Water Gun / Sút bóng đá 2D), Phòng Lab Alpha (Đấu trường Hackathon gõ code ICPC Speed Duel 1v1).</li>
+          <li><strong>Cơ Chế 50 HP & Bệnh Viện Trạm Y Tế:</strong> Giữ nguyên chuẩn 50 HP của GraalOnline. Khi hết HP trong trận bắn súng nước hoặc bị quật bởi deadline, người chơi hồi sinh tại Trạm Y Tế FPTU (Tòa Alpha) với NPC Y tá phát Vitamin C, không làm rơi rớt đồ đạc cá nhân.</li>
+        </ul>
+
+        <h3>2. Hệ Thống Nghề Nghiệp Sinh Viên Cày Tiền (Campus Jobs Economy)</h3>
+        <ul>
+          <li><strong>Lao Công Sân Trường (Campus Cleaner):</strong> Nhặt ly trà sữa, chai nhựa quanh Sân Alpha và Hồ Vịt bỏ vào thùng rác phân loại (Nhận +15 D-Coin/lần).</li>
+          <li><strong>Barista Căn Tin FPT:</strong> Nhận đơn pha chế cà phê muối, bạc xỉu, trà đào cam sả theo công thức mini-game bấm đúng nhịp (Nhận +25 D-Coin/cốc).</li>
+          <li><strong>Shipper Giao Cơm KTX (Campus Delivery):</strong> Chạy bộ giao cơm trưa từ Căn tin sang KTX trong vòng 60 giây (Nhận +35 D-Coin).</li>
+          <li><strong>Bug Hunter (Bắt Bọ & Fix Bug):</strong> Bắt các chú bọ Buggy phát sáng quanh bồn hoa giấy hoặc giải đố nhanh các đoạn code lỗi tại Tech Lab (Nhận +40 D-Coin).</li>
+        </ul>
+
+        <h3>3. Bang Hội & Chiếm Giữ Căn Cứ (Clans & Base Forts)</h3>
+        <ul>
+          <li><strong>4 Đại Clan Chuyên Môn FU-DEVER:</strong> Clan Web Dev, Clan AI Core, Clan Mobile, Clan Game Dev.</li>
+          <li><strong>Chiếm Căn Cứ Server Room & Sân Khấu:</strong> Hàng tuần tổ chức trận chiến giành quyền kiểm soát "Phòng Server Tech Lab" hoặc "Bàn Đội Trưởng". Đội giữ được căn cứ sẽ nhận Huy hiệu Áo Choàng Bang Hội và D-Coin thưởng cho toàn bộ thành viên.</li>
+        </ul>
+
+        <h3>4. Chợ Trao Đổi (Player-to-Player Trade) & Tùy Biến Skin (UGC)</h3>
+        <ul>
+          <li><strong>Sàn Trao Đổi Hàng Hóa:</strong> Sinh viên được tự do đổi đồ với nhau (Giáo trình PE, Linh kiện phím cơ, Cốc cà phê, Bánh mì, Sticker hiếm).</li>
+          <li><strong>Custom Skin UGC:</strong> Tương tự GraalOnline, cho phép sinh viên tự vẽ file spritesheet PNG 48×64 px của riêng mình và tải lên để mặc trong game (tiêu tốn một lượng D-Coin nhỏ kiểm duyệt).</li>
+        </ul>
+
+        <h3>5. Phòng KTX & Nhà Ở Cá Nhân (Dormitory Housing)</h3>
+        <ul>
+          <li>Mỗi người chơi sở hữu một phòng KTX riêng có thể mua sắm bàn học gỗ, dàn PC 3 màn hình, ghế gaming công thái học, poster anime/tech.</li>
+          <li>Bạn bè có thể vào thăm và bấm Upvote. Bảng xếp hạng "Phòng KTX Đẹp Nhất Tuần" sẽ nhận thưởng D-Coin và cờ vinh danh.</li>
+        </ul>
+
+        <h3>6. Lễ Hội Theo Mùa (Campus Seasonal Festivals)</h3>
+        <ul>
+          <li>Sự kiện Trick or Code (Halloween), Lễ hội Tết FPTU, DevDay Hackathon thức trắng đêm, Club Day tuyển thành viên.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 3: FULL CONCEPT ART MAP SCREENSHOT V2
          ------------------------------------------------------------------------ -->
     <section id="tab-content-concept">
       <div class="concept-art-container">
-        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Gameplay Toàn Cảnh Sân Alpha (Concept Render 1376x768)</h3>
-        <img src="./devertown_map_gameplay_redesign.jpg" alt="DEVER TOWN Gameplay Redesign" />
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Gameplay Toàn Cảnh Sân Alpha V2 (Pristine Pixel Art 1376x768)</h3>
+        <img src="./devertown_map_clean_alpha_courtyard.jpg" alt="DEVER TOWN Gameplay Redesign V2" />
         <p style="margin-top: 14px; font-size: 13px; color: var(--text-muted); font-family: var(--font-mono);">
-          File chất lượng gốc trên máy: <strong>D:\THStudy\DeverClub\devertown_map_gameplay_redesign.jpg</strong>
+          File chất lượng gốc trên máy: <strong>D:\THStudy\FU_DEVER\DEVER_TOWN\public\devertown_map_clean_alpha_courtyard.jpg</strong>
         </p>
       </div>
     </section>
 
     <!-- ------------------------------------------------------------------------
-         TAB 3: MENU & ARCADE HUB MODAL SHOWCASE
+         TAB 4: MENU & ARCADE HUB MODAL SHOWCASE
          ------------------------------------------------------------------------ -->
     <section id="tab-content-modal">
       <div class="concept-art-container">
-        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Hệ Thống Giao Diện Menu & Arcade Hub (In-Game Window)</h3>
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #fff;">Bản Phác Thảo Hệ Thống Giao Diện Menu & Arcade Hub</h3>
         <img src="./devertown_ui_redesign.jpg" alt="DEVER TOWN UI Redesign" />
         <p style="margin-top: 14px; font-size: 13px; color: var(--text-muted); font-family: var(--font-mono);">
           File chất lượng gốc trên máy: <strong>D:\THStudy\DeverClub\devertown_ui_redesign.jpg</strong>
@@ -1144,7 +1365,178 @@
   </main>
 
   <!-- ==========================================================================
-       MODAL 1: INVENTORY (BALO CƯ DÂN)
+       MODAL: CAMPUS JOBS (VIỆC LÀM SINH VIÊN - GRAALONLINE STYLE)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-jobs" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>💼</span>
+          <span>Trung Tâm Việc Làm Sinh Viên — Campus Jobs FPTU</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div class="jobs-cards-grid">
+          <!-- Job 1 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🧹 Lao Công Sân Alpha</span>
+              <span class="job-wage">+15 D-Coin / Rác</span>
+            </div>
+            <p class="job-desc">Thu gom ly trà sữa và vỏ lon rơi trên sân cỏ và quanh bờ hồ để giữ khuôn viên xanh sạch đẹp.</p>
+            <button class="quick-ctrl-btn" onclick="startLitterJob()" style="background: var(--cyan-glow); color: #040814; font-weight: 800; align-self: flex-start;">
+              Bắt Đầu Nhặt Rác
+            </button>
+          </div>
+          <!-- Job 2 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">☕ Barista Căn Tin FPT</span>
+              <span class="job-wage">+25 D-Coin / Ly</span>
+            </div>
+            <p class="job-desc">Pha cà phê muối và trà đào cam sả theo yêu cầu của sinh viên và giảng viên giờ giải lao.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Pha Cà Phê Barista', 25)" style="align-self: flex-start;">
+              Pha Cà Phê Ngay
+            </button>
+          </div>
+          <!-- Job 3 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🛵 Shipper Cơm Trưa KTX</span>
+              <span class="job-wage">+35 D-Coin / Đơn</span>
+            </div>
+            <p class="job-desc">Giao cơm hộp nóng hổi từ Căn tin Tòa Alpha sang các phòng KTX sinh viên đúng giờ.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Giao Cơm KTX', 35)" style="align-self: flex-start;">
+              Nhận Chuyến Giao
+            </button>
+          </div>
+          <!-- Job 4 -->
+          <div class="job-item-card">
+            <div class="job-title-row">
+              <span class="job-name">🐞 Bug Hunter Sân Trường</span>
+              <span class="job-wage">+40 D-Coin / Con</span>
+            </div>
+            <p class="job-desc">Dùng vợt bắt những chú bọ Buggy phát sáng quanh bồn hoa giấy và giải câu đố code logic.</p>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Săn Bọ Buggy', 40)" style="align-self: flex-start;">
+              Cầm Vợt Săn Bọ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: CLANS & BASE FORTS (BANG HỘI & CĂN CỨ - GRAALONLINE STYLE)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-clans" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🏰</span>
+          <span>Hệ Thống Bang Hội & Chiếm Giữ Căn Cứ (Clan Bases)</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          Tham gia vào 4 phân ban chuyên môn của CLB FU-DEVER để cùng cố thủ hoặc tấn công đánh chiếm căn cứ Server Room và Sân Khấu Sự Kiện!
+        </p>
+        <div class="clan-cards-grid">
+          <div class="clan-card">
+            <div class="clan-name">🌐 Clan Web Builders</div>
+            <div class="clan-base-status">Căn cứ: Phòng Lab Alpha (Đang Cố Thủ)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Trấn giữ dàn máy Server Rack Tầng 2, điểm thưởng: +500 DC/giờ.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">🤖 Clan AI & Data Core</div>
+            <div class="clan-base-status">Căn cứ: Thư Viện Tầng 3 (Safe Base)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Nghiên cứu mô hình ngôn ngữ và thuật toán thị giác máy tính.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">📱 Clan Mobile Masters</div>
+            <div class="clan-base-status">Căn cứ: Bàn Tròn Căn Tin (Đang Tranh Chấp)</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Flutter & React Native chiến binh ứng dụng di động.</p>
+          </div>
+          <div class="clan-card">
+            <div class="clan-name">🎮 Clan Game Developers</div>
+            <div class="clan-base-status">Căn cứ: Đấu Trường Arcade Hub</div>
+            <p style="font-size: 11px; color: var(--text-muted);">Phụ trách phát triển DEVER TOWN và các minigames 2D pixel.</p>
+          </div>
+        </div>
+        <button class="quick-ctrl-btn" onclick="claimJobReward('Chiếm Căn Cứ Server', 100)" style="background: var(--cyan-glow); color: #040814; font-weight: 800; align-self: center; margin-top: 6px;">
+          Tham Gia Trận Đánh Chiếm Căn Cứ (+100 D-Coin)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: TRADE MARKET (CHỢ TRAO ĐỔI HÀNG HÓA)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-trade" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>📊</span>
+          <span>Chợ Sinh Viên Trao Đổi (Trade Market FPTU)</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="color: #fff; font-size: 13px;">Giáo Trình Cấu Trúc Dữ Liệu & Giải Thuật</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Người bán: Nam_K18 • Giá thị trường đang Stonk 📈</div>
+            </div>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Mua Giáo Trình DSA', -50)">Mua (50 DC)</button>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="color: #fff; font-size: 13px;">Sticker Linh Vật Buggy Hologram Giới Hạn</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Người bán: An_Designer • Đổi lấy Cà Phê Muối hoặc D-Coin</div>
+            </div>
+            <button class="quick-ctrl-btn" onclick="claimJobReward('Đổi Sticker Buggy', -30)">Đổi (30 DC)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: DORMITORY HOUSING (PHÒNG KTX CÁ NHÂN)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-housing" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🏠</span>
+          <span>Phòng KTX & Bàn Học Cá Nhân — Dormitory Housing</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad" style="text-align: center;">
+        <p style="font-size: 13px; color: #e2e8f0; line-height: 1.6;">
+          Phòng KTX Số 402 — Tòa Dom A FPT Đà Nẵng của Khang_FU.<br />
+          Trang bị: Bàn công thái học, Màn hình cong 144Hz, Ghế Secretlab, Tủ sách thuật toán.
+        </p>
+        <div style="margin: 14px 0; display: flex; justify-content: center; gap: 12px;">
+          <button class="quick-ctrl-btn" onclick="upvoteDorm()" style="background: #ec4899; color: #fff; font-weight: 800;">
+            ❤️ Upvote Phòng Đẹp (+1 Bình Chọn)
+          </button>
+          <button class="quick-ctrl-btn" onclick="closeAllModals()">Ghé Thăm Phòng Khác</button>
+        </div>
+        <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);" id="dorm-upvote-counter">
+          Lượt Upvote Tuần Này: 84 ❤️ (Hạng 3 Toàn Trường)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: INVENTORY (BALO CƯ DÂN)
        ========================================================================== -->
   <div class="modal-overlay-backdrop" id="modal-inventory" onclick="closeAllModals(event)">
     <div class="cyber-modal-window" onclick="event.stopPropagation()">
@@ -1158,50 +1550,103 @@
       <div class="modal-body-pad">
         <div class="inventory-grid-7">
           <div class="inv-item-card" onclick="useItem('Thẻ Cư Dân FUDA')">
-            <span class="inv-item-icon">🪪</span>
-            <span class="inv-item-title">Thẻ Cư Dân</span>
-            <span class="inv-item-qty">Gen 10</span>
+            <span style="font-size: 26px;">🪪</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Thẻ Cư Dân</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Gen 10</span>
           </div>
-          <div class="inv-item-card" onclick="useItem('Cà Phê Barista')">
-            <span class="inv-item-icon">☕</span>
-            <span class="inv-item-title">Cà Phê Muối</span>
-            <span class="inv-item-qty">x3 Ly</span>
+          <div class="inv-item-card" onclick="useItem('Cà Phê Muối Barista')">
+            <span style="font-size: 26px;">☕</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Cà Phê Muối</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x3 Ly</span>
           </div>
           <div class="inv-item-card" onclick="useItem('Bàn Phím Cơ Custom')">
-            <span class="inv-item-icon">⌨️</span>
-            <span class="inv-item-title">Phím Cơ RGB</span>
-            <span class="inv-item-qty">Tố độ +20%</span>
+            <span style="font-size: 26px;">⌨️</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Phím Cơ RGB</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Tốc độ +20%</span>
           </div>
           <div class="inv-item-card" onclick="useItem('Bánh Mì Cho Vịt')">
-            <span class="inv-item-icon">🥖</span>
-            <span class="inv-item-title">Bánh Mì Cho Vịt</span>
-            <span class="inv-item-qty">x12 Mẩu</span>
+            <span style="font-size: 26px;">🥖</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Bánh Mì Vịt</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x12 Mẩu</span>
           </div>
           <div class="inv-item-card" onclick="useItem('Sticker Bọ Buggy')">
-            <span class="inv-item-icon">🐞</span>
-            <span class="inv-item-title">Sticker Buggy</span>
-            <span class="inv-item-qty">x5 Tem</span>
+            <span style="font-size: 26px;">🐞</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Sticker Buggy</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">x5 Tem</span>
           </div>
-          <div class="inv-item-card" onclick="useItem('Laptop Dev')">
-            <span class="inv-item-icon">💻</span>
-            <span class="inv-item-title">MacBook Dev</span>
-            <span class="inv-item-qty">M4 Pro</span>
+          <div class="inv-item-card" onclick="useItem('MacBook Dev M4 Pro')">
+            <span style="font-size: 26px;">💻</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">MacBook Dev</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">M4 Pro</span>
           </div>
           <div class="inv-item-card" onclick="useItem('Áo Hoodie FUDA')">
-            <span class="inv-item-icon">🧥</span>
-            <span class="inv-item-title">Hoodie Dever</span>
-            <span class="inv-item-qty">Đang Mặc</span>
+            <span style="font-size: 26px;">🧥</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Hoodie Dever</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Đang Mặc</span>
           </div>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); text-align: center;">
-          Click vào vật phẩm để sử dụng hoặc trang bị lên người!
+          <div class="inv-item-card" onclick="useItem('Vợt Bắt Bọ')">
+            <span style="font-size: 26px;">🎾</span>
+            <span style="font-size: 11px; font-weight: 700; color: #fff;">Vợt Bắt Bọ</span>
+            <span style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-glow);">Đồ Nghề</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- ==========================================================================
-       MODAL 2: DIALOGUE BOX (TƯỢNG TƯ TƯỞNG / NPC)
+       MODAL: ARCADE HUB (TRUNG TÂM MINIGAMES)
+       ========================================================================== -->
+  <div class="modal-overlay-backdrop" id="modal-arcade" onclick="closeAllModals(event)">
+    <div class="cyber-modal-window" onclick="event.stopPropagation()" style="max-width: 720px;">
+      <div class="modal-header-cyber">
+        <div class="modal-title-txt">
+          <span>🕹️</span>
+          <span>Trung Tâm Minigames — Arcade Hub FU-DEVER</span>
+        </div>
+        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="modal-body-pad">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Pac-Man 3.0</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Ăn hạt năng lượng trong mê cung vi mạch neon, né virus ma máy.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 12,450đ</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Pac-Man')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Dever Dash 3.0</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Nhảy hình học né chông nhọn, đệm bật nảy và đảo trọng lực cực cuốn.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 86%</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Dever Dash')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Flappy Buggy Pro</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Lái chú bọ Buggy vỗ cánh lướt qua dàn cột Server Rack công nghệ.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 48 Cột</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Flappy Buggy')">Chơi Ngay</button>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Candy Match-3</div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Xếp ngọc vi mạch 8x8, kích nổ Laser Kẹo Sọc và Cyber Color Bomb.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 18,200đ</span>
+              <button class="quick-ctrl-btn" onclick="playGameDirect('Candy Match-3')">Chơi Ngay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: DIALOGUE BOX (TƯỢNG TƯ TƯỞNG / NPC)
        ========================================================================== -->
   <div class="modal-overlay-backdrop" id="modal-dialogue" onclick="closeAllModals(event)">
     <div class="cyber-modal-window" onclick="event.stopPropagation()" style="max-width: 600px;">
@@ -1235,66 +1680,11 @@
   </div>
 
   <!-- ==========================================================================
-       MODAL 3: ARCADE HUB (TRUNG TÂM MINIGAMES)
-       ========================================================================== -->
-  <div class="modal-overlay-backdrop" id="modal-arcade" onclick="closeAllModals(event)">
-    <div class="cyber-modal-window" onclick="event.stopPropagation()" style="max-width: 720px;">
-      <div class="modal-header-cyber">
-        <div class="modal-title-txt">
-          <span>🕹️</span>
-          <span>Trung Tâm Minigames — Arcade Hub FU-DEVER</span>
-        </div>
-        <button class="modal-close-icon-btn" onclick="closeAllModals()">✕</button>
-      </div>
-      <div class="modal-body-pad">
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
-          <!-- Pacman -->
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Pac-Man 3.0</div>
-            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Ăn hạt năng lượng trong mê cung vi mạch neon, né virus ma máy.</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 12,450đ</span>
-              <button class="quick-ctrl-btn" onclick="playGameDirect('Pac-Man')">Chơi Ngay</button>
-            </div>
-          </div>
-          <!-- Dever Dash -->
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 14px; font-weight: 800; color: #fff;">Dever Dash 3.0</div>
-            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Nhảy hình học né chông nhọn, đệm bật nảy và đảo trọng lực cực cuốn.</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 86%</span>
-              <button class="quick-ctrl-btn" onclick="playGameDirect('Dever Dash')">Chơi Ngay</button>
-            </div>
-          </div>
-          <!-- Flappy Buggy -->
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 14px; font-weight: 800; color: #fff;">Flappy Buggy Pro</div>
-            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Lái chú bọ Buggy vỗ cánh lướt qua dàn cột Server Rack công nghệ.</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 48 Cột</span>
-              <button class="quick-ctrl-btn" onclick="playGameDirect('Flappy Buggy')">Chơi Ngay</button>
-            </div>
-          </div>
-          <!-- Candy Match-3 -->
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 14px; font-weight: 800; color: #fff;">Cyber Candy Match-3</div>
-            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">Xếp ngọc vi mạch 8x8, kích nổ Laser Kẹo Sọc và Cyber Color Bomb.</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-              <span style="font-size: 11px; color: #fbbf24; font-family: var(--font-mono);">Kỷ lục: 18,200đ</span>
-              <button class="quick-ctrl-btn" onclick="playGameDirect('Candy Match-3')">Chơi Ngay</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       JAVASCRIPT GAME ENGINE & AUDIO SYSTEM
+       JAVASCRIPT GAME ENGINE
        ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       1. PROCEDURAL SOUND SYNTHESIZER (WEB AUDIO API)
+       1. WEB AUDIO API SYNTHESIZER
        -------------------------------------------------------------------------- */
     let audioCtx = null;
     let audioEnabled = true;
@@ -1318,14 +1708,14 @@
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(90 + Math.random() * 30, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.05);
+          osc.frequency.setValueAtTime(80 + Math.random() * 30, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.04);
           gain.gain.setValueAtTime(0.04, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start();
-          osc.stop(ctx.currentTime + 0.05);
+          osc.stop(ctx.currentTime + 0.04);
         } catch(e) {}
       },
 
@@ -1357,8 +1747,8 @@
           const gain = ctx.createGain();
           osc1.type = 'sine';
           osc2.type = 'sine';
-          osc1.frequency.setValueAtTime(987.77, now); // B5
-          osc2.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+          osc1.frequency.setValueAtTime(987.77, now);
+          osc2.frequency.setValueAtTime(1318.51, now + 0.08);
           gain.gain.setValueAtTime(0.15, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
           osc1.connect(gain);
@@ -1418,7 +1808,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       2. TAB SWITCHING SYSTEM
+       2. TAB NAVIGATION
        -------------------------------------------------------------------------- */
     function switchTab(tabId) {
       document.querySelectorAll('.mode-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1426,6 +1816,7 @@
       if (activeBtn) activeBtn.classList.add('active');
 
       document.getElementById('tab-content-gameplay').style.display = (tabId === 'gameplay') ? 'block' : 'none';
+      document.getElementById('tab-content-plan').style.display = (tabId === 'plan') ? 'block' : 'none';
       document.getElementById('tab-content-concept').style.display = (tabId === 'concept') ? 'block' : 'none';
       document.getElementById('tab-content-modal').style.display = (tabId === 'modal') ? 'block' : 'none';
 
@@ -1436,7 +1827,7 @@
        3. LIGHTING TIME ENGINE (SUNSET / NIGHT / DAY)
        -------------------------------------------------------------------------- */
     const lightingModes = [
-      { id: 'sunset', icon: '🌅', label: 'Hoàng Hôn', clock: '17:45 Đà Nẵng', ambient: 'rgba(251, 146, 60, 0.12)', lanternIntensity: 0.95 },
+      { id: 'sunset', icon: '🌅', label: 'Hoàng Hôn', clock: '17:45 Đà Nẵng', ambient: 'rgba(251, 146, 60, 0.1)', lanternIntensity: 0.95 },
       { id: 'night', icon: '🌙', label: 'Đêm Cyber', clock: '21:30 Đà Nẵng', ambient: 'rgba(6, 12, 28, 0.72)', lanternIntensity: 1.35 },
       { id: 'day', icon: '☀️', label: 'Ban Ngày', clock: '11:15 Đà Nẵng', ambient: 'rgba(255, 255, 255, 0.02)', lanternIntensity: 0.2 }
     ];
@@ -1457,53 +1848,53 @@
     const canvas = document.getElementById('dever-game-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Load Clean Courtyard Map Image Plate
+    // Nạp phôi map V2 sạch sẽ, không lỗi sọc ngang
     const mapBgImg = new Image();
     mapBgImg.src = './devertown_map_clean_alpha_courtyard.jpg';
     let mapLoaded = false;
     mapBgImg.onload = () => { mapLoaded = true; };
 
-    // Load Authentic Character Spritesheet
+    // Nạp Spritesheet nhân vật chính thức
     const playerSpriteImg = new Image();
     playerSpriteImg.src = './assets/characters/outfits/full_hoodie_dever.png';
     let spriteLoaded = false;
     playerSpriteImg.onload = () => { spriteLoaded = true; };
 
-    // Player Object
+    // Player Object (Start tại sân trung tâm V2)
     const player = {
-      x: 688, // Start in center plaza
-      y: 420,
-      targetX: 688,
-      targetY: 420,
+      x: 520,
+      y: 440,
+      targetX: 520,
+      targetY: 440,
       speed: 3.6,
-      dir: 'down', // down, left, right, up
+      dir: 'down',
       frame: 0,
       animTimer: 0,
       isMoving: false,
       stepAudioTimer: 0
     };
 
-    // Ducks in Duck Pond (Left pond area: center ~260, 550)
+    // Vịt trong hồ nước bên trái (Tọa độ mới: tâm ~175, 550)
     const ducks = [
-      { x: 210, y: 530, vx: 0.35, vy: 0.2, color: '#fef08a', size: 12, bob: 0 },
-      { x: 290, y: 580, vx: -0.25, vy: -0.15, color: '#ffffff', size: 14, bob: 1.5 },
-      { x: 250, y: 500, vx: 0.2, vy: -0.3, color: '#fef08a', size: 10, bob: 3.2 }
+      { x: 140, y: 520, vx: 0.3, vy: 0.2, color: '#fef08a', size: 12, bob: 0 },
+      { x: 210, y: 560, vx: -0.25, vy: -0.15, color: '#ffffff', size: 14, bob: 1.5 },
+      { x: 175, y: 490, vx: 0.2, vy: -0.3, color: '#fef08a', size: 10, bob: 3.2 }
     ];
 
-    // Lantern Glow Points (5 street lamps on right courtyard)
+    // Đèn lồng sân trường (Map V2: các vị trí đèn đối xứng tuyệt đẹp)
     const lanterns = [
-      { x: 688, y: 345, r: 110 }, // Fountain lantern
-      { x: 688, y: 480, r: 120 }, // Center plaza lamp
-      { x: 945, y: 375, r: 115 }, // Bougainvillea lamp
-      { x: 1015, y: 350, r: 120 }, // Walkway lamp
-      { x: 1115, y: 335, r: 125 }, // Thinker upper lamp
-      { x: 1170, y: 460, r: 135 }, // Statue main lantern
-      { x: 1170, y: 565, r: 120 }  // Lower bench lamp
+      { x: 345, y: 330, r: 110 },
+      { x: 690, y: 330, r: 110 },
+      { x: 520, y: 560, r: 130 }, // Đài phun nước
+      { x: 775, y: 400, r: 115 },
+      { x: 935, y: 400, r: 115 },
+      { x: 775, y: 610, r: 120 },
+      { x: 935, y: 610, r: 120 }
     ];
 
-    // Fireflies for Night Mode
+    // Đom đóm ban đêm
     const fireflies = [];
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 20; i++) {
       fireflies.push({
         x: 100 + Math.random() * 1176,
         y: 260 + Math.random() * 450,
@@ -1514,54 +1905,56 @@
       });
     }
 
-    // Interactive POI Zones
+    // Các rác rơi trên sân phục vụ nghề Lao Công
+    let litterItems = [
+      { id: 1, x: 420, y: 410, type: '🥤', label: 'Ly Trà Sữa' },
+      { id: 2, x: 620, y: 430, type: '🥫', label: 'Vỏ Lon Nước' },
+      { id: 3, x: 520, y: 680, type: '🧃', label: 'Hộp Sữa FPT' }
+    ];
+
+    // Các điểm tương tác POI trên Map V2
     const POIs = {
-      pond: { x: 260, y: 550, radius: 180, label: 'Thả Mồi Cho Vịt (+50 DC)', key: 'E' },
-      statue: { x: 1085, y: 470, radius: 130, label: 'Chiêm Bái Tượng Tư Tưởng (+30 DC)', key: 'E' },
-      alpha: { x: 688, y: 220, radius: 100, label: 'Vào Sảnh Chính Tòa Alpha', key: 'E' },
-      fountain: { x: 688, y: 350, radius: 80, label: 'Tung Đồng Xu Ước Nguyện', key: 'E' }
+      pond: { x: 175, y: 550, radius: 160, label: 'Thả Mồi Cho Vịt (+50 DC)', key: 'E' },
+      statue: { x: 850, y: 540, radius: 130, label: 'Chiêm Bái Tượng Tư Tưởng (+30 DC)', key: 'E' },
+      alpha: { x: 520, y: 340, radius: 90, label: 'Vào Sảnh Tòa Alpha', key: 'E' },
+      fountain: { x: 520, y: 560, radius: 75, label: 'Tung Đồng Xu Ước Nguyện (+10 DC)', key: 'E' }
     };
 
     let activePOI = null;
     let dcoinBalance = 1250;
+    let dormUpvotes = 84;
     let questsState = { duck: false, statue: false };
 
-    // Keyboard Input State
+    // Keyboard Listener
     const keys = {};
     window.addEventListener('keydown', (e) => {
       keys[e.key.toLowerCase()] = true;
 
-      // Hotkey Actions
-      if (e.key === 'e' || e.key === 'E') {
-        triggerActiveInteraction();
-      } else if (e.key === '1') {
-        openInventoryModal();
-      } else if (e.key === '3') {
-        openArcadeModal();
-      } else if (e.key === 'g' || e.key === 'G') {
-        toggleEmoteWheel();
-      } else if (e.key === 'l' || e.key === 'L') {
-        cycleLightingMode();
-      } else if (e.key === 't' || e.key === 'T' || e.key === 'Enter') {
-        openChatInput();
-      } else if (e.key === 'Escape') {
-        closeAllModals();
-      }
+      if (e.key === 'e' || e.key === 'E') triggerActiveInteraction();
+      else if (e.key === '1') openInventoryModal();
+      else if (e.key === '2') openJobsModal();
+      else if (e.key === '3') openClansModal();
+      else if (e.key === '4') openArcadeModal();
+      else if (e.key === '5') openTradeModal();
+      else if (e.key === '6') openHousingModal();
+      else if (e.key === 'g' || e.key === 'G') toggleEmoteWheel();
+      else if (e.key === 'l' || e.key === 'L') cycleLightingMode();
+      else if (e.key === 't' || e.key === 'T' || e.key === 'Enter') openChatInput();
+      else if (e.key === 'Escape') closeAllModals();
     });
 
     window.addEventListener('keyup', (e) => {
       keys[e.key.toLowerCase()] = false;
     });
 
-    // Reset Player Position
     function resetPlayerPosition() {
-      player.x = 688;
-      player.y = 420;
+      player.x = 520;
+      player.y = 440;
       soundEngine.coin();
     }
 
     /* --------------------------------------------------------------------------
-       5. MAIN GAME LOOP & RENDER PIPELINE
+       5. MAIN GAME LOOP
        -------------------------------------------------------------------------- */
     let lastTime = performance.now();
 
@@ -1579,7 +1972,6 @@
       let dx = 0;
       let dy = 0;
 
-      // WASD or Arrow Keys
       if (keys['w'] || keys['arrowup']) { dy -= 1; player.dir = 'up'; }
       if (keys['s'] || keys['arrowdown']) { dy += 1; player.dir = 'down'; }
       if (keys['a'] || keys['arrowleft']) { dx -= 1; player.dir = 'left'; }
@@ -1588,7 +1980,6 @@
       player.isMoving = (dx !== 0 || dy !== 0);
 
       if (player.isMoving) {
-        // Normalize vector for diagonals
         const len = Math.hypot(dx, dy);
         dx = (dx / len) * player.speed;
         dy = (dy / len) * player.speed;
@@ -1596,26 +1987,27 @@
         const nextX = player.x + dx;
         const nextY = player.y + dy;
 
-        // Collision Checks
-        // 1. Building top boundary
-        if (nextY >= 230 && nextY <= 720 && nextX >= 60 && nextX <= 1320) {
-          // 2. Pond obstacle (cannot walk into center of pond)
-          const distPond = Math.hypot(nextX - 250, nextY - 550);
-          if (distPond > 120) {
-            // 3. Statue obstacle
-            const distStatue = Math.hypot(nextX - 1085, nextY - 470);
-            if (distStatue > 45) {
-              player.x = nextX;
-              player.y = nextY;
+        // Bounded boundaries
+        if (nextY >= 320 && nextY <= 730 && nextX >= 50 && nextX <= 1320) {
+          // Hồ vịt collision (không rơi xuống giữa hồ)
+          const distPond = Math.hypot(nextX - 175, nextY - 550);
+          if (distPond > 110) {
+            // Đài phun nước collision
+            const distFountain = Math.hypot(nextX - 520, nextY - 560);
+            if (distFountain > 40) {
+              // Tượng tư tưởng collision
+              const distStatue = Math.hypot(nextX - 850, nextY - 540);
+              if (distStatue > 40) {
+                player.x = nextX;
+                player.y = nextY;
+              }
             }
           }
         }
 
-        // Animation cycle
         player.animTimer += dt * 10;
         player.frame = Math.floor(player.animTimer) % 4;
 
-        // Footstep Audio
         player.stepAudioTimer += dt;
         if (player.stepAudioTimer > 0.28) {
           player.stepAudioTimer = 0;
@@ -1625,15 +2017,14 @@
         player.frame = 0;
       }
 
-      // Update Ducks in pond
+      // Update Ducks
       ducks.forEach(d => {
         d.x += d.vx;
         d.y += d.vy;
         d.bob += dt * 2.5;
 
-        // Bounce inside pond ellipse
-        const distFromPondCenter = Math.hypot(d.x - 260, d.y - 550);
-        if (distFromPondCenter > 95) {
+        const distFromCenter = Math.hypot(d.x - 175, d.y - 550);
+        if (distFromCenter > 85) {
           d.vx *= -1;
           d.vy *= -1;
         }
@@ -1660,7 +2051,21 @@
         }
       }
 
-      // Update Tooltip DOM element
+      // Check nearby litter for Lao Công Job
+      litterItems.forEach((l, idx) => {
+        const disLitter = Math.hypot(player.x - l.x, player.y - l.y);
+        if (disLitter < 50) {
+          activePOI = {
+            id: 'litter',
+            litterIdx: idx,
+            x: l.x,
+            y: l.y,
+            label: `Nhặt ${l.label} (+15 DC)`
+          };
+        }
+      });
+
+      // Update Tooltip DOM
       const tooltip = document.getElementById('inworld-interact-card');
       const actionText = document.getElementById('interact-action-text');
       if (activePOI) {
@@ -1672,7 +2077,7 @@
         tooltip.style.display = 'none';
       }
 
-      // Position player speech bubble if active
+      // Speech bubble pos
       const bubble = document.getElementById('player-speech-bubble');
       if (bubble.style.display === 'block') {
         bubble.style.left = `${(player.x / canvas.width) * 100}%`;
@@ -1683,55 +2088,50 @@
     function render(time) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Draw Clean Map Background
+      // 1. Phôi nền Pixel Art Map V2 (Không tì vết, không sọc ngang)
       if (mapLoaded) {
         ctx.drawImage(mapBgImg, 0, 0, canvas.width, canvas.height);
       } else {
-        // Fallback loading backdrop
         ctx.fillStyle = '#0a1628';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#38bdf8';
         ctx.font = '16px monospace';
-        ctx.fillText('Đang tải bản đồ Sân Alpha...', canvas.width / 2 - 120, canvas.height / 2);
+        ctx.fillText('Đang tải bản đồ Sân Alpha V2...', canvas.width / 2 - 140, canvas.height / 2);
       }
 
-      // 2. Animated Water Ripple / Shimmer on Pond (Left)
+      // 2. Animated Water Ripple / Shimmer on Pond (Hồ bên trái)
       ctx.save();
       ctx.globalAlpha = 0.25;
       ctx.strokeStyle = '#bae6fd';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.2;
       const t = time / 1000;
       for (let r = 0; r < 3; r++) {
-        const rad = 25 + ((t * 15 + r * 30) % 70);
+        const rad = 20 + ((t * 12 + r * 25) % 60);
         ctx.beginPath();
-        ctx.ellipse(260, 550, rad * 1.5, rad * 0.9, 0, 0, Math.PI * 2);
+        ctx.ellipse(175, 550, rad * 1.4, rad * 0.85, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
       ctx.restore();
 
-      // 3. Draw Animated Swimming Ducks
+      // 3. Swimming Ducks
       ducks.forEach(d => {
         ctx.save();
         const bobY = Math.sin(d.bob) * 2;
-        // Duck ripple wake
         ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
         ctx.beginPath();
         ctx.ellipse(d.x, d.y + 4, d.size, d.size * 0.45, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Duck body
         ctx.fillStyle = d.color;
         ctx.beginPath();
         ctx.ellipse(d.x, d.y + bobY, d.size * 0.7, d.size * 0.5, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Duck head & bill
         const facing = (d.vx >= 0) ? 1 : -1;
         ctx.beginPath();
         ctx.arc(d.x + facing * (d.size * 0.5), d.y + bobY - 4, d.size * 0.4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Orange bill
         ctx.fillStyle = '#f97316';
         ctx.beginPath();
         ctx.ellipse(d.x + facing * (d.size * 0.8), d.y + bobY - 3, 3, 2, 0, 0, Math.PI * 2);
@@ -1739,10 +2139,19 @@
         ctx.restore();
       });
 
-      // 4. Draw Player Character
+      // 4. Render Litter Items (Nghề Lao Công)
+      litterItems.forEach(l => {
+        ctx.save();
+        ctx.font = '16px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(l.type, l.x, l.y);
+        ctx.restore();
+      });
+
+      // 5. Draw Player Character
       drawPlayerCharacter();
 
-      // 5. Dynamic Stardew Valley Lighting Overlay
+      // 6. Dynamic Stardew Valley Lighting Overlay
       const mode = lightingModes[currentLightingIdx];
       renderLightingEngine(mode, time);
     }
@@ -1750,14 +2159,12 @@
     function drawPlayerCharacter() {
       ctx.save();
 
-      // Shadow beneath feet
+      // Shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
       ctx.beginPath();
       ctx.ellipse(player.x, player.y + 12, 14, 6, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Direction Row Mapping:
-      // Row 0: down, Row 1: left, Row 2: right, Row 3: up
       let dirRow = 0;
       if (player.dir === 'left') dirRow = 1;
       else if (player.dir === 'right') dirRow = 2;
@@ -1768,8 +2175,6 @@
         const frameH = 64;
         const sx = player.frame * frameW;
         const sy = dirRow * frameH;
-
-        // Draw spritesheet frame centered on player (scaling up slightly for crisp chibi visibility)
         const dw = 48;
         const dh = 64;
         ctx.drawImage(
@@ -1778,7 +2183,6 @@
           player.x - dw / 2, player.y - dh + 14, dw, dh
         );
       } else {
-        // Fallback Chibi procedural renderer
         ctx.fillStyle = '#0284c7';
         ctx.fillRect(player.x - 12, player.y - 30, 24, 30);
         ctx.fillStyle = '#fed7aa';
@@ -1787,22 +2191,19 @@
         ctx.fill();
       }
 
-      // Nameplate Tag Floating Above Player
+      // Nameplate Tag
       ctx.font = 'bold 11px var(--font-ui)';
       ctx.textAlign = 'center';
-
-      // Background pill for name
       const nameTxt = 'Khang_FU';
       const textMetrics = ctx.measureText(nameTxt);
       const bgW = textMetrics.width + 16;
-      ctx.fillStyle = 'rgba(8, 14, 28, 0.85)';
+      ctx.fillStyle = 'rgba(8, 14, 28, 0.88)';
       ctx.roundRect(player.x - bgW / 2, player.y - 68, bgW, 18, 6);
       ctx.fill();
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Text
       ctx.fillStyle = '#38bdf8';
       ctx.fillText(nameTxt, player.x, player.y - 55);
 
@@ -1812,12 +2213,10 @@
     function renderLightingEngine(mode, time) {
       const t = time / 1000;
 
-      // Ambient Overlay
       ctx.save();
       ctx.fillStyle = mode.ambient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Lantern Light Halos (Additive Lightmap)
       ctx.globalCompositeOperation = 'screen';
       lanterns.forEach((l, idx) => {
         const pulse = 1 + 0.05 * Math.sin(t * 3.5 + idx);
@@ -1834,7 +2233,7 @@
         ctx.fill();
       });
 
-      // Player personal lantern halo
+      // Player lantern halo
       const pGrad = ctx.createRadialGradient(player.x, player.y - 15, 2, player.x, player.y - 15, 65);
       pGrad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
       pGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -1864,23 +2263,19 @@
       if (!activePOI) return;
 
       if (activePOI.id === 'pond') {
-        // Feed Ducks
         soundEngine.splash();
         soundEngine.quack();
         setTimeout(() => soundEngine.coin(), 300);
 
-        // Ducks swim towards player
         ducks.forEach(d => {
           d.vx = (player.x - d.x) * 0.015;
           d.vy = (player.y - d.y) * 0.015;
         });
 
-        // Floating Coin Text
         spawnGainText('+50 D-Coin', player.x, player.y);
         dcoinBalance += 50;
         document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
 
-        // Check quest item
         if (!questsState.duck) {
           questsState.duck = true;
           const line = document.getElementById('quest-duck-line');
@@ -1890,7 +2285,6 @@
         }
 
       } else if (activePOI.id === 'statue') {
-        // Dialogue with Thinker Statue
         soundEngine.chime();
         openDialogueModal('Tượng Nhà Tư Tưởng', 'Triết Lý Lập Trình Viên FU-DEVER', quotes[0]);
 
@@ -1904,6 +2298,15 @@
           document.getElementById('quest-statue-chk').textContent = '✓';
           updateQuestProgress();
         }
+
+      } else if (activePOI.id === 'litter') {
+        // Nhặt rác
+        soundEngine.coin();
+        spawnGainText('+15 D-Coin Sạch Campus!', player.x, player.y);
+        dcoinBalance += 15;
+        document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+        litterItems.splice(activePOI.litterIdx, 1);
+        activePOI = null;
 
       } else if (activePOI.id === 'alpha') {
         soundEngine.chime();
@@ -1927,7 +2330,7 @@
     }
 
     function updateQuestProgress() {
-      let count = 1; // Alpha already checked
+      let count = 1;
       if (questsState.duck) count++;
       if (questsState.statue) count++;
       document.getElementById('quest-prog-txt').textContent = `${count}/3`;
@@ -1937,11 +2340,10 @@
       }
     }
 
-    /* Dialogue Quotes */
     const quotes = [
       '"First, solve the problem. Then, write the code. Code chạy ngon trên localhost chưa chắc chạy được trên production nếu thiếu CI/CD và Unit Test!"',
       '"Đừng sợ bug. Bug là dấu hiệu duy nhất chứng minh bạn đang thực sự viết code và sáng tạo những điều mới!"',
-      '"Kiến trúc tốt giống như nền móng của Tòa Alpha — vững chãi trước mọi lượt truy cập đột biến trong ngày DevDay!"',
+      '"Kiến trúc tốt giống như nền móng của Tòa Alpha — vững chãi trước mọi đợt traffic đột biến trong ngày DevDay!"',
       '"Trong vũ trụ FU-DEVER, không có lập trình viên nào bị bỏ lại phía sau. Luôn có mentor 1:1 đồng hành cùng bạn."'
     ];
     let quoteIdx = 0;
@@ -1959,20 +2361,44 @@
       soundEngine.coin();
     }
 
-    function openInventoryModal() {
-      soundEngine.chime();
-      document.getElementById('modal-inventory').style.display = 'flex';
-    }
+    /* Modal Openers */
+    function openInventoryModal() { soundEngine.chime(); document.getElementById('modal-inventory').style.display = 'flex'; }
+    function openJobsModal() { soundEngine.chime(); document.getElementById('modal-jobs').style.display = 'flex'; }
+    function openClansModal() { soundEngine.chime(); document.getElementById('modal-clans').style.display = 'flex'; }
+    function openArcadeModal() { soundEngine.chime(); document.getElementById('modal-arcade').style.display = 'flex'; }
+    function openTradeModal() { soundEngine.chime(); document.getElementById('modal-trade').style.display = 'flex'; }
+    function openHousingModal() { soundEngine.chime(); document.getElementById('modal-housing').style.display = 'flex'; }
 
-    function openArcadeModal() {
-      soundEngine.chime();
-      document.getElementById('modal-arcade').style.display = 'flex';
-    }
-
-    function closeAllModals(e) {
+    function closeAllModals() {
       document.querySelectorAll('.modal-overlay-backdrop').forEach(m => m.style.display = 'none');
       document.getElementById('radial-emote-overlay').style.display = 'none';
       document.getElementById('chat-input-bar-container').style.display = 'none';
+    }
+
+    function claimJobReward(jobName, amount) {
+      soundEngine.coin();
+      dcoinBalance += amount;
+      document.getElementById('dcoin-counter').textContent = dcoinBalance.toLocaleString();
+      spawnGainText(`${amount > 0 ? '+' : ''}${amount} D-Coin (${jobName})`, player.x, player.y);
+      closeAllModals();
+    }
+
+    function startLitterJob() {
+      soundEngine.coin();
+      spawnGainText('Đã xuất hiện rác trên sân! Hãy đi nhặt bằng phím [E]', player.x, player.y);
+      litterItems = [
+        { id: 1, x: 420, y: 410, type: '🥤', label: 'Ly Trà Sữa' },
+        { id: 2, x: 620, y: 430, type: '🥫', label: 'Vỏ Lon Nước' },
+        { id: 3, x: 520, y: 680, type: '🧃', label: 'Hộp Sữa FPT' }
+      ];
+      closeAllModals();
+    }
+
+    function upvoteDorm() {
+      soundEngine.coin();
+      dormUpvotes++;
+      document.getElementById('dorm-upvote-counter').textContent = `Lượt Upvote Tuần Này: ${dormUpvotes} ❤️ (Hạng 3 Toàn Trường)`;
+      spawnGainText('+1 Upvote ❤️', player.x, player.y);
     }
 
     function useItem(itemName) {
@@ -2046,17 +2472,15 @@
     function guideTo(target) {
       soundEngine.footstep();
       if (target === 'duck') {
-        player.targetX = 350;
-        player.targetY = 530;
+        player.x = 260;
+        player.y = 550;
       } else if (target === 'statue') {
-        player.targetX = 1000;
-        player.targetY = 480;
+        player.x = 780;
+        player.y = 540;
       }
-      player.x = player.targetX;
-      player.y = player.targetY;
     }
 
-    // Start Main Loop on Load
+    // Start Main Loop
     requestAnimationFrame(gameLoop);
   </script>
 </body>
