@@ -51,6 +51,8 @@ export const TRANSLATIONS = {
       game_arcade: 'Sang Arcade & Robot',
       dorm_room: 'Sang Ký Túc Xá',
       meeting_room: 'Sang Phòng Họp & Lớp Học',
+      back_to_alpha: 'Về Sảnh Alpha',
+      main_hall_booths: 'Khu Gian Hàng CLB',
     },
 
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
@@ -267,6 +269,8 @@ export const TRANSLATIONS = {
       game_arcade: 'To Arcade & Robot',
       dorm_room: 'To Dormitory',
       meeting_room: 'To Club Meeting & Class Room',
+      back_to_alpha: 'Back to Alpha Lobby',
+      main_hall_booths: 'Club Booth Exhibition',
     },
 
     // Interactive Zones Tooltips (Full zones mapped per room)

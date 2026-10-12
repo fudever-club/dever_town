@@ -45,9 +45,10 @@ if (meetLayout) {
   ok(row13[11] === 10 && row13[12] === 10, 'portal meeting_room nằm trên ô cửa');
 }
 
-// 4. main_hall có portal tới meeting_room (cả base + floors[0] để game render đúng)
+// 4. alpha_interior có portal tới meeting_room (cả base + floors[0] để game render đúng)
+// Phân cấp 2026-10-12: phòng học vào qua nội thất Tòa Alpha, không còn cổng thẳng từ sân.
 const portalCount = (mapsSrc.match(/targetRoomId: 'meeting_room'/g) || []).length;
-ok(portalCount >= 2, `portal tới meeting_room xuất hiện ở base + floors[0] (thấy ${portalCount})`);
+ok(portalCount === 2, `portal tới meeting_room chỉ còn 2 (alpha_interior base + floors[0]) (thấy ${portalCount})`);
 
 // 5. Portal dorm/classroom cũng phải có trong floors[0] (fix bug 653e69a)
 const dormCount = (mapsSrc.match(/targetRoomId: 'dorm_room'/g) || []).length;

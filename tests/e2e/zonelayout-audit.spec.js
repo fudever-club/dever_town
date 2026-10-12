@@ -110,12 +110,14 @@ const MH_ZONES = [
   { id: 'zone_main_meeting', x: 650, y: 420, label: 'Sân Khấu' },
   { id: 'zone_main_fishing', x: 448, y: 465, label: 'Câu Cá' },
 ];
-// ---------- main_hall: 6 moved portals [walk-from, key, expected room] ----------
+// ---------- main_hall: 6 cổng ngoài trời còn lại [walk-from, key, expected room] ----------
+// Phân cấp 2026-10-12: thư viện / phòng họp / kỷ niệm + cầu thang gian hàng đã dời
+// vào sảnh Alpha — sân chỉ còn cổng ngoài trời.
 const MH_PORTALS = [
-  { from: [880, 270], key: 'ArrowRight', room: 'library_lounge', label: 'Sang Thư Viện' },
+  { from: [746, 330], key: 'ArrowUp', room: 'alpha_interior', label: 'Vào Tòa Alpha' },
   { from: [220, 585], key: 'ArrowLeft', room: 'dorm_room', label: 'Ký Túc Xá' },
-  { from: [1140, 585], key: 'ArrowRight', room: 'meeting_room', label: 'Phòng Họp CLB' },
-  { from: [420, 585], key: 'ArrowLeft', room: 'memory_room', label: 'Phòng Kỷ Niệm' },
+  { from: [1290, 370], key: 'ArrowRight', room: 'web_room', label: 'Web & Media Hub' },
+  { from: [1290, 520], key: 'ArrowRight', room: 'sports_complex', label: 'Khu Thể Thao' },
   { from: [600, 560], key: 'ArrowDown', room: 'canteen_cafe', label: 'Căn Tin & Cafe (1)' },
   { from: [776, 630], key: 'ArrowDown', room: 'canteen_cafe', label: 'Căn Tin & Cafe (2)' },
 ];
@@ -142,18 +144,20 @@ test.describe('zonelayout audit — desktop', () => {
       expect(label).toContain(z.label);
       await pressEAndExpectModal(page, z.id);
     }
-    // stair zone -> floor 1
-    await movePlayer(page, 1050, 285);
-    await page.waitForFunction(() => {
+    // Phân cấp 2026-10-12: sân KHÔNG còn stair zone lên gian hàng, không còn cổng
+    // thư viện / phòng họp / kỷ niệm (đã dời vào sảnh Alpha)
+    const gone = await page.evaluate(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      return s?.interactionManager?.currentActiveZone?.id === 'zone_main_stair_f1_f2';
-    }, { timeout: 8000 });
-    expect(await hudLabel(page)).toContain('Tầng 2');
-    await page.keyboard.press('KeyE');
-    await page.waitForFunction(() => {
-      const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      return s.floorManager.currentFloor === 1;
-    }, { timeout: 8000 });
+      const zones = s.mapData.zones || [];
+      const portals = s.mapData.portals || [];
+      return {
+        stair: zones.some(z => z.id === 'zone_main_stair_f1_f2'),
+        lib: portals.some(p => p.targetRoomId === 'library_lounge'),
+        meet: portals.some(p => p.targetRoomId === 'meeting_room'),
+        mem: portals.some(p => p.targetRoomId === 'memory_room'),
+      };
+    });
+    expect(gone).toEqual({ stair: false, lib: false, meet: false, mem: false });
   });
 
   test('MH moved portals: walk in -> correct room', async ({ page }, testInfo) => {
@@ -226,6 +230,59 @@ test.describe('zonelayout audit — desktop', () => {
     }
   });
 
+  // Phân cấp 2026-10-12: cổng thư viện / phòng họp / kỷ niệm / gian hàng trong sảnh
+  // Alpha, cổng trả về đúng sảnh (không còn về thẳng sân).
+  const AI_PORTALS = [
+    // [walk-from, key, expected room, expected floor, return walk-from, return key]
+    { from: [700, 240], key: 'ArrowDown', room: 'library_lounge', floor: 0,
+      retFrom: [384, 400], retKey: 'ArrowDown', retLabel: 'Thư Viện' },
+    { from: [1000, 480], key: 'ArrowDown', room: 'meeting_room', floor: 0,
+      retFrom: [384, 400], retKey: 'ArrowDown', retLabel: 'Phòng Họp' },
+    { from: [950, 240], key: 'ArrowDown', room: 'memory_room', floor: 0,
+      retFrom: [700, 180], retKey: 'ArrowDown', retLabel: 'Kỷ Niệm' },
+    { from: [1200, 310], key: 'ArrowDown', room: 'main_hall', floor: 1,
+      retFrom: null, retKey: null, retLabel: 'Gian Hàng' },
+  ];
+
+  test('AI hierarchy portals: interior -> rooms -> back to lobby', async ({ page }, testInfo) => {
+    testInfo.setTimeout(240000);
+    for (const p of AI_PORTALS) {
+      await gotoRoom(page, 'alpha_interior');
+      await waitTeleportReady(page);
+      await movePlayer(page, p.from[0], p.from[1]);
+      await page.keyboard.down(p.key);
+      await page.waitForFunction(([r, f]) => {
+        const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+        return s.currentRoomId === r && s.floorManager.currentFloor === f;
+      }, [p.room, p.floor], { timeout: 12000 });
+      await page.keyboard.up(p.key);
+      await page.waitForTimeout(1500);
+      if (p.retFrom) {
+        // cổng trả về -> sảnh Alpha
+        await waitTeleportReady(page);
+        await movePlayer(page, p.retFrom[0], p.retFrom[1]);
+        await page.keyboard.down(p.retKey);
+        await page.waitForFunction(() => {
+          const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+          return s.currentRoomId === 'alpha_interior';
+        }, { timeout: 12000 });
+        await page.keyboard.up(p.retKey);
+      } else {
+        // gian hàng tầng 2: cầu thang nội bộ xuống sân (không mồ côi)
+        await movePlayer(page, 80, 48);
+        await page.waitForFunction(() => {
+          const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+          return s?.interactionManager?.currentActiveZone?.id === 'zone_main_stair_f2_f1';
+        }, { timeout: 8000 });
+        await page.keyboard.press('KeyE');
+        await page.waitForFunction(() => {
+          const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+          return s.currentRoomId === 'main_hall' && s.floorManager.currentFloor === 0;
+        }, { timeout: 8000 });
+      }
+    }
+  });
+
   test('screenshots: full maps + close-ups', async ({ page }, testInfo) => {
     testInfo.setTimeout(180000);
     await gotoRoom(page, 'main_hall');
@@ -241,10 +298,9 @@ test.describe('zonelayout audit — desktop', () => {
       await page.waitForTimeout(700);
       await page.screenshot({ path: `${IMG_DIR}/${name}-desktop.png` });
     };
-    await zoomShot('zonelayout-closeup-stairs', 1000, 250, 2);      // cầu thang + portal thư viện
     await zoomShot('zonelayout-closeup-dock', 448, 465, 2.5);        // biển gỗ + câu cá
     await zoomShot('zonelayout-closeup-fountain', 710, 490, 2);      // cóc vàng / họp / bản đồ
-    await zoomShot('zonelayout-closeup-bottompath', 480, 640, 1.5); // ký túc / kỷ niệm / căn tin
+    await zoomShot('zonelayout-closeup-bottompath', 480, 640, 1.5); // ký túc / căn tin (kỷ niệm đã dời vào sảnh)
     // chuyển phòng trực tiếp (cleanOverlays đã ẩn room-selector)
     await page.evaluate(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
@@ -260,6 +316,7 @@ test.describe('zonelayout audit — desktop', () => {
     await page.screenshot({ path: `${IMG_DIR}/zonelayout-interior-full-desktop.png` });
     await zoomShot('zonelayout-closeup-labdoors', 450, 430, 2);      // 2 portal lab
     await zoomShot('zonelayout-closeup-reception', 640, 520, 2);     // quầy lễ tân + cửa
+    await zoomShot('zonelayout-closeup-hierarchy', 880, 360, 1.8);   // 4 cổng mới: thư viện/họp/kỷ niệm/gian hàng
   });
 });
 
@@ -284,14 +341,22 @@ test.describe('zonelayout audit — mobile portrait', () => {
     testInfo.setTimeout(120000);
     await gotoRoom(page, 'main_hall');
     await waitTeleportReady(page);
-    // memory portal walk-in
-    await movePlayer(page, 420, 585);
-    await page.keyboard.down('ArrowLeft');
+    // phân cấp mới: sân -> Vào Tòa Alpha -> sảnh -> cổng thư viện
+    await movePlayer(page, 746, 330);
+    await page.keyboard.down('ArrowUp');
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      return s.currentRoomId === 'memory_room';
+      return s.currentRoomId === 'alpha_interior';
     }, { timeout: 12000 });
-    await page.keyboard.up('ArrowLeft');
+    await page.keyboard.up('ArrowUp');
+    await waitTeleportReady(page);
+    await movePlayer(page, 700, 240);
+    await page.keyboard.down('ArrowDown');
+    await page.waitForFunction(() => {
+      const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+      return s.currentRoomId === 'library_lounge';
+    }, { timeout: 12000 });
+    await page.keyboard.up('ArrowDown');
     // screenshots
     await gotoRoom(page, 'main_hall');
     await cleanOverlays(page);

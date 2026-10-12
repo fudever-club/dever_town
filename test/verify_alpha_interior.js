@@ -7,7 +7,8 @@
  * 4. Spawn + portal pads không nằm trong collision rect, không giao cắt rect.
  * 5. Portal 2 chiều: sân (746,290) -> alpha_interior; trong sảnh -> main_hall (746,330) walkable.
  * 6. Portal lab -> dever_lab, targetSpawn walkable (tile 9).
- * 7. Courtyard giữ nguyên 9 portal; sports/canteen portals không đổi.
+ * 7. Courtyard: 6 portal ngoài trời (thư viện/họp/kỷ niệm + cầu thang đã dời vào sảnh Alpha);
+ *    sports/canteen portals không đổi; sảnh Alpha có 7 cổng; cổng gian hàng targetFloor 1.
  * 8. Cooldown teleport >= 1.5s trong WorldScene.
  * 9. i18n rooms/portals/zones (2 locale), option #opt-alpha_interior trong index.html.
  * 10. Không emoji trong labels mới; DAY_NIGHT_CYCLE_ENABLED=false giữ nguyên.
@@ -88,8 +89,20 @@ for (const p of room.portals.filter(p => p.targetRoomId === 'dever_lab')) {
   ok(t === 9, `lab portal (${p.x},${p.y}) target (${p.targetSpawn.x},${p.targetSpawn.y}) tile=9 walkable (got ${t})`);
 }
 
-// 7. Courtyard giữ nguyên 9 portal; sports/canteen không đổi
-ok(mh.portals.length === 9, `main_hall giữ 9 portal (got ${mh.portals.length})`);
+// 7. Courtyard: 6 portal ngoài trời (thư viện/họp/kỷ niệm + cầu thang đã dời vào
+// sảnh Alpha); sports/canteen không đổi. Sảnh Alpha có 7 cổng (3 cũ + 4 mới).
+ok(mh.portals.length === 6, `main_hall giữ 6 portal ngoài trời (got ${mh.portals.length})`);
+ok(mh.floors[0].portals.length === 6, `main_hall floors[0] giữ 6 portal (got ${mh.floors[0].portals.length})`);
+for (const src of [mh, mh.floors[0]]) {
+  ok(!src.portals.some(p => ['library_lounge', 'meeting_room', 'memory_room'].includes(p.targetRoomId)),
+    'sân không còn cổng thư viện/họp/kỷ niệm (đã dời vào sảnh Alpha)');
+  ok(!src.zones.some(z => z.id === 'zone_main_stair_f1_f2'), 'sân không còn stair zone lên gian hàng');
+}
+for (const src of [room, room.floors[0]]) {
+  ok(src.portals.length === 7, `alpha_interior có 7 cổng (ra sân, 2 lab, thư viện, họp, kỷ niệm, gian hàng) (got ${src.portals.length})`);
+  const boothP = src.portals.find(p => p.labelKey === 'portals.main_hall_booths');
+  ok(boothP?.targetRoomId === 'main_hall' && boothP?.targetFloor === 1, 'cổng gian hàng -> main_hall tầng 2 (targetFloor 1)');
+}
 const sports = mh.portals.find(p => p.targetRoomId === 'sports_complex');
 ok(sports?.x === 1336 && sports?.y === 550, 'portal Khu Thể Thao (1336,550) nguyên vẹn');
 const canteens = mh.portals.filter(p => p.targetRoomId === 'canteen_cafe');
@@ -127,8 +140,9 @@ ok(up?.targetFloor === 1 && down?.targetFloor === 0, 'cầu thang 2 chiều tr�
 ok(f1.zones.length === 4, 'tầng 2 có 4 zones (cầu thang, bảng, 2 bàn lab)');
 ok(!f1.paintedBackground, 'tầng 2 dùng tile layout (không painted)');
 
-// Phòng cũ không bị đụng: dever_lab vẫn có portal về main_hall
-const labBack = lab.portals.some(p => p.targetRoomId === 'main_hall');
-ok(labBack, 'dever_lab vẫn giữ portal về main_hall (không gãy phòng cũ)');
+// Phòng cũ không bị đụng: dever_lab trả về sảnh Alpha (phân cấp mới)
+const labBack = lab.portals.some(p => p.targetRoomId === 'alpha_interior' && p.labelKey === 'portals.back_to_alpha');
+ok(labBack, 'dever_lab giữ portal về alpha_interior (không gãy phòng cũ)');
+ok(!lab.portals.some(p => p.targetRoomId === 'main_hall'), 'dever_lab không còn portal thẳng về sân');
 
 console.log(`\n[RESULT] ${passed} passed, ${failed} failed`);

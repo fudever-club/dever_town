@@ -73,10 +73,9 @@ export const MAPS_CONFIG = {
     ],
     portals: [
       { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
-      { x: 950, y: 300, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+      // Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào trong sảnh Alpha (alpha_interior)
+      // — phân cấp: phòng học đi qua nội thất Tòa Alpha, không vào thẳng từ sân.
       { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-      { x: 1210, y: 615, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
-      { x: 350, y: 615, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
       { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
       { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
       { x: 600, y: 620, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
@@ -88,7 +87,8 @@ export const MAPS_CONFIG = {
       { id: 'zone_main_slides', type: 'whiteboard_slides', x: 550, y: 300, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
       { id: 'zone_main_meeting', type: 'meeting_stage', x: 650, y: 420, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
       { id: 'zone_main_coffee', type: 'coffee_lofi', x: 1250, y: 480, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-      { id: 'zone_main_stair_f1_f2', type: 'stair_transition', x: 1050, y: 285, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2', targetFloor: 1 },
+      // Cầu thang lên khu gian hàng đã dời vào sảnh Alpha (cổng 'Khu Gian Hàng CLB'
+      // trong alpha_interior, targetFloor 1) — sân chỉ còn cổng ngoài trời.
       { id: 'zone_main_fishing', type: 'job_fishing', x: 448, y: 465, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
     ],
     decorations: [
@@ -149,10 +149,8 @@ export const MAPS_CONFIG = {
         ],
         portals: [
           { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
-          { x: 950, y: 300, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+          // (giống top-level) Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào sảnh Alpha.
           { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-          { x: 1210, y: 615, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
-          { x: 350, y: 615, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
           { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
           { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
           { x: 600, y: 620, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
@@ -164,7 +162,7 @@ export const MAPS_CONFIG = {
           { id: 'zone_main_slides', type: 'whiteboard_slides', x: 550, y: 300, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
           { id: 'zone_main_meeting', type: 'meeting_stage', x: 650, y: 420, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
           { id: 'zone_main_coffee', type: 'coffee_lofi', x: 1250, y: 480, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-          { id: 'zone_main_stair_f1_f2', type: 'stair_transition', x: 1050, y: 285, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2', targetFloor: 1 },
+          // (giống top-level) Cầu thang lên gian hàng đã dời vào sảnh Alpha.
           { id: 'zone_main_fishing', type: 'job_fishing', x: 448, y: 465, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
         ],
         decorations: [
@@ -324,6 +322,12 @@ export const MAPS_CONFIG = {
       { x: 680, y: 676, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
       { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
       { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+      // Phân cấp phòng học: vào qua nội thất Tòa Alpha (dời từ sân ngoài trời).
+      { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+      { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
+      { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Sang Phòng Kỷ Niệm' },
+      // Khu gian hàng triển lãm CLB = main_hall tầng 2 (targetFloor 1).
+      { x: 1200, y: 350, targetRoomId: 'main_hall', targetFloor: 1, targetSpawn: { x: 112, y: 80 }, labelKey: 'portals.main_hall_booths', label: 'Khu Gian Hàng CLB' },
     ],
     zones: [
       { id: 'zone_alpha_reception', type: 'club_booth', x: 585, y: 440, name: 'Quầy Lễ Tân Tòa Alpha', label: 'Quầy Lễ Tân' },
@@ -399,6 +403,11 @@ export const MAPS_CONFIG = {
           { x: 680, y: 676, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
           { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
           { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+          // (giống top-level) Phân cấp phòng học qua nội thất Tòa Alpha.
+          { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+          { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
+          { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Sang Phòng Kỷ Niệm' },
+          { x: 1200, y: 350, targetRoomId: 'main_hall', targetFloor: 1, targetSpawn: { x: 112, y: 80 }, labelKey: 'portals.main_hall_booths', label: 'Khu Gian Hàng CLB' },
         ],
         zones: [
           { id: 'zone_alpha_reception', type: 'club_booth', x: 585, y: 440, name: 'Quầy Lễ Tân Tòa Alpha', label: 'Quầy Lễ Tân' },
@@ -475,8 +484,8 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 12, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 13, tileY: 14, targetRoomId: 'main_hall', targetSpawn: { x: 120, y: 80 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { tileX: 13, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 680 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
       { tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
       { tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
@@ -560,8 +569,8 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 950, y: 380 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 950, y: 380 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { tileX: 12, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
       { id: 'zone_lib_swe', type: 'swe201c_guide', tileX: 3, tileY: 2, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
@@ -599,7 +608,7 @@ export const MAPS_CONFIG = {
       [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
     ],
     portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 290, y: 670 }, label: 'Về Sảnh Chính' }
+      { tileX: 22, tileY: 6, targetRoomId: 'alpha_interior', targetSpawn: { x: 950, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
       {
@@ -1095,8 +1104,8 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 1140, y: 670 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 1140, y: 670 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 1000, y: 590 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { tileX: 12, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 1000, y: 590 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
       { id: 'zone_meet_screen', type: 'whiteboard_slides', tileX: 11, tileY: 1, name: 'Màn Chiếu Phòng Họp CLB', label: 'Slide Họp CLB' },

@@ -948,7 +948,10 @@ export class WorldScene extends Phaser.Scene {
       this.portalLabels.forEach((lbl, idx) => {
         const p = mapData.portals[idx];
         if (p && lbl) {
-          const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
+          // labelKey: cho phép cổng ghi đè nhãn i18n (VD: cùng đích alpha_interior
+          // nhưng 'Về Sảnh Alpha' thay vì 'Vào Tòa Alpha').
+          const portalLabelKey = p.labelKey || `portals.${p.targetRoomId}`;
+          const portalText = this.i18n ? (this.i18n.get(portalLabelKey) || p.label) : p.label;
           const inner = lbl.getData ? lbl.getData('txt') : null;
           if (inner) {
             inner.setText(portalText);
@@ -1174,7 +1177,10 @@ export class WorldScene extends Phaser.Scene {
         // Tính tọa độ trung bình cho nhóm nhãn
         const avgX = group.reduce((sum, item) => sum + resolveWorldPos(item, tileSize).x, 0) / group.length;
         const avgY = group.reduce((sum, item) => sum + resolveWorldPos(item, tileSize).y, 0) / group.length;
-        const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
+        // labelKey: cho phép cổng ghi đè nhãn i18n (VD: cổng vào khu gian hàng
+        // main_hall tầng 2 hiển thị 'Khu Gian Hàng CLB' thay vì 'Về Sảnh Chính').
+        const portalLabelKey = p.labelKey || `portals.${p.targetRoomId}`;
+        const portalText = this.i18n ? (this.i18n.get(portalLabelKey) || p.label) : p.label;
 
         // So le nhẹ vị trí Y cho các nhóm cổng liền kề để chống chồng đè chữ lẫn nhau
         const isStaggeredPortal = idx % 2 === 1;
@@ -1460,6 +1466,19 @@ export class WorldScene extends Phaser.Scene {
         portalData.targetSpawn.y,
         true
       );
+      // Cổng có thể chỉ định tầng đích của phòng mới (VD: từ sảnh Alpha vào
+      // khu gian hàng triển lãm = main_hall tầng 2). loadRoom reset floor về 0
+      // khi đổi phòng nên phải đặt tầng lại sau swap.
+      const targetFloor = portalData.targetFloor;
+      if (targetFloor !== undefined && targetFloor !== null && this.floorManager) {
+        const floorData = (MAPS_CONFIG[portalData.targetRoomId]?.floors || [])[targetFloor];
+        if (floorData) {
+          this.floorManager.currentFloor = targetFloor;
+          this.floorManager.isTransitioning = false;
+          this.loadRoom(portalData.targetRoomId, portalData.targetSpawn.x, portalData.targetSpawn.y, false);
+          this.floorManager.showFloorBadge(floorData.name || `Tầng ${targetFloor + 1}`);
+        }
+      }
     };
     if (this.transitionManager) {
       this.transitionManager.transition(doSwap).then(() => {
