@@ -85,7 +85,7 @@ test.describe('alpha_interior functional (desktop)', () => {
     expect(info.bgDW).toBe(1376);
     expect(info.bgDH).toBe(768);
     expect(info.px).toBe(680);
-    expect(info.py).toBe(610);
+    expect(info.py).toBe(580); // spawn doi vao trong sanh (e8bbe08)
   });
 
   test('02. collision: desk/wing/stairs solid, floor free', async ({ page }) => {
