@@ -154,7 +154,7 @@ test.describe('DEVER TOWN - Duck Pond & Thinker Statue (Alpha Courtyard)', () =>
     expect(guard.pbPortalPixel).toBe(true);
     expect(guard.pbZonePixel).toBe(true);
     expect(guard.decorEmpty).toBe(true);
-    expect(guard.fishXY).toEqual([430, 450]);
+    expect(guard.fishXY).toEqual([448, 465]);
     expect(guard.sportsHas42).toBe(false); // sports_complex không bị đụng
     expect(guard.sportsPool28).toBe(28);   // hồ bơi 7x4 nguyên vẹn
     expect(guard.rooms).toBe(11);

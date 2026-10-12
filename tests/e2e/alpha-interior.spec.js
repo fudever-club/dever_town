@@ -170,8 +170,8 @@ test.describe('alpha_interior functional (desktop)', () => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       return performance.now() > s.teleportGraceUntil;
     }, { timeout: 10000 });
-    // Hitbox chân (y+22..+32) phải đè lên pad portal (480,355): đi ở y=330
-    await movePlayer(page, 580, 330);
+    // Hitbox chân (y+30) phải đè lên pad portal (445,255): đi ở y=225
+    await movePlayer(page, 560, 225);
     await page.keyboard.down('ArrowLeft');
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
@@ -187,7 +187,7 @@ test.describe('alpha_interior functional (desktop)', () => {
   test('05. stair up/down between floors (E)', async ({ page }) => {
     await gotoRoom(page, 'alpha_interior');
     // Lên tầng 2
-    await movePlayer(page, 980, 370);
+    await movePlayer(page, 1055, 350);
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       return s?.interactionManager?.currentActiveZone?.id === 'zone_alpha_stair_up';
@@ -219,8 +219,8 @@ test.describe('alpha_interior functional (desktop)', () => {
   test('06. zones trigger E prompts (reception, notice, lofi)', async ({ page }) => {
     await gotoRoom(page, 'alpha_interior');
     const checks = [
-      ['zone_alpha_reception', 680, 570, 'Lễ Tân'],
-      ['zone_alpha_notice', 576, 300, 'Bảng Tin'],
+      ['zone_alpha_reception', 585, 440, 'Lễ Tân'],
+      ['zone_alpha_notice', 548, 260, 'Bảng Tin'],
       ['zone_alpha_lofi', 1105, 430, 'Thư Giãn'],
     ];
     for (const [zoneId, x, y, labelPart] of checks) {
@@ -267,7 +267,7 @@ test.describe('alpha_interior functional (desktop)', () => {
       return performance.now() > s.teleportGraceUntil;
     }, { timeout: 10000 });
     // -> canteen (600,735)
-    await movePlayer(page, 600, 670);
+    await movePlayer(page, 600, 560);
     await page.keyboard.down('ArrowDown');
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
@@ -328,7 +328,7 @@ for (const vp of VIEWPORTS) {
       await shot('indoor-overview', 688, 420, null);
       await shot('indoor-door', 680, 600, 2);
       await shot('indoor-labwing', 480, 400, 2);
-      await shot('indoor-stairs', 980, 370, 2);
+      await shot('indoor-stairs', 1055, 350, 2);
       await shot('indoor-floor2', 400, 320, null, 1);
     });
   });

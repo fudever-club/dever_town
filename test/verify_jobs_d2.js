@@ -226,8 +226,8 @@ ok(rollFishTier(() => 0.99) === 'cavang', 'roll 0.99 -> cá vàng hiếm');
   ok(!!zTop && !!zFloor, 'zone_main_fishing tồn tại ở cả 2 danh sách zone main_hall');
   for (const z of [zTop, zFloor]) {
     ok(z.type === 'job_fishing', 'zone type = job_fishing');
-    // Hybrid painted map: zone dùng tọa độ pixel (430,450) — bờ cỏ cạnh hồ V2
-    ok(z.x === 430 && z.y === 450, 'zone tại pixel (430,450) — bờ cỏ cạnh hồ (painted map)');
+    // Hybrid painted map: zone dùng tọa độ pixel (448,465) — ngay chân biển gỗ cạnh hồ V2
+    ok(z.x === 448 && z.y === 465, 'zone tại pixel (448,465) — chân biển gỗ cạnh hồ (painted map)');
     const pb = room.paintedBackground || room.floors?.[0]?.paintedBackground;
     ok(!!pb, 'main_hall có paintedBackground');
     const inside = pb.collisionRects.some(r => z.x >= r.x && z.x <= r.x + r.w && z.y >= r.y && z.y <= r.y + r.h);

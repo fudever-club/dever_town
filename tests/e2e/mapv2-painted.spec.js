@@ -152,7 +152,7 @@ test.describe('mapv2 functional (desktop)', () => {
   });
 
   test('03. fishing zone triggers E prompt at pixel coords', async ({ page }) => {
-    await movePlayer(page, 430, 450);
+    await movePlayer(page, 448, 465);
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       return s?.interactionManager?.currentActiveZone?.id === 'zone_main_fishing';
@@ -187,9 +187,9 @@ test.describe('mapv2 functional (desktop)', () => {
     expect(info.room).toBe('alpha_interior');
     expect(info.px).toBe(680);
     expect(info.py).toBe(610);
-    // Từ sảnh trong đi tiếp sang dever_lab qua portal lab (480,355)
+    // Từ sảnh trong đi tiếp sang dever_lab qua portal lab (445,255)
     await page.waitForTimeout(3000); // hết teleport cooldown 2.5s
-    await movePlayer(page, 580, 330);
+    await movePlayer(page, 560, 225);
     await page.keyboard.down('ArrowLeft');
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
