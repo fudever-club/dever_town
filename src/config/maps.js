@@ -265,7 +265,7 @@ export const MAPS_CONFIG = {
     // fallback nếu texture chưa load.
     paintedBackground: {
       imageKey: 'map_alpha_interior',
-      imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
+      imagePath: 'devertown_alpha_interior_v2.jpg', // public/ served at root
       width: 1376, height: 768,
       spawnPoint: { x: 680, y: 580 },
       collisionRects: [
@@ -347,7 +347,7 @@ export const MAPS_CONFIG = {
         // Hybrid painted map (giống top-level): nền vẽ tay V1, layout tile làm fallback.
         paintedBackground: {
           imageKey: 'map_alpha_interior',
-          imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
+          imagePath: 'devertown_alpha_interior_v2.jpg', // public/ served at root
           width: 1376, height: 768,
           spawnPoint: { x: 680, y: 580 },
           collisionRects: [
