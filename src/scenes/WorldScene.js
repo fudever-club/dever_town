@@ -84,6 +84,20 @@ import { FloorManager } from '../managers/FloorManager.js';
 import { SceneTransitionManager } from '../managers/SceneTransitionManager.js';
 import { toastManager } from '../ui/common/ToastManager.js';
 
+/**
+ * Hybrid painted map: tọa độ thế giới của portal/decor/zone chấp nhận EITHER
+ * {tileX, tileY} (cũ: nhân TILE_SIZE) HOẶC {x, y} (mới: dùng trực tiếp, pixel).
+ */
+function resolveWorldPos(item, tileSize) {
+  if (item && typeof item.x === 'number' && typeof item.y === 'number') {
+    return { x: item.x, y: item.y };
+  }
+  return {
+    x: (item?.tileX ?? 0) * tileSize + tileSize / 2,
+    y: (item?.tileY ?? 0) * tileSize + tileSize / 2,
+  };
+}
+
 export class WorldScene extends Phaser.Scene {
   constructor() {
     super('WorldScene');
@@ -94,6 +108,7 @@ export class WorldScene extends Phaser.Scene {
     this.teleportGraceUntil = 0;
     this.tilePool = null;
     this.tileSprites = [];
+    this._paintedBg = null; // nền vẽ tay hybrid (main_hall), dọn khi đổi phòng
     this.portalLabels = [];
     this.decorationSprites = []; // decor tĩnh từ mapData.decorations (vd: tượng)
     this._portalLabelTimer = 0;
@@ -421,15 +436,29 @@ export class WorldScene extends Phaser.Scene {
   // Camera zoom do người chơi điều khiển (wheel / pinch / nút +/−)
   // ---------------------------------------------------------------------------
 
+  /**
+   * Kích thước phòng hiện tại (pixel).
+   * - Bản đồ vẽ tay (paintedBackground + texture đã load): dùng pb.width/pb.height.
+   * - Còn lại: dùng layout tile (fallback), cuối cùng là hằng số GAME_CONFIG.
+   */
+  _getRoomPixelSize() {
+    const mapData = this.mapData || MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
+    const pb = mapData && mapData.paintedBackground;
+    if (pb && this.textures && this.textures.exists(pb.imageKey)) {
+      return { w: pb.width, h: pb.height };
+    }
+    if (mapData && Array.isArray(mapData.layout) && mapData.layout.length > 0) {
+      return {
+        w: mapData.layout[0].length * GAME_CONFIG.TILE_SIZE,
+        h: mapData.layout.length * GAME_CONFIG.TILE_SIZE,
+      };
+    }
+    return { w: GAME_CONFIG.MAP_WIDTH, h: GAME_CONFIG.MAP_HEIGHT };
+  }
+
   /** Khoảng zoom cho phép: [fit-room tính động, 2.5]. */
   getZoomRange() {
-    const mapData = this.mapData || MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
-    let roomW = GAME_CONFIG.MAP_WIDTH;
-    let roomH = GAME_CONFIG.MAP_HEIGHT;
-    if (mapData && Array.isArray(mapData.layout) && mapData.layout.length > 0) {
-      roomW = mapData.layout[0].length * GAME_CONFIG.TILE_SIZE;
-      roomH = mapData.layout.length * GAME_CONFIG.TILE_SIZE;
-    }
+    const { w: roomW, h: roomH } = this._getRoomPixelSize();
     return { min: computeMinZoom(roomW, roomH), max: CAMERA_ZOOM.MAX };
   }
 
@@ -449,13 +478,7 @@ export class WorldScene extends Phaser.Scene {
       return computeDefaultMobileZoom(window.innerWidth, window.innerHeight);
     }
     // Desktop: auto-fit phòng vào viewport thực tế (chế độ RESIZE).
-    const mapData = this.mapData || MAPS_CONFIG[this.currentRoomId] || MAPS_CONFIG.main_hall;
-    let roomW = GAME_CONFIG.MAP_WIDTH;
-    let roomH = GAME_CONFIG.MAP_HEIGHT;
-    if (mapData && Array.isArray(mapData.layout) && mapData.layout.length > 0) {
-      roomW = mapData.layout[0].length * GAME_CONFIG.TILE_SIZE;
-      roomH = mapData.layout.length * GAME_CONFIG.TILE_SIZE;
-    }
+    const { w: roomW, h: roomH } = this._getRoomPixelSize();
     const viewW = (this.scale && this.scale.width) || window.innerWidth;
     const viewH = (this.scale && this.scale.height) || window.innerHeight;
     const fitZoom = computeMinZoom(roomW, roomH, viewW, viewH);
@@ -634,8 +657,7 @@ export class WorldScene extends Phaser.Scene {
     // (= kích thước CSS px của #game-container).
     const viewW = this.scale.width / zoom;
     const viewH = this.scale.height / zoom;
-    const roomW = GAME_CONFIG.MAP_WIDTH;
-    const roomH = GAME_CONFIG.MAP_HEIGHT;
+    const { w: roomW, h: roomH } = this._getRoomPixelSize();
     const w = Math.max(roomW + CAMERA_BOUNDS_PAD_X * 2, viewW);
     const h = Math.max(roomH + CAMERA_BOUNDS_PAD_Y * 2, viewH);
     camera.setBounds((roomW - w) / 2, (roomH - h) / 2, w, h);
@@ -835,8 +857,7 @@ export class WorldScene extends Phaser.Scene {
     if (!Array.isArray(decorations) || decorations.length === 0) return;
     for (const d of decorations) {
       if (!d || !d.textureKey || !this.textures.exists(d.textureKey)) continue;
-      const posX = d.tileX * tileSize + tileSize / 2;
-      const posY = d.tileY * tileSize + tileSize / 2;
+      const { x: posX, y: posY } = resolveWorldPos(d, tileSize);
       const img = this.add.image(posX, posY + tileSize / 2, d.textureKey);
       img.setOrigin(0.5, 1);
       img.setDepth(posY + (tileSize / 2) - 1);
@@ -958,6 +979,11 @@ export class WorldScene extends Phaser.Scene {
       this.tileSprites.forEach(t => t.destroy());
       this.tileSprites = [];
     }
+    // Dọn nền vẽ tay của phòng cũ (nếu có) trước khi vẽ phòng mới
+    if (this._paintedBg) {
+      this._paintedBg.destroy();
+      this._paintedBg = null;
+    }
     if (this.portalLabels && this.portalLabels.length > 0) {
       this.portalLabels.forEach(lbl => {
         const dot = lbl.getData ? lbl.getData('dot') : null;
@@ -1001,10 +1027,30 @@ export class WorldScene extends Phaser.Scene {
     // X-ray: reset danh sách tile che khuất của phòng cũ
     this.occluderTiles = [];
 
-    const cols = GAME_CONFIG.MAP_WIDTH_TILES;
-    const rows = GAME_CONFIG.MAP_HEIGHT_TILES;
     const tileSize = GAME_CONFIG.TILE_SIZE;
 
+    // Hybrid painted map (main_hall): nền vẽ tay V2 + vùng chặn pixel,
+    // BỎ QUA vòng lặp tile. Phòng khác giữ nguyên đường tile (fallback).
+    const pb = mapData.paintedBackground;
+    const usePainted = !!(pb && this.textures.exists(pb.imageKey));
+    let cols = GAME_CONFIG.MAP_WIDTH_TILES;
+    let rows = GAME_CONFIG.MAP_HEIGHT_TILES;
+
+    if (usePainted) {
+      this._paintedBg = this.add.image(pb.width / 2, pb.height / 2, pb.imageKey);
+      this._paintedBg.setDepth(0);
+      // Vùng chặn vô hình: Rectangle có width/height chuẩn từ lúc tạo nên
+      // static body khớp đúng rect (group.create(null) + setSize cho body 32x32 sai).
+      for (const rect of pb.collisionRects) {
+        const wall = this.add.rectangle(rect.x + rect.w / 2, rect.y + rect.h / 2, rect.w, rect.h);
+        wall.setVisible(false);
+        this.physics.add.existing(wall, true); // static body
+        this.obstacleGroup.add(wall);
+      }
+      cols = Math.ceil(pb.width / tileSize);
+      rows = Math.ceil(pb.height / tileSize);
+      this.physics.world.setBounds(0, 0, pb.width, pb.height);
+    } else {
     // Solid obstacles
     // Solid obstacles (42 = hồ vườn FUDA: nước tự nhiên, chặn đi bộ như tường)
     const solidTiles = new Set([2, 3, 4, 8, 12, 14, 15, 16, 17, 19, 20, 21, 22, 25, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42]);
@@ -1065,6 +1111,12 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    this.physics.world.setBounds(0, 0, cols * tileSize, rows * tileSize);
+    } // end: nhánh tile-based (fallback / phòng khác)
+
+    // Kích thước phòng (pixel) dùng cho nhãn portal — bản đồ vẽ tay dùng pb.
+    const boundW = cols * tileSize;
+    const boundH = rows * tileSize;
 
     // Decor tĩnh từ config (mapData.decorations): vd tượng "Nhà Tư Tưởng" ở sân Tòa Alpha.
     // Chỉ phòng nào khai báo mới spawn — các phòng khác không đổi hành vi.
@@ -1074,8 +1126,7 @@ export class WorldScene extends Phaser.Scene {
     if (mapData.portals) {
       // 1. Tạo physical portal objects cho toàn bộ portals (giữ nguyên physics collision)
       mapData.portals.forEach(p => {
-        const posX = p.tileX * tileSize + tileSize / 2;
-        const posY = p.tileY * tileSize + tileSize / 2;
+        const { x: posX, y: posY } = resolveWorldPos(p, tileSize);
 
         const portalObj = this.portalGroup.create(posX, posY, null);
         portalObj.setSize(tileSize, tileSize);
@@ -1089,12 +1140,14 @@ export class WorldScene extends Phaser.Scene {
         if (processed.has(idx)) return;
         processed.add(idx);
 
+        const pPos = resolveWorldPos(p, tileSize);
         const group = [p];
         mapData.portals.forEach((other, oIdx) => {
           if (processed.has(oIdx)) return;
           if (other.targetRoomId === p.targetRoomId) {
-            const distTiles = Math.abs(other.tileX - p.tileX) + Math.abs(other.tileY - p.tileY);
-            if (distTiles <= 1.5) {
+            const oPos = resolveWorldPos(other, tileSize);
+            const distPx = Math.hypot(oPos.x - pPos.x, oPos.y - pPos.y);
+            if (distPx <= tileSize * 1.5) {
               group.push(other);
               processed.add(oIdx);
             }
@@ -1102,14 +1155,14 @@ export class WorldScene extends Phaser.Scene {
         });
 
         // Tính tọa độ trung bình cho nhóm nhãn
-        const avgX = group.reduce((sum, item) => sum + item.tileX * tileSize + tileSize / 2, 0) / group.length;
-        const avgY = group.reduce((sum, item) => sum + item.tileY * tileSize + tileSize / 2, 0) / group.length;
+        const avgX = group.reduce((sum, item) => sum + resolveWorldPos(item, tileSize).x, 0) / group.length;
+        const avgY = group.reduce((sum, item) => sum + resolveWorldPos(item, tileSize).y, 0) / group.length;
         const portalText = this.i18n ? (this.i18n.get(`portals.${p.targetRoomId}`) || p.label) : p.label;
 
         // So le nhẹ vị trí Y cho các nhóm cổng liền kề để chống chồng đè chữ lẫn nhau
         const isStaggeredPortal = idx % 2 === 1;
         const targetY = isStaggeredPortal ? (avgY - 26) : (avgY - 14);
-        const clampedY = Phaser.Math.Clamp(targetY, 18, rows * tileSize - 18);
+        const clampedY = Phaser.Math.Clamp(targetY, 18, boundH - 18);
 
         // Nhãn portal: pill tối + viền tím + chữ trắng Be Vietnam Pro — cùng ngôn ngữ
         // thị giác với prompt [E] (viền cam) và badge zone (viền màu zone).
@@ -1132,7 +1185,7 @@ export class WorldScene extends Phaser.Scene {
         // Kẹp tọa độ X động theo bề rộng thực tế + fallback độ dài ký tự (phòng khi webfont chưa tải xong)
         const estWidth = Math.max(labelText.width || 0, portalText.length * 8 + 16) + 20;
         const halfW = estWidth / 2;
-        label.x = Phaser.Math.Clamp(avgX, halfW + 12, cols * tileSize - halfW - 12);
+        label.x = Phaser.Math.Clamp(avgX, halfW + 12, boundW - halfW - 12);
 
         // Contextual labels (critique #1): lưu vị trí portal + vị trí gốc để
         // fade theo khoảng cách và chống đè chữ trong _updatePortalLabels().

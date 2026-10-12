@@ -101,6 +101,9 @@ export class BootScene extends Phaser.Scene {
       this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
     });
 
+    // 2H. Bản đồ vẽ tay Tòa Alpha V2 (sảnh chính) — hybrid painted map cho main_hall.
+    this.load.image('map_alpha_v2', 'devertown_map_clean_alpha_v2.jpg');
+
 
   }
 

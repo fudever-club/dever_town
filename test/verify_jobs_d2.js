@@ -226,10 +226,12 @@ ok(rollFishTier(() => 0.99) === 'cavang', 'roll 0.99 -> cá vàng hiếm');
   ok(!!zTop && !!zFloor, 'zone_main_fishing tồn tại ở cả 2 danh sách zone main_hall');
   for (const z of [zTop, zFloor]) {
     ok(z.type === 'job_fishing', 'zone type = job_fishing');
-    ok(z.tileX === 6 && z.tileY === 17, 'zone tại tile (6,17) — bờ cỏ cạnh hồ');
-    const tile = room.layout[z.tileY]?.[z.tileX];
-    ok(tile === 0, `tile zone là cỏ đi được (tile 0), thực tế: ${tile}`);
-    ok(tile !== 10, 'zone không nằm trên portal tile 10');
+    // Hybrid painted map: zone dùng tọa độ pixel (430,450) — bờ cỏ cạnh hồ V2
+    ok(z.x === 430 && z.y === 450, 'zone tại pixel (430,450) — bờ cỏ cạnh hồ (painted map)');
+    const pb = room.paintedBackground || room.floors?.[0]?.paintedBackground;
+    ok(!!pb, 'main_hall có paintedBackground');
+    const inside = pb.collisionRects.some(r => z.x >= r.x && z.x <= r.x + r.w && z.y >= r.y && z.y <= r.y + r.h);
+    ok(!inside, 'zone không nằm trong collision rect painted (đi được)');
   }
   const baseSrc = readFileSync('src/ui/gameplay/InteractiveModal.base.js', 'utf8');
   ok(baseSrc.includes("case 'job_fishing'"), 'InteractiveModal.base dispatch case job_fishing');

@@ -6,11 +6,14 @@
 // Tile nước hồ vườn (khác tile 28 hồ bơi: hồ vườn là nước tự nhiên, chặn đi bộ).
 export const POND_TILE_INDEX = 42;
 
-// Hồ chữ nhật trong layout main_hall tầng 1: cols 1-5, rows 16-18 (tile 32px).
+// Hồ chữ nhật trong layout main_hall tầng 1 (LEGACY tile): cols 1-5, rows 16-18 (tile 32px).
+// Giữ lại cho engine canvas minigame câu cá (fishingConfig pondRect); bản đồ vẽ tay
+// dùng collisionRects trong maps.js thay thế.
 export const POND_TILE_RECT = { x0: 1, y0: 16, x1: 5, y1: 18 };
 
-// Vùng bơi của vịt (pixel), inset khỏi mép hồ để vịt không đè lên cỏ.
-export const DUCK_SWIM_BOUNDS = { x0: 48, y0: 528, x1: 176, y1: 592 };
+// Vùng bơi của vịt (pixel) — khớp hồ nước trong art V2 (collisionRect x80-418/y311-581),
+// inset khỏi mép hồ để vịt không đè lên cỏ.
+export const DUCK_SWIM_BOUNDS = { x0: 150, y0: 350, x1: 350, y1: 550 };
 
 // Chỉ spawn vịt ở main_hall tầng 1 (floorIndex 0) — nơi có hồ.
 export const DUCK_ROOM_ID = 'main_hall';
@@ -30,8 +33,9 @@ export const DUCK_CONFIG = {
   bobFrequency: 2.4,      // rad/s
 };
 
-// Tượng "Nhà tư tưởng" (Thinker) — decor tĩnh đặt trên cỏ phía Đông hồ,
-// tách khỏi hồ cho thoáng (tile 20,16). Vườn hoa: hoa giấy + hoa hồng.
+// Tượng "Nhà tư tưởng" (Thinker) — LEGACY: decor sprite đã vẽ trực tiếp trong
+// art V2 (bệ tượng = collisionRect x1145-1225/y330-440). Giữ config cho fallback
+// tile nếu cần.
 export const STATUE_CONFIG = {
   textureKey: 'thinker_statue',
   tileX: 20,              // bãi cỏ phía Đông hồ — thoáng, không chắn lối/portal

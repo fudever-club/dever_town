@@ -21,7 +21,34 @@ export const MAPS_CONFIG = {
     // cờ mặc định 'safe' (xem DEFAULT_ZONE trong src/config/combatConfig.js).
     // Ánh xạ masterplan: main_hall = Sảnh Lễ Tân Tòa Alpha.
     zone: 'safe',
-    spawnPoint: { x: 400, y: 350 },
+    // Hybrid painted map: nền vẽ tay V2 cho sân Tòa Alpha (1376x768).
+    // layout tile giữ lại làm fallback nếu texture chưa load.
+        paintedBackground: {
+      imageKey: 'map_alpha_v2',
+      imagePath: 'devertown_map_clean_alpha_v2.jpg', // public/ served at root
+      width: 1376, height: 768,
+      spawnPoint: { x: 746, y: 620 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 16 }, { x: 0, y: 752, w: 1376, h: 16 },
+        { x: 0, y: 0, w: 16, h: 768 }, { x: 1360, y: 0, w: 16, h: 768 },
+        // Alpha building + stairs
+        { x: 475, y: 0, w: 543, h: 265 }, { x: 1008, y: 105, w: 82, h: 160 },
+        // duck pond water
+        { x: 80, y: 311, w: 338, h: 270 },
+        // central fountain
+        { x: 688, y: 380, w: 117, h: 92 },
+        // flower beds
+        { x: 596, y: 320, w: 113, h: 36 }, { x: 553, y: 343, w: 46, h: 43 },
+        { x: 776, y: 320, w: 109, h: 37 }, { x: 883, y: 340, w: 46, h: 45 },
+        { x: 875, y: 543, w: 106, h: 31 }, { x: 1062, y: 378, w: 47, h: 63 },
+        // thinker statue pedestal
+        { x: 1145, y: 330, w: 80, h: 110 },
+        // left tree line
+        { x: 16, y: 30, w: 70, h: 640 },
+      ],
+    },
+    spawnPoint: { x: 746, y: 620 },
     layout: [
       // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
       [  2,  2,  2, 10, 10, 10,  2, 10,  2, 20, 20,  2, 21, 21, 10, 20, 20,  2, 10,  2, 10,  2,  2,  0,  0 ],
@@ -45,39 +72,60 @@ export const MAPS_CONFIG = {
       [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
-      { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
-      { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-      { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
-      { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
-      { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-      { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-      { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-      { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
+      { x: 746, y: 290, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
+      { x: 1049, y: 270, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+      { x: 200, y: 60, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
+      { x: 1176, y: 60, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
+      { x: 40, y: 400, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
+      { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
+      { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
+      { x: 600, y: 735, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+      { x: 776, y: 735, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
     ],
     zones: [
-      { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
-      { id: 'zone_main_campus_map', type: 'campus_map', tileX: 18, tileY: 2, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
-      { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
-      { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
-      { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-      { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' },
-      { id: 'zone_main_fishing', type: 'job_fishing', tileX: 6, tileY: 17, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
+      { id: 'zone_main_frog', type: 'golden_frog_fortune', x: 600, y: 480, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
+      { id: 'zone_main_campus_map', type: 'campus_map', x: 850, y: 480, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
+      { id: 'zone_main_slides', type: 'whiteboard_slides', x: 550, y: 300, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
+      { id: 'zone_main_meeting', type: 'meeting_stage', x: 746, y: 580, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
+      { id: 'zone_main_coffee', type: 'coffee_lofi', x: 1250, y: 480, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
+      { id: 'zone_main_stair_f1_f2', type: 'stair_transition', x: 1049, y: 220, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2', targetFloor: 1 },
+      { id: 'zone_main_fishing', type: 'job_fishing', x: 430, y: 450, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
     ],
     decorations: [
-      // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
-      { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
-      { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
-      { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
-      { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
-      { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
+      // Tượng + vườn hoa đã vẽ trực tiếp trong art V2 — không spawn sprite trùng.
     ],
     floors: [
       {
         floorIndex: 0,
         name: 'Tòa Alpha — Tầng 1 (Sảnh Đón Tiếp & Hội Trường)',
         description: 'Hội trường trung tâm FUDA, tượng Cóc Vàng và kết nối 6 phân khu chức năng.',
-        spawnPoint: { x: 400, y: 350 },
+        spawnPoint: { x: 746, y: 620 },
+        // Hybrid painted map (giống top-level): nền vẽ tay V2, layout tile làm fallback.
+                paintedBackground: {
+          imageKey: 'map_alpha_v2',
+          imagePath: 'devertown_map_clean_alpha_v2.jpg', // public/ served at root
+          width: 1376, height: 768,
+          spawnPoint: { x: 746, y: 620 },
+          collisionRects: [
+            // border walls
+            { x: 0, y: 0, w: 1376, h: 16 }, { x: 0, y: 752, w: 1376, h: 16 },
+            { x: 0, y: 0, w: 16, h: 768 }, { x: 1360, y: 0, w: 16, h: 768 },
+            // Alpha building + stairs
+            { x: 475, y: 0, w: 543, h: 265 }, { x: 1008, y: 105, w: 82, h: 160 },
+            // duck pond water
+            { x: 80, y: 311, w: 338, h: 270 },
+            // central fountain
+            { x: 688, y: 380, w: 117, h: 92 },
+            // flower beds
+            { x: 596, y: 320, w: 113, h: 36 }, { x: 553, y: 343, w: 46, h: 43 },
+            { x: 776, y: 320, w: 109, h: 37 }, { x: 883, y: 340, w: 46, h: 45 },
+            { x: 875, y: 543, w: 106, h: 31 }, { x: 1062, y: 378, w: 47, h: 63 },
+            // thinker statue pedestal
+            { x: 1145, y: 330, w: 80, h: 110 },
+            // left tree line
+            { x: 16, y: 30, w: 70, h: 640 },
+          ],
+        },
         layout: [
           [  2,  2,  2, 10, 10, 10,  2, 10,  2, 20, 20,  2, 21, 21, 10, 20, 20,  2, 10,  2, 10,  2,  2,  0,  0 ],
           [  2, 13, 11, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 13,  0,  7 ],
@@ -100,32 +148,27 @@ export const MAPS_CONFIG = {
           [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
         ],
         portals: [
-          { tileX: 3, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
-          { tileX: 20, tileY: 0, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
-          { tileX: 0, tileY: 7, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
-          { tileX: 22, tileY: 7, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
-          { tileX: 24, tileY: 13, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
-          { tileX: 11, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-          { tileX: 12, tileY: 14, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
-          { tileX: 4, tileY: 0, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-          { tileX: 5, tileY: 0, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
+          { x: 746, y: 290, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
+          { x: 1049, y: 270, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
+          { x: 200, y: 60, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
+          { x: 1176, y: 60, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
+          { x: 40, y: 400, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Phòng Kỷ Niệm' },
+          { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
+          { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
+          { x: 600, y: 735, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
+          { x: 776, y: 735, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
         ],
         zones: [
-          { id: 'zone_main_frog', type: 'golden_frog_fortune', tileX: 11, tileY: 6, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
-          { id: 'zone_main_campus_map', type: 'campus_map', tileX: 18, tileY: 2, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
-          { id: 'zone_main_slides', type: 'whiteboard_slides', tileX: 5, tileY: 2, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
-          { id: 'zone_main_meeting', type: 'meeting_stage', tileX: 11, tileY: 9, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
-          { id: 'zone_main_coffee', type: 'coffee_lofi', tileX: 23, tileY: 4, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
-          { id: 'zone_main_stair_f1_f2', type: 'stair_transition', tileX: 2, tileY: 1, targetFloor: 1, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2' },
-      { id: 'zone_main_fishing', type: 'job_fishing', tileX: 6, tileY: 17, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
+          { id: 'zone_main_frog', type: 'golden_frog_fortune', x: 600, y: 480, name: 'Linh Vật Cóc Vàng FUDA', label: 'Bái Cóc Vàng' },
+          { id: 'zone_main_campus_map', type: 'campus_map', x: 850, y: 480, name: 'Sơ Đồ Bản Đồ Toàn Cảnh FUDA', label: 'Bản Đồ FPTU' },
+          { id: 'zone_main_slides', type: 'whiteboard_slides', x: 550, y: 300, name: 'Màn Chiếu Sảnh Đón Tiếp', label: 'Slide CLB' },
+          { id: 'zone_main_meeting', type: 'meeting_stage', x: 746, y: 580, name: 'Sân Khấu Họp Toàn Thể', label: 'Họp Video' },
+          { id: 'zone_main_coffee', type: 'coffee_lofi', x: 1250, y: 480, name: 'Vườn Trà FUDA & Thư Giãn', label: 'Lofi & Pomodoro' },
+          { id: 'zone_main_stair_f1_f2', type: 'stair_transition', x: 1049, y: 220, name: 'Cầu Thang Tòa Alpha', label: 'Lên Tầng 2', targetFloor: 1 },
+          { id: 'zone_main_fishing', type: 'job_fishing', x: 430, y: 450, name: 'Hồ Vịt Câu Cá', label: 'Câu Cá Kiếm D-Coin', metadata: { job: 'fishing' } }
         ],
         decorations: [
-          // Tượng "Nhà Tư Tưởng" — bệ đá trên cỏ phía Đông hồ (tile 20,16) + vườn hoa. Chi tiết: pondConfig.js
-          { id: 'decor_thinker_statue', textureKey: 'thinker_statue', tileX: 20, tileY: 16, solid: true },
-          { id: 'decor_bougainvillea_1', textureKey: 'flower_bougainvillea', tileX: 12, tileY: 16, solid: true },
-          { id: 'decor_bougainvillea_2', textureKey: 'flower_bougainvillea', tileX: 14, tileY: 16, solid: true },
-          { id: 'decor_rose_1', textureKey: 'flower_rose', tileX: 11, tileY: 18, solid: true },
-          { id: 'decor_rose_2', textureKey: 'flower_rose', tileX: 13, tileY: 18, solid: true }
+          // Tượng + vườn hoa đã vẽ trực tiếp trong art V2 — không spawn sprite trùng.
         ]
       },
       {

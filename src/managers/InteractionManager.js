@@ -1,6 +1,20 @@
 import Phaser from 'phaser';
 import { i18n } from '../config/i18n.js';
 
+/**
+ * Hybrid painted map: zone chấp nhận EITHER {tileX, tileY} (cũ: nhân tileSize)
+ * HOẶC {x, y} (mới: dùng trực tiếp, pixel).
+ */
+function resolveZonePos(zone, tileSize) {
+  if (zone && typeof zone.x === 'number' && typeof zone.y === 'number') {
+    return { x: zone.x, y: zone.y };
+  }
+  return {
+    x: (zone?.tileX ?? 0) * tileSize + tileSize / 2,
+    y: (zone?.tileY ?? 0) * tileSize + tileSize / 2,
+  };
+}
+
 export class InteractionManager {
   /**
    * @param {Phaser.Scene} scene
@@ -112,8 +126,7 @@ export class InteractionManager {
     let minDistSq = 72 * 72;
 
     for (const zone of this.zones) {
-      const zx = zone.tileX * tileSize + tileSize / 2;
-      const zy = zone.tileY * tileSize + tileSize / 2;
+      const { x: zx, y: zy } = resolveZonePos(zone, tileSize);
       const dx = player.x - zx;
       const dy = player.y - zy;
       const distSq = dx * dx + dy * dy;
@@ -169,9 +182,8 @@ export class InteractionManager {
   createVisualMarkers() {
     const tileSize = 32;
 
-    this.zones.forEach(zone => {
-      const posX = zone.tileX * tileSize + tileSize / 2;
-      const posY = zone.tileY * tileSize + tileSize / 2;
+    this.zones.forEach((zone, zi) => {
+      const { x: posX, y: posY } = resolveZonePos(zone, tileSize);
 
       // 1. Màu nhận diện theo loại zone
       let color = 0x38bdf8; // Default Cyan
@@ -231,8 +243,13 @@ export class InteractionManager {
       this.beacons.push({ graphics: beaconGfx, tween: beaconTween });
 
       // 3. Floating Event Badge (Thẻ lơ lửng trên đầu vật thể, so le Y thông minh chống đè chữ)
-      const isStaggered = (zone.tileX + zone.tileY) % 2 === 1;
-      const baseBadgeY = zone.tileY <= 1 ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
+      // Zone pixel ({x, y}) không có tileX/tileY → so le theo index để giữ ổn định.
+      const staggerSeed = (typeof zone.tileX === 'number' && typeof zone.tileY === 'number')
+        ? (zone.tileX + zone.tileY)
+        : zi;
+      const isStaggered = staggerSeed % 2 === 1;
+      const nearTop = (typeof zone.tileY === 'number') ? zone.tileY <= 1 : posY <= tileSize + 8;
+      const baseBadgeY = nearTop ? (posY + 26) : (isStaggered ? (posY - 32) : (posY - 16));
       const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || 'Tương tác';
       // Badge dùng Be Vietnam Pro (không dùng Tilt Neon ở cỡ chữ nhỏ — display font
       // ở 9.5px khó đọc và lệch tông với prompt [E] / nhãn portal).
@@ -250,7 +267,11 @@ export class InteractionManager {
       const estTextWidth = Math.max(badgeText.width || 0, fullText.length * 8 + 14);
       const badgeWidth = Math.max(72, Math.round(estTextWidth + 16));
       const halfW = badgeWidth / 2;
-      const safeX = Phaser.Math.Clamp(posX, halfW + 12, 800 - halfW - 12);
+      const roomSize = (this.scene && typeof this.scene._getRoomPixelSize === 'function')
+        ? this.scene._getRoomPixelSize()
+        : null;
+      const roomW = roomSize ? roomSize.w : 800;
+      const safeX = Phaser.Math.Clamp(posX, halfW + 12, roomW - halfW - 12);
 
       const badgeContainer = this.scene.add.container(safeX, baseBadgeY);
       badgeContainer.setDepth(9999);
@@ -299,8 +320,7 @@ export class InteractionManager {
 
     // Tìm zone gần nhất bằng square distance
     for (const zone of this.zones) {
-      const zoneWorldX = zone.tileX * tileSize + tileSize / 2;
-      const zoneWorldY = zone.tileY * tileSize + tileSize / 2;
+      const { x: zoneWorldX, y: zoneWorldY } = resolveZonePos(zone, tileSize);
 
       const dx = player.x - zoneWorldX;
       const dy = player.y - zoneWorldY;
