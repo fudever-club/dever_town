@@ -2,7 +2,7 @@
  * DEVER TOWN - ALPHA INTERIOR VERIFICATION SUITE
  * Kiểm định phòng mới alpha_interior (nội thất Tòa Alpha, hybrid painted map V1):
  * 1. Room tồn tại trong MAPS_CONFIG, zone 'safe', paintedBackground 1376x768 đúng pattern main_hall.
- * 2. File art public/devertown_alpha_interior_v2.jpg tồn tại, đúng 1376x768.
+ * 2. File art public/devertown_alpha_interior_v3.jpg tồn tại, đúng 1376x768.
  * 3. BootScene preload imageKey 'map_alpha_interior'.
  * 4. Spawn + portal pads không nằm trong collision rect, không giao cắt rect.
  * 5. Portal 2 chiều: sân (746,290) -> alpha_interior; trong sảnh -> main_hall (746,330) walkable.
@@ -32,18 +32,18 @@ ok(room?.zone === 'safe', "alpha_interior zone = 'safe'");
 ok(Object.keys(MAPS_CONFIG).length === 12, `tổng 12 phòng (không room lạ): ${Object.keys(MAPS_CONFIG).length}`);
 
 // 2. Art file
-const artPath = 'public/devertown_alpha_interior_v2.jpg';
+const artPath = 'public/devertown_alpha_interior_v3.jpg';
 ok(existsSync(artPath), `${artPath} tồn tại`);
 const pb = room?.paintedBackground || {};
 ok(pb.imageKey === 'map_alpha_interior', "imageKey = 'map_alpha_interior'");
-ok(pb.imagePath === 'devertown_alpha_interior_v2.jpg', "imagePath trỏ đúng file art");
+ok(pb.imagePath === 'devertown_alpha_interior_v3.jpg', "imagePath trỏ đúng file art");
 ok(pb.width === 1376 && pb.height === 768, 'canvas 1376x768 (đồng nhất V2 courtyard)');
 ok(pb.spawnPoint?.x === 680 && pb.spawnPoint?.y === 580, 'spawnPoint (680,580) — sàn trống trong sảnh, 96px bắc cửa chính');
 ok(Array.isArray(pb.collisionRects) && pb.collisionRects.length === 23, `23 collision rects (đủ tường/bàn/ghế/cửa)`);
 
 // 3. BootScene preload
 const bootSrc = readFileSync('src/scenes/BootScene.js', 'utf-8');
-ok(bootSrc.includes("this.load.image('map_alpha_interior', 'devertown_alpha_interior_v2.jpg')"),
+ok(bootSrc.includes("this.load.image('map_alpha_interior', 'devertown_alpha_interior_v3.jpg')"),
   "BootScene preload 'map_alpha_interior'");
 
 // Rect helpers
