@@ -287,9 +287,18 @@ export class WorldScene extends Phaser.Scene {
     // Phaser.Scale.RESIZE: ScaleManager xử lý window 'resize' qua dirty flag ở
     // frame kế tiếp (listener của window chạy trước, this.scale.width còn cũ) —
     // lắng nghe sự kiện 'resize' của ScaleManager để cập nhật bounds theo đúng
-    // kích thước game mới nhất.
-    this._scaleResizeHandler = () => this.updateCameraBounds();
+    // kích thước game mới nhất. Gọi cả updateCameraZoom: ở chế độ auto, zoom
+    // được tính lại theo đúng viewport (trường hợp create() chạy lúc canvas
+    // chưa ổn định kích thước sẽ tự sửa); ở chế độ manual chỉ re-clamp.
+    this._scaleResizeHandler = () => { this.updateCameraBounds(); this.updateCameraZoom(); };
     this.scale.on('resize', this._scaleResizeHandler);
+    // An toàn kép: lúc create(), scale.width có thể chưa phải kích thước cuối
+    // (đo thực tế 908px trong khi container là 1204px) khiến zoom auto tính
+    // thiếu ~25%. Chạy lại một lần sau khi layout ổn định.
+    this._zoomSettleTimer = this.time.delayedCall(400, () => {
+      // Scene có thể đã shutdown trong 400ms (chuyển phòng nhanh) — bỏ qua.
+      if (this.scene.isActive()) this.updateCameraZoom();
+    });
 
     // 6. HUD & Network
     this.createHUD();
@@ -478,7 +487,15 @@ export class WorldScene extends Phaser.Scene {
       return computeDefaultMobileZoom(window.innerWidth, window.innerHeight);
     }
     // Desktop: auto-fit phòng vào viewport thực tế (chế độ RESIZE).
-    const { w: roomW, h: roomH } = this._getRoomPixelSize();
+    // Map vẽ tay (paintedBackground) lớn hơn phòng tile chuẩn (1376x768 so với
+    // 800x608): dùng kích thước phòng chuẩn làm mốc để nhân vật/label giữ đúng
+    // tỉ lệ như map cũ — camera sẽ lia theo người chơi (kiểu Stardew) thay vì
+    // thu nhỏ toàn bộ map lại.
+    const mapData = (typeof MAPS_CONFIG !== 'undefined' && MAPS_CONFIG[this.currentRoomId]) || null;
+    const isPainted = !!(mapData && mapData.paintedBackground);
+    const { w: roomW0, h: roomH0 } = this._getRoomPixelSize();
+    const roomW = isPainted ? GAME_CONFIG.MAP_WIDTH : roomW0;
+    const roomH = isPainted ? GAME_CONFIG.MAP_HEIGHT : roomH0;
     const viewW = (this.scale && this.scale.width) || window.innerWidth;
     const viewH = (this.scale && this.scale.height) || window.innerHeight;
     const fitZoom = computeMinZoom(roomW, roomH, viewW, viewH);

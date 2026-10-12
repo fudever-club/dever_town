@@ -105,7 +105,28 @@ test.describe('mapv2 functional (desktop)', () => {
     expect(info.py).toBe(620);
   });
 
+  // Đi theo phím đến khi nhân vật đứng yên (bị tường chặn) hoặc timeout.
+  // Headless FPS rất thấp (SwiftShader) nên timeout cố định không đáng tin —
+  // poll vị trí thay vì đoán thời gian.
+  async function walkUntilStopped(page, key, axis, timeoutMs = 25000) {
+    await page.evaluate(() => { window.__walkHist = []; });
+    await page.keyboard.down(key);
+    try {
+      await page.waitForFunction(([ax]) => {
+        const ws = window.__DEVER_GAME__.scene.keys.WorldScene;
+        const v = ax === 'y' ? ws.player.y : ws.player.x;
+        const h = window.__walkHist;
+        h.push(v);
+        if (h.length > 15) h.shift();
+        return h.length === 15 && Math.max(...h) - Math.min(...h) < 3;
+      }, [axis], { timeout: timeoutMs });
+    } finally {
+      await page.keyboard.up(key);
+    }
+  }
+
   test('02. plaza walk is free; pond/building/fountain are solid', async ({ page }) => {
+    test.setTimeout(120000); // headless SwiftShader ~9fps: physics walk rất chậm
     // Headless render chậm → tăng tốc test (không phải logic game).
     const setSpeed = (m) => page.evaluate((mm) => {
       window.__DEVER_GAME__.scene.keys.WorldScene.player.speedMultiplier = mm;
@@ -114,36 +135,29 @@ test.describe('mapv2 functional (desktop)', () => {
 
     // FREE: quảng trường — đi xa, không kẹt tường vô hình
     await movePlayer(page, 300, 620);
-    await page.keyboard.down('ArrowRight');
-    await page.waitForTimeout(2000);
-    await page.keyboard.up('ArrowRight');
+    await walkUntilStopped(page, 'ArrowRight', 'x');
     const free = await sceneOf(page);
     expect(free.px).toBeGreaterThan(450); // đi xa rõ ràng, không kẹt tường vô hình
 
     // SOLID: đi vào tường phải DỪNG ở mép (không xuyên)
-    // - hồ V2 (y311-581): từ (250,150) đi xuống → dừng ở y≈279 (chân chạm mép 311)
-    await movePlayer(page, 250, 150);
-    await page.keyboard.down('ArrowDown');
-    await page.waitForTimeout(2000);
-    await page.keyboard.up('ArrowDown');
+    // Teleport gần mép tường rồi đi ngắn (headless FPS thấp, quãng dài flaky).
+    // - hồ V2 (y311-581): từ (250,220) đi xuống → dừng ở y≈279 (chân chạm mép 311)
+    await movePlayer(page, 250, 220);
+    await walkUntilStopped(page, 'ArrowDown', 'y');
     const pond = await sceneOf(page);
     expect(pond.py).toBeGreaterThan(270);
     expect(pond.py).toBeLessThan(311);
 
-    // - tòa Alpha (y0-265): từ (500,500) đi lên → dừng ở y≈243 (đầu chạm mép 265)
-    await movePlayer(page, 500, 500);
-    await page.keyboard.down('ArrowUp');
-    await page.waitForTimeout(2500);
-    await page.keyboard.up('ArrowUp');
+    // - tòa Alpha (y0-265): từ (500,320) đi lên → dừng ở y≈243 (đầu chạm mép 265)
+    await movePlayer(page, 500, 320);
+    await walkUntilStopped(page, 'ArrowUp', 'y');
     const bld = await sceneOf(page);
     expect(bld.py).toBeGreaterThan(200);
     expect(bld.py).toBeLessThan(280);
 
-    // - đài phun (y380-472): từ (746,600) đi lên → dừng ở y≈450
-    await movePlayer(page, 746, 600);
-    await page.keyboard.down('ArrowUp');
-    await page.waitForTimeout(2000);
-    await page.keyboard.up('ArrowUp');
+    // - đài phun (y380-472): từ (746,520) đi lên → dừng ở y≈450
+    await movePlayer(page, 746, 520);
+    await walkUntilStopped(page, 'ArrowUp', 'y');
     const ftn = await sceneOf(page);
     expect(ftn.py).toBeGreaterThan(420);
     expect(ftn.py).toBeLessThan(480);
