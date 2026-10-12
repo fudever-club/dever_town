@@ -16,6 +16,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Crisp text: chữ render mượt, không mờ trên mọi nền (fix báo cáo "chữ AI/mờ"
+     của Hung — textfix workstream 2026-10-12). */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app,

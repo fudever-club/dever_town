@@ -1471,12 +1471,18 @@ export class WorldScene extends Phaser.Scene {
     const roomName = this.i18n ? (this.i18n.get(`rooms.${this.currentRoomId}`) || mapData.name) : mapData.name;
 
     this.hudText = this.add.text(14, 14, `DEVER TOWN | ${roomName}`, {
-      fontFamily: "'Tilt Neon', 'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      // Textfix 2026-10-12: Tilt Neon là display font — ở 11px viền nét rung, mờ,
+      // trông "AI". Room title dùng Be Vietnam Pro 700 + stroke cho nét sắc trên
+      // nền map bận (Tilt Neon giữ cho tiêu đề lớn: banner, modal).
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '11px',
       fontWeight: '700',
       color: '#38bdf8',
+      stroke: '#0f172a',
+      strokeThickness: 2,
       backgroundColor: 'rgba(15, 23, 42, 0.9)',
-      padding: { x: 10, y: 6 }
+      padding: { x: 10, y: 6 },
+      resolution: typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2
     });
     this.hudText.setScrollFactor(0);
     this.hudText.setDepth(1000000);

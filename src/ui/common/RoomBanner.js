@@ -21,7 +21,7 @@ export class RoomBanner {
         <div class="room-banner-accent"></div>
         <div class="room-banner-content">
           <div class="room-banner-header">
-            <span class="room-banner-icon" id="room-banner-icon">🏛️</span>
+            <span class="room-banner-icon" id="room-banner-icon"></span>
             <h2 class="room-banner-title" id="room-banner-title">Tòa Alpha - Sảnh Chính</h2>
             <span class="room-banner-badge" id="room-banner-count">1 người</span>
           </div>
@@ -39,20 +39,9 @@ export class RoomBanner {
   }
 
   getRoomIcon(roomId) {
-    const icons = {
-      main_hall: '🏛️',
-      dever_lab: '💻',
-      game_arcade: '🕹️',
-      library_lounge: '📚',
-      memory_room: '🏆',
-      web_room: '🌐',
-      sports_complex: '⚽',
-      canteen_cafe: '☕',
-      dorm_room: '🛏️',
-      meeting_room: '📍',
-      server_dungeon: '📍'
-    };
-    return icons[roomId] || '📍';
+    // Textfix 2026-10-12: không dùng emoji trong UI (house rule) — giữ hàm để
+    // không gãy caller, luôn trả về chuỗi rỗng.
+    return '';
   }
 
   show(roomId, playerCount = 1) {
@@ -67,7 +56,9 @@ export class RoomBanner {
     const roomName = i18n ? (i18n.get(`rooms.${roomId}`) || mapData.name) : mapData.name;
     const roomDesc = mapData.description || 'Không gian sinh hoạt kỹ thuật số FU-DEVER';
 
-    if (this.iconEl) this.iconEl.textContent = this.getRoomIcon(roomId);
+    // Textfix 2026-10-12 (house rule: NO emoji trong UI): bỏ icon emoji khỏi
+    // banner — giữ span + id để không gãy layout/CSS.
+    if (this.iconEl) this.iconEl.textContent = '';
     if (this.titleEl) this.titleEl.textContent = roomName;
     if (this.descEl) this.descEl.textContent = roomDesc;
     if (this.badgeEl) {

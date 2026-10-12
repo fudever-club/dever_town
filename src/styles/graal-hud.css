@@ -32,6 +32,10 @@
   pointer-events: none;
   font-family: var(--graal-body-font);
   color: var(--graal-text);
+  /* Crisp text trên nền game: chống mờ subpixel trên overlay HUD */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .in-game-hud-overlay button {

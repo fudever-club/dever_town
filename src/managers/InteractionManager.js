@@ -48,24 +48,37 @@ export class InteractionManager {
     this.hudContainer.setDepth(999999);
     this.hudContainer.setVisible(false);
 
+    // Cyber-glass palette (đồng bộ Phase A HUD): nền kính tối + viền cyan.
+    this.GRAAL_GLASS = 0x0a1224;   // rgba(10,18,36) — --graal-glass
+    this.GRAAL_CYAN = 0x38bdf8;    // --graal-cyan
+
     // Nền Tooltip Glassmorphism
     this.bgGraphics = this.scene.add.graphics();
     this.hudContainer.add(this.bgGraphics);
 
-    // Text Tooltip
+    // Key cap: hộp phím "E" kiểu bàn phím, nằm trái pill
+    this.keycapBg = this.scene.add.graphics();
+    this.hudContainer.add(this.keycapBg);
+
+    // Text Tooltip (tên zone; phím E vẽ riêng bằng keycap ở trên)
     const dpr = typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 2;
-    this.tooltipText = this.scene.add.text(0, 0, '[E] Tương tác', {
+    this.keycapText = this.scene.add.text(0, 0, 'E', {
+      fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      fontSize: '12px',
+      fontWeight: '800',
+      color: '#38bdf8'
+    }).setOrigin(0.5, 0.5);
+    this.tooltipText = this.scene.add.text(0, 0, 'Tương tác', {
       fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
       fontSize: '12px',
       fontWeight: '700',
       color: '#ffffff',
       stroke: '#0f172a',
       strokeThickness: 2,
-      padding: { left: 8, right: 8, top: 4, bottom: 4 },
       resolution: dpr
-    }).setOrigin(0.5, 0.5);
+    }).setOrigin(0, 0.5);
 
-    this.hudContainer.add(this.tooltipText);
+    this.hudContainer.add([this.keycapText, this.tooltipText]);
   }
 
   bindEvents() {
@@ -373,19 +386,44 @@ export class InteractionManager {
   showHUD(zone) {
     if (!zone) return;
     const zoneName = i18n.get(`zones.${zone.id}`) || zone.label || zone.name || 'Tương tác';
-    const label = `[E] ${zoneName}`;
-    this.tooltipText.setText(label);
 
-    const paddingX = 14;
-    const paddingY = 6;
-    const w = this.tooltipText.width + paddingX * 2;
-    const h = this.tooltipText.height + paddingY * 2;
+    // Key cap "E" + tên zone (tách riêng để vẽ hộp phím kiểu bàn phím)
+    this.keycapText.setText('E');
+    this.tooltipText.setText(zoneName);
 
+    // Layout cyber-glass: [pad][keycap][gap][label][pad]
+    const capPadX = 7;          // padding ngang bên trong keycap
+    const capPadY = 4;          // padding dọc bên trong keycap
+    const gap = 8;              // khoảng cách keycap → label
+    const padX = 10;            // padding ngang pill
+    const padY = 6;             // padding dọc pill
+    const capW = this.keycapText.width + capPadX * 2;
+    const capH = Math.max(this.keycapText.height + capPadY * 2, 20);
+    const labelW = this.tooltipText.width;
+    const contentH = Math.max(capH, this.tooltipText.height);
+    const totalW = padX * 2 + capW + gap + labelW;
+    const totalH = contentH + padY * 2;
+
+    const left = -totalW / 2;
+    const capCX = left + padX + capW / 2;         // tâm X keycap
+    const labelX = left + padX + capW + gap;      // lề trái label
+
+    // Pill nền kính tối + viền cyan (cyber-glass, đồng bộ HUD Phase A)
     this.bgGraphics.clear();
-    this.bgGraphics.fillStyle(0x0f172a, 0.95);
-    this.bgGraphics.fillRoundedRect(-w / 2, -h / 2, w, h, 8);
-    this.bgGraphics.lineStyle(2, 0xf26f21, 1); // FPT Orange Glow
-    this.bgGraphics.strokeRoundedRect(-w / 2, -h / 2, w, h, 8);
+    this.bgGraphics.fillStyle(this.GRAAL_GLASS, 0.82);
+    this.bgGraphics.fillRoundedRect(left, -totalH / 2, totalW, totalH, 10);
+    this.bgGraphics.lineStyle(1.5, this.GRAAL_CYAN, 0.65);
+    this.bgGraphics.strokeRoundedRect(left, -totalH / 2, totalW, totalH, 10);
+
+    // Key cap: hộp tối + viền cyan sáng, chữ E cyan
+    this.keycapBg.clear();
+    this.keycapBg.fillStyle(0x0f172a, 0.95);
+    this.keycapBg.fillRoundedRect(capCX - capW / 2, -capH / 2, capW, capH, 5);
+    this.keycapBg.lineStyle(1.5, this.GRAAL_CYAN, 0.9);
+    this.keycapBg.strokeRoundedRect(capCX - capW / 2, -capH / 2, capW, capH, 5);
+
+    this.keycapText.setPosition(capCX, 0);
+    this.tooltipText.setPosition(labelX, 0);
 
     // Ẩn badge gốc của zone này để loại bỏ hiện tượng đè chữ
     this.badges.forEach(b => {

@@ -42,12 +42,15 @@ export class BestiePetFollower extends Phaser.GameObjects.Container {
     }).setOrigin(0.5, 0.5);
     this.add(this.petSprite);
 
-    // 3. Name Tag nhỏ xinh xắn
+    // 3. Name Tag nhỏ xinh xắn (min 11px theo chuẩn textfix — dưới 11px canvas
+    //    bị mờ trên nền bận)
     const tagText = this.scene.add.text(0, -18, `Pet ${this.petInfo.name ? this.petInfo.name.split(' ')[0] : 'Buggy'}`, {
       fontFamily: "'Be Vietnam Pro', sans-serif",
-      fontSize: '9.5px',
+      fontSize: '11px',
       fontWeight: '700',
       color: '#ffffff',
+      stroke: '#0f172a',
+      strokeThickness: 2,
       backgroundColor: isMaxLevel ? 'rgba(217, 119, 6, 0.85)' : 'rgba(16, 185, 129, 0.85)',
       padding: { x: 4, y: 1 }
     }).setOrigin(0.5, 0.5);

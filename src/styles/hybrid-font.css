@@ -5,11 +5,29 @@
    File này chỉ đổi font-family (+ white-space nowrap cho .brand-title để giữ
    header 1 dòng), không đổi layout/font-size. Không dùng emoji. */
 :root {
-  --font-title: 'Tilt Neon', 'Be Vietnam Pro', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-body: 'Be Vietnam Pro', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-title: 'Tilt Neon', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-body: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* BODY/UI — mọi selector trong main.css đang dùng 'Outfit' + form elements
+/* Crispness cho text trên nền art bận (courtyard V2 vẽ tay):
+   Stack font chỉ còn Tilt Neon / Be Vietnam Pro / system — tham chiếu font cũ
+   không được load từng làm chữ DOM rơi về font hệ thống, trông mờ/"AI".
+   Mọi text overlay đọc được trên nền bận nhờ text-shadow. */
+body,
+button, input, select, textarea, optgroup, option {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Chữ overlay trên nền map (banner phòng, HUD chip): outline mềm thay vì
+   stroke — giữ nét chữ sắc trên nền vẽ tay bận. */
+.room-banner-title,
+.room-banner-desc {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* BODY/UI — mọi selector trong main.css đang dùng font hệ thống + form elements
    (button/input/select/textarea không inherit font từ body theo UA stylesheet).
    !important để thắng cả rule .auth-error dùng !important trong main.css. */
 body,

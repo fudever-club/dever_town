@@ -94,8 +94,10 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const tagText = this.scene.add.text(0, 0, displayName, {
       fontFamily: "'Be Vietnam Pro', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       fontSize: '11px',
-      fontWeight: '600',
+      fontWeight: '700',
       color: '#ffffff',
+      stroke: '#0f172a',
+      strokeThickness: 2,
       backgroundColor: this.getRoleColor(),
       padding: { x: 5, y: 2 }
     }).setOrigin(0.5, 0.5);
