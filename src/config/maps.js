@@ -516,7 +516,7 @@ export const MAPS_CONFIG = {
     ],
     portals: [
       { tileX: 12, tileY: 17, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Về Tech Lab' },
-      { tileX: 13, tileY: 17, targetRoomId: 'main_hall', targetSpawn: { x: 400, y: 350 }, label: 'Về Sảnh Chính' }
+      { tileX: 13, tileY: 17, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 620 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       { id: 'zone_arcade_snake', type: 'arcade_games', defaultGame: 'snake', tileX: 4, tileY: 4, name: 'Máy Game: Rắn Săn Mồi Cyber Snake', label: 'Chơi Rắn Săn Mồi' },
@@ -560,8 +560,8 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 640, y: 80 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 640, y: 80 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 1049, y: 320 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 1049, y: 320 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       { id: 'zone_lib_swe', type: 'swe201c_guide', tileX: 3, tileY: 2, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
@@ -599,7 +599,7 @@ export const MAPS_CONFIG = {
       [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
     ],
     portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 80, y: 240 }, label: 'Về Sảnh Chính' }
+      { tileX: 22, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 100, y: 620 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
@@ -688,7 +688,7 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 660, y: 240 }, label: 'Về Sảnh Chính' }
+      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 1280, y: 400 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
@@ -887,8 +887,8 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 320 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 384, y: 320 }, label: 'Về Sảnh Chính' }
+      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 700, y: 650 }, label: 'Về Sảnh Chính' },
+      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 700, y: 650 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
