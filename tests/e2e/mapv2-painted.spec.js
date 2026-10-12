@@ -168,21 +168,35 @@ test.describe('mapv2 functional (desktop)', () => {
     expect(hud.text).toContain('Câu Cá');
   });
 
-  test('04. portal triggers teleport (dever_lab)', async ({ page }) => {
+  test('04. portal triggers teleport (alpha_interior)', async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       return performance.now() > s.teleportGraceUntil;
     }, { timeout: 10000 });
-    // Đi bộ vào portal (hitbox chân +22..+32 phải đè lên vùng portal 32x32)
+    // Đi bộ vào portal cửa tòa (hitbox chân +22..+32 phải đè lên vùng portal 32x32)
+    // Cổng (746,290) giờ đi vào nội thất Tòa Alpha (alpha_interior)
     await movePlayer(page, 746, 360);
     await page.keyboard.down('ArrowUp');
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      return s.currentRoomId === 'dever_lab';
+      return s.currentRoomId === 'alpha_interior';
     }, { timeout: 10000 });
     await page.keyboard.up('ArrowUp');
     const info = await sceneOf(page);
-    expect(info.room).toBe('dever_lab');
+    expect(info.room).toBe('alpha_interior');
+    expect(info.px).toBe(680);
+    expect(info.py).toBe(610);
+    // Từ sảnh trong đi tiếp sang dever_lab qua portal lab (480,355)
+    await page.waitForTimeout(3000); // hết teleport cooldown 2.5s
+    await movePlayer(page, 580, 330);
+    await page.keyboard.down('ArrowLeft');
+    await page.waitForFunction(() => {
+      const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
+      return s.currentRoomId === 'dever_lab';
+    }, { timeout: 10000 });
+    await page.keyboard.up('ArrowLeft');
+    expect((await sceneOf(page)).room).toBe('dever_lab');
     // Quay lại main_hall để trạng thái sạch
     await page.locator('#room-selector').selectOption('main_hall');
     await page.waitForTimeout(1500);

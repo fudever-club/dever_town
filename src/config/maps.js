@@ -72,7 +72,7 @@ export const MAPS_CONFIG = {
       [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      { x: 746, y: 290, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
+      { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
       { x: 1049, y: 270, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
       { x: 200, y: 60, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
       { x: 1176, y: 60, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
@@ -148,7 +148,7 @@ export const MAPS_CONFIG = {
           [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
         ],
         portals: [
-          { x: 746, y: 290, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 350 }, label: 'Sang Tech Lab' },
+          { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
           { x: 1049, y: 270, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
           { x: 200, y: 60, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
           { x: 1176, y: 60, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Phòng Họp CLB' },
@@ -255,6 +255,198 @@ export const MAPS_CONFIG = {
       }
     ]
   },
+
+  alpha_interior: {
+    id: 'alpha_interior',
+    name: 'Tòa Alpha - Nội Thất Sảnh & Lab',
+    description: 'Sảnh lễ tân trong nhà Tòa Alpha: quầy lễ tân, phòng lab nhìn qua vách kính, cầu thang lên tầng 2.',
+    // Phase C — Cờ vùng: 'safe' = vùng an toàn tuyệt đối (nội thất Tòa Alpha).
+    zone: 'safe',
+    // Hybrid painted map: nền vẽ tay V1 cho nội thất Tòa Alpha (1376x768),
+    // cùng họ palette với sân V2 (gỗ ấm, kem, teal). layout tile giữ lại làm
+    // fallback nếu texture chưa load.
+    paintedBackground: {
+      imageKey: 'map_alpha_interior',
+      imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
+      width: 1376, height: 768,
+      spawnPoint: { x: 680, y: 610 },
+      collisionRects: [
+        // border walls (khung gỗ bao quanh)
+        { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },
+        { x: 0, y: 0, w: 18, h: 768 }, { x: 1358, y: 0, w: 18, h: 768 },
+        // tường trên: cửa sổ, bảng tin, kệ cúp
+        { x: 18, y: 18, w: 1340, h: 214 },
+        // cầu thang lên tầng 2 (cánh phải)
+        { x: 1030, y: 30, w: 328, h: 300 },
+        // cánh lab trái: vách kính + nội thất lab
+        { x: 18, y: 18, w: 335, h: 712 },
+        // chậu cây trước vách kính lab trên
+        { x: 368, y: 195, w: 52, h: 80 }, { x: 366, y: 272, w: 42, h: 62 },
+        // chậu cây + ghế bành trước vách kính lab dưới
+        { x: 366, y: 532, w: 52, h: 72 }, { x: 373, y: 598, w: 46, h: 76 }, { x: 366, y: 668, w: 56, h: 76 },
+        // quầy lễ tân tròn
+        { x: 600, y: 378, w: 168, h: 125 },
+        // khung cửa chính (chừa khe cửa đi lại x 608-750)
+        { x: 568, y: 495, w: 40, h: 210 }, { x: 750, y: 495, w: 44, h: 210 },
+        { x: 568, y: 495, w: 226, h: 62 },
+        // dải tối ngoài cửa (dưới thảm)
+        { x: 566, y: 724, w: 230, h: 44 },
+        // sofa + bàn góc thư giãn (cánh phải)
+        { x: 1142, y: 425, w: 124, h: 100 }, { x: 1084, y: 466, w: 56, h: 46 },
+        { x: 1293, y: 445, w: 65, h: 258 }, { x: 1285, y: 573, w: 56, h: 46 },
+        // chậu cây góc phải
+        { x: 1222, y: 405, w: 60, h: 70 }, { x: 1140, y: 408, w: 85, h: 52 },
+      ],
+    },
+    spawnPoint: { x: 680, y: 610 },
+    layout: [
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
+    ],
+    portals: [
+      { x: 680, y: 672, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
+      { x: 480, y: 355, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
+      { x: 480, y: 625, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+    ],
+    zones: [
+      { id: 'zone_alpha_reception', type: 'club_booth', x: 680, y: 548, name: 'Quầy Lễ Tân Tòa Alpha', label: 'Quầy Lễ Tân' },
+      { id: 'zone_alpha_notice', type: 'whiteboard_slides', x: 576, y: 300, name: 'Bảng Tin Hoạt Động CLB', label: 'Bảng Tin CLB' },
+      { id: 'zone_alpha_lofi', type: 'coffee_lofi', x: 1105, y: 430, name: 'Góc Lofi Thư Giãn', label: 'Góc Thư Giãn' },
+      { id: 'zone_alpha_stair_up', type: 'stair_transition', x: 980, y: 370, name: 'Cầu Thang Lên Tầng 2', label: 'Lên Tầng 2', targetFloor: 1 },
+    ],
+    decorations: [
+      // Nội thất đã vẽ trực tiếp trong art V1 — không spawn sprite trùng.
+    ],
+    floors: [
+      {
+        floorIndex: 0,
+        name: 'Tòa Alpha — Tầng Trệt (Sảnh Lễ Tân)',
+        description: 'Sảnh lễ tân trong nhà Tòa Alpha: quầy lễ tân, phòng lab nhìn qua vách kính, cầu thang lên tầng 2.',
+        spawnPoint: { x: 680, y: 610 },
+        // Hybrid painted map (giống top-level): nền vẽ tay V1, layout tile làm fallback.
+        paintedBackground: {
+          imageKey: 'map_alpha_interior',
+          imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
+          width: 1376, height: 768,
+          spawnPoint: { x: 680, y: 610 },
+          collisionRects: [
+            // border walls (khung gỗ bao quanh)
+            { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },
+            { x: 0, y: 0, w: 18, h: 768 }, { x: 1358, y: 0, w: 18, h: 768 },
+            // tường trên: cửa sổ, bảng tin, kệ cúp
+            { x: 18, y: 18, w: 1340, h: 214 },
+            // cầu thang lên tầng 2 (cánh phải)
+            { x: 1030, y: 30, w: 328, h: 300 },
+            // cánh lab trái: vách kính + nội thất lab
+            { x: 18, y: 18, w: 335, h: 712 },
+            // chậu cây trước vách kính lab trên
+            { x: 368, y: 195, w: 52, h: 80 }, { x: 366, y: 272, w: 42, h: 62 },
+            // chậu cây + ghế bành trước vách kính lab dưới
+            { x: 366, y: 532, w: 52, h: 72 }, { x: 373, y: 598, w: 46, h: 76 }, { x: 366, y: 668, w: 56, h: 76 },
+            // quầy lễ tân tròn
+            { x: 600, y: 378, w: 168, h: 125 },
+            // khung cửa chính (chừa khe cửa đi lại x 608-750)
+            { x: 568, y: 495, w: 40, h: 210 }, { x: 750, y: 495, w: 44, h: 210 },
+            { x: 568, y: 495, w: 226, h: 62 },
+            // dải tối ngoài cửa (dưới thảm)
+            { x: 566, y: 724, w: 230, h: 44 },
+            // sofa + bàn góc thư giãn (cánh phải)
+            { x: 1142, y: 425, w: 124, h: 100 }, { x: 1084, y: 466, w: 56, h: 46 },
+            { x: 1293, y: 445, w: 65, h: 258 }, { x: 1285, y: 573, w: 56, h: 46 },
+            // chậu cây góc phải
+            { x: 1222, y: 405, w: 60, h: 70 }, { x: 1140, y: 408, w: 85, h: 52 },
+          ],
+        },
+        layout: [
+          [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
+          [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
+        ],
+        portals: [
+          { x: 680, y: 672, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
+          { x: 480, y: 355, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
+          { x: 480, y: 625, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+        ],
+        zones: [
+          { id: 'zone_alpha_reception', type: 'club_booth', x: 680, y: 548, name: 'Quầy Lễ Tân Tòa Alpha', label: 'Quầy Lễ Tân' },
+          { id: 'zone_alpha_notice', type: 'whiteboard_slides', x: 576, y: 300, name: 'Bảng Tin Hoạt Động CLB', label: 'Bảng Tin CLB' },
+          { id: 'zone_alpha_lofi', type: 'coffee_lofi', x: 1105, y: 430, name: 'Góc Lofi Thư Giãn', label: 'Góc Thư Giãn' },
+          { id: 'zone_alpha_stair_up', type: 'stair_transition', x: 980, y: 370, name: 'Cầu Thang Lên Tầng 2', label: 'Lên Tầng 2', targetFloor: 1 },
+        ],
+        decorations: [
+          // Nội thất đã vẽ trực tiếp trong art V1 — không spawn sprite trùng.
+        ]
+      },
+      {
+        floorIndex: 1,
+        name: 'Tòa Alpha — Tầng 2 (Phòng Lab AI)',
+        description: 'Phòng lab tầng 2: dãy server, bảng kiến trúc, bàn hackathon AI của hai đội Alpha & Beta.',
+        spawnPoint: { x: 400, y: 528 },
+        layout: [
+          [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
+          [ 15, 13,  9,  9,  9,  9,  9,  9,  9,  9, 12, 12,  9, 12, 12,  9,  9,  9,  9,  9,  9,  9,  9, 13, 15 ],
+          [ 15,  9,  9,  8,  8,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8,  8,  8,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  6,  6,  6,  6,  6,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  6,  6,  6,  6,  6,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  6,  6,  6,  6,  6,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  4,  4,  9,  9,  9,  9,  4,  4,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15, 13,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
+          [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
+        ],
+        portals: [],
+        zones: [
+          { id: 'zone_alpha_stair_down', type: 'stair_transition', tileX: 12, tileY: 16, targetFloor: 0, name: 'Cầu Thang Xuống Sảnh', label: 'Xuống Sảnh' },
+          { id: 'zone_alpha_lab_board', type: 'whiteboard_slides', tileX: 10, tileY: 1, name: 'Bảng Kiến Trúc Lab', label: 'Bảng Lab' },
+          { id: 'zone_alpha_lab_bench_a', type: 'code_editor', tileX: 4, tileY: 4, name: 'Bàn Lab AI Đội Alpha', label: 'Mở Code Sandbox' },
+          { id: 'zone_alpha_lab_bench_b', type: 'code_editor', tileX: 19, tileY: 4, name: 'Bàn Lab AI Đội Beta', label: 'Mở Code Sandbox' }
+        ]
+      }
+    ]
+  },
+
 
   dever_lab: {
     id: 'dever_lab',

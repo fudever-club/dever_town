@@ -26,6 +26,7 @@ export const TRANSLATIONS = {
     // 8 Rooms (Tên phòng chuẩn đồng bộ)
     rooms: {
       main_hall: 'Sảnh Alpha',
+      alpha_interior: 'Nội Thất Tòa Alpha',
       dever_lab: 'Tech Lab',
       library_lounge: 'Thư Viện FUDA',
       memory_room: 'Phòng Kỷ Niệm',
@@ -40,6 +41,7 @@ export const TRANSLATIONS = {
     // Portals (Cổng dịch chuyển trên mặt sàn)
     portals: {
       main_hall: 'Về Sảnh Chính',
+      alpha_interior: 'Vào Tòa Alpha',
       dever_lab: 'Sang Tech Lab',
       library_lounge: 'Sang Thư Viện',
       memory_room: 'Sang Phòng Kỷ Niệm',
@@ -54,6 +56,14 @@ export const TRANSLATIONS = {
     // Interactive Zones Tooltips (Đầy đủ tất cả Zone theo từng phòng)
     zones: {
       // Sảnh Alpha (Main Hall)
+      zone_alpha_reception: 'Quầy Lễ Tân Tòa Alpha',
+      zone_alpha_notice: 'Bảng Tin Hoạt Động CLB',
+      zone_alpha_lofi: 'Góc Lofi Thư Giãn',
+      zone_alpha_stair_up: 'Cầu Thang Lên Tầng 2',
+      zone_alpha_stair_down: 'Cầu Thang Xuống Sảnh',
+      zone_alpha_lab_board: 'Bảng Kiến Trúc Lab',
+      zone_alpha_lab_bench_a: 'Bàn Lab AI Đội Alpha',
+      zone_alpha_lab_bench_b: 'Bàn Lab AI Đội Beta',
       zone_main_frog: 'Linh Vật Cóc Vàng FUDA',
       zone_main_campus_map: 'Sơ Đồ Bản Đồ FPTU',
       zone_main_slides: 'Màn Chiếu Sảnh Đón Tiếp',
@@ -232,6 +242,7 @@ export const TRANSLATIONS = {
     // 8 Rooms (Standardized English Names)
     rooms: {
       main_hall: 'Alpha Main Hall',
+      alpha_interior: 'Alpha Building Interior',
       dever_lab: 'Tech Lab',
       library_lounge: 'FUDA Library',
       memory_room: 'Memory Gallery',
@@ -246,6 +257,7 @@ export const TRANSLATIONS = {
     // Portals (Ground portals)
     portals: {
       main_hall: 'To Alpha Hall',
+      alpha_interior: 'Enter Alpha Building',
       dever_lab: 'To Tech Lab',
       library_lounge: 'To Library',
       memory_room: 'To Memory Gallery',
@@ -260,6 +272,14 @@ export const TRANSLATIONS = {
     // Interactive Zones Tooltips (Full zones mapped per room)
     zones: {
       // Alpha Hall
+      zone_alpha_reception: 'Alpha Reception Desk',
+      zone_alpha_notice: 'Club Activity Board',
+      zone_alpha_lofi: 'Lofi Relax Corner',
+      zone_alpha_stair_up: 'Stairs to Floor 2',
+      zone_alpha_stair_down: 'Stairs to Lobby',
+      zone_alpha_lab_board: 'Lab Architecture Board',
+      zone_alpha_lab_bench_a: 'AI Lab Desk Alpha Team',
+      zone_alpha_lab_bench_b: 'AI Lab Desk Beta Team',
       zone_main_frog: 'FUDA Golden Frog Motto',
       zone_main_campus_map: 'FPTU Da Nang Campus Map',
       zone_main_slides: 'Welcome Hall Presentation',
@@ -486,7 +506,7 @@ class I18nManager {
     const roomSelect = document.getElementById('room-selector');
     if (roomSelect) {
       const roomKeys = [
-        'main_hall', 'dever_lab', 'library_lounge', 'memory_room',
+        'main_hall', 'alpha_interior', 'dever_lab', 'library_lounge', 'memory_room',
       ];
       roomKeys.forEach(r => {
         const opt = document.getElementById(`opt-${r}`);
