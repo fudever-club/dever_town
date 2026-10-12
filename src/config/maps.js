@@ -72,7 +72,7 @@ export const MAPS_CONFIG = {
       [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
     ],
     portals: [
-      { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
+      { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 580 }, label: 'Vào Tòa Alpha' },
       // Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào trong sảnh Alpha (alpha_interior)
       // — phân cấp: phòng học đi qua nội thất Tòa Alpha, không vào thẳng từ sân.
       { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
@@ -148,7 +148,7 @@ export const MAPS_CONFIG = {
           [  0, 42, 42, 42, 42, 42,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  0,  7,  0,  0,  0,  7,  0 ]
         ],
         portals: [
-          { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 610 }, label: 'Vào Tòa Alpha' },
+          { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 580 }, label: 'Vào Tòa Alpha' },
           // (giống top-level) Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào sảnh Alpha.
           { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
           { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
@@ -267,7 +267,7 @@ export const MAPS_CONFIG = {
       imageKey: 'map_alpha_interior',
       imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
       width: 1376, height: 768,
-      spawnPoint: { x: 680, y: 610 },
+      spawnPoint: { x: 680, y: 580 },
       collisionRects: [
         // border walls (khung gỗ bao quanh)
         { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },
@@ -296,7 +296,7 @@ export const MAPS_CONFIG = {
         { x: 1222, y: 405, w: 60, h: 70 }, { x: 1140, y: 408, w: 85, h: 52 },
       ],
     },
-    spawnPoint: { x: 680, y: 610 },
+    spawnPoint: { x: 680, y: 580 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
@@ -343,13 +343,13 @@ export const MAPS_CONFIG = {
         floorIndex: 0,
         name: 'Tòa Alpha — Tầng Trệt (Sảnh Lễ Tân)',
         description: 'Sảnh lễ tân trong nhà Tòa Alpha: quầy lễ tân, phòng lab nhìn qua vách kính, cầu thang lên tầng 2.',
-        spawnPoint: { x: 680, y: 610 },
+        spawnPoint: { x: 680, y: 580 },
         // Hybrid painted map (giống top-level): nền vẽ tay V1, layout tile làm fallback.
         paintedBackground: {
           imageKey: 'map_alpha_interior',
           imagePath: 'devertown_alpha_interior_v1.jpg', // public/ served at root
           width: 1376, height: 768,
-          spawnPoint: { x: 680, y: 610 },
+          spawnPoint: { x: 680, y: 580 },
           collisionRects: [
             // border walls (khung gỗ bao quanh)
             { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },

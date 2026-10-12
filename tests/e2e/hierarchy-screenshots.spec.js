@@ -82,7 +82,7 @@ test.describe('hierarchy screenshots — desktop 1280x800', () => {
     // 2. Sảnh Alpha: 4 cổng mới hiển thị
     await page.evaluate(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      s.loadRoom('alpha_interior', 680, 610, false);
+      s.loadRoom('alpha_interior', 680, 580, false);
     });
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;

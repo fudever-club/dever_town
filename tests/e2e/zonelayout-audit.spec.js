@@ -208,7 +208,7 @@ test.describe('zonelayout audit — desktop', () => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
       s.floorManager.currentFloor = 0;
       s.floorManager.isTransitioning = false;
-      s.loadRoom('alpha_interior', 680, 610, false);
+      s.loadRoom('alpha_interior', 680, 580, false);
     });
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
@@ -304,7 +304,7 @@ test.describe('zonelayout audit — desktop', () => {
     // chuyển phòng trực tiếp (cleanOverlays đã ẩn room-selector)
     await page.evaluate(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      s.loadRoom('alpha_interior', 680, 610, false);
+      s.loadRoom('alpha_interior', 680, 580, false);
     });
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
@@ -364,7 +364,7 @@ test.describe('zonelayout audit — mobile portrait', () => {
     await page.screenshot({ path: `${IMG_DIR}/zonelayout-courtyard-full-mobile.png` });
     await page.evaluate(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;
-      s.loadRoom('alpha_interior', 680, 610, false);
+      s.loadRoom('alpha_interior', 680, 580, false);
     });
     await page.waitForFunction(() => {
       const s = window.__DEVER_GAME__?.scene?.keys?.WorldScene;

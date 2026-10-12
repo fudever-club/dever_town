@@ -38,7 +38,7 @@ const pb = room?.paintedBackground || {};
 ok(pb.imageKey === 'map_alpha_interior', "imageKey = 'map_alpha_interior'");
 ok(pb.imagePath === 'devertown_alpha_interior_v1.jpg', "imagePath trỏ đúng file art");
 ok(pb.width === 1376 && pb.height === 768, 'canvas 1376x768 (đồng nhất V2 courtyard)');
-ok(pb.spawnPoint?.x === 680 && pb.spawnPoint?.y === 610, 'spawnPoint (680,610) — khe cửa chính');
+ok(pb.spawnPoint?.x === 680 && pb.spawnPoint?.y === 580, 'spawnPoint (680,580) — sàn trống trong sảnh, 96px bắc cửa chính');
 ok(Array.isArray(pb.collisionRects) && pb.collisionRects.length === 23, `23 collision rects (đủ tường/bàn/ghế/cửa)`);
 
 // 3. BootScene preload
@@ -54,7 +54,7 @@ const padOf = (p) => ({ x: p.x - 16, y: p.y - 16, w: 32, h: 32 });
 // 4. Spawn + portal pads không nằm trong rect / không giao cắt rect
 const rects = pb.collisionRects;
 const sp = pb.spawnPoint;
-ok(!rects.some(r => inRect(sp.x, sp.y, r)), 'spawn (680,610) không nằm trong rect nào');
+ok(!rects.some(r => inRect(sp.x, sp.y, r)), 'spawn (680,580) không nằm trong rect nào');
 for (const p of room.portals) {
   const pad = padOf(p);
   const hit = rects.some(r => rectsOverlap(pad, r));
@@ -78,7 +78,7 @@ ok(!mhRects.some(r => inRect(746, 330, r)), 'targetSpawn (746,330) walkable trê
 for (const src of [mh, mh.floors?.[0]]) {
   const gate = src?.portals?.find(p => p.x === 746 && p.y === 290);
   ok(gate?.targetRoomId === 'alpha_interior', 'cổng sân (746,290) -> alpha_interior');
-  ok(gate?.targetSpawn?.x === 680 && gate?.targetSpawn?.y === 610, 'gate targetSpawn = spawn sảnh (680,610)');
+  ok(gate?.targetSpawn?.x === 680 && gate?.targetSpawn?.y === 580, 'gate targetSpawn = spawn sảnh (680,580)');
 }
 
 // 6. Portal lab -> dever_lab, target walkable
