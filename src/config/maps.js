@@ -469,30 +469,30 @@ export const MAPS_CONFIG = {
       spawnPoint: { x: 640, y: 650 },
       collisionRects: [
         // border walls
-        { x: 0, y: 0, w: 1376, h: 20 },
-        { x: 0, y: 748, w: 1376, h: 20 },
-        { x: 0, y: 0, w: 20, h: 768 },
-        { x: 1356, y: 0, w: 20, h: 768 },
-        // tường trên & kệ sách sát tường
-        { x: 20, y: 20, w: 1336, h: 120 },
-        // cụm bàn L góc trên-trái (dàn màn hình kép, ghế)
-        { x: 20, y: 140, w: 330, h: 210 },
+        { x: 0, y: 0, w: 1376, h: 140 },
+        { x: 0, y: 0, w: 30, h: 768 },
+        { x: 1346, y: 0, w: 30, h: 768 },
+        // tường đáy phòng (chặn dẫm lên tường gỗ, chỉ chừa khe cửa chính x: 580-700)
+        { x: 0, y: 690, w: 580, h: 78 },
+        { x: 700, y: 690, w: 676, h: 78 },
+        // cụm bàn L góc trên-trái (dàn màn hình kép, cây)
+        { x: 30, y: 140, w: 420, h: 130 },
         // cụm tủ Server Racks trung tâm
-        { x: 570, y: 60, w: 345, h: 250 },
+        { x: 570, y: 60, w: 310, h: 260 },
         // bảng Whiteboard Sơ đồ Kiến trúc Hệ thống
-        { x: 920, y: 60, w: 330, h: 250 },
+        { x: 940, y: 60, w: 300, h: 200 },
         // cây cảnh & tủ case đứng tường phải
-        { x: 1270, y: 220, w: 80, h: 180 },
-        // bàn dev giữa-phải
-        { x: 710, y: 440, w: 280, h: 180 },
-        // bàn dev góc dưới-phải
-        { x: 1010, y: 470, w: 290, h: 180 },
-        // cụm bàn L góc dưới-trái
-        { x: 20, y: 550, w: 320, h: 190 },
+        { x: 1260, y: 220, w: 90, h: 130 },
+        // bàn dev giữa-phải (Hackathon Beta)
+        { x: 700, y: 380, w: 280, h: 85 },
+        // bàn dev góc dưới-phải (AI & ICPC)
+        { x: 1020, y: 430, w: 280, h: 85 },
+        // cụm bàn L góc dưới-trái (Mobile)
+        { x: 30, y: 550, w: 300, h: 60 },
         // kệ sách thấp & chậu cây góc dưới-giữa
-        { x: 740, y: 690, w: 210, h: 60 },
+        { x: 740, y: 680, w: 210, h: 70 },
         // chậu cây lớn góc dưới cùng bên phải
-        { x: 1220, y: 660, w: 110, h: 90 },
+        { x: 1220, y: 660, w: 120, h: 90 },
       ],
     },
     spawnPoint: { x: 640, y: 650 },
@@ -523,10 +523,10 @@ export const MAPS_CONFIG = {
       { x: 530, y: 200, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
-      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 1080, y: 220, tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
-      { id: 'zone_lab_code_a', type: 'code_editor', x: 240, y: 260, tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Mở Code Sandbox' },
-      { id: 'zone_lab_meeting', type: 'meeting_stage', x: 520, y: 460, tileX: 12, tileY: 8, name: 'Bàn Thảo Luận Lab', label: 'Họp Kỹ Thuật' },
-      { id: 'zone_lab_code_b', type: 'code_editor', x: 850, y: 530, tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Mở Code Sandbox' }
+      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 1080, y: 320, tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Xem Bảng Kiến Trúc' },
+      { id: 'zone_lab_code_a', type: 'sit_chair', x: 271, y: 312, tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Ngồi Ghế Đội Alpha', direction: 'up' },
+      { id: 'zone_lab_meeting', type: 'terminal_status', x: 675, y: 350, tileX: 12, tileY: 8, name: 'Trạm Server Rack', label: 'Kiểm Tra Server' },
+      { id: 'zone_lab_code_b', type: 'sit_chair', x: 809, y: 499, tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Ngồi Ghế Đội Beta', direction: 'up' }
     ]
   },
 

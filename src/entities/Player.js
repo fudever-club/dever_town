@@ -481,6 +481,12 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.setPose(POSE.STAND);   // gán pose + emit 'playerActivity' cho multiplayer
       this._sitMoveFrames = 0;
 
+      // Khôi phục kích thước bóng chân
+      if (this.shadowEllipse) {
+        this.shadowEllipse.setScale(1, 1);
+        this.shadowEllipse.setVisible(true);
+      }
+
       // Về vận tốc 0 + phát idle animation theo hướng hiện tại
       this.stopMovement();
       return true;
@@ -509,9 +515,12 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (this.scene?.anims?.exists(sitAnimKey)) {
         this.anims.play(sitAnimKey, true);
       } else {
-        // Fallback: frame tĩnh facing down (frame 0) nếu sprite pipeline chưa có anim ngồi
-        this.setFrame(0);
+        // Fallback: frame tĩnh theo hướng hiện tại (up: 12, down: 0, left: 4, right: 8)
+        const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
+        this.setFrame(dirFrames[this.currentDirection] ?? 0);
       }
+      // Thu nhỏ bóng dưới chân khi ngồi khớp trên mặt ghế
+      if (this.shadowEllipse) this.shadowEllipse.setScale(0.5, 0.4);
     } catch (e) {}
   }
 

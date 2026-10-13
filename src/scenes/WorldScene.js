@@ -206,6 +206,15 @@ export class WorldScene extends Phaser.Scene {
             if (sitting) {
               if (typeof player.standUp === 'function') player.standUp();
             } else {
+              // Snap vị trí nhân vật khớp đúng tâm ghế/sofa để không bị ngồi lơ lửng
+              if (typeof zoneData.x === 'number' && typeof zoneData.y === 'number') {
+                player.setPosition(zoneData.x, zoneData.y);
+              }
+              if (zoneData.direction) {
+                player.currentDirection = zoneData.direction;
+                const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
+                player.setFrame(dirFrames[zoneData.direction] ?? 0);
+              }
               const pose = zoneData.type === 'sit_chair' ? 'upright' : 'leanback';
               if (typeof player.sit === 'function') player.sit(pose);
             }
