@@ -461,7 +461,41 @@ export const MAPS_CONFIG = {
     id: 'dever_lab',
     name: 'Tòa Gamma - Tech & AI Lab (DEVER)',
     description: 'Không gian Hackathon, trạm máy chủ và góc lập trình chuyên sâu của thành viên CLB DEVER.',
-    spawnPoint: { x: 400, y: 350 },
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_dever_lab',
+      imagePath: 'devertown_tech_lab_v1.jpg', // public/ served at root
+      width: 1376, height: 768,
+      spawnPoint: { x: 640, y: 650 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 20 },
+        { x: 0, y: 748, w: 1376, h: 20 },
+        { x: 0, y: 0, w: 20, h: 768 },
+        { x: 1356, y: 0, w: 20, h: 768 },
+        // tường trên & kệ sách sát tường
+        { x: 20, y: 20, w: 1336, h: 120 },
+        // cụm bàn L góc trên-trái (dàn màn hình kép, ghế)
+        { x: 20, y: 140, w: 330, h: 210 },
+        // cụm tủ Server Racks trung tâm
+        { x: 570, y: 60, w: 345, h: 250 },
+        // bảng Whiteboard Sơ đồ Kiến trúc Hệ thống
+        { x: 920, y: 60, w: 330, h: 250 },
+        // cây cảnh & tủ case đứng tường phải
+        { x: 1270, y: 220, w: 80, h: 180 },
+        // bàn dev giữa-phải
+        { x: 710, y: 440, w: 280, h: 180 },
+        // bàn dev góc dưới-phải
+        { x: 1010, y: 470, w: 290, h: 180 },
+        // cụm bàn L góc dưới-trái
+        { x: 20, y: 550, w: 320, h: 190 },
+        // kệ sách thấp & chậu cây góc dưới-giữa
+        { x: 740, y: 690, w: 210, h: 60 },
+        // chậu cây lớn góc dưới cùng bên phải
+        { x: 1220, y: 660, w: 110, h: 90 },
+      ],
+    },
+    spawnPoint: { x: 640, y: 650 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 10,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9, 10,  8, 13, 15 ],
@@ -484,16 +518,15 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { tileX: 13, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 680 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
-      { tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
+      { x: 640, y: 720, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { x: 1220, y: 380, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
+      { x: 530, y: 200, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
-      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
-      { id: 'zone_lab_code_a', type: 'code_editor', tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Mở Code Sandbox' },
-      { id: 'zone_lab_meeting', type: 'meeting_stage', tileX: 12, tileY: 8, name: 'Bàn Thảo Luận Lab', label: 'Họp Kỹ Thuật' },
-      { id: 'zone_lab_code_b', type: 'code_editor', tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Mở Code Sandbox' }
+      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 1080, y: 220, tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Bảng Kiến Trúc' },
+      { id: 'zone_lab_code_a', type: 'code_editor', x: 240, y: 260, tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Mở Code Sandbox' },
+      { id: 'zone_lab_meeting', type: 'meeting_stage', x: 520, y: 460, tileX: 12, tileY: 8, name: 'Bàn Thảo Luận Lab', label: 'Họp Kỹ Thuật' },
+      { id: 'zone_lab_code_b', type: 'code_editor', x: 850, y: 530, tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Mở Code Sandbox' }
     ]
   },
 

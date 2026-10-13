@@ -344,6 +344,7 @@ export const NPC_CONFIG = {
       name: 'Phạm Đức Truyền',
       role: 'Algorithm Lead • Đội Tuyển ICPC',
       tileX: 15, tileY: 8,
+      x: 1080, y: 350,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
