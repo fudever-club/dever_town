@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DEVER TOWN — So Sánh 3 Bản Mẫu Thiết Kế Action Dock (Taste Skill)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-space: #070b14;
+      --fpt-orange: #f26f21;
+      --fpt-gold: #fbbf24;
+      --cyan-glow: #38bdf8;
+      --emerald: #10b981;
+      --purple: #c084fc;
+      --rose: #fb7185;
+      --font-body: 'Be Vietnam Pro', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-pixel: 'VT323', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-space);
+      color: #f8fafc;
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Bar */
+    .top-header {
+      background: rgba(10, 16, 31, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #f26f21, #fbbf24);
+      color: #070b14;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .header-heading h1 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .header-heading p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .theme-selector-pill {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .pill-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .pill-btn.active {
+      background: linear-gradient(135deg, rgba(242, 111, 33, 0.2), rgba(251, 191, 36, 0.25));
+      color: #fff;
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.2);
+    }
+
+    /* Simulation Canvas Stage */
+    .stage-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 24px;
+      min-height: 520px;
+    }
+
+    .game-screen-mockup {
+      width: 100%;
+      max-width: 1120px;
+      height: 540px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.4s ease;
+    }
+
+    .screen-overlay-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+      pointer-events: none;
+    }
+
+    .screen-ambient-info {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 16, 31, 0.75);
+      backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .ambient-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    .screen-backdrop-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .backdrop-btn {
+      background: rgba(10, 16, 31, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .backdrop-btn:hover, .backdrop-btn.active {
+      color: #fff;
+      border-color: var(--fpt-gold);
+      background: rgba(242, 111, 33, 0.25);
+    }
+
+    /* Simulation Interaction Toast */
+    .sim-toast {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      opacity: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--fpt-gold);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(251, 191, 36, 0.3);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 50;
+    }
+
+    .sim-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       STYLE 1: WARM CYBER-COZY OBSIDIAN GLASS (DNA FU-DEVER)
+       ========================================================================== */
+    .dock-style-1 {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(17, 27, 49, 0.88) 0%, rgba(10, 16, 31, 0.94) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      box-shadow: 
+        0 16px 40px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 0 24px rgba(242, 111, 33, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .dock-style-1 .action-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      height: 62px;
+      gap: 4px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.75) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dock-style-1 .keycap-badge {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--fpt-gold);
+      color: var(--fpt-gold);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.15s ease;
+    }
+
+    .dock-style-1 .action-icon {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.18s ease;
+    }
+
+    .dock-style-1 .action-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.02em;
+      transition: color 0.18s ease;
+    }
+
+    /* Hover & Active States Style 1 */
+    .dock-style-1 .action-card:hover {
+      transform: translateY(-4px);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(242, 111, 33, 0.2) 100%);
+      border-color: var(--fpt-gold);
+      box-shadow: 0 8px 20px rgba(242, 111, 33, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .dock-style-1 .action-card:hover .action-label {
+      color: #fff;
+    }
+
+    .dock-style-1 .action-card:hover .action-icon {
+      transform: scale(1.1);
+    }
+
+    .dock-style-1 .action-card:hover .keycap-badge {
+      background: var(--fpt-gold);
+      color: #070b14;
+      transform: scale(1.1);
+    }
+
+    .dock-style-1 .action-card:active {
+      transform: translateY(-1px) scale(0.96);
+    }
+
+    /* Icon Color Themes Style 1 */
+    .dock-style-1 .card-inventory .action-icon { stroke: #f59e0b; fill: rgba(245, 158, 11, 0.12); }
+    .dock-style-1 .card-jobs .action-icon { stroke: #10b981; fill: rgba(16, 185, 129, 0.12); }
+    .dock-style-1 .card-guild .action-icon { stroke: #38bdf8; fill: rgba(56, 189, 248, 0.12); }
+    .dock-style-1 .card-arcade .action-icon { stroke: #c084fc; fill: rgba(192, 132, 252, 0.12); }
+    .dock-style-1 .card-market .action-icon { stroke: #fbbf24; fill: rgba(251, 191, 36, 0.12); }
+    .dock-style-1 .card-dorm .action-icon { stroke: #fb7185; fill: rgba(251, 113, 133, 0.12); }
+
+    /* ==========================================================================
+       STYLE 2: RETRO RPG PIXEL-ART HOTBAR (STARDEW & GRAALONLINE ERA)
+       ========================================================================== */
+    .dock-style-2 {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      background: #2b1810;
+      border: 4px solid #6b4028;
+      box-shadow: 
+        inset 0 0 0 2px #180d09,
+        0 12px 32px rgba(0, 0, 0, 0.8),
+        0 0 0 2px #8a5333;
+      image-rendering: pixelated;
+    }
+
+    .dock-style-2 .action-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 60px;
+      gap: 2px;
+      background: #3b2216;
+      border: 2px solid #5a3520;
+      box-shadow: inset 2px 2px 0px rgba(255, 255, 255, 0.15), inset -2px -2px 0px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+
+    .dock-style-2 .keycap-badge {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      color: #ffd27d;
+      text-shadow: 1px 1px 0 #000;
+      line-height: 1;
+    }
+
+    .dock-style-2 .action-icon {
+      width: 26px;
+      height: 26px;
+      margin-top: 6px;
+      image-rendering: pixelated;
+    }
+
+    .dock-style-2 .action-label {
+      font-family: var(--font-pixel);
+      font-size: 15px;
+      color: #dfcaa7;
+      text-shadow: 1px 1px 0 #111;
+      letter-spacing: 0.04em;
+    }
+
+    .dock-style-2 .action-card:hover {
+      background: #533120;
+      border-color: #ffd27d;
+      box-shadow: inset 2px 2px 0px #ffe5a8, inset -2px -2px 0px #24140a;
+    }
+
+    .dock-style-2 .action-card:hover .action-label {
+      color: #fff;
+    }
+
+    .dock-style-2 .action-card:active {
+      transform: translateY(2px);
+      box-shadow: inset 2px 2px 0px #180d09, inset -2px -2px 0px #ffe5a8;
+    }
+
+    .dock-style-2 .card-inventory .action-icon { stroke: #ffd27d; }
+    .dock-style-2 .card-jobs .action-icon { stroke: #8ce196; }
+    .dock-style-2 .card-guild .action-icon { stroke: #88c0d0; }
+    .dock-style-2 .card-arcade .action-icon { stroke: #d08770; }
+    .dock-style-2 .card-market .action-icon { stroke: #ebcb8b; }
+    .dock-style-2 .card-dorm .action-icon { stroke: #bf616a; }
+
+    /* ==========================================================================
+       STYLE 3: MINIMALIST FLOATING DOCK (macOS / LINEAR / APPLE STYLE)
+       ========================================================================== */
+    .dock-style-3 {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(9, 13, 23, 0.72);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        0 20px 48px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dock-style-3 .action-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dock-style-3 .keycap-badge {
+      display: none; /* Minimalist style removes corner badges, shows on hover tooltip */
+    }
+
+    .dock-style-3 .action-icon {
+      width: 22px;
+      height: 22px;
+      stroke: #f8fafc;
+      transition: all 0.2s ease;
+    }
+
+    .dock-style-3 .action-label {
+      position: absolute;
+      bottom: -28px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .dock-style-3 .action-card:hover {
+      transform: translateY(-8px) scale(1.15);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .dock-style-3 .action-card:hover .action-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dock-style-3 .action-card:active {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    /* Comparison & Critique Deck */
+    .analysis-section {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto 40px auto;
+      padding: 0 24px;
+    }
+
+    .analysis-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .critique-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .critique-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .critique-card.highlight {
+      border-color: var(--fpt-gold);
+      background: linear-gradient(180deg, rgba(26, 38, 66, 0.8) 0%, rgba(15, 23, 42, 0.85) 100%);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    .critique-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .style-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .badge-recommend {
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid var(--fpt-gold);
+      color: var(--fpt-gold);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .critique-body {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .traits-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .traits-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .trait-bullet {
+      color: var(--fpt-gold);
+      font-weight: 800;
+    }
+
+    /* Action Deck Buttons */
+    .choose-btn {
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .choose-btn:hover {
+      background: var(--fpt-orange);
+      border-color: var(--fpt-orange);
+    }
+
+    @media (max-width: 900px) {
+      .critique-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .theme-selector-pill {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="brand-title">
+      <div class="brand-badge">FU-DEVER TASTE ENGINE</div>
+      <div class="header-heading">
+        <h1>Bản Mẫu So Sánh 3 Thiết Kế Action Dock</h1>
+        <p>Thế giới 2D Pixel DEVER_TOWN • Trường Đại học FPT Đà Nẵng</p>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-selector-pill">
+      <button type="button" class="pill-btn active" id="btn-style-1" onclick="switchStyle(1)">
+        <span>Mẫu 1: Obsidian Glass</span>
+      </button>
+      <button type="button" class="pill-btn" id="btn-style-2" onclick="switchStyle(2)">
+        <span>Mẫu 2: Retro RPG Hotbar</span>
+      </button>
+      <button type="button" class="pill-btn" id="btn-style-3" onclick="switchStyle(3)">
+        <span>Mẫu 3: Minimalist Dock</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Simulation Canvas -->
+  <main class="stage-container">
+    <div class="game-screen-mockup" id="gameMockup" style="background-image: url('devertown_map_clean_alpha_v2.jpg');">
+      <div class="screen-overlay-vignette"></div>
+
+      <!-- Live Vitals Pill -->
+      <div class="screen-ambient-info">
+        <div class="ambient-dot"></div>
+        <span>HP: 50/50 • VÙNG AN TOÀN • 1,250 D-COIN</span>
+      </div>
+
+      <!-- Backdrop Controls -->
+      <div class="screen-backdrop-controls">
+        <button type="button" class="backdrop-btn active" onclick="switchBackdrop('courtyard')">Sân Alpha V2</button>
+        <button type="button" class="backdrop-btn" onclick="switchBackdrop('interior')">Sảnh Trong Nhà V3</button>
+      </div>
+
+      <!-- Interactive Toast -->
+      <div class="sim-toast" id="simToast">
+        <span id="simToastText">Đã mở chức năng</span>
+      </div>
+
+      <!-- THE DOCK CONTAINER -->
+      <nav class="dock-style-1" id="actionDock" aria-label="Thanh thao tác nhanh">
+        <!-- 1 Balo -->
+        <button type="button" class="action-card card-inventory" data-key="1" onclick="triggerAction('Balo [1]', 'Đã mở Túi Đồ Sinh Viên (7 ngăn trang bị)')">
+          <span class="keycap-badge">1</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/>
+            <path d="M5.5 8h13l-1.1 11.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8L5.5 8z"/>
+            <path d="M9.5 13h5v4.5h-5z"/>
+          </svg>
+          <span class="action-label">Balo</span>
+        </button>
+
+        <!-- 2 Việc làm -->
+        <button type="button" class="action-card card-jobs" data-key="2" onclick="triggerAction('Việc làm [2]', 'Đã mở Bảng Việc Làm Campus (Lao công, Barista, Shipper, Bug Hunter)')">
+          <span class="keycap-badge">2</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="8" width="17" height="11" rx="1.5"/>
+            <path d="M9 8V6a2.5 2.5 0 0 1 5 0v2"/>
+            <path d="M3.5 12.5h17"/>
+          </svg>
+          <span class="action-label">Việc làm</span>
+        </button>
+
+        <!-- 3 Bang hội -->
+        <button type="button" class="action-card card-guild" data-key="3" onclick="triggerAction('Bang hội [3]', 'Đã mở Danh Sách 4 Đại Clan & Sự Kiện Chiếm Căn Cứ Pháo Đài')">
+          <span class="keycap-badge">3</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5l6.5 2.7v4.6c0 4.6-3.2 7.6-6.5 8.7-3.3-1.1-6.5-4.1-6.5-8.7V6.2L12 3.5z"/>
+            <path d="M12 8.5v4"/>
+            <circle cx="12" cy="14.5" r="0.6"/>
+          </svg>
+          <span class="action-label">Bang hội</span>
+        </button>
+
+        <!-- 4 Arcade -->
+        <button type="button" class="action-card card-arcade" data-key="4" onclick="triggerAction('Arcade [4]', 'Đã mở Khu Game Arcade FPTU (11 Minigames Thể Thao & Retro)')">
+          <span class="keycap-badge">4</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.5 8.5h9a4.8 4.8 0 0 1 4.4 6.6l-1.3 2.7a1.9 1.9 0 0 1-3.4 0L14.8 15H9.2l-1.4 2.8a1.9 1.9 0 0 1-3.4 0l-1.3-2.7A4.8 4.8 0 0 1 7.5 8.5z"/>
+            <path d="M8 11.5v3.5M6.2 13.2h3.6"/>
+            <circle cx="15.8" cy="12.2" r="0.9"/>
+            <circle cx="17.8" cy="14" r="0.9"/>
+          </svg>
+          <span class="action-label">Arcade</span>
+        </button>
+
+        <!-- 5 Chợ -->
+        <button type="button" class="action-card card-market" data-key="5" onclick="triggerAction('Chợ [5]', 'Sàn Giao Dịch Sinh Viên (Trao đổi giáo trình PE & Keycap)')">
+          <span class="keycap-badge">5</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 9.5L5.8 5h12.4l1.3 4.5"/>
+            <path d="M4.5 9.5V19h15V9.5"/>
+            <path d="M4.5 9.5h15"/>
+            <path d="M10 19v-4.5h4V19"/>
+          </svg>
+          <span class="action-label">Chợ</span>
+        </button>
+
+        <!-- 6 KTX -->
+        <button type="button" class="action-card card-dorm" data-key="6" onclick="triggerAction('KTX [6]', 'Phòng KTX Cá Nhân (Trang trí bàn học & Upvote phòng đẹp)')">
+          <span class="keycap-badge">6</span>
+          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="3.5" width="12" height="17.5" rx="1"/>
+            <path d="M4 21h16"/>
+            <path d="M9.5 7h1.8M12.7 7h1.8M9.5 10.5h1.8M12.7 10.5h1.8M9.5 14h1.8M12.7 14h1.8"/>
+          </svg>
+          <span class="action-label">KTX</span>
+        </button>
+      </nav>
+    </div>
+  </main>
+
+  <!-- Detailed Critique & Comparison Section -->
+  <section class="analysis-section">
+    <div class="analysis-title">
+      <span>Giải Phẫu 9 Chiều Kích Ngữ Pháp Thị Giác (Taste Engine)</span>
+    </div>
+
+    <div class="critique-cards-grid">
+      <!-- Card 1 -->
+      <div class="critique-card highlight" id="card-critique-1">
+        <div class="critique-header">
+          <span class="style-name">Mẫu 1: Warm Cyber-Cozy Obsidian Glass</span>
+          <span class="badge-recommend">ĐỀ XUẤT (RECOMMENDED)</span>
+        </div>
+        <p class="critique-body">
+          Kết hợp nền kính obsidian hun khói bóng bẩy với quầng sáng ấm Champagne Gold & Cam FPTU. Bổ sung phím cơ dập nổi <code>[1]..[6]</code> giúp phím tắt có cảm giác xúc giác (tactile game feel), phân tách rõ màu sắc từng chức năng.
+        </p>
+        <ul class="traits-list">
+          <li><span class="trait-bullet">✦</span> <strong>Chất liệu:</strong> Kính mờ 24px + viền vàng kim champagne sang trọng.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Ngữ pháp:</strong> Scale contrast chuẩn xác, không bị loá mắt bởi neon cyan.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Hòa sắc:</strong> Ăn nhập hoàn hảo với cả sân cỏ ngoài trời lẫn sàn gỗ sảnh trong nhà.</li>
+        </ul>
+        <button type="button" class="choose-btn" onclick="switchStyle(1)">Xem & Trải Nghiệm Mẫu 1</button>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="critique-card" id="card-critique-2">
+        <div class="critique-header">
+          <span class="style-name">Mẫu 2: Retro RPG Pixel-Art Hotbar</span>
+        </div>
+        <p class="critique-body">
+          Khung gỗ nẹp đồng cổ điển phong cách Stardew Valley & GraalOnline Era. Sử dụng font pixel VT323 và viền khắc bevel 3D tạo cảm giác một thanh hotbar trang bị đồ họa 16-bit nguyên bản.
+        </p>
+        <ul class="traits-list">
+          <li><span class="trait-bullet">✦</span> <strong>Chất liệu:</strong> Gỗ sồi nâu ấm, đinh tán đồng vàng, viền lõm inset.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Ngữ pháp:</strong> Đậm chất hoài niệm (Nostalgia), cực kỳ hợp game phiêu lưu cày cuốc.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Hạn chế:</strong> Hơi nặng nề nếu đặt trên giao diện công nghệ hiện đại.</li>
+        </ul>
+        <button type="button" class="choose-btn" onclick="switchStyle(2)">Xem & Trải Nghiệm Mẫu 2</button>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="critique-card" id="card-critique-3">
+        <div class="critique-header">
+          <span class="style-name">Mẫu 3: Minimalist Floating Dock</span>
+        </div>
+        <p class="critique-body">
+          Thanh dock capsule tròn siêu tối giản phong cách macOS / Apple / Linear. Ẩn toàn bộ viền thô và số phím tắt cồng kềnh, chỉ hiện icon trắng thanh thoát và tooltip nổi khi rê chuột.
+        </p>
+        <ul class="traits-list">
+          <li><span class="trait-bullet">✦</span> <strong>Chất liệu:</strong> Kính acrylic siêu mỏng, hiệu ứng phóng to parabolic khi hover.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Ngữ pháp:</strong> Tối giản tuyệt đối, giải phóng tối đa tầm nhìn sân trường.</li>
+          <li><span class="trait-bullet">✦</span> <strong>Hạn chế:</strong> Người chơi mới sẽ không nhớ phím tắt số 1-6 vì đã bị ẩn.</li>
+        </ul>
+        <button type="button" class="choose-btn" onclick="switchStyle(3)">Xem & Trải Nghiệm Mẫu 3</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Audio synthesis for satisfying mechanical click
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playClickSound(freq = 600, duration = 0.04) {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function switchStyle(styleNum) {
+      playClickSound(800, 0.05);
+      const dock = document.getElementById('actionDock');
+      dock.className = `dock-style-${styleNum}`;
+
+      document.querySelectorAll('.pill-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx + 1 === styleNum);
+      });
+
+      document.querySelectorAll('.critique-card').forEach((card, idx) => {
+        card.classList.toggle('highlight', idx + 1 === styleNum);
+      });
+
+      const names = ['Warm Cyber-Cozy Obsidian Glass', 'Retro RPG Pixel-Art Hotbar', 'Minimalist Floating Dock'];
+      showToast(`Đã chuyển sang: ${names[styleNum - 1]}`);
+    }
+
+    function switchBackdrop(type) {
+      playClickSound(500, 0.04);
+      const mockup = document.getElementById('gameMockup');
+      document.querySelectorAll('.backdrop-btn').forEach(btn => btn.classList.remove('active'));
+
+      if (type === 'courtyard') {
+        mockup.style.backgroundImage = "url('devertown_map_clean_alpha_v2.jpg')";
+        event.target.classList.add('active');
+        showToast('Nền: Sân Alpha V2 (Ngoài trời)');
+      } else {
+        mockup.style.backgroundImage = "url('devertown_alpha_interior_v3.jpg')";
+        event.target.classList.add('active');
+        showToast('Nền: Sảnh Tòa Alpha V3 (Trong nhà)');
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('simToast');
+      const text = document.getElementById('simToastText');
+      text.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    function triggerAction(actionName, desc) {
+      playClickSound(720, 0.06);
+      showToast(`${actionName}: ${desc}`);
+    }
+
+    // Keyboard listener for 1-6 keys
+    window.addEventListener('keydown', (e) => {
+      const key = e.key;
+      if (['1', '2', '3', '4', '5', '6'].includes(key)) {
+        const btn = document.querySelector(`.action-card[data-key="${key}"]`);
+        if (btn) {
+          btn.click();
+          btn.style.transform = 'translateY(2px) scale(0.95)';
+          setTimeout(() => { btn.style.transform = ''; }, 120);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

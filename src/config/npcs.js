@@ -4,7 +4,8 @@ export const NPC_CONFIG = {
       id: 'npc_chunhiem_nhat',
       name: 'Đặng Quang Nhật',
       role: 'Chủ Nhiệm CLB • K20',
-      tileX: 6, tileY: 4,
+      tileX: 19, tileY: 17,
+      x: 620, y: 560,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
@@ -42,7 +43,8 @@ export const NPC_CONFIG = {
       id: 'npc_pho_hung',
       name: 'Nguyễn Thái Hưng',
       role: 'Phó Chủ Nhiệm CLB • K20',
-      tileX: 14, tileY: 4,
+      tileX: 27, tileY: 17,
+      x: 860, y: 560,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
@@ -72,7 +74,8 @@ export const NPC_CONFIG = {
       id: 'npc_thuky_anh',
       name: 'Nguyễn Thị Ngọc Ánh',
       role: 'Thư Ký CLB • K20',
-      tileX: 10, tileY: 6,
+      tileX: 23, tileY: 16,
+      x: 746, y: 520,
       direction: 'down',
       spriteConfig: {
         gender: 'female',
@@ -103,7 +106,8 @@ export const NPC_CONFIG = {
       id: 'npc_yta_clinic',
       name: 'Cô Y Tá',
       role: 'Trạm Y Tế FPTU • Tòa Alpha',
-      tileX: 15, tileY: 11,
+      tileX: 30, tileY: 18,
+      x: 960, y: 580,
       direction: 'down',
       spriteConfig: {
         gender: 'female',
@@ -131,6 +135,139 @@ export const NPC_CONFIG = {
           lines: [
             'Trong Vùng An Toàn, em sẽ tự hồi phục đầy HP, cứ yên tâm nghỉ ngơi.',
             'Cần sơ cứu hay tư vấn sức khỏe thì ghé qua cô nhé.'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    }
+  ],
+  alpha_interior: [
+    {
+      id: 'npc_thuky_anh',
+      name: 'Nguyễn Thị Ngọc Ánh',
+      role: 'Thư Ký CLB • K20',
+      x: 684, y: 350, // Đứng sau Quầy Lễ Tân tròn trung tâm
+      tileX: 21, tileY: 11,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'female',
+        hairstyle: 'ponytail',
+        hairColor: '#0f172a',
+        skinTone: 'skin_fair',
+        outfitType: 'aodai',
+        hoodieColor: '#ea580c',
+        collarColor: '#002147',
+        pantsColor: '#ffffff',
+        accessory: 'glasses_smart',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào bạn đến với Sảnh Tòa Alpha! Mình là Ngọc Ánh, Thư ký FU-DEVER.',
+            'Tại quầy lễ tân này, bạn có thể xem danh sách thành viên và các sự kiện sắp diễn ra.',
+            'Nếu cần hỗ trợ bất cứ thủ tục gì, cứ nhắn mình nhé!'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_chunhiem_nhat',
+      name: 'Đặng Quang Nhật',
+      role: 'Chủ Nhiệm CLB • K20',
+      x: 520, y: 320, // Cạnh Bảng Tin Hoạt Động CLB
+      tileX: 16, tileY: 10,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'male',
+        hairstyle: 'undercut',
+        hairColor: '#1e293b',
+        skinTone: 'skin_natural',
+        outfitType: 'polo',
+        hoodieColor: '#2563eb',
+        collarColor: '#1d4ed8',
+        pantsColor: '#1e293b',
+        accessory: 'glasses_smart',
+        expression: 'expr_focus'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào bạn! Mình là Nhật, Chủ nhiệm của CLB Lập Trình FU-DEVER.',
+            'Đây là sảnh chính của Tòa Alpha — cửa ngõ kết nối toàn bộ hệ thống phòng lab và thư viện.',
+            'CLB có 4 sub-team: Web, AI, Mobile và Game Dev. Bạn hứng thú với mảng nào nhất?'
+          ],
+          nextDialogue: 'line_2'
+        },
+        line_2: {
+          lines: [
+            'Bên cánh trái là phòng Tech & AI Lab, cánh phải là phòng họp và thư viện.',
+            'Bạn cứ tự do tham quan và trải nghiệm các tính năng nhé!'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_pho_hung',
+      name: 'Nguyễn Thái Hưng',
+      role: 'Phó Chủ Nhiệm CLB • K20',
+      x: 430, y: 440, // Vách kính quan sát Lab Công Nghệ
+      tileX: 13, tileY: 14,
+      direction: 'right',
+      spriteConfig: {
+        gender: 'male',
+        hairstyle: 'wolf_cut',
+        hairColor: '#334155',
+        skinTone: 'skin_fair',
+        outfitType: 'hoodie',
+        hoodieColor: '#4f46e5',
+        collarColor: '#4338ca',
+        pantsColor: '#1e293b',
+        accessory: 'none',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Hello! Nhìn qua vách kính này bạn sẽ thấy toàn bộ dàn máy của Tech Lab.',
+            'Tụi mình đang chuẩn bị cho sự kiện Hackathon và đấu trường Code Arena đó.',
+            'Có ý tưởng minigame hay dự án gì thú vị, cứ rủ mình cùng build nha!'
+          ],
+          nextDialogue: 'line_1'
+        }
+      }
+    },
+    {
+      id: 'npc_yta_clinic',
+      name: 'Cô Y Tá',
+      role: 'Trạm Y Tế FPTU • Tòa Alpha',
+      x: 1040, y: 440, // Góc Trạm Y Tế & Lounge Lofi
+      tileX: 32, tileY: 14,
+      direction: 'down',
+      spriteConfig: {
+        gender: 'female',
+        hairstyle: 'bun',
+        hairColor: '#0f172a',
+        skinTone: 'skin_natural',
+        outfitType: 'polo',
+        hoodieColor: '#f8fafc',
+        collarColor: '#0ea5e9',
+        pantsColor: '#1e293b',
+        accessory: 'none',
+        expression: 'expr_smile'
+      },
+      startDialogue: 'line_1',
+      dialogues: {
+        line_1: {
+          lines: [
+            'Chào em, đây là góc sơ cứu y tế của Tòa Alpha.',
+            'Nếu em vừa tham gia thi đấu hoặc chạy deadline mệt mỏi, cứ ngồi nghỉ tại sofa nhé.',
+            'Cô luôn có sẵn Vitamin C và nước ấm cho các bạn sinh viên.'
           ],
           nextDialogue: 'line_1'
         }

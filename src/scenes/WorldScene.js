@@ -1265,8 +1265,7 @@ export class WorldScene extends Phaser.Scene {
             return;
           }
 
-          const npcX = cfg.tileX * tileSize + tileSize / 2;
-          const npcY = cfg.tileY * tileSize + tileSize / 2;
+          const { x: npcX, y: npcY } = resolveWorldPos(cfg, tileSize);
           const npc = new NPC(this, npcX, npcY, cfg);
           this.npcGroup.push(npc);
         } catch (err) {
