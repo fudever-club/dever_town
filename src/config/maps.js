@@ -272,21 +272,24 @@ export const MAPS_CONFIG = {
         // border walls (khung gỗ bao quanh)
         { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },
         { x: 0, y: 0, w: 18, h: 768 }, { x: 1358, y: 0, w: 18, h: 768 },
-        // tường trên: cửa sổ, bảng tin, kệ cúp
+        // tường trên: cửa sổ, bảng tin
         { x: 18, y: 18, w: 1340, h: 214 },
+        // Kệ cúp vàng (chân chạm sàn đến y=360, khắc phục lỗi đi dẫm lên cúp)
+        { x: 775, y: 214, w: 72, h: 145 },
         // cầu thang lên tầng 2 (cánh phải)
         { x: 1030, y: 30, w: 328, h: 300 },
         // cánh lab trái: vách kính + nội thất lab
         { x: 18, y: 18, w: 335, h: 712 },
         // chậu cây trước vách kính lab trên
         { x: 368, y: 195, w: 52, h: 80 }, { x: 366, y: 272, w: 42, h: 62 },
+        // ghế dài bằng gỗ tựa vách kính lab giữa
+        { x: 366, y: 435, w: 56, h: 100 },
         // chậu cây + ghế bành trước vách kính lab dưới
         { x: 366, y: 532, w: 52, h: 72 }, { x: 373, y: 598, w: 46, h: 76 }, { x: 366, y: 668, w: 56, h: 76 },
         // quầy lễ tân tròn
         { x: 600, y: 378, w: 168, h: 125 },
-        // khung cửa chính (chừa khe cửa đi lại x 608-750)
+        // khung cửa chính: hai trụ vách gỗ hai bên (khe cửa x: 608-750 mở thông thoáng, đã gỡ box chắn)
         { x: 568, y: 495, w: 40, h: 210 }, { x: 750, y: 495, w: 44, h: 210 },
-        { x: 568, y: 495, w: 226, h: 62 },
         // dải tối ngoài cửa (dưới thảm)
         { x: 566, y: 724, w: 230, h: 44 },
         // sofa + bàn góc thư giãn (cánh phải)
@@ -354,21 +357,24 @@ export const MAPS_CONFIG = {
             // border walls (khung gỗ bao quanh)
             { x: 0, y: 0, w: 1376, h: 18 }, { x: 0, y: 750, w: 1376, h: 18 },
             { x: 0, y: 0, w: 18, h: 768 }, { x: 1358, y: 0, w: 18, h: 768 },
-            // tường trên: cửa sổ, bảng tin, kệ cúp
+            // tường trên: cửa sổ, bảng tin
             { x: 18, y: 18, w: 1340, h: 214 },
+            // Kệ cúp vàng (chân chạm sàn đến y=360, khắc phục lỗi đi dẫm lên cúp)
+            { x: 775, y: 214, w: 72, h: 145 },
             // cầu thang lên tầng 2 (cánh phải)
             { x: 1030, y: 30, w: 328, h: 300 },
             // cánh lab trái: vách kính + nội thất lab
             { x: 18, y: 18, w: 335, h: 712 },
             // chậu cây trước vách kính lab trên
             { x: 368, y: 195, w: 52, h: 80 }, { x: 366, y: 272, w: 42, h: 62 },
+            // ghế dài bằng gỗ tựa vách kính lab giữa
+            { x: 366, y: 435, w: 56, h: 100 },
             // chậu cây + ghế bành trước vách kính lab dưới
             { x: 366, y: 532, w: 52, h: 72 }, { x: 373, y: 598, w: 46, h: 76 }, { x: 366, y: 668, w: 56, h: 76 },
             // quầy lễ tân tròn
             { x: 600, y: 378, w: 168, h: 125 },
-            // khung cửa chính (chừa khe cửa đi lại x 608-750)
+            // khung cửa chính: hai trụ vách gỗ hai bên (khe cửa x: 608-750 mở thông thoáng, đã gỡ box chắn)
             { x: 568, y: 495, w: 40, h: 210 }, { x: 750, y: 495, w: 44, h: 210 },
-            { x: 568, y: 495, w: 226, h: 62 },
             // dải tối ngoài cửa (dưới thảm)
             { x: 566, y: 724, w: 230, h: 44 },
             // sofa + bàn góc thư giãn (cánh phải)
@@ -464,38 +470,41 @@ export const MAPS_CONFIG = {
     zone: 'safe',
     paintedBackground: {
       imageKey: 'map_dever_lab',
-      imagePath: 'devertown_tech_lab_v1.jpg', // public/ served at root
+      imagePath: 'devertown_tech_lab_v2.jpg', // public/ served at root
       width: 1376, height: 768,
-      spawnPoint: { x: 640, y: 650 },
+      spawnPoint: { x: 650, y: 700 },
       collisionRects: [
         // border walls
-        { x: 0, y: 0, w: 1376, h: 140 },
-        { x: 0, y: 0, w: 30, h: 768 },
-        { x: 1346, y: 0, w: 30, h: 768 },
-        // tường đáy phòng (chặn dẫm lên tường gỗ, chỉ chừa khe cửa chính x: 580-700)
-        { x: 0, y: 690, w: 580, h: 78 },
-        { x: 700, y: 690, w: 676, h: 78 },
-        // cụm bàn L góc trên-trái (dàn màn hình kép, cây)
-        { x: 30, y: 140, w: 420, h: 130 },
-        // cụm tủ Server Racks trung tâm
-        { x: 570, y: 60, w: 310, h: 260 },
+        { x: 0, y: 0, w: 1376, h: 100 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // tường đáy phòng (chặn dẫm lên tường gỗ, chừa khe cửa chính x: 580-720)
+        { x: 0, y: 728, w: 580, h: 40 },
+        { x: 720, y: 728, w: 656, h: 40 },
+        // cụm tủ Server Racks góc trên-trái
+        { x: 32, y: 80, w: 315, h: 220 },
         // bảng Whiteboard Sơ đồ Kiến trúc Hệ thống
-        { x: 940, y: 60, w: 300, h: 200 },
-        // cây cảnh & tủ case đứng tường phải
-        { x: 1260, y: 220, w: 90, h: 130 },
-        // bàn dev giữa-phải (Hackathon Beta)
-        { x: 700, y: 380, w: 280, h: 85 },
-        // bàn dev góc dưới-phải (AI & ICPC)
-        { x: 1020, y: 430, w: 280, h: 85 },
-        // cụm bàn L góc dưới-trái (Mobile)
-        { x: 30, y: 550, w: 300, h: 60 },
-        // kệ sách thấp & chậu cây góc dưới-giữa
-        { x: 740, y: 680, w: 210, h: 70 },
-        // chậu cây lớn góc dưới cùng bên phải
-        { x: 1220, y: 660, w: 120, h: 90 },
+        { x: 360, y: 95, w: 145, h: 195 },
+        { x: 520, y: 85, w: 285, h: 205 },
+        // kệ sách & tủ case đứng góc trên-giữa
+        { x: 820, y: 110, w: 185, h: 185 },
+        // khu Sofa Lounge góc trên-phải (chặn tường và tựa lưng, chừa nệm ghế y: 190-245)
+        { x: 1080, y: 100, w: 190, h: 90 },
+        { x: 1005, y: 240, w: 75, h: 100 },
+        { x: 1260, y: 240, w: 60, h: 140 },
+        { x: 1110, y: 250, w: 125, h: 60 },
+        { x: 1085, y: 390, w: 165, h: 80 },
+        // dãy bàn dev cá nhân tường trái
+        { x: 32, y: 350, w: 105, h: 380 },
+        // dãy bàn Hackathon trên (chặn mặt bàn & màn hình y: 280-405, chừa ghế ngồi y: 410-480)
+        { x: 360, y: 280, w: 640, h: 125 },
+        // dãy bàn Hackathon dưới (chặn mặt bàn & màn hình y: 550-675, chừa ghế ngồi y: 680-745)
+        { x: 360, y: 550, w: 620, h: 125 },
+        // quầy cà phê & máy espresso góc dưới-phải
+        { x: 1140, y: 560, w: 185, h: 175 },
       ],
     },
-    spawnPoint: { x: 640, y: 650 },
+    spawnPoint: { x: 650, y: 700 },
     layout: [
       [ 15, 15, 15, 15, 15, 21, 21, 15, 15, 12, 12, 15, 15, 12, 12, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 10,  9,  9,  9,  9,  8,  8,  8,  8,  9,  8,  8,  8,  8,  9,  9,  9,  9, 10,  8, 13, 15 ],
@@ -518,15 +527,25 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { x: 640, y: 720, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { x: 1220, y: 380, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
-      { x: 530, y: 200, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
+      { x: 650, y: 735, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { x: 1310, y: 220, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
+      { x: 260, y: 330, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
-      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 1080, y: 320, tileX: 10, tileY: 1, name: 'Bảng Sơ Đồ Kiến Trúc', label: 'Xem Bảng Kiến Trúc' },
-      { id: 'zone_lab_code_a', type: 'sit_chair', x: 271, y: 312, tileX: 5, tileY: 3, name: 'Bàn Hackathon Đội Alpha', label: 'Ngồi Ghế Đội Alpha', direction: 'up' },
-      { id: 'zone_lab_meeting', type: 'terminal_status', x: 675, y: 350, tileX: 12, tileY: 8, name: 'Trạm Server Rack', label: 'Kiểm Tra Server' },
-      { id: 'zone_lab_code_b', type: 'sit_chair', x: 809, y: 499, tileX: 19, tileY: 3, name: 'Bàn Hackathon Đội Beta', label: 'Ngồi Ghế Đội Beta', direction: 'up' }
+      { id: 'zone_lab_hackathon_a1', type: 'sit_chair', x: 420, y: 440, tileX: 7, tileY: 9, name: 'Bàn Hackathon Alpha 1', label: 'Ngồi Ghế Hackathon Alpha 1', direction: 'up' },
+      { id: 'zone_lab_hackathon_a2', type: 'sit_chair', x: 535, y: 440, tileX: 9, tileY: 9, name: 'Bàn Hackathon Alpha 2', label: 'Ngồi Ghế Hackathon Alpha 2', direction: 'up' },
+      { id: 'zone_lab_hackathon_a3', type: 'sit_chair', x: 650, y: 440, tileX: 11, tileY: 9, name: 'Bàn Hackathon Alpha 3', label: 'Ngồi Ghế Hackathon Alpha 3', direction: 'up' },
+      { id: 'zone_lab_hackathon_a4', type: 'sit_chair', x: 765, y: 440, tileX: 13, tileY: 9, name: 'Bàn Hackathon Alpha 4', label: 'Ngồi Ghế Hackathon Alpha 4', direction: 'up' },
+      { id: 'zone_lab_hackathon_a5', type: 'sit_chair', x: 880, y: 440, tileX: 15, tileY: 9, name: 'Bàn Hackathon Alpha 5', label: 'Ngồi Ghế Hackathon Alpha 5', direction: 'up' },
+      { id: 'zone_lab_hackathon_b1', type: 'sit_chair', x: 420, y: 710, tileX: 7, tileY: 13, name: 'Bàn Hackathon Beta 1', label: 'Ngồi Ghế Hackathon Beta 1', direction: 'up' },
+      { id: 'zone_lab_hackathon_b2', type: 'sit_chair', x: 535, y: 710, tileX: 9, tileY: 13, name: 'Bàn Hackathon Beta 2', label: 'Ngồi Ghế Hackathon Beta 2', direction: 'up' },
+      { id: 'zone_lab_hackathon_b3', type: 'sit_chair', x: 650, y: 710, tileX: 11, tileY: 13, name: 'Bàn Hackathon Beta 3', label: 'Ngồi Ghế Hackathon Beta 3', direction: 'up' },
+      { id: 'zone_lab_hackathon_b4', type: 'sit_chair', x: 765, y: 710, tileX: 13, tileY: 13, name: 'Bàn Hackathon Beta 4', label: 'Ngồi Ghế Hackathon Beta 4', direction: 'up' },
+      { id: 'zone_lab_hackathon_b5', type: 'sit_chair', x: 880, y: 710, tileX: 15, tileY: 13, name: 'Bàn Hackathon Beta 5', label: 'Ngồi Ghế Hackathon Beta 5', direction: 'up' },
+      { id: 'zone_lab_sofa', type: 'sit_sofa', x: 1175, y: 225, tileX: 21, tileY: 4, name: 'Sofa Da Thư Giãn Lab', label: 'Ngồi Sofa Thư Giãn', direction: 'down' },
+      { id: 'zone_lab_server', type: 'terminal_status', x: 195, y: 310, tileX: 4, tileY: 6, name: 'Cụm Trạm Server Racks CLB', label: 'Kiểm Tra Server CLB' },
+      { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 660, y: 300, tileX: 12, tileY: 6, name: 'Bảng Sơ Đồ Kiến Trúc Lab', label: 'Xem Kiến Trúc Hệ Thống' },
+      { id: 'zone_lab_coffee', type: 'coffee_machine', x: 1220, y: 590, tileX: 22, tileY: 12, name: 'Máy Pha Cà Phê Espresso', label: 'Pha Cà Phê Dev' }
     ]
   },
 

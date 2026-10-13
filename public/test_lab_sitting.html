@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEVER TOWN — Kiểm Thử Tọa Độ & Đồ Họa Ngồi Ghế Tech Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090e17;
+      --panel: #111827;
+      --border: #1f293d;
+      --orange: #f26f21;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--orange), #ea580c);
+      color: white;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: #334155;
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #ea580c;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title .status {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .img-preview-box {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      position: relative;
+    }
+
+    .img-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+
+    .img-zoom {
+      transform-origin: center;
+      transition: transform 0.2s ease;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .zoom-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .zoom-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+    }
+
+    .zoom-btn.active {
+      background: var(--cyan);
+      color: #000;
+      border-color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .desc-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .coord-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .coord-table th {
+      background: #1e293b;
+      color: var(--cyan);
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+    }
+
+    .coord-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+
+    .coord-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .highlight-badge {
+      background: rgba(242, 111, 33, 0.15);
+      color: var(--orange);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .full-map-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .full-map-box {
+      width: 100%;
+      height: 650px;
+      background: #000;
+      border-radius: 8px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .full-map-box img {
+      width: 1376px;
+      height: 768px;
+      display: block;
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <span class="badge">FU-DEVER Engine</span>
+      <h1>Tech Lab — Kiểm Thử Đồ Họa & Tọa Độ Ngồi Ghế</h1>
+    </div>
+    <div class="nav-links">
+      <a href="/?room=dever_lab&debug=1" class="btn btn-primary">Vào Game Test Phím [E] (debug=1)</a>
+      <a href="/" class="btn">Chơi Game Bình Thường</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid-cards">
+      <!-- Cận Cảnh Ghế Hackathon -->
+      <div class="card">
+        <div class="card-title">
+          <span>1. Cận Cảnh Bàn Hackathon (Facing UP)</span>
+          <span class="status">Khớp 100% Pixel Ghế</span>
+        </div>
+        <div class="img-preview-box">
+          <img id="crop-desk" class="img-zoom" src="/screenshots/char_seated_hackathon_desk.png" alt="Ghế Hackathon" />
+        </div>
+        <div class="controls-row">
+          <span class="desc-text">Nhân vật ngồi lọt lòng trong ghế gaming, tay gõ phím cơ, mắt hướng 2 màn hình.</span>
+          <div class="zoom-btn-group">
+            <button class="zoom-btn" onclick="setZoom('crop-desk', 1)">1x</button>
+            <button class="zoom-btn active" onclick="setZoom('crop-desk', 2)">2x</button>
+            <button class="zoom-btn" onclick="setZoom('crop-desk', 3)">3x</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cận Cảnh Sofa Lounge -->
+      <div class="card">
+        <div class="card-title">
+          <span>2. Cận Cảnh Sofa Lounge (Facing DOWN)</span>
+          <span class="status">Khớp 100% Nệm Sofa</span>
+        </div>
+        <div class="img-preview-box">
+          <img id="crop-sofa" class="img-zoom" src="/screenshots/char_seated_lounge_sofa.png" alt="Sofa Lounge" />
+        </div>
+        <div class="controls-row">
+          <span class="desc-text">Nhân vật ngồi trên nệm giữa sofa da, tay đặt lên nệm, chân thả trước bàn trà.</span>
+          <div class="zoom-btn-group">
+            <button class="zoom-btn" onclick="setZoom('crop-sofa', 1)">1x</button>
+            <button class="zoom-btn active" onclick="setZoom('crop-sofa', 2)">2x</button>
+            <button class="zoom-btn" onclick="setZoom('crop-sofa', 3)">3x</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toàn Cảnh Phòng Lab -->
+    <div class="full-map-section">
+      <div class="card-title">
+        <span>3. Toàn Cảnh Phòng Tòa Gamma Tech Lab (So Sánh Kích Thước Nhân Vật & Nội Thất)</span>
+        <span class="status">Tỉ Lệ Chuẩn 1:1 Với Phòng</span>
+      </div>
+      <p class="desc-text">
+        Phòng có 3 nhân vật: <strong class="highlight-badge">Bàn Hackathon Alpha 1</strong> (đang gõ code tại x: 420, y: 440),
+        <strong class="highlight-badge">Bàn Hackathon Alpha 3</strong> (đang gõ code tại x: 650, y: 440),
+        <strong class="highlight-badge">Sofa Lounge</strong> (đang ngồi thư giãn tại x: 1175, y: 225), và
+        <strong class="highlight-badge">Hành lang giữa</strong> (sprite chuẩn sample_dev_dever.png 48x64px đang đi đứng).
+      </p>
+      <div class="full-map-box">
+        <img src="/screenshots/deverhung_sit_in_tech_lab_preview.jpg" alt="Toàn Cảnh Tech Lab Preview" />
+      </div>
+    </div>
+
+    <!-- Bảng Tọa Độ Chuẩn maps.js -->
+    <div class="card">
+      <div class="card-title">
+        <span>4. Bảng Tọa Độ Tương Tác Phím [E] Đã Đồng Bộ Trong src/config/maps.js</span>
+      </div>
+      <table class="coord-table">
+        <thead>
+          <tr>
+            <th>Zone ID</th>
+            <th>Tên Khu Vực</th>
+            <th>Tọa Độ X, Y</th>
+            <th>Hướng Mặt</th>
+            <th>Tình Trạng Ghép & Tương Tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>zone_lab_hackathon_a1</td>
+            <td>Bàn Hackathon Alpha 1</td>
+            <td><code>x: 420, y: 440</code></td>
+            <td><code>up</code></td>
+            <td>Ngồi khớp lòng ghế gaming dãy trên, tay chạm phím cơ</td>
+          </tr>
+          <tr>
+            <td>zone_lab_hackathon_a2</td>
+            <td>Bàn Hackathon Alpha 2</td>
+            <td><code>x: 535, y: 440</code></td>
+            <td><code>up</code></td>
+            <td>Ngồi khớp lòng ghế gaming dãy trên số 2</td>
+          </tr>
+          <tr>
+            <td>zone_lab_hackathon_a3</td>
+            <td>Bàn Hackathon Alpha 3</td>
+            <td><code>x: 650, y: 440</code></td>
+            <td><code>up</code></td>
+            <td>Ngồi khớp lòng ghế gaming dãy trên số 3</td>
+          </tr>
+          <tr>
+            <td>zone_lab_hackathon_b1</td>
+            <td>Bàn Hackathon Beta 1</td>
+            <td><code>x: 420, y: 710</code></td>
+            <td><code>up</code></td>
+            <td>Ngồi khớp lòng ghế gaming dãy dưới số 1</td>
+          </tr>
+          <tr>
+            <td>zone_lab_sofa</td>
+            <td>Sofa Da Thư Giãn Lab</td>
+            <td><code>x: 1175, y: 225</code></td>
+            <td><code>down</code></td>
+            <td>Ngồi khớp nệm giữa sofa da, chân đặt thảm trước bàn trà</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    function setZoom(id, zoom) {
+      const img = document.getElementById(id);
+      if (img) {
+        img.style.transform = `scale(${zoom})`;
+        // active button
+        const parent = img.closest('.card');
+        parent.querySelectorAll('.zoom-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+      }
+    }
+    // Set default 2x zoom on load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('crop-desk').style.transform = 'scale(2)';
+      document.getElementById('crop-sofa').style.transform = 'scale(2)';
+    });
+  </script>
+</body>
+</html>

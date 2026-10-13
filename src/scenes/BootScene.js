@@ -101,10 +101,10 @@ export class BootScene extends Phaser.Scene {
       this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
     });
 
-    // 2H. Bản đồ vẽ tay Tòa Alpha V2, Sảnh Alpha V3 & Tech Lab V1 — hybrid painted maps.
+    // 2H. Bản đồ vẽ tay Tòa Alpha V2, Sảnh Alpha V3 & Tech Lab V2 — hybrid painted maps.
     this.load.image('map_alpha_v2', 'devertown_map_v2_debanded.jpg');
     this.load.image('map_alpha_interior', 'devertown_alpha_interior_v3.jpg');
-    this.load.image('map_dever_lab', 'devertown_tech_lab_v1.jpg');
+    this.load.image('map_dever_lab', 'devertown_tech_lab_v2.jpg');
 
 
   }

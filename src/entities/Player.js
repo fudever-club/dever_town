@@ -481,9 +481,13 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.setPose(POSE.STAND);   // gán pose + emit 'playerActivity' cho multiplayer
       this._sitMoveFrames = 0;
 
-      // Khôi phục kích thước bóng chân
+      // Khôi phục kích thước, crop, scale và bóng chân khi đứng dậy
+      this.setOrigin(0.5, 0.5);
+      this.setCrop();
+      this.setScale(1, 1);
       if (this.shadowEllipse) {
         this.shadowEllipse.setScale(1, 1);
+        this.shadowEllipse.setPosition(this.x, this.y + 30);
         this.shadowEllipse.setVisible(true);
       }
 
@@ -519,8 +523,24 @@ export class Player extends Phaser.GameObjects.Sprite {
         const dirFrames = { down: 0, left: 4, right: 8, up: 12 };
         this.setFrame(dirFrames[this.currentDirection] ?? 0);
       }
-      // Thu nhỏ bóng dưới chân khi ngồi khớp trên mặt ghế
-      if (this.shadowEllipse) this.shadowEllipse.setScale(0.5, 0.4);
+
+      // Hạ thấp trọng tâm vào lòng ghế & che chân khi ngồi
+      this.setOrigin(0.5, 0.65);
+      if (this.currentDirection === 'up') {
+        // Hướng quay vào bàn làm việc: giấu chân dưới gầm bàn / sau đệm ghế, hơi co lưng
+        this.setCrop(0, 0, 48, 52);
+        this.setScale(1, 0.92);
+      } else {
+        // Hướng quay ra ngoài / sofa: hạ nhẹ người, chân gập trên mặt ghế
+        this.setCrop(0, 0, 48, 56);
+        this.setScale(1, 0.88);
+      }
+
+      // Thu nhỏ bóng dưới chân và nâng vị trí bóng khớp đáy ghế
+      if (this.shadowEllipse) {
+        this.shadowEllipse.setScale(0.5, 0.35);
+        this.shadowEllipse.setPosition(this.x, this.y + 14);
+      }
     } catch (e) {}
   }
 

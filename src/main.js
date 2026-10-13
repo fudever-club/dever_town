@@ -29,7 +29,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },
-      debug: false
+      debug: typeof window !== 'undefined' && window.location.search.includes('debug=1')
     }
   },
   scene: [BootScene, WorldScene],
