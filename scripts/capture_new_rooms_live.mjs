@@ -3,9 +3,9 @@ import path from 'path';
 
 const ARTIFACT_DIR = 'C:/Users/This PC/.gemini/antigravity-ide/brain/f4243eb1-3b00-4f93-aaec-327220655ce0';
 const ROOMS = [
-  { id: 'memory_room', spawnX: 688, spawnY: 600, avatar: 'stardew_fptu_polo', name: 'Phòng Kỷ Niệm & Bảng Vàng' },
-  { id: 'web_room', spawnX: 540, spawnY: 470, avatar: 'stardew_cyber', name: 'Web & Media Hub' },
-  { id: 'server_dungeon', spawnX: 688, spawnY: 480, avatar: 'stardew_wizard', name: 'Server Faults Dungeon' }
+  { id: 'memory_room', spawnX: 688, spawnY: 620, avatar: 'stardew_fptu_polo', name: 'Phòng Kỷ Niệm & Bảng Vàng' },
+  { id: 'web_room', spawnX: 580, spawnY: 620, avatar: 'stardew_cyber', name: 'Web & Media Hub' },
+  { id: 'server_dungeon', spawnX: 688, spawnY: 630, avatar: 'stardew_wizard', name: 'Server Faults Dungeon' }
 ];
 
 async function run() {

@@ -67,9 +67,9 @@ Toàn bộ 12 phòng hiện đã được nâng cấp lên chuẩn **Painted Map
 | **7** | `meeting_room` | Phòng Họp & Lớp Học Chuyên Đề | `devertown_meeting_room_v1.jpg` | 1376×768 | `(400, 336)` | `alpha_interior` (720, 735) |
 | **8** | `dorm_room` | Ký Túc Xá FUDA - Phòng Sinh Hoạt | `devertown_dorm_room_v1.jpg` | 1376×768 | `(384, 400)` | `main_hall` (384, 735) |
 | **9** | `sports_complex` | Khu Thể Thao & Võ Đường Vovinam | `devertown_sports_complex_v1.jpg` | 1376×768 | `(680, 680)` | `main_hall` (680, 735) |
-| **10** | `memory_room` | Phòng Kỷ Niệm & Bảng Vàng CLB | `devertown_memory_room_v1.jpg` | 1376×768 | `(688, 650)` | `alpha_interior` (688, 735) |
-| **11** | `web_room` | Web & Media Studio Hub | `devertown_web_room_v1.jpg` | 1376×768 | `(120, 400)` | `main_hall` (50, 400) |
-| **12** | `server_dungeon` | Hầm Sự Cố Máy Chủ (Server Faults) | `devertown_server_dungeon_v1.jpg` | 1376×768 | `(688, 260)` | `dever_lab` (688, 220) |
+| **10** | `memory_room` | Phòng Kỷ Niệm & Bảng Vàng CLB | `devertown_memory_room_v1.jpg` | 1376×768 | `(688, 640)` | `alpha_interior` (688, 735) |
+| **11** | `web_room` | Web & Media Studio Hub | `devertown_web_room_v1.jpg` | 1376×768 | `(200, 440)` | `main_hall` (50, 440) |
+| **12** | `server_dungeon` | Hầm Sự Cố Máy Chủ (Server Faults) | `devertown_server_dungeon_v1.jpg` | 1376×768 | `(688, 680)` | `dever_lab` (688, 735) |
 
 ---
 
@@ -161,7 +161,7 @@ Agent kế nhiệm hãy thực hiện theo thứ tự ưu tiên các gói công 
    - Vị trí: `x: 880, y: 340`.
    - Cơ chế: Rhythm game (Q-W-E-R timing bar). Chọn đúng nguyên liệu: Cà phê phin, kem muối béo, sữa đặc, đá viên. Đạt điểm "Perfect Brew" để phục vụ khách hàng NPC.
 4. **Minigame Hầm Ngục Săn Bug Server (`server_dungeon`):**
-   - 3 sự cố: `NullPointerException` (280, 570), `Memory Leak Slime` (1090, 570), `Infinite Loop` (688, 570).
+   - 3 sự cố: `NullPointerException` (240, 520), `Memory Leak Slime` (688, 590), `Infinite Loop` (1120, 540), và `Máy Trạm Trung Tâm` (688, 320).
    - Cơ chế: Câu đố sửa code trực tiếp (Quick Debug Quiz), chọn đáp án hoặc gõ dòng lệnh vá lỗi đúng để giải phóng hệ thống và nhận mảnh Logic Shards.
 
 ### Gói 2: Hệ Thống Nhiệm Vụ Tân Sinh Viên (Orientation Quests & 11 NPCs)

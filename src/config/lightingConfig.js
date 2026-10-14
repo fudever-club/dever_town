@@ -302,11 +302,14 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 400, y: 440, radius: 120, color: 0x38bdf8, intensity: 0.88, type: 'ceiling_light', flicker: 0.03 }
   ],
   server_dungeon: [
-    // Máy chủ trung tâm nhấp nháy
-    { x: 400, y: 200, radius: 120, color: 0x38bdf8, intensity: 0.95, type: 'neon', flicker: 0.08 },
-    { x: 200, y: 350, radius: 80, color: 0xef4444, intensity: 0.85, type: 'neon', flicker: 0.07 },
-    { x: 600, y: 350, radius: 80, color: 0x10b981, intensity: 0.85, type: 'neon', flicker: 0.07 },
-    { x: 400, y: 460, radius: 85, color: 0x38bdf8, intensity: 0.75, type: 'neon', flicker: 0.08 }
+    // Mainframe CRT Terminal Green Glow
+    { x: 688, y: 220, radius: 180, color: 0x22c55e, intensity: 0.95, type: 'neon', flicker: 0.08 },
+    // NullPointer Laser Containment Cage (Cyan)
+    { x: 390, y: 510, radius: 150, color: 0x38bdf8, intensity: 0.88, type: 'neon', flicker: 0.07 },
+    // Memory Leak Slime Pool (Emerald)
+    { x: 688, y: 510, radius: 150, color: 0x10b981, intensity: 0.88, type: 'neon', flicker: 0.07 },
+    // Infinite Loop Golden Ring (Gold)
+    { x: 980, y: 540, radius: 150, color: 0xfacc15, intensity: 0.88, type: 'neon', flicker: 0.08 }
   ],
   game_arcade: [
     // Máy Game Thùng Pacman & Retro
@@ -329,11 +332,14 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 600, y: 440, radius: 105, color: 0xfef08a, intensity: 0.88, type: 'ceiling_light', flicker: 0.01 }
   ],
   web_room: [
-    // Không gian Web Development
-    { x: 400, y: 160, radius: 120, color: 0x38bdf8, intensity: 0.92, type: 'ceiling_light', flicker: 0.03 },
-    { x: 220, y: 280, radius: 95, color: 0x67e8f9, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
-    { x: 580, y: 280, radius: 95, color: 0x60a5fa, intensity: 0.85, type: 'desk_lamp', flicker: 0.02 },
-    { x: 400, y: 440, radius: 110, color: 0x93c5fd, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
+    // Video Editing Workstation Center
+    { x: 665, y: 440, radius: 190, color: 0x38bdf8, intensity: 0.92, type: 'ceiling_light', flicker: 0.03 },
+    // Green Screen Softboxes
+    { x: 200, y: 200, radius: 180, color: 0x4ade80, intensity: 0.90, type: 'ceiling_light', flicker: 0.02 },
+    // Podcast Studio Booth
+    { x: 1115, y: 620, radius: 160, color: 0xf43f5e, intensity: 0.88, type: 'desk_lamp', flicker: 0.02 },
+    // Analytics LED Dashboard
+    { x: 1160, y: 150, radius: 170, color: 0x60a5fa, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ],
   academic_hub: [
     // Hub Học thuật & Đội tuyển ICPC
@@ -350,10 +356,13 @@ export const STATIC_LIGHT_SOURCES = {
     { x: 400, y: 440, radius: 115, color: 0xfef08a, intensity: 0.9, type: 'ceiling_light', flicker: 0.02 }
   ],
   memory_room: [
-    // Phòng Kỷ niệm & Truyền thống Gen 1-10
-    { x: 400, y: 160, radius: 120, color: 0xc084fc, intensity: 0.92, type: 'neon', flicker: 0.04 },
-    { x: 240, y: 300, radius: 100, color: 0xf472b6, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 560, y: 300, radius: 100, color: 0x818cf8, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
-    { x: 400, y: 450, radius: 110, color: 0xd8b4fe, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
+    // Phòng Kỷ niệm & Truyền thống Gen 1-10 Chandelier
+    { x: 688, y: 200, radius: 220, color: 0xfef08a, intensity: 0.90, type: 'ceiling_light', flicker: 0.02 },
+    // Golden Frog Pedestal Spotlight
+    { x: 688, y: 510, radius: 180, color: 0xfbbf24, intensity: 0.98, type: 'statue', flicker: 0.03 },
+    // Left Showcase Towers
+    { x: 220, y: 420, radius: 160, color: 0xc084fc, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 },
+    // Right Showcase Towers
+    { x: 1100, y: 420, radius: 160, color: 0x818cf8, intensity: 0.88, type: 'ceiling_light', flicker: 0.02 }
   ]
 };
