@@ -153,10 +153,18 @@ export class WorldScene extends Phaser.Scene {
     this.transitionManager = new SceneTransitionManager(this);
 
     // 1. Khởi tạo Local Player
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const initialRoomParam = urlParams?.get('room');
+    if (initialRoomParam && MAPS_CONFIG[initialRoomParam]) {
+      this.currentRoomId = initialRoomParam;
+    }
+
     const user = authService.getUser();
     const mapData = this.floorManager.getCurrentFloorData(this.currentRoomId) || MAPS_CONFIG.main_hall;
-    const spawnX = mapData.spawnPoint.x;
-    const spawnY = mapData.spawnPoint.y;
+    const qX = urlParams ? Number(urlParams.get('x')) : NaN;
+    const qY = urlParams ? Number(urlParams.get('y')) : NaN;
+    const spawnX = (!isNaN(qX) && qX > 0) ? qX : mapData.spawnPoint.x;
+    const spawnY = (!isNaN(qY) && qY > 0) ? qY : mapData.spawnPoint.y;
 
     let wardrobeConfig = user?.wardrobe_config || null;
     const savedWardrobeRaw = localStorage.getItem('dever_wardrobe_config');

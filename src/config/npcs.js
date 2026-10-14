@@ -343,9 +343,9 @@ export const NPC_CONFIG = {
       id: 'npc_algo_truyen',
       name: 'Phạm Đức Truyền',
       role: 'Algorithm Lead • Đội Tuyển ICPC',
-      tileX: 15, tileY: 8,
-      x: 1080, y: 350,
-      direction: 'down',
+      tileX: 7, tileY: 18,
+      x: 220, y: 600,
+      direction: 'right',
       spriteConfig: {
         gender: 'male',
         hairstyle: 'undercut',

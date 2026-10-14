@@ -345,8 +345,8 @@ export const MAPS_CONFIG = {
     ],
     portals: [
       { x: 680, y: 720, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
-      { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
-      { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+      { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 650, y: 700 }, label: 'Phòng Lab Hóa' },
+      { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 650, y: 700 }, label: 'Phòng Server' },
       // Phân cấp phòng học: vào qua nội thất Tòa Alpha (dời từ sân ngoài trời).
       { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
       { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
@@ -431,8 +431,8 @@ export const MAPS_CONFIG = {
         ],
         portals: [
           { x: 680, y: 720, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 330 }, label: 'Ra Sân Tòa Alpha' },
-          { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 190 }, label: 'Phòng Lab Hóa' },
-          { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 416 }, label: 'Phòng Server' },
+          { x: 445, y: 255, targetRoomId: 'dever_lab', targetSpawn: { x: 650, y: 700 }, label: 'Phòng Lab Hóa' },
+          { x: 445, y: 610, targetRoomId: 'dever_lab', targetSpawn: { x: 650, y: 700 }, label: 'Phòng Server' },
           // (giống top-level) Phân cấp phòng học qua nội thất Tòa Alpha.
           { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
           { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
@@ -552,22 +552,20 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { x: 650, y: 735, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 445, y: 325 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { x: 1310, y: 220, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
+      { x: 650, y: 735, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 580 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
+      { x: 1310, y: 130, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
       { x: 260, y: 330, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
       { id: 'zone_lab_hackathon_a1', type: 'sit_chair', x: 425, y: 440, name: 'Bàn Hackathon Alpha 1', label: 'Ngồi Ghế Hackathon Alpha 1', direction: 'up' },
-      { id: 'zone_lab_hackathon_a2', type: 'sit_chair', x: 555, y: 440, name: 'Bàn Hackathon Alpha 2', label: 'Ngồi Ghế Hackathon Alpha 2', direction: 'up' },
       { id: 'zone_lab_hackathon_a3', type: 'sit_chair', x: 685, y: 440, name: 'Bàn Hackathon Alpha 3', label: 'Ngồi Ghế Hackathon Alpha 3', direction: 'up' },
-      { id: 'zone_lab_hackathon_a4', type: 'sit_chair', x: 812, y: 440, name: 'Bàn Hackathon Alpha 4', label: 'Ngồi Ghế Hackathon Alpha 4', direction: 'up' },
       { id: 'zone_lab_hackathon_a5', type: 'sit_chair', x: 940, y: 440, name: 'Bàn Hackathon Alpha 5', label: 'Ngồi Ghế Hackathon Alpha 5', direction: 'up' },
       { id: 'zone_lab_hackathon_b1', type: 'sit_chair', x: 425, y: 710, name: 'Bàn Hackathon Beta 1', label: 'Ngồi Ghế Hackathon Beta 1', direction: 'up' },
       { id: 'zone_lab_hackathon_b2', type: 'sit_chair', x: 555, y: 710, name: 'Bàn Hackathon Beta 2', label: 'Ngồi Ghế Hackathon Beta 2', direction: 'up' },
       { id: 'zone_lab_hackathon_b3', type: 'sit_chair', x: 685, y: 710, name: 'Bàn Hackathon Beta 3', label: 'Ngồi Ghế Hackathon Beta 3', direction: 'up' },
       { id: 'zone_lab_hackathon_b4', type: 'sit_chair', x: 812, y: 710, name: 'Bàn Hackathon Beta 4', label: 'Ngồi Ghế Hackathon Beta 4', direction: 'up' },
       { id: 'zone_lab_hackathon_b5', type: 'sit_chair', x: 940, y: 710, name: 'Bàn Hackathon Beta 5', label: 'Ngồi Ghế Hackathon Beta 5', direction: 'up' },
-      { id: 'zone_lab_sofa', type: 'sit_sofa', x: 1175, y: 195, name: 'Sofa Da Thư Giãn Lab', label: 'Ngồi Sofa Thư Giãn', direction: 'down' },
+      { id: 'zone_lab_sofa', type: 'sit_sofa', x: 1140, y: 195, name: 'Sofa Da Thư Giãn Lab', label: 'Ngồi Sofa Thư Giãn', direction: 'down' },
       { id: 'zone_lab_server', type: 'terminal_status', x: 195, y: 310, name: 'Cụm Trạm Server Racks CLB', label: 'Kiểm Tra Server CLB' },
       { id: 'zone_lab_whiteboard', type: 'whiteboard_slides', x: 630, y: 310, name: 'Bảng Sơ Đồ Kiến Trúc Lab', label: 'Xem Kiến Trúc Hệ Thống' },
       { id: 'zone_lab_coffee', type: 'coffee_machine', x: 1220, y: 590, name: 'Máy Pha Cà Phê Espresso', label: 'Pha Cà Phê Dev' }
