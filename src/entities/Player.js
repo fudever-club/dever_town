@@ -70,11 +70,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    // Physics hitbox: 24×10px tại chân nhân vật (48×64 sprite — feet vùng y+54 to y+64)
-    this.body.setSize(24, 10);
-    this.body.setOffset(12, 54);
-    this.body.setCollideWorldBounds(true);
-
     this.currentDirection = 'down';
     this.speechBubble = null;
     this.speechTimer = null;
@@ -95,13 +90,75 @@ export class Player extends Phaser.GameObjects.Sprite {
     this._settleT = 0;    // tiến trình settle khi vừa dừng
     this._wasMoving = false;
 
-    // Shadow ellipse dưới chân — vị trí y+30 tính từ origin sprite (64/2=32, chân tại +32)
-    this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
+    const offsets = this.getCharacterOffsets();
+
+    // Physics hitbox tại chân nhân vật: hỗ trợ linh hoạt cả Stardew HD (96x128) và Aseprite/Gather (48x64)
+    this.body.setSize(offsets.bodyW, offsets.bodyH);
+    this.body.setOffset(offsets.bodyOffsetX, offsets.bodyOffsetY);
+    this.body.setCollideWorldBounds(true);
+
+    // Shadow ellipse dưới chân đồng bộ theo kích thước avatar
+    this.shadowEllipse = scene.add.ellipse(x, y + offsets.feetY, offsets.shadowW, offsets.shadowH, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
 
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y + 30);
+    this.setDepth(this.y + offsets.feetY);
+  }
+
+  isStardewAvatar() {
+    return Boolean(this.avatarId && this.avatarId.startsWith('stardew_')) || (this.height >= 100);
+  }
+
+  getCharacterOffsets() {
+    const isStardew = this.isStardewAvatar();
+    return {
+      isStardew,
+      feetY: isStardew ? 58 : 30,
+      nameTagY: isStardew ? -62 : -38,
+      speechY: isStardew ? -92 : -64,
+      shadowW: isStardew ? 34 : 22,
+      shadowH: isStardew ? 12 : 8,
+      bodyW: isStardew ? 32 : 24,
+      bodyH: isStardew ? 14 : 10,
+      bodyOffsetX: isStardew ? 32 : 12,
+      bodyOffsetY: isStardew ? 114 : 54,
+      equippedX: isStardew ? 26 : 18,
+      equippedY: isStardew ? -12 : -8
+    };
+  }
+
+  applyCharacterOffsets() {
+    const offsets = this.getCharacterOffsets();
+    if (this.body) {
+      this.body.setSize(offsets.bodyW, offsets.bodyH);
+      this.body.setOffset(offsets.bodyOffsetX, offsets.bodyOffsetY);
+    }
+    if (this.shadowEllipse) {
+      this.shadowEllipse.setSize(offsets.shadowW, offsets.shadowH);
+      this.shadowEllipse.setPosition(this.x, this.y + offsets.feetY);
+    }
+    if (this.nameTagContainer) {
+      this.nameTagContainer.setPosition(this.x, this.y + offsets.nameTagY);
+    }
+    if (this.speechBubble) {
+      this.speechBubble.setPosition(this.x, this.y + offsets.speechY);
+    }
+    if (this.equippedContainer) {
+      this.equippedContainer.setPosition(this.x + offsets.equippedX, this.y + offsets.equippedY);
+    }
+    this.setDepth(this.y + offsets.feetY);
+  }
+
+  setTexture(key, frame) {
+    super.setTexture(key, frame);
+    if (typeof key === 'string') {
+      this.avatarId = key.replace(/^char_/, '');
+    }
+    if (this.applyCharacterOffsets) {
+      this.applyCharacterOffsets();
+    }
+    return this;
   }
 
   createNameTag() {
@@ -109,7 +166,8 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.nameTagContainer.destroy();
     }
 
-    this.nameTagContainer = this.scene.add.container(this.x, this.y - 28);
+    const offsets = this.getCharacterOffsets();
+    this.nameTagContainer = this.scene.add.container(this.x, this.y + offsets.nameTagY);
     this.nameTagContainer.setDepth(1000001);
 
     const rolePrefix = this.role === 'admin' ? '[Admin] ' :
@@ -263,6 +321,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.stopMovement();
       }
     }
+    this.applyCharacterOffsets();
   }
 
   getRoleColor() {
@@ -482,12 +541,14 @@ export class Player extends Phaser.GameObjects.Sprite {
       this._sitMoveFrames = 0;
 
       // Khôi phục kích thước, crop, scale và bóng chân khi đứng dậy
+      const offsets = this.getCharacterOffsets();
       this.setOrigin(0.5, 0.5);
       this.setCrop();
       this.setScale(1, 1);
       if (this.shadowEllipse) {
         this.shadowEllipse.setScale(1, 1);
-        this.shadowEllipse.setPosition(this.x, this.y + 30);
+        this.shadowEllipse.setSize(offsets.shadowW, offsets.shadowH);
+        this.shadowEllipse.setPosition(this.x, this.y + offsets.feetY);
         this.shadowEllipse.setVisible(true);
       }
 
@@ -524,22 +585,33 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.setFrame(dirFrames[this.currentDirection] ?? 0);
       }
 
+      const isStardew = this.isStardewAvatar();
       // Hạ thấp trọng tâm vào lòng ghế & che chân khi ngồi
       this.setOrigin(0.5, 0.65);
       if (this.currentDirection === 'up') {
         // Hướng quay vào bàn làm việc: giấu chân dưới gầm bàn / sau đệm ghế, hơi co lưng
-        this.setCrop(0, 0, 48, 52);
-        this.setScale(1, 0.92);
+        if (isStardew) {
+          this.setCrop(0, 0, 96, 104);
+          this.setScale(1, 0.94);
+        } else {
+          this.setCrop(0, 0, 48, 52);
+          this.setScale(1, 0.92);
+        }
       } else {
         // Hướng quay ra ngoài / sofa: hạ nhẹ người, chân gập trên mặt ghế
-        this.setCrop(0, 0, 48, 56);
-        this.setScale(1, 0.88);
+        if (isStardew) {
+          this.setCrop(0, 0, 96, 114);
+          this.setScale(1, 0.92);
+        } else {
+          this.setCrop(0, 0, 48, 56);
+          this.setScale(1, 0.88);
+        }
       }
 
       // Thu nhỏ bóng dưới chân và nâng vị trí bóng khớp đáy ghế
       if (this.shadowEllipse) {
         this.shadowEllipse.setScale(0.5, 0.35);
-        this.shadowEllipse.setPosition(this.x, this.y + 14);
+        this.shadowEllipse.setPosition(this.x, this.y + (isStardew ? 28 : 14));
       }
     } catch (e) {}
   }
@@ -718,9 +790,11 @@ export class Player extends Phaser.GameObjects.Sprite {
       this.scaleX = 1.0 - breathe * 0.4 + settleDip * 0.6;
     }
 
+    const offsets = this.getCharacterOffsets();
+
     // Bóng chân đồng bộ nhịp bước (co lại khi nhân vật nhún lên)
     if (this.shadowEllipse) {
-      this.shadowEllipse.setPosition(this.x, this.y + 30);
+      this.shadowEllipse.setPosition(this.x, this.y + offsets.feetY);
       this.shadowEllipse.setDepth(this.y - 0.1);
       let shadowScale = 1.0;
       if (visuallyMoving) {
@@ -753,19 +827,18 @@ export class Player extends Phaser.GameObjects.Sprite {
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y + 30);
+      this.setDepth(this.y + offsets.feetY);
 
       if (this.nameTagContainer) {
-        // Nametag trên đỉnh đầu sprite 64px — y - 38
-        this.nameTagContainer.setPosition(this.x, this.y - 38);
+        this.nameTagContainer.setPosition(this.x, this.y + offsets.nameTagY);
       }
 
       if (this.speechBubble) {
-        this.speechBubble.setPosition(this.x, this.y - 64);
+        this.speechBubble.setPosition(this.x, this.y + offsets.speechY);
       }
 
       if (this.equippedContainer) {
-        this.equippedContainer.setPosition(this.x + 18, this.y - 8);
+        this.equippedContainer.setPosition(this.x + offsets.equippedX, this.y + offsets.equippedY);
       }
     }
   }

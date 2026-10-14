@@ -51,12 +51,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     // class (Player) so it can never be culled by this code.
     this._renderCulled = false;
 
-    this.shadowEllipse = scene.add.ellipse(x, y + 30, 22, 8, 0x000000, 0.28);
+    const offsets = this.getCharacterOffsets();
+    this.shadowEllipse = scene.add.ellipse(x, y + offsets.feetY, offsets.shadowW, offsets.shadowH, 0x000000, 0.28);
     this.shadowEllipse.setDepth(this.y - 0.1);
 
     this.createNameTag();
     this.createEquippedItemDisplay();
-    this.setDepth(this.y + 30);
+    this.setDepth(this.y + offsets.feetY);
 
     // Bật tương tác click vào nhân vật để xem Hồ sơ & Kết bạn
     this.setInteractive({ cursor: 'pointer' });
@@ -67,19 +68,67 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     });
   }
 
+  isStardewAvatar() {
+    return Boolean(this.avatarId && this.avatarId.startsWith('stardew_')) || (this.height >= 100);
+  }
+
+  getCharacterOffsets() {
+    const isStardew = this.isStardewAvatar();
+    return {
+      isStardew,
+      feetY: isStardew ? 58 : 30,
+      nameTagY: isStardew ? -62 : -38,
+      speechY: isStardew ? -92 : -52,
+      shadowW: isStardew ? 34 : 22,
+      shadowH: isStardew ? 12 : 8,
+      equippedX: isStardew ? 22 : 14,
+      equippedY: isStardew ? -12 : -8
+    };
+  }
+
+  applyCharacterOffsets() {
+    const offsets = this.getCharacterOffsets();
+    if (this.shadowEllipse) {
+      this.shadowEllipse.setSize(offsets.shadowW, offsets.shadowH);
+      this.shadowEllipse.setPosition(this.x, this.y + offsets.feetY);
+    }
+    if (this.nameTagContainer) {
+      this.nameTagContainer.setPosition(this.x, this.y + offsets.nameTagY);
+    }
+    if (this.speechBubble) {
+      this.speechBubble.setPosition(this.x, this.y + offsets.speechY);
+    }
+    if (this.equippedContainer) {
+      this.equippedContainer.setPosition(this.x + offsets.equippedX, this.y + offsets.equippedY);
+    }
+    this.setDepth(this.y + offsets.feetY);
+  }
+
+  setTexture(key, frame) {
+    super.setTexture(key, frame);
+    if (typeof key === 'string') {
+      this.avatarId = key.replace(/^char_/, '');
+    }
+    if (this.applyCharacterOffsets) {
+      this.applyCharacterOffsets();
+    }
+    return this;
+  }
+
   createNameTag() {
     if (this.nameTagContainer) {
       this.nameTagContainer.destroy();
     }
 
-    this.nameTagContainer = this.scene.add.container(this.x, this.y - 38);
+    const offsets = this.getCharacterOffsets();
+    this.nameTagContainer = this.scene.add.container(this.x, this.y + offsets.nameTagY - 10);
     this.nameTagContainer.setDepth(1000001);
     this.nameTagContainer.setAlpha(0);
 
     // Hiệu ứng nảy vào êm ái khi người chơi khác xuất hiện
     this.scene.tweens.add({
       targets: this.nameTagContainer,
-      y: this.y - 28,
+      y: this.y + offsets.nameTagY,
       alpha: 1,
       duration: 320,
       ease: 'Back.easeOut'
@@ -238,6 +287,7 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (equippedItemId !== undefined) {
       this.setEquippedItem(equippedItemId);
     }
+    this.applyCharacterOffsets();
     this.createNameTag();
   }
 
@@ -486,9 +536,11 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
       this.scaleX = 1.0;
     }
 
+    const offsets = this.getCharacterOffsets();
+
     // Cập nhật vị trí bóng chân và co giãn nhẹ theo nhịp bước
     if (this.shadowEllipse) {
-      this.shadowEllipse.setPosition(this.x, this.y + 30);
+      this.shadowEllipse.setPosition(this.x, this.y + offsets.feetY);
       this.shadowEllipse.setDepth(this.y - 0.1);
       let shadowScale = 1.0;
       if (isVisiblyMoving) {
@@ -503,18 +555,18 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     if (this.lastX !== this.x || this.lastY !== this.y) {
       this.lastX = this.x;
       this.lastY = this.y;
-      this.setDepth(this.y + 30);
+      this.setDepth(this.y + offsets.feetY);
 
       if (this.nameTagContainer) {
-        this.nameTagContainer.setPosition(this.x, this.y - 28);
+        this.nameTagContainer.setPosition(this.x, this.y + offsets.nameTagY);
       }
 
       if (this.speechBubble) {
-        this.speechBubble.setPosition(this.x, this.y - 52);
+        this.speechBubble.setPosition(this.x, this.y + offsets.speechY);
       }
 
       if (this.equippedContainer) {
-        this.equippedContainer.setPosition(this.x + 14, this.y - 8);
+        this.equippedContainer.setPosition(this.x + offsets.equippedX, this.y + offsets.equippedY);
       }
     }
 
