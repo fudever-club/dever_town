@@ -10,6 +10,7 @@
 ---
 
 ## 📌 MỤC LỤC
+0. [Bản Chỉ Lệnh Sẵn Sàng Copy-Paste Cho Agent Kế Nhiệm (Ready-to-Use Agent Directive)](#0-bản-chỉ-lệnh-sẵn-sàng-copy-paste-cho-agent-kế-nhiệm-ready-to-use-agent-directive)
 1. [Quy Tắc Vận Hành Bắt Buộc (Critical Rules)](#1-quy-tắc-vận-hành-bắt-buộc-critical-rules)
 2. [Hiện Trạng & Kiến Trúc 12 Phân Khu (12-Room Universe Topology)](#2-hiện-trạng--kiến-trúc-12-phân-khu-12-room-universe-topology)
 3. [Hệ Thống Nhân Vật Stardew Valley HD (128×192 px Standard)](#3-hệ-thống-nhân-vật-stardew-valley-hd-128192-px-standard)
@@ -17,6 +18,43 @@
 5. [Hệ Thống Tọa Độ Ngồi (Seating & Chair Anchors)](#5-hệ-thống-tọa-độ-ngồi-seating--chair-anchors)
 6. [Lộ Trình Triển Khai Tiếp Theo (Actionable Implementation Backlog)](#6-lộ-trình-triển-khai-tiếp-theo-actionable-implementation-backlog)
 7. [Quy Chuẩn Kiểm Thử & Nghiệm Thu (Verification Gate)](#7-quy-chuẩn-kiểm-thử--nghiệm-thu-verification-gate)
+
+---
+
+## 0. BẢN CHỈ LỆNH SẴN SÀNG COPY-PASTE CHO AGENT KẾ NHIỆM (READY-TO-USE AGENT DIRECTIVE)
+
+> [!TIP]
+> **Người dùng chỉ cần copy toàn bộ nội dung trong khối code dưới đây và dán trực tiếp vào khung chat của Agent mới để bắt đầu ngay:**
+
+```text
+Chào bạn, bạn là Lead Gameplay & Systems Engineer tiếp quản dự án DEVER TOWN (Metaverse 2D Pixel Sinh Viên FPT University Đà Nẵng & CLB FU-DEVER) tại workspace:
+`d:\THStudy\DeverClub\DEVER_TOWN`.
+
+Dự án hiện đã hoàn tất 100% phần Visual & Architecture: Toàn bộ 12/12 phân khu đã được nâng cấp lên chuẩn Painted Map V2 (1376×768 px) bằng Nano Banana AI, và hệ thống Avatar Chibi Anime Stardew Valley HD (128×192 px frame, sheet 512×768 px) đã tích hợp sâu vào Phaser 3.
+
+Nhiệm vụ của bạn là hiện thực hóa các cơ chế Gameplay, Minigames, 11 NPCs và Multiplayer Synchronization theo tài liệu bàn giao.
+
+TRƯỚC KHI BẮT ĐẦU, BẠN BẮT BUỘC TUÂN THỦ CÁC QUY TẮC SAU:
+1. Đọc kỹ 2 tài liệu kim chỉ nam trong workspace:
+   - `docs/HANDOVER_DEVELOPMENT_PLAN.md` (Toàn bộ kiến trúc 12 phòng, hệ thống Stardew HD, va chạm, tọa độ ghế ngồi, backlog chi tiết).
+   - `../PROJECT_MEMORY.md` (Nhật ký bàn giao ca và bối cảnh tích hợp).
+2. Quy tắc Git nghiêm ngặt:
+   - Luôn làm việc và commit trên nhánh `develop_hung` (`git checkout develop_hung`).
+   - TUYỆT ĐỐI KHÔNG PUSH REMOTE (`origin`, `org`), chỉ commit local với cờ tác giả:
+     `git commit -m "feat/fix: ..." --author="RaH11 <hungnguyen.190206@gmail.com>"`.
+   - Không để lại uncommitted changes khi kết thúc ca làm việc.
+3. Quy tắc Emoji (Strict 0% Budget):
+   - CẤM 100% Emoji trên tất cả nhãn zone tương tác lơ lửng khi bấm [E], tên event, nút bấm CTA, tabs, toast popup và console logs.
+4. Ưu tiên triển khai:
+   - Gói 1: 4 Minigames (Bóng rổ 3 điểm, Bóng bàn FPTU, Barista Cà phê muối, Săn bug Server Dungeon) áp dụng FSM và tách rời config tại `src/config/minigamesConfig.js`.
+   - Gói 2: Tích hợp 11 NPC vào 12 phòng theo tọa độ chuẩn và chuỗi 5 nhiệm vụ Orientation Quests cho tân sinh viên qua `QuestManager.js`.
+   - Gói 3: Đồng bộ RemotePlayer 128×192 px và trạng thái ngồi bàn/ghế qua Socket.io.
+5. Nghiệm thu:
+   - Chạy `cmd /c npm run build` (phải PASS 100% không lỗi).
+   - Chạy `node scripts/capture_new_rooms_live.mjs` để kiểm tra trực quan in-game.
+
+Bây giờ hãy đọc `docs/HANDOVER_DEVELOPMENT_PLAN.md`, xác nhận hiện trạng và bắt đầu triển khai nhiệm vụ đầu tiên!
+```
 
 ---
 
@@ -150,34 +188,104 @@ Khi nhân vật kích hoạt trạng thái ngồi:
 
 Agent kế nhiệm hãy thực hiện theo thứ tự ưu tiên các gói công việc sau:
 
-### Gói 1: Hoàn Thiện Minigames Thể Thao & Giải Trí (Priority High)
-1. **Minigame Ném Bóng Rổ 3 Điểm (`sports_complex` - zone `zone_sports_basketball`):**
-   - Vị trí: `x: 680, y: 470`.
-   - Cơ chế: Căn lực ném bóng (Angle & Power Gauge), mô phỏng quỹ đạo parabol, tính điểm combo ném vào rổ liên tiếp trong 60 giây. Thưởng D-Coin theo bậc xếp hạng.
-2. **Minigame Đánh Bóng Bàn FPTU (`sports_complex` - zone `zone_sports_pingpong`):**
-   - Vị trí: `x: 1170, y: 510`.
-   - Cơ chế: Phản xạ đánh bóng qua lại với AI hoặc người chơi thứ 2 qua socket.
-3. **Minigame Pha Chế Barista Cà Phê Muối & Trà Sữa (`canteen_cafe` - zone `zone_cafe_barista`):**
-   - Vị trí: `x: 880, y: 340`.
-   - Cơ chế: Rhythm game (Q-W-E-R timing bar). Chọn đúng nguyên liệu: Cà phê phin, kem muối béo, sữa đặc, đá viên. Đạt điểm "Perfect Brew" để phục vụ khách hàng NPC.
-4. **Minigame Hầm Ngục Săn Bug Server (`server_dungeon`):**
-   - 3 sự cố: `NullPointerException` (240, 520), `Memory Leak Slime` (688, 590), `Infinite Loop` (1120, 540), và `Máy Trạm Trung Tâm` (688, 320).
-   - Cơ chế: Câu đố sửa code trực tiếp (Quick Debug Quiz), chọn đáp án hoặc gõ dòng lệnh vá lỗi đúng để giải phóng hệ thống và nhận mảnh Logic Shards.
+### Gói 1: Hoàn Thiện 4 Minigames Thể Thao & Kỹ Thuật (Priority High)
 
-### Gói 2: Hệ Thống Nhiệm Vụ Tân Sinh Viên (Orientation Quests & 11 NPCs)
-1. **Kết nối 11 NPC vào đúng vị trí theo sơ đồ tại `docs/plans/PLAN_v0.9_CAMPUS_ROOMS_PAINTED_ART_AND_PORTAL_ROUTING.md`:**
-   - Đảm bảo khi nói chuyện hiển thị đúng ảnh chân dung `portrait_npc_...` từ `public/assets/characters/portraits/`.
-2. **Chuỗi nhiệm vụ "FPTU Tour - Hành Trình Khám Phá Campus":**
-   - Nhiệm vụ 1: Gặp Thư Ký Ánh tại Quầy Lễ Tân Tòa Alpha làm thủ tục thẻ sinh viên.
-   - Nhiệm vụ 2: Đến Căn Tin thử cà phê muối của Barista An.
-   - Nhiệm vụ 3: Vào Thư Viện nhận cẩm nang ôn thi SWE201c từ Trưởng ban Học thuật Kiệt.
-   - Nhiệm vụ 4: Tham quan Phòng Kỷ Niệm và bái Linh vật Cóc Vàng.
-   - Nhiệm vụ 5: Xuống Hầm Máy Chủ xử lý sự cố NullPointerException đầu tiên.
+#### 1. Minigame Ném Bóng Rổ 3 Điểm (`sports_complex` - zone `zone_sports_basketball`)
+- **Tọa độ kích hoạt:** `x: 680, y: 470` trong `sports_complex`.
+- **File triển khai:** `src/minigames/BasketballGame.js` (hoặc mở rộng `MinigameModal.js`).
+- **File config:** `src/config/minigamesConfig.js` (đã có sẵn `BASKETBALL_CONFIG` với thông số vành rổ, bảng mica, góc ném và hệ số điểm).
+- **Máy trạng thái (FSM):**
+  `IDLE -> AIMING (Góc ném) -> CHARGING (Căn lực Power Gauge) -> SHOOTING (Phóng bóng parabol) -> BALL_PHYSICS (Va chạm vành/bảng mica/xé lưới Swish) -> RESULT -> IDLE`.
+- **Game Feel & Juice:** Lò xo lưới rổ rung lắc khi bóng lọt rổ, hiệu ứng combo ngọn lửa Streetball (x2 điểm sau 3 quả liên tiếp, x3 sau 6 quả), floating text `+3 SWISH!`.
+- **Phần thưởng:** 30 D-Coin khi hoàn thành phiên 10 quả (kết nối nhiệm vụ `basketball_shoot` trong `QuestManager.js`).
+
+#### 2. Minigame Đánh Bóng Bàn FPTU (`sports_complex` - zone `zone_sports_pingpong`)
+- **Tọa độ kích hoạt:** `x: 1170, y: 510` trong `sports_complex`.
+- **File triển khai:** `src/minigames/PingPongGame.js`.
+- **Cơ chế:**
+  - Bàn bóng bàn nhìn nghiêng 2.5D, người chơi điều khiển vợt phía dưới bằng chuột/phím mũi tên.
+  - Vật lý bóng có xoáy (Topspin, Backspin) và độ nảy mặt bàn gỗ.
+  - Chế độ chơi: Đấu đơn với Bot AI (3 cấp độ: Tân sinh viên, Tuyển trường, Kiện tướng FPTU) hoặc 2 người chơi qua Socket.io.
+- **Tiêu chuẩn kết thúc:** Thi đấu 1 hiệp 11 điểm.
+
+#### 3. Minigame Pha Chế Barista Cà Phê Muối & Trà Sữa (`canteen_cafe` - zone `zone_cafe_barista`)
+- **Tọa độ kích hoạt:** `x: 880, y: 340` tại Quầy Bar Căn Tin.
+- **File triển khai:** `src/minigames/BaristaGame.js`.
+- **Cơ chế:**
+  - Trò chơi nhịp điệu (Rhythm Action Bar với các phím `Q - W - E - R`).
+  - Thanh nhịp điệu trượt từ phải sang trái, người chơi bấm trúng vùng Hitbox "Perfect" hoặc "Great" để rót đúng định lượng nguyên liệu:
+    * Cà phê muối: Phin Cà Phê (Q) -> Sữa Đặc (W) -> Đá Viên (E) -> Lớp Kem Muối Béo (R).
+    * Bạc xỉu 3 tầng: Sữa Đặc (Q) -> Sữa Tươi (W) -> Cà Phê (E) -> Đá Viên (R).
+  - Đánh giá chất lượng ly nước (1 sao đến 3 sao), phục vụ NPC khách hàng để nhận D-Coin và hoàn thành nhiệm vụ `barista_coffee`.
+
+#### 4. Minigame Hầm Ngục Săn Bug Server (`server_dungeon`)
+- **Các trạm sự cố:**
+  - `zone_dungeon_nullpointer` tại `(240, 520)`: Buồng lồng laser xanh lam giam giữ lỗi NullPointer.
+  - `zone_dungeon_memoryleak` tại `(688, 590)`: Hồ xoáy slime xanh lục chứa rò rỉ bộ nhớ RAM.
+  - `zone_dungeon_infiniteloop` tại `(1120, 540)`: Vòng tròn vi mạch vàng chứa vòng lặp vô tận.
+  - `zone_dungeon_terminal` tại `(688, 320)`: Máy trạm kiểm soát trung tâm.
+- **File triển khai:** `src/minigames/ServerDebugGame.js` (kế thừa FSM từ `QuizEngine.js`).
+- **Cơ chế:**
+  - Khi tương tác `[E]`, hiển thị màn hình Console CRT hiển thị đoạn code lỗi thực tế (Java, JavaScript, C++).
+  - Người chơi chọn 1 trong 4 phương án vá lỗi (Quick Patch) hoặc kéo thả lệnh sửa code đúng trong vòng 20 giây.
+  - Vá lỗi thành công sẽ giải phóng buồng giam, nhận Logic Shards và D-Coin.
+
+---
+
+### Gói 2: Hệ Thống 11 NPC & Chuỗi Nhiệm Vụ Orientation Quests
+
+#### 1. Bảng Tọa Độ & Phân Khu Chuẩn Hóa Của 11 NPC:
+
+| STT | Tên NPC | Chức Vụ / Vai Trò | Room ID | Tọa Độ (x, y) | Hướng | Vai Trò Gameplay |
+| :---: | :--- | :--- | :--- | :---: | :---: | :--- |
+| **1** | **Nguyễn Thị Ngọc Ánh** | Thư Ký CLB • K20 | `alpha_interior` | `(684, 350)` | Down | Quầy Lễ Tân: Nhận nhiệm vụ tân sinh viên, cấp thẻ thành viên. |
+| **2** | **Đặng Quang Nhật** | Chủ Nhiệm CLB • K20 | `alpha_interior` | `(520, 320)` | Down | Bảng tin CLB: Giới thiệu 4 track chuyên môn (Web, AI, Mobile, Game). |
+| **3** | **Nguyễn Thái Hưng** | Phó Chủ Nhiệm CLB • K20 | `alpha_interior` | `(430, 440)` | Right | Vách kính Lab: Giới thiệu Metaverse DEVER TOWN & Đấu trường Arena. |
+| **4** | **Cô Y Tá** | Trạm Y Tế FPTU | `alpha_interior` | `(1040, 440)` | Down | Góc Sofa Y Tế: Hồi sinh 50 HP, phát vật phẩm Vitamin C. |
+| **5** | **Barista An** | Chuyên Gia Pha Chế | `canteen_cafe` | `(880, 340)` | Down | Quầy Bar: Hướng dẫn minigame pha chế cà phê muối. |
+| **6** | **Lương Văn Tuấn Kiệt** | Trưởng Ban Học Thuật | `library_lounge` | `(600, 350)` | Down | Bàn học Thư Viện: Tặng đề cương ôn thi SWE201c, CSD201. |
+| **7** | **Phạm Đức Truyền** | Lead Ban Thuật Toán | `dever_lab` | `(650, 450)` | Down | Bàn Hackathon Lab: Hướng dẫn giải thuật ICPC và chấm code tự động. |
+| **8** | **Nguyễn Lê Đăng Thành** | Game Lead DEVER TOWN | `game_arcade` | `(450, 350)` | Down | Máy Arcade: Mở khóa các game thùng Retro và máy gắp gấu. |
+| **9** | **Hồ Quốc Thắng** | Trưởng Ban Sự Kiện | `sports_complex` | `(450, 300)` | Down | Khán đài Thể Thao: Tổ chức giải đấu bóng rổ & bóng chuyền. |
+| **10** | **Sử Quan Đức** | Biên Niên Sử FU-DEVER | `memory_room` | `(380, 400)` | Down | Bàn Triển Lãm: Thuyết minh truyền thống 9+ năm qua 10 thế hệ CLB. |
+| **11** | **Lê Đình Đăng Khoa & Đoàn Phước Trường Hải** | Cố Vấn Tech & Trưởng Ban Media | `web_room` | Khoa: `(580, 500)`<br>Hải: `(760, 500)` | Khoa: Up<br>Hải: Up | Bàn Dựng Phim: Khoa review kiến trúc vi dịch vụ, Hải hướng dẫn làm media. |
+
+#### 2. Chuỗi 5 Nhiệm Vụ Tân Sinh Viên (FPTU Campus Orientation Quest Chain):
+Triển khai thông qua `src/managers/QuestManager.js`:
+- **Nhiệm vụ 1: "Thủ Tục Nhập Học"** -> Nói chuyện với Thư Ký Ánh tại Quầy Lễ Tân Tòa Alpha. Nhận 50 D-Coin & Thẻ Sinh Viên.
+- **Nhiệm vụ 2: "Năng Lượng Sáng Tạo"** -> Đến Căn Tin gặp Barista An, hoàn thành 1 ly cà phê muối đạt Perfect Brew.
+- **Nhiệm vụ 3: "Bí Kíp Qua Môn"** -> Vào Thư Viện gặp Trưởng ban Học thuật Kiệt để nhận Cẩm nang ôn thi SWE201c.
+- **Nhiệm vụ 4: "Cội Nguồn Truyền Thống"** -> Đến Phòng Kỷ Niệm gặp Sử Quan Đức và bái Linh vật Cóc Vàng.
+- **Nhiệm vụ 5: "Thử Thách Đầu Đời"** -> Xuống Hầm Máy Chủ xử lý sự cố NullPointerException đầu tiên.
+
+---
 
 ### Gói 3: Tối Ưu Mạng Đa Người Chơi (Multiplayer Synchronization)
-1. **Đồng bộ hóa Animation Stardew Valley cho Remote Players (`src/entities/RemotePlayer.js`):**
-   - Đảm bảo `RemotePlayer` tải đúng spritesheet `char_stardew_...` và render mượt mà 128×192 px.
-   - Đồng bộ trạng thái ngồi (`sit_chair`, `sit_sofa`) qua socket để người chơi khác nhìn thấy đồng đội đang ngồi bàn làm việc.
+
+1. **Chuẩn Hóa RemotePlayer (`src/entities/RemotePlayer.js`):**
+   - Đảm bảo `RemotePlayer` tải đúng các spritesheet Stardew Valley Chibi HD (`char_stardew_fptu_polo`, `char_stardew_aodai`, `char_stardew_wizard`, `char_stardew_cyber`, `char_stardew_dev_hoodie`).
+   - Cài đặt đúng kích thước khung hình `128×192 px` và Dynamic Character Offsets:
+     * Hitbox va chạm: `body.setSize(40, 18); body.setOffset(44, 166);`
+     * Bóng đổ: `shadowEllipse` tại `y + 88`.
+     * Nametag: `nameTagContainer` tại `y - 92`.
+2. **Đồng Bộ Trạng Thái Ngồi Ghế (`sit_chair` / `sit_sofa`) Qua Socket.io:**
+   - Khi người chơi bấm `[E]` ngồi xuống bàn/ghế, gửi socket event `player_sit: { roomId, zoneId, seatX, seatY, direction }`.
+   - Các client khác nhận event `player_sit` và tự động cập nhật tư thế ngồi của `RemotePlayer` tương ứng (crop thân dưới và ẩn chân sau mặt bàn).
+   - Khi đứng dậy, gửi `player_stand` để khôi phục animation đi lại bình thường.
+
+---
+
+### Gói 4: Hệ Thống Kinh Tế D-Coin, Bảng Xếp Hạng & Phần Thưởng
+
+1. **Quản lý D-Coin (`src/config/economyConfig.js`):**
+   - Lưu trữ số dư D-Coin an toàn trong LocalStorage / Backend Database.
+   - Bảng quy đổi:
+     * Thắng minigame thể thao: +10 – 30 D-Coin.
+     * Hoàn thành Daily Quest: +15 – 30 D-Coin.
+     * Vá lỗi Server Bug: +30 – 100 D-Coin.
+2. **Cửa Hàng Quà Tặng & Danh Hiệu:**
+   - Mua vật phẩm thời trang (áo hoodie CLB, kính hacker neon, đàn guitar).
+   - Mở khóa danh hiệu hiển thị trên Nametag (`[Tân Binh]`, `[Chuyên Gia Barista]`, `[Thợ Săn Bug]`, `[Kiện Tướng ICPC]`).
 
 ---
 
