@@ -16,6 +16,46 @@ export const CHARACTER_PRESETS = [
     tags: ['Stardew Valley', 'Mới', 'Chibi HD', 'FU-DEVER']
   },
   {
+    id: 'stardew_fptu_polo',
+    name: 'Sinh Viên FPT Polo Cam [Stardew Valley]',
+    role: 'Sinh Viên FPTU • Stardew Valley',
+    gender: 'male',
+    color: '#f97316',
+    spriteKey: 'char_stardew_fptu_polo',
+    desc: 'Thiết kế chuẩn sinh viên FPTU: Tóc anime nâu layer, áo polo cam có cổ FPT, thẻ sinh viên lanyard, balo đeo vai và quần âu xám.',
+    tags: ['Stardew Valley', 'Mới', 'FPTU Polo', 'Sinh Viên']
+  },
+  {
+    id: 'stardew_aodai',
+    name: 'Nữ Sinh Áo Dài Lụa Trắng [Stardew Valley]',
+    role: 'Nữ Sinh FPTU • Stardew Valley',
+    gender: 'female',
+    color: '#ec4899',
+    spriteKey: 'char_stardew_aodai',
+    desc: 'Áo Dài lụa trắng truyền thống thướt tha xẻ tà, quần lụa đen, tóc dài óng ả cài trâm hoa sen vàng, tay cầm cặp sách.',
+    tags: ['Stardew Valley', 'Mới', 'Áo Dài', 'Nữ Sinh']
+  },
+  {
+    id: 'stardew_wizard',
+    name: 'Phù Thủy Công Nghệ [Stardew Valley]',
+    role: 'Tech Sorceress • Stardew Valley',
+    gender: 'female',
+    color: '#8b5cf6',
+    spriteKey: 'char_stardew_wizard',
+    desc: 'Mũ phù thủy nhọn rộng vành tím than, áo choàng pháp sư thêu hoa văn mạch điện cyan phát sáng, tóc bạch kim và quyền trượng ngọc.',
+    tags: ['Stardew Valley', 'Mới', 'Phù Thủy', 'Magic']
+  },
+  {
+    id: 'stardew_cyber',
+    name: 'Cyber Hacker Dị Sắc [Stardew Valley]',
+    role: 'Cyberpunk Coder • Stardew Valley',
+    gender: 'male',
+    color: '#06b6d4',
+    spriteKey: 'char_stardew_cyber',
+    desc: 'Tóc spiky anime đỏ ruby, tai nghe gaming RGB quanh cổ, áo bomber da đinh tán, quần cargo và giày sneaker neon phát sáng.',
+    tags: ['Stardew Valley', 'Mới', 'Cyber', 'Hacker']
+  },
+  {
     id: 'dev_gen10',
     name: 'Dev Hoodie Pro Gen 10 [Aseprite 60FPS]',
     role: 'Top-tier Builder • Aseprite',

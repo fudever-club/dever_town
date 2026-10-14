@@ -3,9 +3,11 @@ import path from 'path';
 
 const ARTIFACT_DIR = 'C:/Users/This PC/.gemini/antigravity-ide/brain/f4243eb1-3b00-4f93-aaec-327220655ce0';
 const ROOMS = [
-  { id: 'canteen_cafe', spawnX: 690, spawnY: 650, name: 'Căn Tin & Cafe' },
-  { id: 'library_lounge', spawnX: 692, spawnY: 650, name: 'Thư Viện Tri Thức' },
-  { id: 'dorm_room', spawnX: 680, spawnY: 650, name: 'Ký Túc Xá FUDA' }
+  { id: 'canteen_cafe', spawnX: 290, spawnY: 650, avatar: 'stardew_fptu_polo', name: 'Căn Tin & Cafe Sạch' },
+  { id: 'library_lounge', spawnX: 790, spawnY: 650, avatar: 'stardew_aodai', name: 'Thư Viện Sạch' },
+  { id: 'game_arcade', spawnX: 380, spawnY: 650, avatar: 'stardew_cyber', name: 'Arcade Gaming' },
+  { id: 'sports_complex', spawnX: 680, spawnY: 650, avatar: 'stardew_fptu_polo', name: 'Khu Thể Thao' },
+  { id: 'meeting_room', spawnX: 680, spawnY: 650, avatar: 'stardew_wizard', name: 'Phòng Họp CLB' }
 ];
 
 async function run() {
@@ -18,7 +20,7 @@ async function run() {
   await page.addInitScript(() => {
     localStorage.setItem('dever_onboarded_v1', '1');
     localStorage.setItem('dever_chat_hint_seen', '1');
-    localStorage.setItem('dever_wardrobe_config', JSON.stringify({ characterId: 'stardew_dev_hoodie' }));
+    localStorage.setItem('dever_wardrobe_config', JSON.stringify({ characterId: 'stardew_fptu_polo' }));
   });
 
   await page.goto('http://localhost:3030/');
@@ -37,35 +39,34 @@ async function run() {
   }
 
   for (const r of ROOMS) {
-    console.log(`Testing room: ${r.id}...`);
-    await page.evaluate(({ roomId, x, y }) => {
+    console.log(`Testing room: ${r.id} with avatar: ${r.avatar}...`);
+    await page.evaluate(({ roomId, x, y, avatarId }) => {
       const scene = window.__DEVER_GAME__?.scene?.getScene('WorldScene');
       if (scene) {
         scene.loadRoom(roomId, x, y, false);
         if (scene.player) {
-          scene.player.setTexture('char_stardew_dev_hoodie');
-          scene.player.avatarId = 'stardew_dev_hoodie';
-          scene.player.play('idle_down_stardew_dev_hoodie', true);
+          scene.player.setTexture(`char_${avatarId}`);
+          scene.player.avatarId = avatarId;
+          scene.player.play(`idle_down_${avatarId}`, true);
         }
       }
       const sel = document.getElementById('room-selector');
       if (sel) sel.value = roomId;
-    }, { roomId: r.id, x: r.spawnX, y: r.spawnY });
+    }, { roomId: r.id, x: r.spawnX, y: r.spawnY, avatarId: r.avatar });
 
     await page.waitForTimeout(2500);
 
-    const shotName = `live_${r.id}_stardew.png`;
+    const shotName = `live_clean_${r.id}_${r.avatar}.png`;
     const shotPath = path.join(ARTIFACT_DIR, shotName);
     await page.screenshot({ path: shotPath });
     console.log(`Saved screenshot: ${shotPath}`);
 
-    // Also copy to public/screenshots for web/user reference
     const pubPath = path.join('public', 'screenshots', shotName);
     await page.screenshot({ path: pubPath });
   }
 
   await browser.close();
-  console.log('All captures completed successfully!');
+  console.log('All clean room captures completed successfully!');
 }
 
 run().catch(console.error);

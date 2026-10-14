@@ -574,44 +574,47 @@ export const MAPS_CONFIG = {
 
   game_arcade: {
     id: 'game_arcade',
-    name: 'Tòa Gamma Plus - Arcade Gaming & Robot Studio',
-    description: 'Không gian máy game arcade cổ điển, đấu robot và thử tài các mini-game của CLB DEVER.',
-    spawnPoint: { x: 400, y: 450 },
-    layout: [
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18,  9, 15 ],
-      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9,  9,  9, 15 ],
-      [ 15,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9, 18, 18, 18,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  4,  4,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
-    ],
+    name: 'Tòa Gamma Plus - Arcade Gaming & Esport Studio',
+    description: 'Không gian máy game arcade cổ điển, đấu trường Esport RGB và góc máy gắp thú bông CLB DEVER.',
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_game_arcade',
+      imagePath: 'devertown_game_arcade_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 380, y: 680 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls chừa cửa ra vào x: 320 - 440
+        { x: 0, y: 725, w: 320, h: 43 },
+        { x: 440, y: 725, w: 936, h: 43 },
+        // Dãy máy thùng arcade dọc tường trái (5 máy + ghế đẩu)
+        { x: 32, y: 220, w: 430, h: 500 },
+        // Bàn thi đấu Esport hàng sau
+        { x: 570, y: 350, w: 350, h: 220 },
+        // Bàn thi đấu Esport hàng trước
+        { x: 380, y: 530, w: 350, h: 200 },
+        // Máy gắp thú bông Claw Machine góc trên-phải
+        { x: 990, y: 340, w: 170, h: 320 },
+        // Khu sofa gaming góc phải
+        { x: 1140, y: 560, w: 200, h: 180 },
+        { x: 880, y: 680, w: 280, h: 88 }
+      ]
+    },
+    spawnPoint: { x: 380, y: 680 },
     portals: [
-      { tileX: 12, tileY: 17, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Về Tech Lab' },
-      { tileX: 13, tileY: 17, targetRoomId: 'main_hall', targetSpawn: { x: 746, y: 620 }, label: 'Về Sảnh Chính' }
+      { x: 380, y: 735, tileX: 12, tileY: 17, targetRoomId: 'dever_lab', targetSpawn: { x: 400, y: 450 }, label: 'Về Tech Lab' }
     ],
     zones: [
-      { id: 'zone_arcade_snake', type: 'arcade_games', defaultGame: 'snake', tileX: 4, tileY: 4, name: 'Máy Game: Rắn Săn Mồi Cyber Snake', label: 'Chơi Rắn Săn Mồi' },
-      { id: 'zone_arcade_sokoban', type: 'arcade_games', defaultGame: 'sokoban', tileX: 10, tileY: 4, name: 'Máy Game: Buggy Đẩy Hộp (Sokoban)', label: 'Chơi Đẩy Hộp' },
-      { id: 'zone_arcade_goldminer', type: 'arcade_games', defaultGame: 'goldminer', tileX: 16, tileY: 4, name: 'Máy Game: Cóc Vàng Đào Kho Báu', label: 'Chơi Đào Vàng' },
-      { id: 'zone_arcade_robot_hub', type: 'robot_showcase', tileX: 21, tileY: 4, name: 'Trạm Trưng Bày & Tải Game Robot CLB', label: 'Tải Game Robot' },
-      { id: 'zone_arcade_flappybug', type: 'arcade_games', defaultGame: 'flappybug', tileX: 4, tileY: 8, name: 'Máy Game: Flappy Buggy', label: 'Chơi Flappy Bug' },
-      { id: 'zone_arcade_geometrydash', type: 'arcade_games', defaultGame: 'geometrydash', tileX: 10, tileY: 8, name: 'Máy Game: Dever Dash 3.0', label: 'Chơi Dever Dash' },
-      { id: 'zone_arcade_match3', type: 'arcade_games', defaultGame: 'match3', tileX: 16, tileY: 8, name: 'Máy Game: Cyber Candy Match', label: 'Chơi Cyber Match' },
-      { id: 'zone_arcade_pacman', type: 'arcade_games', defaultGame: 'pacman', tileX: 19, tileY: 8, name: 'Máy Game: Cyber Pac-Man', label: 'Chơi Pac-Man' },
-      { id: 'zone_arcade_meeting', type: 'meeting_stage', tileX: 12, tileY: 11, name: 'Bàn Đấu Game & Livestream', label: 'Livestream Game' }
+      { id: 'zone_arcade_snake', type: 'arcade_games', defaultGame: 'snake', x: 100, y: 620, name: 'Máy Game: Cyber Snake', label: 'Chơi Rắn Săn Mồi' },
+      { id: 'zone_arcade_sokoban', type: 'arcade_games', defaultGame: 'sokoban', x: 180, y: 540, name: 'Máy Game: Buggy Đẩy Hộp (Sokoban)', label: 'Chơi Đẩy Hộp' },
+      { id: 'zone_arcade_goldminer', type: 'arcade_games', defaultGame: 'goldminer', x: 260, y: 460, name: 'Máy Game: Cóc Vàng Đào Kho Báu', label: 'Chơi Đào Vàng' },
+      { id: 'zone_arcade_pacman', type: 'arcade_games', defaultGame: 'pacman', x: 340, y: 380, name: 'Máy Game: Cyber Pac-Man', label: 'Chơi Pac-Man' },
+      { id: 'zone_arcade_claw', type: 'arcade_games', defaultGame: 'flappybug', x: 1070, y: 650, name: 'Máy Gắp Thú Buggy & Cóc Vàng', label: 'Gắp Thú Bông' },
+      { id: 'zone_arcade_esport', type: 'meeting_stage', x: 740, y: 520, name: 'Đấu Trường Esport Tournament', label: 'Thi Đấu Esport' },
+      { id: 'zone_arcade_lounge', type: 'sit_sofa', x: 1040, y: 710, name: 'Góc Sofa Gaming & Controller', label: 'Ngồi Chơi Game' }
     ]
   },
 
@@ -625,48 +628,51 @@ export const MAPS_CONFIG = {
       imageKey: 'map_library_lounge',
       imagePath: 'devertown_library_lounge_v1.jpg',
       width: 1376, height: 768,
-      spawnPoint: { x: 692, y: 680 },
+      spawnPoint: { x: 790, y: 680 },
       collisionRects: [
         // border walls
-        { x: 0, y: 0, w: 940, h: 40 },
-        { x: 940, y: 0, w: 436, h: 420 }, // Tủ sách cao kịch trần góc trên phải
+        { x: 0, y: 0, w: 1376, h: 40 },
         { x: 0, y: 0, w: 32, h: 768 },
         { x: 1344, y: 0, w: 32, h: 768 },
-        // bottom walls chừa cửa ra vào x: 645 - 740
-        { x: 0, y: 725, w: 645, h: 43 },
-        { x: 740, y: 725, w: 636, h: 43 },
-        // Tủ sách thấp & cây giữa 2 cửa sổ trên
-        { x: 375, y: 320, w: 240, h: 100 },
-        { x: 620, y: 330, w: 130, h: 90 },
-        // Dãy tủ sách thấp đáy phòng bên trái
-        { x: 60, y: 640, w: 540, h: 90 },
-        // Bàn đọc nhỏ góc dưới và dãy tủ sách thấp đáy phòng bên phải
-        { x: 775, y: 650, w: 120, h: 80 },
-        { x: 940, y: 640, w: 400, h: 90 },
-        // 3 Bàn học dài trung tâm (gồm bàn + ghế có sinh viên ngồi)
-        { x: 140, y: 450, w: 160, h: 260 }, // Bàn 1 (trái)
-        { x: 370, y: 450, w: 160, h: 260 }, // Bàn 2 (giữa)
-        { x: 600, y: 450, w: 160, h: 260 }, // Bàn 3 (phải)
-        // Khu sofa đọc sách thảm Ba Tư bên phải
-        { x: 1010, y: 440, w: 90, h: 90 }, // Ghế bành trên-trái
-        { x: 1180, y: 440, w: 90, h: 90 }, // Ghế bành trên-phải
-        { x: 1095, y: 510, w: 85, h: 85 }, // Bàn tròn giữa thảm
-        { x: 1010, y: 640, w: 90, h: 85 }, // Ghế bành dưới-trái
-        { x: 1180, y: 640, w: 90, h: 85 }  // Ghế bành dưới-phải
+        // bottom walls chừa cửa ra vào x: 730 - 850
+        { x: 0, y: 725, w: 730, h: 43 },
+        { x: 850, y: 725, w: 526, h: 43 },
+        // Dãy tủ sách cao bên trái
+        { x: 0, y: 40, w: 230, h: 630 },
+        // Bàn thủ thư & quả địa cầu phía trên
+        { x: 350, y: 260, w: 220, h: 90 },
+        { x: 630, y: 260, w: 180, h: 90 },
+        // Tủ sách trên-phải & lò sưởi
+        { x: 850, y: 40, w: 400, h: 260 },
+        // Dãy tủ sách phân cách khu đọc sách
+        { x: 890, y: 290, w: 410, h: 190 },
+        // Tủ sách thấp mép phải
+        { x: 1270, y: 330, w: 106, h: 350 },
+        // Thảm Ba Tư & ghế bành đọc sách
+        { x: 1125, y: 430, w: 110, h: 120 },
+        { x: 1020, y: 520, w: 140, h: 100 },
+        { x: 1150, y: 550, w: 130, h: 120 },
+        // Bàn học dãy trái (3 bàn)
+        { x: 220, y: 350, w: 220, h: 100 },
+        { x: 150, y: 450, w: 250, h: 110 },
+        { x: 90, y: 570, w: 280, h: 140 },
+        // Bàn học dãy giữa (3 bàn)
+        { x: 500, y: 350, w: 220, h: 100 },
+        { x: 480, y: 450, w: 250, h: 110 },
+        { x: 460, y: 570, w: 280, h: 140 }
       ]
     },
-    spawnPoint: { x: 692, y: 680 },
+    spawnPoint: { x: 790, y: 680 },
     portals: [
-      { x: 692, y: 735, tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
+      { x: 790, y: 735, tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
-      { id: 'zone_lib_swe', type: 'swe201c_guide', x: 1050, y: 380, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
-      { id: 'zone_lib_charter', type: 'dever_charter', x: 490, y: 420, name: 'Bàn Quy Chế Hoạt Động CLB', label: 'Quy Chế CLB' },
-      { id: 'zone_lib_coffee', type: 'coffee_lofi', x: 835, y: 645, name: 'Quầy Cà Phê & Pomodoro', label: 'Cà Phê & Lofi' },
-      { id: 'zone_lib_slides', type: 'whiteboard_slides', x: 860, y: 380, name: 'Khu Đọc Tài Liệu Ôn Thi', label: 'Tài Liệu Sách' },
-      { id: 'zone_lib_code', type: 'code_editor', x: 230, y: 550, name: 'Bàn Tự Học & Sổ Tay', label: 'Sổ Tay & Code' },
-      { id: 'zone_lib_sit_sofa', type: 'sit_sofa', x: 1135, y: 485, name: 'Sofa Đọc Sách Thư Viện', label: 'Ngồi Đọc Sách' },
-      { id: 'zone_lib_sit_desk', type: 'sit_chair', x: 790, y: 530, name: 'Ghế Bàn Học Thư Viện', label: 'Ngồi Tự Học' }
+      { id: 'zone_lib_swe', type: 'swe201c_guide', x: 720, y: 340, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
+      { id: 'zone_lib_charter', type: 'dever_charter', x: 460, y: 340, name: 'Bàn Quy Chế Hoạt Động CLB', label: 'Quy Chế CLB' },
+      { id: 'zone_lib_slides', type: 'whiteboard_slides', x: 1090, y: 380, name: 'Khu Đọc Tài Liệu Ôn Thi', label: 'Tài Liệu Sách' },
+      { id: 'zone_lib_sit_sofa', type: 'sit_sofa', x: 1180, y: 490, name: 'Sofa Đọc Sách Thư Viện', label: 'Ngồi Đọc Sách' },
+      { id: 'zone_lib_sit_desk1', type: 'sit_chair', x: 275, y: 540, name: 'Ghế Bàn Học Thư Viện 1', label: 'Ngồi Tự Học' },
+      { id: 'zone_lib_sit_desk2', type: 'sit_chair', x: 600, y: 540, name: 'Ghế Bàn Học Thư Viện 2', label: 'Ngồi Tự Học' }
     ]
   },
 
@@ -887,72 +893,74 @@ export const MAPS_CONFIG = {
   sports_complex: {
     id: 'sports_complex',
     name: 'Khu Phức Hợp Thể Thao & Nhà Võ Vovinam',
-    // Phase C — Vùng an toàn (Masterplan: Giảng Đường Thi PE Exam).
-    // Phase E sẽ định nghĩa vùng thách đấu (súng nước, bóng đá 3v3) tại đây.
     zone: 'safe',
-    description: 'Sân bóng đá cỏ nhân tạo, sân bóng rổ, sân cầu lông, nhà võ Vovinam và hồ bơi sinh viên FUDA.',
-    spawnPoint: { x: 400, y: 336 },
-    layout: [
-      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 25,  2,  5,  5,  5,  2, 26, 23, 23, 23, 23, 23, 23, 23, 26,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
-      [  2, 24, 24, 24, 24, 24, 24, 24, 24, 24,  2,  5,  5,  5,  2, 23, 23, 23, 23, 23, 23, 23, 23, 23,  2 ],
-      [  2, 25, 24, 24, 24, 24, 24, 24, 24, 25,  2,  5,  5,  5,  2, 26, 23, 23, 23, 23, 23, 23, 23, 26,  2 ],
-      [  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2,  5,  5,  5,  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2 ],
-      [  2, 10,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
-      [  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
-      [  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2,  5,  5,  5,  2,  2,  2,  5,  5,  5,  5,  5,  2,  2,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
-      [  2,  1,  1, 27, 27, 27, 27, 27,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5, 28, 28, 28, 28, 28, 28, 28,  5,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  5,  5,  5,  2,  5,  5,  5,  5,  5,  5,  5,  5,  5,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
+    description: 'Sân bóng rổ trong nhà sàn gỗ, sàn võ Vovinam truyền thống FPTU và bàn thi đấu bóng bàn.',
+    paintedBackground: {
+      imageKey: 'map_sports_complex',
+      imagePath: 'devertown_sports_complex_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 680, y: 680 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls chừa cửa ra vào x: 600 - 760
+        { x: 0, y: 725, w: 600, h: 43 },
+        { x: 760, y: 725, w: 616, h: 43 },
+        // Giá đai võ & kệ võ phục góc trên-trái
+        { x: 70, y: 280, w: 290, h: 170 },
+        // Cột rổ bóng rổ & giá bóng ở giữa-trên
+        { x: 420, y: 220, w: 540, h: 200 },
+        // Tủ đựng vợt cầu lông & tủ đồ góc trên-phải
+        { x: 1040, y: 40, w: 304, h: 320 },
+        // Bàn bóng bàn bên phải (bàn thi đấu + lưới)
+        { x: 1090, y: 530, w: 160, h: 240 },
+        // Kệ vợt bóng bàn mép phải
+        { x: 1300, y: 580, w: 60, h: 220 },
+        // Ghế băng dài mép trái thảm võ
+        { x: 0, y: 490, w: 50, h: 260 }
+      ]
+    },
+    spawnPoint: { x: 680, y: 680 },
     portals: [
-      { tileX: 1, tileY: 9, targetRoomId: 'main_hall', targetSpawn: { x: 1280, y: 600 }, label: 'Về Sảnh Chính' }
+      { x: 680, y: 735, tileX: 1, tileY: 9, targetRoomId: 'main_hall', targetSpawn: { x: 1280, y: 600 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
-        id: 'zone_sports_football',
+        id: 'zone_sports_vovinam',
         type: 'sports_activity',
-        tileX: 5,
-        tileY: 4,
-        name: 'Sân Bóng Đá Mini Cỏ Nhân Tạo FUDA',
-        label: 'Sút Phạt Đền Mini',
-        metadata: { sport: 'football', title: 'SÚT BÓNG VÀO LƯỚI FUDA' }
+        x: 240,
+        y: 600,
+        name: 'Sàn Đấu & Tập Luyện Võ Vovinam FPTU',
+        label: 'Tập Võ Vovinam',
+        metadata: { sport: 'vovinam', title: 'TẬP LUYỆN VÕ VOVINAM FPTU' }
       },
       {
         id: 'zone_sports_basketball',
         type: 'sports_activity',
-        tileX: 19,
-        tileY: 4,
+        x: 680,
+        y: 470,
         name: 'Sân Bóng Rổ FUDA',
         label: 'Ném Bóng 3 Điểm',
         metadata: { sport: 'basketball', title: 'THỬ THÁCH NÉM BÓNG RỔ FUDA' }
       },
       {
-        id: 'zone_sports_volleyball',
+        id: 'zone_sports_pingpong',
         type: 'sports_activity',
-        tileX: 5,
-        tileY: 13,
-        name: 'Sân Bóng Chuyền & Cầu Lông FUDA',
-        label: 'Đập Bóng Chuyền',
-        metadata: { sport: 'volleyball', title: 'SÂN BÓNG CHUYỀN & CẦU LÔNG' }
+        x: 1170,
+        y: 510,
+        name: 'Bàn Thi Đấu Bóng Bàn FPTU',
+        label: 'Đánh Bóng Bàn',
+        metadata: { sport: 'pingpong', title: 'THI ĐẤU BÓNG BÀN' }
       },
       {
-        id: 'zone_sports_pool',
-        type: 'coffee_lofi',
-        tileX: 19,
-        tileY: 12,
-        name: 'Hồ Bơi Sinh Viên FUDA & Ghế Thư Giãn',
-        label: 'Lofi Thư Giãn Bờ Hồ',
-        metadata: { sport: 'pool', title: 'HỒ BƠI SINH VIÊN FUDA' }
+        id: 'zone_sports_rest',
+        type: 'sit_chair',
+        x: 1000,
+        y: 730,
+        name: 'Hàng Ghế Nghỉ Vận Động Viên',
+        label: 'Ngồi Nghỉ Ngơi'
       }
     ]
   },
@@ -966,44 +974,45 @@ export const MAPS_CONFIG = {
       imageKey: 'map_canteen_cafe',
       imagePath: 'devertown_canteen_cafe_v1.jpg',
       width: 1376, height: 768,
-      spawnPoint: { x: 690, y: 680 },
+      spawnPoint: { x: 290, y: 680 },
       collisionRects: [
         // border walls
         { x: 0, y: 0, w: 1376, h: 40 },
         { x: 0, y: 0, w: 32, h: 768 },
         // vách kính nhìn ra sân vườn bên phải
-        { x: 1040, y: 0, w: 336, h: 768 },
-        // tường đáy, chừa lối đi cửa ra vào x: 610-770
-        { x: 0, y: 730, w: 610, h: 38 },
-        { x: 770, y: 730, w: 606, h: 38 },
-        // Quầy cơm & tủ mát cafeteria góc trên-trái
-        { x: 32, y: 40, w: 560, h: 290 },
-        // Quầy cà phê & máy espresso góc trên-giữa
-        { x: 730, y: 40, w: 310, h: 290 },
-        // Bàn ăn 1 (trái)
-        { x: 80, y: 430, w: 200, h: 140 },
-        // Bàn ăn 2 (giữa-trái)
-        { x: 360, y: 410, w: 200, h: 160 },
-        // Bàn ăn 3 (giữa-phải)
-        { x: 610, y: 410, w: 200, h: 160 },
-        // Bàn ăn 4 (phải)
-        { x: 870, y: 430, w: 150, h: 150 },
-        // Bàn ăn dưới-trái
-        { x: 80, y: 620, w: 200, h: 120 },
-        // Bàn ăn dưới-giữa
-        { x: 610, y: 610, w: 200, h: 130 },
+        { x: 1080, y: 0, w: 296, h: 768 },
+        // tường đáy, chừa lối đi cửa ra vào x: 240-340
+        { x: 0, y: 725, w: 240, h: 43 },
+        { x: 340, y: 725, w: 740, h: 43 },
+        // Quầy thực phẩm & tủ kính góc trên-trái
+        { x: 32, y: 40, w: 340, h: 280 },
+        // Quầy tiếp nhận ở giữa
+        { x: 440, y: 40, w: 270, h: 240 },
+        // Quầy cà phê & máy espresso góc trên-phải
+        { x: 740, y: 40, w: 320, h: 280 },
+        // Bàn ăn hàng 1
+        { x: 70, y: 360, w: 180, h: 170 },
+        { x: 365, y: 350, w: 175, h: 175 },
+        { x: 600, y: 350, w: 175, h: 175 },
+        { x: 825, y: 350, w: 175, h: 175 },
+        // Khu ghế bành sofa góc dưới-trái
+        { x: 0, y: 580, w: 160, h: 150 },
+        // Bàn ăn hàng 2
+        { x: 365, y: 550, w: 180, h: 170 },
+        { x: 600, y: 550, w: 170, h: 170 },
+        { x: 820, y: 550, w: 180, h: 170 },
       ]
     },
-    spawnPoint: { x: 690, y: 680 },
+    spawnPoint: { x: 290, y: 680 },
     portals: [
-      { x: 690, y: 735, tileX: 11, tileY: 18, targetRoomId: 'main_hall', targetSpawn: { x: 600, y: 650 }, label: 'Về Sảnh Chính' }
+      { x: 290, y: 735, tileX: 11, tileY: 18, targetRoomId: 'main_hall', targetSpawn: { x: 600, y: 650 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
         id: 'zone_canteen_food',
         type: 'canteen_menus',
-        x: 230,
-        y: 350,
+        x: 200,
+        y: 340,
         name: 'Quầy Thực Đơn Căn Tin FUDA (Tầng 1 & 2)',
         label: 'Thực Đơn Thật',
         metadata: { title: 'THỰC ĐƠN CĂN TIN FUDA' }
@@ -1012,7 +1021,7 @@ export const MAPS_CONFIG = {
         id: 'zone_cafe_barista',
         type: 'sports_activity',
         x: 880,
-        y: 350,
+        y: 340,
         name: 'Quầy Barista Cà Phê Muối & Trà Sữa DEVER',
         label: 'Pha Chế Cà Phê',
         metadata: { sport: 'barista', title: 'PHA CHẾ CÀ PHÊ MUỐI & TRÀ SỮA' }
@@ -1020,26 +1029,34 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_canteen_sit_1',
         type: 'sit_chair',
-        x: 180,
-        y: 420,
+        x: 160,
+        y: 445,
         name: 'Bàn Ăn Căn Tin 1',
         label: 'Ngồi Bàn Ăn'
       },
       {
         id: 'zone_canteen_sit_2',
         type: 'sit_chair',
-        x: 460,
-        y: 400,
+        x: 450,
+        y: 435,
         name: 'Bàn Ăn Căn Tin 2',
         label: 'Ngồi Bàn Ăn'
       },
       {
+        id: 'zone_canteen_sit_3',
+        type: 'sit_chair',
+        x: 685,
+        y: 435,
+        name: 'Bàn Ăn Căn Tin 3',
+        label: 'Ngồi Bàn Ăn'
+      },
+      {
         id: 'zone_cafe_acoustic',
-        type: 'coffee_lofi',
-        x: 120,
-        y: 610,
-        name: 'Góc Nhạc Acoustic Cafe & Pomodoro',
-        label: 'Acoustic Chill',
+        type: 'sit_sofa',
+        x: 80,
+        y: 650,
+        name: 'Góc Sofa Cafe & Pomodoro',
+        label: 'Ngồi Sofa Chill',
         metadata: { title: 'NHẠC ACOUSTIC CAFE ĐÀ NẴNG' }
       }
     ]
@@ -1199,39 +1216,45 @@ export const MAPS_CONFIG = {
   meeting_room: {
     id: 'meeting_room',
     name: 'Phòng Họp & Lớp Học CLB FU-DEVER',
-    // Phase C — Vùng an toàn (Masterplan: Văn phòng CLB FU-DEVER).
     zone: 'safe',
     description: 'Không gian họp và dạy học kiểu Gather.town: bàn hội nghị chữ U, màn chiếu projector, bảng trắng cho buổi họp và lớp học CLB.',
-    spawnPoint: { x: 400, y: 336 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2, 35,  1,  1,  1,  1,  1,  1,  1,  1, 39, 39, 39,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1, 36,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 36,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1, 38, 38,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
+    paintedBackground: {
+      imageKey: 'map_meeting_room',
+      imagePath: 'devertown_meeting_room_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 680, y: 690 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls chừa cửa ra vào x: 600 - 760
+        { x: 0, y: 725, w: 600, h: 43 },
+        { x: 760, y: 725, w: 616, h: 43 },
+        // Bục diễn thuyết DEV CLUB góc trên-trái
+        { x: 230, y: 310, w: 110, h: 140 },
+        // Tủ thiết bị rack mạng & switch trung tâm
+        { x: 500, y: 310, w: 290, h: 100 },
+        // Quầy cà phê & máy lọc nước góc phải
+        { x: 1140, y: 400, w: 160, h: 300 },
+        { x: 1260, y: 550, w: 80, h: 160 },
+        // Bàn họp hội nghị chữ U (cánh trái, cánh phải, cánh đáy)
+        { x: 380, y: 400, w: 150, h: 260 },
+        { x: 380, y: 540, w: 600, h: 130 },
+        { x: 830, y: 400, w: 150, h: 260 }
+      ]
+    },
+    spawnPoint: { x: 680, y: 690 },
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 1000, y: 590 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { tileX: 12, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 1000, y: 590 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
+      { x: 680, y: 735, tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 1000, y: 590 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
-      { id: 'zone_meet_screen', type: 'whiteboard_slides', tileX: 11, tileY: 1, name: 'Màn Chiếu Phòng Họp CLB', label: 'Slide Họp CLB' },
-      { id: 'zone_meet_stage', type: 'meeting_stage', tileX: 10, tileY: 6, name: 'Bàn Họp Chữ U FU-DEVER', label: 'Họp Video' },
-      { id: 'zone_meet_board', type: 'whiteboard_slides', tileX: 1, tileY: 1, name: 'Bảng Trắng Phòng Họp', label: 'Ghi Chú Họp' }
+      { id: 'zone_meet_screen', type: 'whiteboard_slides', x: 680, y: 300, name: 'Màn Chiếu & Sơ Đồ API Flow', label: 'Slide Họp CLB' },
+      { id: 'zone_meet_stage', type: 'meeting_stage', x: 680, y: 500, name: 'Bàn Họp Chữ U FU-DEVER', label: 'Họp Video & Thảo Luận' },
+      { id: 'zone_meet_board_arch', type: 'whiteboard_slides', x: 400, y: 300, name: 'Bảng Trắng System Architecture', label: 'Sơ Đồ Kiến Trúc' },
+      { id: 'zone_meet_board_db', type: 'whiteboard_slides', x: 950, y: 300, name: 'Bảng Trắng Database & Flowchart', label: 'Sơ Đồ Dữ Liệu' },
+      { id: 'zone_meet_podium', type: 'meeting_stage', x: 280, y: 460, name: 'Bục Diễn Thuyết DEVER Speaker', label: 'Thuyết Trình' },
+      { id: 'zone_meet_coffee', type: 'coffee_lofi', x: 1220, y: 420, name: 'Quầy Cà Phê & Nước Uống Họp', label: 'Cà Phê Họp' }
     ]
   },
 };

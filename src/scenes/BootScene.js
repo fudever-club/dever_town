@@ -108,9 +108,16 @@ export class BootScene extends Phaser.Scene {
     this.load.image('map_canteen_cafe', 'devertown_canteen_cafe_v1.jpg');
     this.load.image('map_library_lounge', 'devertown_library_lounge_v1.jpg');
     this.load.image('map_dorm_room', 'devertown_dorm_room_v1.jpg');
+    this.load.image('map_game_arcade', 'devertown_game_arcade_v1.jpg');
+    this.load.image('map_sports_complex', 'devertown_sports_complex_v1.jpg');
+    this.load.image('map_meeting_room', 'devertown_meeting_room_v1.jpg');
 
     // 2I. Bộ Spritesheet Stardew Valley Anime Chibi HD Mới
     this.load.spritesheet('char_stardew_dev_hoodie', 'assets/characters/samples_v2/char_stardew_dev_hoodie.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_stardew_fptu_polo', 'assets/characters/samples_v2/char_stardew_fptu_polo.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_stardew_aodai', 'assets/characters/samples_v2/char_stardew_aodai.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_stardew_wizard', 'assets/characters/samples_v2/char_stardew_wizard.png', { frameWidth: 48, frameHeight: 64 });
+    this.load.spritesheet('char_stardew_cyber', 'assets/characters/samples_v2/char_stardew_cyber.png', { frameWidth: 48, frameHeight: 64 });
 
   }
 
@@ -143,7 +150,7 @@ export class BootScene extends Phaser.Scene {
       'mecha_pro', 'wizard_pro', 'biker_pro', 'aodai_pro',
       'cyber_pro', 'barista_pro',
       // Stardew Valley Anime Chibi HD
-      'stardew_dev_hoodie'
+      'stardew_dev_hoodie', 'stardew_fptu_polo', 'stardew_aodai', 'stardew_wizard', 'stardew_cyber'
     ];
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);
