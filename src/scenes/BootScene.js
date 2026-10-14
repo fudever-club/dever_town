@@ -101,11 +101,16 @@ export class BootScene extends Phaser.Scene {
       this.load.image(`portrait_${id}`, `assets/characters/portraits/${id}.png?v=0.4.2`);
     });
 
-    // 2H. Bản đồ vẽ tay Tòa Alpha V2, Sảnh Alpha V3 & Tech Lab V2 — hybrid painted maps.
+    // 2H. Bản đồ vẽ tay Tòa Alpha V2, Sảnh Alpha V3, Tech Lab V2, Căn Tin, Thư Viện & KTX — hybrid painted maps.
     this.load.image('map_alpha_v2', 'devertown_map_v2_debanded.jpg');
     this.load.image('map_alpha_interior', 'devertown_alpha_interior_v3.jpg');
     this.load.image('map_dever_lab', 'devertown_tech_lab_v2.jpg');
+    this.load.image('map_canteen_cafe', 'devertown_canteen_cafe_v1.jpg');
+    this.load.image('map_library_lounge', 'devertown_library_lounge_v1.jpg');
+    this.load.image('map_dorm_room', 'devertown_dorm_room_v1.jpg');
 
+    // 2I. Bộ Spritesheet Stardew Valley Anime Chibi HD Mới
+    this.load.spritesheet('char_stardew_dev_hoodie', 'assets/characters/samples_v2/char_stardew_dev_hoodie.png', { frameWidth: 48, frameHeight: 64 });
 
   }
 
@@ -136,7 +141,9 @@ export class BootScene extends Phaser.Scene {
       // Aseprite 2D Pixel 60FPS (10 Nhân vật)
       'dev_hoodie', 'dev_gen10', 'buggy_pro', 'frog_pro', 'vovinam_pro',
       'mecha_pro', 'wizard_pro', 'biker_pro', 'aodai_pro',
-      'cyber_pro', 'barista_pro'
+      'cyber_pro', 'barista_pro',
+      // Stardew Valley Anime Chibi HD
+      'stardew_dev_hoodie'
     ];
     newAvatars.forEach(id => {
       TextureGenerator.createCharacterAnimations(this, id);

@@ -6,6 +6,16 @@
 export const CHARACTER_PRESETS = [
   // --- NHÂN VẬT NAM (MALE CHARACTERS) ---
   {
+    id: 'stardew_dev_hoodie',
+    name: 'Dev Chibi Hoodie [Stardew Valley Pixel]',
+    role: 'Anime Chibi HD • Stardew Valley',
+    gender: 'male',
+    color: '#0284c7',
+    spriteKey: 'char_stardew_dev_hoodie',
+    desc: 'Thiết kế Pixel Art Stardew Valley 3 tầng đổ bóng: Tóc undercut anime, kính dev bạc, hoodie xanh hoàng gia FU-DEVER và quần jean sẫm màu.',
+    tags: ['Stardew Valley', 'Mới', 'Chibi HD', 'FU-DEVER']
+  },
+  {
     id: 'dev_gen10',
     name: 'Dev Hoodie Pro Gen 10 [Aseprite 60FPS]',
     role: 'Top-tier Builder • Aseprite',

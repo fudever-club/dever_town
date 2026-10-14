@@ -621,38 +621,52 @@ export const MAPS_CONFIG = {
     description: 'Không gian tự học yên tĩnh, tài liệu ôn thi SWE201c, quy chế CLB và quầy cà phê giao lưu.',
     // Phase C — Vùng an toàn (Masterplan: Thư Viện Tầng 3).
     zone: 'safe',
-    spawnPoint: { x: 400, y: 350 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14, 13,  1,  3,  3,  3,  3, 13,  2 ],
-      [  2,  3,  3,  3,  3,  1,  1,  3,  3,  3,  3,  3,  1,  1, 14, 14, 14,  1,  1,  3,  3,  3,  3,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1, 11, 11, 11, 11, 11, 19, 19, 11, 11, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1, 13,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,  1,  4,  4,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  1,  1,  3,  2 ],
-      [  2,  3,  3,  1,  1,  4,  4,  1,  1,  1,  1,  1,  1,  1,  1,  4,  4,  1,  1,  3,  3,  1,  1,  3,  2 ],
-      [  2, 13,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  1, 10, 10,  1,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
+    paintedBackground: {
+      imageKey: 'map_library_lounge',
+      imagePath: 'devertown_library_lounge_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 692, y: 680 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 940, h: 40 },
+        { x: 940, y: 0, w: 436, h: 420 }, // Tủ sách cao kịch trần góc trên phải
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls chừa cửa ra vào x: 645 - 740
+        { x: 0, y: 725, w: 645, h: 43 },
+        { x: 740, y: 725, w: 636, h: 43 },
+        // Tủ sách thấp & cây giữa 2 cửa sổ trên
+        { x: 375, y: 320, w: 240, h: 100 },
+        { x: 620, y: 330, w: 130, h: 90 },
+        // Dãy tủ sách thấp đáy phòng bên trái
+        { x: 60, y: 640, w: 540, h: 90 },
+        // Bàn đọc nhỏ góc dưới và dãy tủ sách thấp đáy phòng bên phải
+        { x: 775, y: 650, w: 120, h: 80 },
+        { x: 940, y: 640, w: 400, h: 90 },
+        // 3 Bàn học dài trung tâm (gồm bàn + ghế có sinh viên ngồi)
+        { x: 140, y: 450, w: 160, h: 260 }, // Bàn 1 (trái)
+        { x: 370, y: 450, w: 160, h: 260 }, // Bàn 2 (giữa)
+        { x: 600, y: 450, w: 160, h: 260 }, // Bàn 3 (phải)
+        // Khu sofa đọc sách thảm Ba Tư bên phải
+        { x: 1010, y: 440, w: 90, h: 90 }, // Ghế bành trên-trái
+        { x: 1180, y: 440, w: 90, h: 90 }, // Ghế bành trên-phải
+        { x: 1095, y: 510, w: 85, h: 85 }, // Bàn tròn giữa thảm
+        { x: 1010, y: 640, w: 90, h: 85 }, // Ghế bành dưới-trái
+        { x: 1180, y: 640, w: 90, h: 85 }  // Ghế bành dưới-phải
+      ]
+    },
+    spawnPoint: { x: 692, y: 680 },
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
-      { tileX: 12, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
+      { x: 692, y: 735, tileX: 11, tileY: 13, targetRoomId: 'alpha_interior', targetSpawn: { x: 700, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
-      { id: 'zone_lib_swe', type: 'swe201c_guide', tileX: 3, tileY: 2, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
-      { id: 'zone_lib_charter', type: 'dever_charter', tileX: 11, tileY: 6, name: 'Bàn Quy Chế Hoạt Động CLB', label: 'Quy Chế CLB' },
-      { id: 'zone_lib_coffee', type: 'coffee_lofi', tileX: 15, tileY: 2, name: 'Quầy Cà Phê & Pomodoro', label: 'Cà Phê & Lofi' },
-      { id: 'zone_lib_slides', type: 'whiteboard_slides', tileX: 11, tileY: 6, name: 'Khu Đọc Tài Liệu Ôn Thi', label: 'Tài Liệu Sách' },
-      { id: 'zone_lib_code', type: 'code_editor', tileX: 5, tileY: 11, name: 'Bàn Tự Học & Sổ Tay', label: 'Sổ Tay & Code' }
+      { id: 'zone_lib_swe', type: 'swe201c_guide', x: 1050, y: 380, name: 'Tủ Cẩm Nang Ôn Thi PE SWE201c', label: 'Cẩm Nang SWE201c' },
+      { id: 'zone_lib_charter', type: 'dever_charter', x: 490, y: 420, name: 'Bàn Quy Chế Hoạt Động CLB', label: 'Quy Chế CLB' },
+      { id: 'zone_lib_coffee', type: 'coffee_lofi', x: 835, y: 645, name: 'Quầy Cà Phê & Pomodoro', label: 'Cà Phê & Lofi' },
+      { id: 'zone_lib_slides', type: 'whiteboard_slides', x: 860, y: 380, name: 'Khu Đọc Tài Liệu Ôn Thi', label: 'Tài Liệu Sách' },
+      { id: 'zone_lib_code', type: 'code_editor', x: 230, y: 550, name: 'Bàn Tự Học & Sổ Tay', label: 'Sổ Tay & Code' },
+      { id: 'zone_lib_sit_sofa', type: 'sit_sofa', x: 1135, y: 485, name: 'Sofa Đọc Sách Thư Viện', label: 'Ngồi Đọc Sách' },
+      { id: 'zone_lib_sit_desk', type: 'sit_chair', x: 790, y: 530, name: 'Ghế Bàn Học Thư Viện', label: 'Ngồi Tự Học' }
     ]
   },
 
@@ -947,39 +961,49 @@ export const MAPS_CONFIG = {
     id: 'canteen_cafe',
     name: 'Căn Tin FUDA & The High Deli Lounge',
     description: 'Không gian ẩm thực sinh viên, thực đơn 3 căn tin thực tế, quầy cà phê muối Đà Nẵng và pha chế barista.',
-    spawnPoint: { x: 400, y: 240 },
-    layout: [
-      // 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
-      [ 15, 30, 30, 30, 30, 30, 15,  1,  1, 11, 11,  1,  1, 11, 11,  1, 15, 14, 14, 14, 14, 21, 21, 13, 15 ],
-      [ 15, 30, 30, 30, 30, 30, 15,  1,  1, 11, 11,  1,  1, 11, 11,  1, 15, 14, 14, 14, 14, 14, 14,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15, 13,  1,  1,  1,  1,  1,  1,  1, 11, 11, 19, 19, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1, 13, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11, 19, 19, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1, 31, 31,  1, 31, 31,  1,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1, 11, 11,  1,  1, 11, 11,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  4,  1,  4,  4,  1,  1, 15 ],
-      [ 15,  1, 31, 31,  1, 31, 31,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  4,  4,  1,  4,  4,  1,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  6,  6, 12, 12,  6,  6,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15, 13,  1, 31, 31,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1, 31, 31,  1, 13,  1, 15 ],
-      [ 15,  1,  1, 31, 31,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 31, 31,  1,  1,  1, 15 ],
-      [ 15,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 15 ],
-      [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
-    ],
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_canteen_cafe',
+      imagePath: 'devertown_canteen_cafe_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 690, y: 680 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        // vách kính nhìn ra sân vườn bên phải
+        { x: 1040, y: 0, w: 336, h: 768 },
+        // tường đáy, chừa lối đi cửa ra vào x: 610-770
+        { x: 0, y: 730, w: 610, h: 38 },
+        { x: 770, y: 730, w: 606, h: 38 },
+        // Quầy cơm & tủ mát cafeteria góc trên-trái
+        { x: 32, y: 40, w: 560, h: 290 },
+        // Quầy cà phê & máy espresso góc trên-giữa
+        { x: 730, y: 40, w: 310, h: 290 },
+        // Bàn ăn 1 (trái)
+        { x: 80, y: 430, w: 200, h: 140 },
+        // Bàn ăn 2 (giữa-trái)
+        { x: 360, y: 410, w: 200, h: 160 },
+        // Bàn ăn 3 (giữa-phải)
+        { x: 610, y: 410, w: 200, h: 160 },
+        // Bàn ăn 4 (phải)
+        { x: 870, y: 430, w: 150, h: 150 },
+        // Bàn ăn dưới-trái
+        { x: 80, y: 620, w: 200, h: 120 },
+        // Bàn ăn dưới-giữa
+        { x: 610, y: 610, w: 200, h: 130 },
+      ]
+    },
+    spawnPoint: { x: 690, y: 680 },
     portals: [
-      { tileX: 11, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 700, y: 650 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 0, targetRoomId: 'main_hall', targetSpawn: { x: 700, y: 650 }, label: 'Về Sảnh Chính' }
+      { x: 690, y: 735, tileX: 11, tileY: 18, targetRoomId: 'main_hall', targetSpawn: { x: 600, y: 650 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
         id: 'zone_canteen_food',
         type: 'canteen_menus',
-        tileX: 4,
-        tileY: 2,
+        x: 230,
+        y: 350,
         name: 'Quầy Thực Đơn Căn Tin FUDA (Tầng 1 & 2)',
         label: 'Thực Đơn Thật',
         metadata: { title: 'THỰC ĐƠN CĂN TIN FUDA' }
@@ -987,29 +1011,36 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_cafe_barista',
         type: 'sports_activity',
-        tileX: 19,
-        tileY: 2,
+        x: 880,
+        y: 350,
         name: 'Quầy Barista Cà Phê Muối & Trà Sữa DEVER',
         label: 'Pha Chế Cà Phê',
         metadata: { sport: 'barista', title: 'PHA CHẾ CÀ PHÊ MUỐI & TRÀ SỮA' }
       },
       {
+        id: 'zone_canteen_sit_1',
+        type: 'sit_chair',
+        x: 180,
+        y: 420,
+        name: 'Bàn Ăn Căn Tin 1',
+        label: 'Ngồi Bàn Ăn'
+      },
+      {
+        id: 'zone_canteen_sit_2',
+        type: 'sit_chair',
+        x: 460,
+        y: 400,
+        name: 'Bàn Ăn Căn Tin 2',
+        label: 'Ngồi Bàn Ăn'
+      },
+      {
         id: 'zone_cafe_acoustic',
         type: 'coffee_lofi',
-        tileX: 5,
-        tileY: 13,
+        x: 120,
+        y: 610,
         name: 'Góc Nhạc Acoustic Cafe & Pomodoro',
         label: 'Acoustic Chill',
         metadata: { title: 'NHẠC ACOUSTIC CAFE ĐÀ NẴNG' }
-      },
-      {
-        id: 'zone_cafe_meeting',
-        type: 'meeting_stage',
-        tileX: 19,
-        tileY: 13,
-        name: 'Bàn Tròn Thảo Luận & Boardgame',
-        label: 'Bàn Họp Nhóm',
-        metadata: { title: 'BÀN THẢO LUẬN CANTEEN' }
       }
     ]
   },
@@ -1113,40 +1144,55 @@ export const MAPS_CONFIG = {
     id: 'dorm_room',
     name: 'Ký Túc Xá FUDA - Phòng Sinh Hoạt Chung',
     description: 'Không gian nghỉ ngơi ấm cúng: giường ngủ, tủ đồ cá nhân, bàn học và góc sofa thư giãn.',
-    spawnPoint: { x: 400, y: 336 },
-    layout: [
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2, 32, 32,  1, 37,  1,  1, 32, 32,  1,  1,  1, 32, 32,  1,  1, 37,  1, 32, 32,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1, 40,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  6, 36, 36,  6,  6, 41,  6,  6,  6,  6, 36, 36,  6,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2, 37,  1,  1, 32, 32,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 32, 32,  1,  1,  1,  1, 37,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  4,  4,  1,  1,  1,  4,  4,  1,  1,  1,  1,  2 ],
-      [  2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
-      [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
-    ],
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_dorm_room',
+      imagePath: 'devertown_dorm_room_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 680, y: 680 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 555, h: 40 },
+        { x: 820, y: 0, w: 556, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls chừa cửa ra vào x: 620 - 740
+        { x: 0, y: 725, w: 620, h: 43 },
+        { x: 740, y: 725, w: 636, h: 43 },
+        // Ban công kính & dàn chậu cây phía trên
+        { x: 555, y: 0, w: 265, h: 310 },
+        // Góc sinh viên 1 (trên-trái): Tủ đồ, Giường tầng, Bàn học
+        { x: 55, y: 80, w: 130, h: 340 },
+        { x: 185, y: 95, w: 185, h: 340 },
+        { x: 375, y: 235, w: 175, h: 195 },
+        // Góc sinh viên 2 (trên-phải): Bàn học, Giường tầng, Tủ đồ
+        { x: 830, y: 235, w: 170, h: 195 },
+        { x: 1005, y: 95, w: 185, h: 340 },
+        { x: 1190, y: 80, w: 135, h: 350 },
+        // Góc sinh viên 3 (dưới-trái): Tủ đồ, Giường tầng, Bàn học
+        { x: 40, y: 535, w: 125, h: 195 },
+        { x: 165, y: 490, w: 190, h: 240 },
+        { x: 355, y: 585, w: 170, h: 145 },
+        // Góc sinh viên 4 (dưới-phải): Bàn học, Giường tầng, Tủ đồ
+        { x: 915, y: 585, w: 170, h: 145 },
+        { x: 1010, y: 490, w: 195, h: 240 },
+        { x: 1205, y: 540, w: 130, h: 190 },
+        // Bàn tròn trà & Sofa sinh hoạt chung ở giữa
+        { x: 630, y: 510, w: 85, h: 155 },
+        { x: 740, y: 460, w: 100, h: 225 }
+      ]
+    },
+    spawnPoint: { x: 680, y: 680 },
     portals: [
-      { tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 200, y: 670 }, label: 'Về Sảnh Chính' },
-      { tileX: 12, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 200, y: 670 }, label: 'Về Sảnh Chính' }
+      { x: 680, y: 735, tileX: 11, tileY: 13, targetRoomId: 'main_hall', targetSpawn: { x: 200, y: 670 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
-      { id: 'zone_dorm_rest', type: 'rest_bed', tileX: 2, tileY: 2, name: 'Giường Ngủ KTX FUDA', label: 'Nghỉ Ngơi' },
-      { id: 'zone_dorm_study', type: 'code_editor', tileX: 7, tileY: 4, name: 'Bàn Học Cá Nhân KTX', label: 'Học Bài & Code' },
-      { id: 'zone_dorm_lounge', type: 'coffee_lofi', tileX: 11, tileY: 6, name: 'Góc Sofa Thư Giãn KTX', label: 'Thư Giãn' },
-      // NOTE: (7,3) là ô bàn học (tile 4, solid) nên đặt ghế ở (8,4): ô sàn (tile 1),
-      // kề bàn học (8,3) và kề zone bàn học (7,4), không đè zone nào
-      { id: 'zone_dorm_sit_desk', type: 'sit_chair', tileX: 8, tileY: 4, name: 'Ghế Bàn Học KTX', label: 'Ngồi Học' },
-      { id: 'zone_dorm_sit_sofa', type: 'sit_sofa', tileX: 10, tileY: 6, name: 'Sofa KTX FUDA', label: 'Ngồi Thư Giãn' }
+      { id: 'zone_dorm_rest_1', type: 'rest_bed', x: 280, y: 440, name: 'Giường Ngủ KTX FUDA 1', label: 'Nghỉ Ngơi' },
+      { id: 'zone_dorm_rest_2', type: 'rest_bed', x: 1100, y: 440, name: 'Giường Ngủ KTX FUDA 2', label: 'Nghỉ Ngơi' },
+      { id: 'zone_dorm_study_1', type: 'code_editor', x: 460, y: 435, name: 'Bàn Học & Coder Station 1', label: 'Học Bài & Code' },
+      { id: 'zone_dorm_study_2', type: 'code_editor', x: 915, y: 435, name: 'Bàn Học & Coder Station 2', label: 'Học Bài & Code' },
+      { id: 'zone_dorm_sit_sofa', type: 'sit_sofa', x: 715, y: 585, name: 'Sofa KTX FUDA', label: 'Ngồi Thư Giãn' },
+      { id: 'zone_dorm_balcony', type: 'coffee_lofi', x: 688, y: 320, name: 'Ban Công Nắng & Cây Xanh KTX', label: 'Ngắm Cảnh Ban Công' }
     ]
   },
 

@@ -279,7 +279,8 @@ export const NPC_CONFIG = {
       id: 'npc_barista_an',
       name: 'Barista An',
       role: 'Chuyên Gia Pha Chế Cà Phê Muối',
-      tileX: 8, tileY: 8,
+      x: 880, y: 220,
+      tileX: 19, tileY: 3,
       direction: 'down',
       spriteConfig: {
         gender: 'female',
@@ -311,7 +312,8 @@ export const NPC_CONFIG = {
       id: 'npc_hocthu_kiet',
       name: 'Lương Văn Tuấn Kiệt',
       role: 'Trưởng Ban Học Thuật',
-      tileX: 12, tileY: 5,
+      x: 1045, y: 380,
+      tileX: 16, tileY: 6,
       direction: 'down',
       spriteConfig: {
         gender: 'male',
