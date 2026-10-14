@@ -86,7 +86,7 @@ export const MAPS_CONFIG = {
       // Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào trong sảnh Alpha (alpha_interior)
       // — phân cấp: phòng học đi qua nội thất Tòa Alpha, không vào thẳng từ sân.
       { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-      { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
+      { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 120, y: 400 }, label: 'Web & Media Hub' },
       { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
       { x: 600, y: 620, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
       { x: 776, y: 690, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
@@ -171,7 +171,7 @@ export const MAPS_CONFIG = {
           { x: 746, y: 290, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 580 }, label: 'Vào Tòa Alpha' },
           // (giống top-level) Thư Viện / Phòng Họp / Phòng Kỷ Niệm đã dời vào sảnh Alpha.
           { x: 150, y: 615, targetRoomId: 'dorm_room', targetSpawn: { x: 384, y: 400 }, label: 'Ký Túc Xá' },
-          { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 360, y: 240 }, label: 'Web & Media Hub' },
+          { x: 1336, y: 400, targetRoomId: 'web_room', targetSpawn: { x: 120, y: 400 }, label: 'Web & Media Hub' },
           { x: 1336, y: 550, targetRoomId: 'sports_complex', targetSpawn: { x: 340, y: 220 }, label: 'Khu Thể Thao' },
           { x: 600, y: 620, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
           { x: 776, y: 690, targetRoomId: 'canteen_cafe', targetSpawn: { x: 400, y: 250 }, label: 'Căn Tin & Cafe' },
@@ -350,7 +350,7 @@ export const MAPS_CONFIG = {
       // Phân cấp phòng học: vào qua nội thất Tòa Alpha (dời từ sân ngoài trời).
       { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
       { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
-      { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Sang Phòng Kỷ Niệm' },
+      { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 688, y: 650 }, label: 'Sang Phòng Kỷ Niệm' },
       // Khu gian hàng triển lãm CLB = main_hall tầng 2 (targetFloor 1).
       { x: 1055, y: 350, targetRoomId: 'main_hall', targetFloor: 1, targetSpawn: { x: 112, y: 80 }, labelKey: 'portals.main_hall_booths', label: 'Khu Gian Hàng CLB' },
     ],
@@ -436,7 +436,7 @@ export const MAPS_CONFIG = {
           // (giống top-level) Phân cấp phòng học qua nội thất Tòa Alpha.
           { x: 700, y: 280, targetRoomId: 'library_lounge', targetSpawn: { x: 400, y: 350 }, label: 'Sang Thư Viện' },
           { x: 1000, y: 520, targetRoomId: 'meeting_room', targetSpawn: { x: 400, y: 336 }, label: 'Sang Phòng Họp & Lớp Học' },
-          { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 360, y: 240 }, label: 'Sang Phòng Kỷ Niệm' },
+          { x: 950, y: 280, targetRoomId: 'memory_room', targetSpawn: { x: 688, y: 650 }, label: 'Sang Phòng Kỷ Niệm' },
           { x: 1055, y: 350, targetRoomId: 'main_hall', targetFloor: 1, targetSpawn: { x: 112, y: 80 }, labelKey: 'portals.main_hall_booths', label: 'Khu Gian Hàng CLB' },
         ],
         zones: [
@@ -554,7 +554,7 @@ export const MAPS_CONFIG = {
     portals: [
       { x: 650, y: 735, tileX: 12, tileY: 14, targetRoomId: 'alpha_interior', targetSpawn: { x: 680, y: 580 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' },
       { x: 1310, y: 130, tileX: 21, tileY: 1, targetRoomId: 'game_arcade', targetSpawn: { x: 400, y: 350 }, label: 'Sang Arcade & Robot' },
-      { x: 260, y: 330, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 384, y: 100 }, label: 'Xuống Hầm Sự Cố' }
+      { x: 260, y: 330, tileX: 3, tileY: 1, targetRoomId: 'server_dungeon', targetSpawn: { x: 688, y: 260 }, label: 'Xuống Hầm Sự Cố' }
     ],
     zones: [
       { id: 'zone_lab_hackathon_a1', type: 'sit_chair', x: 425, y: 440, name: 'Bàn Hackathon Alpha 1', label: 'Ngồi Ghế Hackathon Alpha 1', direction: 'up' },
@@ -680,7 +680,35 @@ export const MAPS_CONFIG = {
     id: 'memory_room',
     name: 'Phòng Triển Lãm Kỷ Niệm & Bảng Vàng FU-DEVER',
     description: 'Không gian bảo tàng lưu trữ các cột mốc FPT Edu Hackathon, Lễ vinh danh Cóc Vàng và lịch sử 9+ năm.',
-    spawnPoint: { x: 360, y: 240 },
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_memory_room',
+      imagePath: 'devertown_memory_room_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 688, y: 650 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        // bottom walls, leaving portal / exit area x: 600 - 776
+        { x: 0, y: 725, w: 600, h: 43 },
+        { x: 776, y: 725, w: 600, h: 43 },
+        // back wall depth
+        { x: 0, y: 0, w: 1376, h: 240 },
+        // Central Golden Frog Pedestal
+        { x: 618, y: 390, w: 140, h: 95 },
+        // Left Showcase Tower
+        { x: 240, y: 360, w: 150, h: 180 },
+        // Right Showcase Tower
+        { x: 1050, y: 360, w: 150, h: 180 },
+        // Left museum bench
+        { x: 140, y: 590, w: 160, h: 50 },
+        // Right museum bench
+        { x: 1076, y: 590, w: 160, h: 50 },
+      ]
+    },
+    spawnPoint: { x: 688, y: 650 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2, 20, 20,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2, 16,  1, 16,  1, 16,  1, 17, 17,  1, 17, 17,  1, 16,  1, 16,  1, 16,  1, 17, 17,  1, 16, 13,  2 ],
@@ -703,12 +731,14 @@ export const MAPS_CONFIG = {
       [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ]
     ],
     portals: [
-      { tileX: 22, tileY: 6, targetRoomId: 'alpha_interior', targetSpawn: { x: 950, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
+      { x: 688, y: 735, tileX: 22, tileY: 6, targetRoomId: 'alpha_interior', targetSpawn: { x: 950, y: 350 }, labelKey: 'portals.back_to_alpha', label: 'Về Sảnh Alpha' }
     ],
     zones: [
       {
         id: 'zone_mem_founding',
         type: 'gallery_memory',
+        x: 200,
+        y: 250,
         tileX: 3,
         tileY: 1,
         name: 'Hành Trình 9+ Năm FU-DEVER',
@@ -723,6 +753,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_mem_hackathon',
         type: 'gallery_memory',
+        x: 460,
+        y: 250,
         tileX: 10,
         tileY: 1,
         name: '20+ Giải Thưởng ICPC & Hackathon',
@@ -737,6 +769,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_mem_teambuilding',
         type: 'gallery_memory',
+        x: 916,
+        y: 250,
         tileX: 17,
         tileY: 1,
         name: 'Work Hard - Play Hard Teambuilding',
@@ -751,6 +785,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_mem_workshop',
         type: 'gallery_memory',
+        x: 1176,
+        y: 250,
         tileX: 1,
         tileY: 7,
         name: 'Chuỗi Workshop Tech Talk FUDA',
@@ -761,6 +797,30 @@ export const MAPS_CONFIG = {
           story: 'Các buổi chia sẻ chuyên sâu về 2D Game, Web/Mobile App và Mô hình AI cho sinh viên toàn trường.',
           imgId: 'workshop'
         }
+      },
+      {
+        id: 'zone_mem_frog',
+        type: 'golden_frog_fortune',
+        x: 688,
+        y: 440,
+        name: 'Linh Vật Cóc Vàng FUDA Vinh Danh',
+        label: 'Bái Cóc Vàng'
+      },
+      {
+        id: 'zone_mem_sit_left',
+        type: 'sit_chair',
+        x: 220,
+        y: 615,
+        name: 'Băng Ghế Kỷ Niệm 1',
+        label: 'Ngồi Nghỉ Ngơi'
+      },
+      {
+        id: 'zone_mem_sit_right',
+        type: 'sit_chair',
+        x: 1156,
+        y: 615,
+        name: 'Băng Ghế Kỷ Niệm 2',
+        label: 'Ngồi Nghỉ Ngơi'
       }
     ]
   },
@@ -769,7 +829,33 @@ export const MAPS_CONFIG = {
     id: 'web_room',
     name: 'Web & Media Hub FU-DEVER',
     description: 'Trung tâm số của CLB: cổng học vụ FPTU, IT helpdesk, landing page, mạng xã hội và kho dự án FU-DEVER.',
-    spawnPoint: { x: 380, y: 280 },
+    zone: 'safe',
+    paintedBackground: {
+      imageKey: 'map_web_room',
+      imagePath: 'devertown_web_room_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 120, y: 400 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        { x: 0, y: 725, w: 1376, h: 43 },
+        // Back wall depth
+        { x: 0, y: 0, w: 1376, h: 240 },
+        // Green Screen Zone & Softbox lights
+        { x: 55, y: 200, w: 310, h: 90 },
+        // Cinema Camera & Tripod
+        { x: 170, y: 410, w: 60, h: 80 },
+        // Video Editing Workstation
+        { x: 460, y: 320, w: 320, h: 130 },
+        // Podcast Recording Booth
+        { x: 880, y: 500, w: 420, h: 200 },
+        // IT Helpdesk Server Mini-Rack
+        { x: 80, y: 520, w: 100, h: 180 },
+      ]
+    },
+    spawnPoint: { x: 120, y: 400 },
     layout: [
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 21, 21, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ],
       [ 15,  8,  8, 18, 18, 18, 18,  8,  8,  8,  8, 18, 18, 18, 18,  8,  8, 18, 18, 18, 18,  8,  8, 13, 15 ],
@@ -792,12 +878,14 @@ export const MAPS_CONFIG = {
       [ 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 ]
     ],
     portals: [
-      { tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 1280, y: 400 }, label: 'Về Sảnh Chính' }
+      { x: 50, y: 400, tileX: 1, tileY: 6, targetRoomId: 'main_hall', targetSpawn: { x: 1280, y: 400 }, label: 'Về Sảnh Chính' }
     ],
     zones: [
       {
         id: 'zone_web_fptu_portal',
         type: 'fptu_student_portal',
+        x: 840,
+        y: 220,
         tileX: 7,
         tileY: 3,
         name: 'Trạm IT Helpdesk & Cổng Phần Mềm Thi',
@@ -806,6 +894,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_main',
         type: 'club_website',
+        x: 1200,
+        y: 220,
         tileX: 11,
         tileY: 6,
         name: 'Landing Page Chính Thức FU-DEVER',
@@ -818,6 +908,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_member_portal',
         type: 'club_website',
+        x: 620,
+        y: 460,
         tileX: 3,
         tileY: 3,
         name: 'Member Portal - Hệ Thống Thành Viên',
@@ -830,6 +922,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_projects',
         type: 'club_website',
+        x: 1020,
+        y: 220,
         tileX: 19,
         tileY: 3,
         name: 'Kho Dự Án (2D Game, AI, Web, Mobile)',
@@ -842,6 +936,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_facebook',
         type: 'club_website',
+        x: 1100,
+        y: 480,
         tileX: 11,
         tileY: 3,
         name: 'Trạm Fanpage Facebook FU-DEVER',
@@ -854,6 +950,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_tiktok',
         type: 'club_website',
+        x: 200,
+        y: 380,
         tileX: 15,
         tileY: 3,
         name: 'Trạm TikTok & Media FUDA',
@@ -866,6 +964,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_github',
         type: 'club_website',
+        x: 520,
+        y: 460,
         tileX: 22,
         tileY: 3,
         name: 'Trạm GitHub Organization FU-DEVER',
@@ -878,6 +978,8 @@ export const MAPS_CONFIG = {
       {
         id: 'zone_web_recruitment',
         type: 'club_website',
+        x: 1000,
+        y: 620,
         tileX: 11,
         tileY: 11,
         name: 'Cổng Đăng Ký Thành Viên FU-DEVER',
@@ -886,6 +988,22 @@ export const MAPS_CONFIG = {
           url: 'https://forms.gle/2us1yB5Qp2HYejj28',
           title: 'ĐƠN ĐĂNG KÝ THÀNH VIÊN FU-DEVER'
         }
+      },
+      {
+        id: 'zone_web_sit_editor',
+        type: 'sit_chair',
+        x: 540,
+        y: 470,
+        name: 'Ghế Bàn Dựng Phim & Media',
+        label: 'Ngồi Dựng Phim'
+      },
+      {
+        id: 'zone_web_sit_podcast',
+        type: 'sit_sofa',
+        x: 980,
+        y: 600,
+        name: 'Sofa Phòng Thu Podcast',
+        label: 'Ngồi Thu Âm'
       }
     ]
   },
@@ -1066,7 +1184,32 @@ export const MAPS_CONFIG = {
     id: 'server_dungeon',
     name: 'Tầng Hầm Tòa Gamma — Phòng Máy Chủ Sự Cố (Server Faults)',
     description: 'Khu vực hầm ngục kỹ thuật ngầm, nơi xảy ra các sự cố rò rỉ mã lỗi hệ thống và rò rỉ bộ nhớ RAM.',
-    spawnPoint: { x: 384, y: 100 },
+    paintedBackground: {
+      imageKey: 'map_server_dungeon',
+      imagePath: 'devertown_server_dungeon_v1.jpg',
+      width: 1376, height: 768,
+      spawnPoint: { x: 688, y: 260 },
+      collisionRects: [
+        // border walls
+        { x: 0, y: 0, w: 1376, h: 40 },
+        { x: 0, y: 0, w: 32, h: 768 },
+        { x: 1344, y: 0, w: 32, h: 768 },
+        { x: 0, y: 725, w: 1376, h: 43 },
+        // Back concrete bunker wall
+        { x: 0, y: 0, w: 1376, h: 200 },
+        // Server Rack Bank A (Left)
+        { x: 100, y: 270, w: 320, h: 150 },
+        // Server Rack Bank B (Right)
+        { x: 950, y: 270, w: 320, h: 150 },
+        // NullPointerException Containment Chamber (Left Middle)
+        { x: 160, y: 480, w: 240, h: 180 },
+        // Memory Leak Slime Containment Pool (Right Middle)
+        { x: 970, y: 480, w: 240, h: 180 },
+        // Central Terminal Mainframe
+        { x: 510, y: 200, w: 356, h: 160 },
+      ]
+    },
+    spawnPoint: { x: 688, y: 260 },
     layout: [
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 10, 10,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ],
       [  2,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  8,  8,  9,  9,  9,  9,  9,  8,  8,  9,  2 ],
@@ -1089,14 +1232,15 @@ export const MAPS_CONFIG = {
       [  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ]
     ],
     portals: [
-      { tileX: 11, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 100, y: 100 }, label: 'Lên Tech Lab' },
-      { tileX: 12, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 100, y: 100 }, label: 'Lên Tech Lab' }
+      { x: 688, y: 220, tileX: 11, tileY: 0, targetRoomId: 'dever_lab', targetSpawn: { x: 260, y: 370 }, label: 'Lên Tech Lab' }
     ],
     zones: [
       {
         id: 'zone_dungeon_nullpointer',
         type: 'bug_dungeon_hunt',
         bugType: 'null_pointer',
+        x: 280,
+        y: 570,
         tileX: 5,
         tileY: 4,
         name: 'Sự Cố: NullPointerException Bug',
@@ -1112,6 +1256,8 @@ export const MAPS_CONFIG = {
         id: 'zone_dungeon_memoryleak',
         type: 'bug_dungeon_hunt',
         bugType: 'memory_leak',
+        x: 1090,
+        y: 570,
         tileX: 18,
         tileY: 4,
         name: 'Sự Cố: Memory Leak Slime',
@@ -1127,6 +1273,8 @@ export const MAPS_CONFIG = {
         id: 'zone_dungeon_infiniteloop',
         type: 'bug_dungeon_hunt',
         bugType: 'infinite_loop',
+        x: 688,
+        y: 570,
         tileX: 11,
         tileY: 10,
         name: 'Sự Cố: Infinite Loop Matrix',
@@ -1142,6 +1290,8 @@ export const MAPS_CONFIG = {
         id: 'zone_dungeon_terminal',
         type: 'bug_dungeon_hunt',
         bugType: 'terminal_status',
+        x: 688,
+        y: 380,
         tileX: 11,
         tileY: 14,
         name: 'Máy Trạm Trung Tâm Hầm Ngục',

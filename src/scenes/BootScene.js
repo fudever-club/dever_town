@@ -111,6 +111,9 @@ export class BootScene extends Phaser.Scene {
     this.load.image('map_game_arcade', 'devertown_game_arcade_v1.jpg');
     this.load.image('map_sports_complex', 'devertown_sports_complex_v1.jpg');
     this.load.image('map_meeting_room', 'devertown_meeting_room_v1.jpg');
+    this.load.image('map_memory_room', 'devertown_memory_room_v1.jpg');
+    this.load.image('map_web_room', 'devertown_web_room_v1.jpg');
+    this.load.image('map_server_dungeon', 'devertown_server_dungeon_v1.jpg');
 
     // 2I. Bộ Spritesheet Stardew Valley Anime Chibi HD Mới (128x192px frame — Chuẩn tỉ lệ 1:1 với nội thất phòng)
     this.load.spritesheet('char_stardew_dev_hoodie', 'assets/characters/samples_v2/char_stardew_dev_hoodie.png', { frameWidth: 128, frameHeight: 192 });
