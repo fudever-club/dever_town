@@ -76,13 +76,13 @@ export class RemotePlayer extends Phaser.GameObjects.Sprite {
     const isStardew = this.isStardewAvatar();
     return {
       isStardew,
-      feetY: isStardew ? 58 : 30,
-      nameTagY: isStardew ? -62 : -38,
-      speechY: isStardew ? -92 : -52,
-      shadowW: isStardew ? 34 : 22,
-      shadowH: isStardew ? 12 : 8,
-      equippedX: isStardew ? 22 : 14,
-      equippedY: isStardew ? -12 : -8
+      feetY: isStardew ? 88 : 30,
+      nameTagY: isStardew ? -92 : -38,
+      speechY: isStardew ? -128 : -52,
+      shadowW: isStardew ? 46 : 22,
+      shadowH: isStardew ? 16 : 8,
+      equippedX: isStardew ? 36 : 14,
+      equippedY: isStardew ? -14 : -8
     };
   }
 

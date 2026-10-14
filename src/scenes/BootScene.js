@@ -112,12 +112,12 @@ export class BootScene extends Phaser.Scene {
     this.load.image('map_sports_complex', 'devertown_sports_complex_v1.jpg');
     this.load.image('map_meeting_room', 'devertown_meeting_room_v1.jpg');
 
-    // 2I. Bộ Spritesheet Stardew Valley Anime Chibi HD Mới (96x128px frame — Chuẩn tỉ lệ nội thất phòng)
-    this.load.spritesheet('char_stardew_dev_hoodie', 'assets/characters/samples_v2/char_stardew_dev_hoodie.png', { frameWidth: 96, frameHeight: 128 });
-    this.load.spritesheet('char_stardew_fptu_polo', 'assets/characters/samples_v2/char_stardew_fptu_polo.png', { frameWidth: 96, frameHeight: 128 });
-    this.load.spritesheet('char_stardew_aodai', 'assets/characters/samples_v2/char_stardew_aodai.png', { frameWidth: 96, frameHeight: 128 });
-    this.load.spritesheet('char_stardew_wizard', 'assets/characters/samples_v2/char_stardew_wizard.png', { frameWidth: 96, frameHeight: 128 });
-    this.load.spritesheet('char_stardew_cyber', 'assets/characters/samples_v2/char_stardew_cyber.png', { frameWidth: 96, frameHeight: 128 });
+    // 2I. Bộ Spritesheet Stardew Valley Anime Chibi HD Mới (128x192px frame — Chuẩn tỉ lệ 1:1 với nội thất phòng)
+    this.load.spritesheet('char_stardew_dev_hoodie', 'assets/characters/samples_v2/char_stardew_dev_hoodie.png', { frameWidth: 128, frameHeight: 192 });
+    this.load.spritesheet('char_stardew_fptu_polo', 'assets/characters/samples_v2/char_stardew_fptu_polo.png', { frameWidth: 128, frameHeight: 192 });
+    this.load.spritesheet('char_stardew_aodai', 'assets/characters/samples_v2/char_stardew_aodai.png', { frameWidth: 128, frameHeight: 192 });
+    this.load.spritesheet('char_stardew_wizard', 'assets/characters/samples_v2/char_stardew_wizard.png', { frameWidth: 128, frameHeight: 192 });
+    this.load.spritesheet('char_stardew_cyber', 'assets/characters/samples_v2/char_stardew_cyber.png', { frameWidth: 128, frameHeight: 192 });
 
   }
 

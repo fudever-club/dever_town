@@ -3,11 +3,11 @@ import path from 'path';
 
 const ARTIFACT_DIR = 'C:/Users/This PC/.gemini/antigravity-ide/brain/f4243eb1-3b00-4f93-aaec-327220655ce0';
 const ROOMS = [
-  { id: 'canteen_cafe', spawnX: 980, spawnY: 430, avatar: 'stardew_fptu_polo', name: 'Căn Tin & Cafe Sạch' },
-  { id: 'library_lounge', spawnX: 740, spawnY: 480, avatar: 'stardew_aodai', name: 'Thư Viện Sạch' },
-  { id: 'game_arcade', spawnX: 450, spawnY: 450, avatar: 'stardew_cyber', name: 'Arcade Gaming' },
-  { id: 'sports_complex', spawnX: 680, spawnY: 460, avatar: 'stardew_fptu_polo', name: 'Khu Thể Thao' },
-  { id: 'meeting_room', spawnX: 720, spawnY: 520, avatar: 'stardew_wizard', name: 'Phòng Họp CLB' }
+  { id: 'canteen_cafe', spawnX: 780, spawnY: 530, avatar: 'stardew_fptu_polo', name: 'Căn Tin & Cafe Sạch' },
+  { id: 'library_lounge', spawnX: 740, spawnY: 520, avatar: 'stardew_aodai', name: 'Thư Viện Sạch' },
+  { id: 'game_arcade', spawnX: 720, spawnY: 500, avatar: 'stardew_cyber', name: 'Arcade Gaming' },
+  { id: 'sports_complex', spawnX: 680, spawnY: 520, avatar: 'stardew_fptu_polo', name: 'Khu Thể Thao' },
+  { id: 'meeting_room', spawnX: 540, spawnY: 560, avatar: 'stardew_wizard', name: 'Phòng Họp CLB' }
 ];
 
 async function run() {

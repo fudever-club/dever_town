@@ -114,17 +114,17 @@ export class Player extends Phaser.GameObjects.Sprite {
     const isStardew = this.isStardewAvatar();
     return {
       isStardew,
-      feetY: isStardew ? 58 : 30,
-      nameTagY: isStardew ? -62 : -38,
-      speechY: isStardew ? -92 : -64,
-      shadowW: isStardew ? 34 : 22,
-      shadowH: isStardew ? 12 : 8,
-      bodyW: isStardew ? 32 : 24,
-      bodyH: isStardew ? 14 : 10,
-      bodyOffsetX: isStardew ? 32 : 12,
-      bodyOffsetY: isStardew ? 114 : 54,
-      equippedX: isStardew ? 26 : 18,
-      equippedY: isStardew ? -12 : -8
+      feetY: isStardew ? 88 : 30,
+      nameTagY: isStardew ? -92 : -38,
+      speechY: isStardew ? -128 : -64,
+      shadowW: isStardew ? 46 : 22,
+      shadowH: isStardew ? 16 : 8,
+      bodyW: isStardew ? 40 : 24,
+      bodyH: isStardew ? 18 : 10,
+      bodyOffsetX: isStardew ? 44 : 12,
+      bodyOffsetY: isStardew ? 166 : 54,
+      equippedX: isStardew ? 36 : 18,
+      equippedY: isStardew ? -14 : -8
     };
   }
 
@@ -591,7 +591,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       if (this.currentDirection === 'up') {
         // Hướng quay vào bàn làm việc: giấu chân dưới gầm bàn / sau đệm ghế, hơi co lưng
         if (isStardew) {
-          this.setCrop(0, 0, 96, 104);
+          this.setCrop(0, 0, 128, 140);
           this.setScale(1, 0.94);
         } else {
           this.setCrop(0, 0, 48, 52);
@@ -600,7 +600,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       } else {
         // Hướng quay ra ngoài / sofa: hạ nhẹ người, chân gập trên mặt ghế
         if (isStardew) {
-          this.setCrop(0, 0, 96, 114);
+          this.setCrop(0, 0, 128, 155);
           this.setScale(1, 0.92);
         } else {
           this.setCrop(0, 0, 48, 56);
@@ -611,7 +611,7 @@ export class Player extends Phaser.GameObjects.Sprite {
       // Thu nhỏ bóng dưới chân và nâng vị trí bóng khớp đáy ghế
       if (this.shadowEllipse) {
         this.shadowEllipse.setScale(0.5, 0.35);
-        this.shadowEllipse.setPosition(this.x, this.y + (isStardew ? 28 : 14));
+        this.shadowEllipse.setPosition(this.x, this.y + (isStardew ? 42 : 14));
       }
     } catch (e) {}
   }

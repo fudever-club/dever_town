@@ -13,7 +13,7 @@ SHEETS = [
     'rows': 4,
     'select_cols': [0, 1, 2, 3],
     'mirror_row2': True,
-    'target_h': 108
+    'target_h': 156
   },
   {
     'name': 'char_stardew_fptu_polo',
@@ -22,7 +22,7 @@ SHEETS = [
     'rows': 4,
     'select_cols': [0, 1, 2, 3],
     'mirror_row2': True,
-    'target_h': 108
+    'target_h': 156
   },
   {
     'name': 'char_stardew_aodai',
@@ -31,7 +31,7 @@ SHEETS = [
     'rows': 4,
     'select_cols': [0, 1, 2, 3],
     'mirror_row2': True,
-    'target_h': 108
+    'target_h': 156
   },
   {
     'name': 'char_stardew_wizard',
@@ -40,7 +40,7 @@ SHEETS = [
     'rows': 4,
     'select_cols': [0, 1, 2, 3],
     'mirror_row2': True,
-    'target_h': 116
+    'target_h': 170
   },
   {
     'name': 'char_stardew_cyber',
@@ -49,15 +49,15 @@ SHEETS = [
     'rows': 4,
     'select_cols': [0, 1, 2, 3],
     'mirror_row2': True,
-    'target_h': 108
+    'target_h': 156
   }
 ]
 
-FRAME_W = 96
-FRAME_H = 128
-SHEET_W = FRAME_W * 4  # 384
-SHEET_H = FRAME_H * 4  # 512
-FEET_Y = 122  # Leaves 6px bottom floor margin
+FRAME_W = 128
+FRAME_H = 192
+SHEET_W = FRAME_W * 4  # 512
+SHEET_H = FRAME_H * 4  # 768
+FEET_Y = 184  # Leaves 8px bottom floor margin
 
 def is_magenta(r, g, b):
     if r > 160 and b > 160 and g < 90:
